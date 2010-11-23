@@ -341,8 +341,7 @@ float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void 
   (void) cntr;
   (void) ref;
   
-  if(XPIsWidgetVisible(linuxCheckListWidget))
-    do_processing();
+  do_processing(XPIsWidgetVisible(linuxCheckListWidget));
   
   return 0.1f;
 }
@@ -357,7 +356,7 @@ checklist_item_desc_t pageItems[50];
   if((int)inMenuRef == 0){
     if (!strcmp((char *) inItemRef, "checklist")){
       if (linuxCheckListWidget == NULL){
-        create_checklist(pageSize, pageTitle, pageItems, 120, 0);
+        create_checklist(pageSize, pageTitle, pageItems, 120, 0, 0);
       }else{
         if(!XPIsWidgetVisible(linuxCheckListWidget))
           XPShowWidget(linuxCheckListWidget);
@@ -595,7 +594,9 @@ int	linuxCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long
         return 0;
 }
 
-bool create_checklist(unsigned int size, const char *title, checklist_item_desc_t items[], int width, int index)
+bool create_checklist(unsigned int size, const char *title,
+                      checklist_item_desc_t items[], int width,
+                      int index, int force_show)
 {
   (void) width;
   unsigned int i;
@@ -760,11 +761,14 @@ bool create_checklist(unsigned int size, const char *title, checklist_item_desc_
 printf("Checklist index %d (of %d)\n", index, checklists_count);
      // Register our widget handler
      XPAddWidgetCallback(linuxCheckListWidget, linuxCheckListHandler);
-     if(!XPIsWidgetVisible(linuxCheckListWidget))
-       XPShowWidget(linuxCheckListWidget);
-     if(state[1] == false)
-         XPHideWidget(linuxCheckListWidget);
 
+     if(!XPIsWidgetVisible(linuxCheckListWidget)){
+       XPShowWidget(linuxCheckListWidget);
+     }
+
+     if((!force_show) && (state[1] == false)){
+       XPHideWidget(linuxCheckListWidget);
+     }
   return true;
 }
 

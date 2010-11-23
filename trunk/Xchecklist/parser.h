@@ -21,6 +21,8 @@ class checklist_item{
   virtual bool getDesc(checklist_item_desc_t &desc) = 0;
   virtual bool activate() = 0;
   virtual bool process() = 0;
+  virtual bool show(bool &val){(void) val; return false;};
+  virtual void reset(){};
   void setIndex(int i){index = i;};
  protected:
   int index;
@@ -35,12 +37,13 @@ class checklist{
   ~checklist();
   bool add_item(checklist_item *i);
   void set_width(int f);
-  bool activate(int index);
+  bool activate(int index, bool force = false);
   bool item_checked(int item);
   bool process_datarefs();
   bool restart_checklist();
   bool activate_next_item(bool init = false);
   const std::string& get_name()const;
+  bool triggered();
  private:
   std::string displaytext;
   std::string menutext;
@@ -56,11 +59,11 @@ class checklist_binder{
     checklist_binder():current(-1){};
     ~checklist_binder();
     void add_checklist(checklist *c);
-    bool select_checklist(unsigned int index);
+    bool select_checklist(unsigned int index, bool force = false);
     bool prev_checklist();
     bool next_checklist();
     bool item_checked(int item);
-    bool do_processing();
+    bool do_processing(bool visible);
     bool get_checklist_names(int *size, constname_t *names[]);
     bool free_checklist_names(int size, constname_t *names[]);
   private:
@@ -103,9 +106,10 @@ class dataref_dsc{
   dataref_dsc(dataref_name *dr, number *v1, number *v2, bool plain_in = true);
   ~dataref_dsc(){delete data_ref;};
   bool registerDsc();
+  void reset_trig(){state = NONE;};
   bool trigered();
  private:
-   bool checkTrig(float val);
+  bool checkTrig(float val);
   dataref_name *data_ref;
   number *val1;
   number *val2;
@@ -128,12 +132,14 @@ class item_label{
 
 class show_item: public checklist_item{
  public:
-  show_item(dataref_dsc *d):dataref(d){};
+  show_item(dataref_dsc *d);
   virtual ~show_item(){delete dataref;};
   virtual void print(std::ostream &output)const;
   virtual bool getDesc(checklist_item_desc_t &desc);
   virtual bool activate(){return false;};
   virtual bool process(){return false;};
+  virtual bool show(bool &val);
+  virtual void reset();
  private:
   dataref_dsc *dataref;
 };

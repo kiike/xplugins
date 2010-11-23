@@ -64,7 +64,7 @@ bool item_checked(int item);
 //  check values of datarefs and act accordingly...
 //
 //  Returns true if no problems were encountered.
-bool do_processing();
+bool do_processing(bool visible);
 
 //Returns/disposes of list of all checklist names
 //
@@ -95,7 +95,8 @@ bool free_checklist_names(int size, constname_t *names[]);
 //
 //  Return true if no problems were encountered, false otherwise. 
 bool create_checklist(unsigned int size, const char *title, 
-		      checklist_item_desc_t items[], int width, int index);
+                      checklist_item_desc_t items[], int width,
+                      int index, int force_show);
 
 
 //Inform frontend to check an item (to be used in copilot mode)

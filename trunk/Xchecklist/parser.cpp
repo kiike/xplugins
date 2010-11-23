@@ -438,13 +438,13 @@ void checklist_binder::add_checklist(checklist *c)
   checklists.push_back(c);
 }
 
-bool checklist_binder::select_checklist(unsigned int index)
+bool checklist_binder::select_checklist(unsigned int index, bool force)
 {
   //Unsigned must be >= 0...
   if(index >= checklists.size()) return false;
   current = index;
   
-  return checklists[current]->activate(current);
+  return checklists[current]->activate(current, force);
 }
 
 bool checklist_binder::prev_checklist()
@@ -462,9 +462,62 @@ bool checklist_binder::item_checked(int item)
   return checklists[current]->item_checked(item);
 }
 
-bool checklist_binder::do_processing()
+show_item::show_item(dataref_dsc *d):dataref(d)
 {
-  return checklists[current]->process_datarefs();
+  if(dataref != NULL){
+    dataref->registerDsc();
+  }
+}
+
+bool show_item::show(bool &val)
+{
+  if(dataref != NULL){
+    val = dataref->trigered();
+    return true;
+  }
+  return false;
+}
+
+void show_item::reset()
+{
+  if(dataref != NULL){
+    dataref->reset_trig();
+  }
+}
+
+bool checklist::triggered()
+{
+  bool res = true;
+  bool found_trig = false;
+  
+  for(unsigned int i = 0; i < items.size(); ++i){
+    found_trig |= items[i]->show(res);
+  }
+  
+  if(found_trig){
+    if(res){
+      for(unsigned int i = 0; i < items.size(); ++i){
+        items[i]->reset();
+      }
+    }
+    return res;
+  }else{
+    return false;
+  }
+}
+
+bool checklist_binder::do_processing(bool visible)
+{
+  if(visible){
+    return checklists[current]->process_datarefs();
+  }else{
+    for(unsigned int i = 0; i < checklists.size(); ++i){
+      if(checklists[i]->triggered()){
+	select_checklist(i, true);
+      }
+    }
+    return true;
+  }
 }
 
 bool checklist::process_datarefs()
@@ -522,7 +575,7 @@ bool checklist::activate_next_item(bool init)
   return false;
 }
 
-bool checklist::activate(int index)
+bool checklist::activate(int index, bool force)
 {
   checklist_item_desc_t* desc = NULL;
   desc = new checklist_item_desc_t[items.size()];
@@ -536,7 +589,7 @@ bool checklist::activate(int index)
     }
   }
   
-  bool res = create_checklist(j, displaytext.c_str(), desc, width, index);
+  bool res = create_checklist(j, displaytext.c_str(), desc, width, index, force);
   delete [] desc;
   activate_next_item(true);
   return res;
@@ -599,7 +652,6 @@ bool chk_item::getDesc(checklist_item_desc_t &desc)
     desc.copilot_controlled = false;
   }
   return label->getDesc(desc);
-  
 }
 
 bool show_item::getDesc(checklist_item_desc_t &desc)

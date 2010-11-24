@@ -80,18 +80,18 @@ int MyCheckItemCommandCallback(
 
 FILE *my_stream;
 
-XPWidgetID	linuxCheckListWidget = NULL;
+XPWidgetID	xCheckListWidget = NULL;
 
 XPWidgetID	setupWidget = NULL;
 
-XPWidgetID linuxCheckListCopilotInfoWidget;
+XPWidgetID xCheckListCopilotInfoWidget;
 
-XPWidgetID      linuxChecklistPreviousButton = NULL;
-XPWidgetID      linuxChecklistNextButton = NULL;
-XPWidgetID	linuxCheckListCopilotWidget[50] = {NULL};
-XPWidgetID	linuxCheckListCheckWidget[50] = {NULL};
-XPWidgetID	linuxCheckListTextWidget[50] = {NULL};
-XPWidgetID	linuxCheckListTextAWidget[50] = {NULL};
+XPWidgetID      xChecklistPreviousButton = NULL;
+XPWidgetID      xChecklistNextButton = NULL;
+XPWidgetID	xCheckListCopilotWidget[50] = {NULL};
+XPWidgetID	xCheckListCheckWidget[50] = {NULL};
+XPWidgetID	xCheckListTextWidget[50] = {NULL};
+XPWidgetID	xCheckListTextAWidget[50] = {NULL};
 
 XPWidgetID	setupCheckWidget[10] = {NULL};
 XPWidgetID	setupTextWidget[10] = {NULL};
@@ -111,11 +111,11 @@ XPLMCommandRef cmdnextchecklist;
 
 int checklists_count = -1;
 
-void linuxCheckListMenuHandler(void *, void *);
+void xCheckListMenuHandler(void *, void *);
 
 static void CreateSetupWidget(int xx1, int yy1, int ww, int hh);
-static int linuxCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2);
-static int linuxSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2);
+static int xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2);
+static int xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2);
 static float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void *ref);
 static bool init_checklists();
 static bool init_setup();
@@ -150,7 +150,7 @@ PLUGIN_API int XPluginStart(
                     "Xchecklist",
                     XPLMFindPluginsMenu(),
                     PluginSubMenuItem,
-                    linuxCheckListMenuHandler,
+                    xCheckListMenuHandler,
                     (void *)0);
 
         XPLMAppendMenuItem(PluginMenu, "Open CheckList", (void *) "checklist", 1);
@@ -166,7 +166,7 @@ PLUGIN_API int XPluginStart(
                     "CheckLists",
                     PluginMenu,
                     ChecklistsSubMenuItem,
-                    linuxCheckListMenuHandler,
+                    xCheckListMenuHandler,
                     (void *)1);
 
         XPLMAppendMenuItem(checklistsMenu, "CheckList1", (void *) 0, 1);
@@ -201,7 +201,7 @@ PLUGIN_API void	XPluginStop(void)
 {
 	if (gMenuItem == 1)
 	{
-                XPDestroyWidget(linuxCheckListWidget, 1);
+                XPDestroyWidget(xCheckListWidget, 1);
 		gMenuItem = 0;
 	}
 
@@ -229,10 +229,10 @@ bool do_cleanup()
 {
   XPLMClearAllMenuItems(checklistsMenu);
   checklists_count = -1;
-  if(linuxCheckListWidget != NULL){
-    XPHideWidget(linuxCheckListWidget);
-    XPDestroyWidget(linuxCheckListWidget, 1);
-    linuxCheckListWidget = NULL;
+  if(xCheckListWidget != NULL){
+    XPHideWidget(xCheckListWidget);
+    XPDestroyWidget(xCheckListWidget, 1);
+    xCheckListWidget = NULL;
   }
   return true;
 }
@@ -291,7 +291,7 @@ bool init_setup()
     char * last_slash = strrchr(myPrefsPath, '/');
     *(++last_slash) = '\0';
 
-    //Add linuxchecklist.prf to preferences path
+    //Add xchecklist.prf to preferences path
     size_t size = strlen(myPrefsPath) + strlen("Xchecklist.prf") + 1; //strlen doesn't count terminating null byte!
     char *cat = (char *)malloc(size); //allocate memory
     snprintf(cat, size, "%s%s", myPrefsPath, "Xchecklist.prf");
@@ -342,12 +342,12 @@ float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void 
   (void) ref;
 
   if(state[2])
-    do_processing(XPIsWidgetVisible(linuxCheckListWidget));
+    do_processing(XPIsWidgetVisible(xCheckListWidget));
   
   return 0.1f;
 }
 
-void linuxCheckListMenuHandler(void * inMenuRef, void * inItemRef)
+void xCheckListMenuHandler(void * inMenuRef, void * inItemRef)
 {
   (void) inMenuRef;
 unsigned int pageSize = 0;
@@ -356,11 +356,11 @@ checklist_item_desc_t pageItems[50];
 
   if((int)inMenuRef == 0){
     if (!strcmp((char *) inItemRef, "checklist")){
-      if (linuxCheckListWidget == NULL){
+      if (xCheckListWidget == NULL){
         create_checklist(pageSize, pageTitle, pageItems, 120, 0, 0);
       }else{
-        if(!XPIsWidgetVisible(linuxCheckListWidget))
-          XPShowWidget(linuxCheckListWidget);
+        if(!XPIsWidgetVisible(xCheckListWidget))
+          XPShowWidget(xCheckListWidget);
       }
     }
     if (!strcmp((char *) inItemRef, "setup")){
@@ -435,14 +435,14 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
 
 
         // Register our widget handler
-        XPAddWidgetCallback(setupWidget, linuxSetupHandler);
+        XPAddWidgetCallback(setupWidget, xSetupHandler);
 
 
 }
 
 
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
-int	linuxSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2)
+int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2)
 {
   (void) inParam1;
   (void) inParam2;
@@ -477,27 +477,27 @@ int	linuxSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  in
 
                 if(state[0]){
 
-                  XPSetWidgetProperty(linuxCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
+                  XPSetWidgetProperty(xCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
                   
 		  for(int iii = 0; iii < 16; ++iii){
-                    XPSetWidgetProperty(linuxCheckListCopilotWidget[iii], xpProperty_CaptionLit, 1);
-                    XPSetWidgetProperty(linuxCheckListTextWidget[iii], xpProperty_CaptionLit, 1);
-                    XPSetWidgetProperty(linuxCheckListTextAWidget[iii], xpProperty_CaptionLit, 1);
+                    XPSetWidgetProperty(xCheckListCopilotWidget[iii], xpProperty_CaptionLit, 1);
+                    XPSetWidgetProperty(xCheckListTextWidget[iii], xpProperty_CaptionLit, 1);
+                    XPSetWidgetProperty(xCheckListTextAWidget[iii], xpProperty_CaptionLit, 1);
 		  }
 
-                  XPSetWidgetProperty(linuxCheckListCopilotInfoWidget, xpProperty_CaptionLit, 1);
+                  XPSetWidgetProperty(xCheckListCopilotInfoWidget, xpProperty_CaptionLit, 1);
 
 
 	        }else{
-                  XPSetWidgetProperty(linuxCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_MainWindow);
+                  XPSetWidgetProperty(xCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_MainWindow);
 
 		  for(int iii = 0; iii < 16; ++iii){
-                    XPSetWidgetProperty(linuxCheckListCopilotWidget[iii], xpProperty_CaptionLit, 0);
-                    XPSetWidgetProperty(linuxCheckListTextWidget[iii], xpProperty_CaptionLit, 0);
-                    XPSetWidgetProperty(linuxCheckListTextAWidget[iii], xpProperty_CaptionLit, 0);
+                    XPSetWidgetProperty(xCheckListCopilotWidget[iii], xpProperty_CaptionLit, 0);
+                    XPSetWidgetProperty(xCheckListTextWidget[iii], xpProperty_CaptionLit, 0);
+                    XPSetWidgetProperty(xCheckListTextAWidget[iii], xpProperty_CaptionLit, 0);
 		  }
 
-                  XPSetWidgetProperty(linuxCheckListCopilotInfoWidget, xpProperty_CaptionLit, 0);
+                  XPSetWidgetProperty(xCheckListCopilotInfoWidget, xpProperty_CaptionLit, 0);
 
 		}
         }
@@ -516,7 +516,7 @@ int	linuxSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  in
                         char *myPrefsPath = strdup(prefsPath);
                         char * last_slash = strrchr(myPrefsPath, '/');
                         *(++last_slash) = '\0';
-                        //Add linuxchecklist.prf to preferences path
+                        //Add xchecklist.prf to preferences path
                         size_t size = strlen(myPrefsPath) + strlen("Xchecklist.prf") + 1; //strlen doesn't count terminating null byte!
                         char *cat = (char *)malloc(size); //allocate memory
                         snprintf(cat, size, "%s%s", myPrefsPath, "Xchecklist.prf");
@@ -547,15 +547,15 @@ int	linuxSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  in
 }
 
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
-int	linuxCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2)
+int	xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2)
 {
   (void) inParam2;
         if (inMessage == xpMessage_CloseButtonPushed)
         {
 
-              if (inWidget == linuxCheckListWidget)
+              if (inWidget == xCheckListWidget)
               {
-                        XPHideWidget(linuxCheckListWidget);
+                        XPHideWidget(xCheckListWidget);
                         return 1;
                }
         }
@@ -564,13 +564,13 @@ int	linuxCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long
         if (inMessage == xpMsg_PushButtonPressed)
         {
 	  printf("Button pushed...\n");
-                if (inParam1 == (long)linuxChecklistPreviousButton)
+                if (inParam1 == (long)xChecklistPreviousButton)
                 {
                         prev_checklist();
                         return 1;
                 }
 
-                if (inParam1 == (long)linuxChecklistNextButton)
+                if (inParam1 == (long)xChecklistNextButton)
                 {
                         next_checklist();
                         return 1;
@@ -579,12 +579,12 @@ int	linuxCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long
         if(inMessage == xpMsg_ButtonStateChanged)
 	{
                 for(int i = 0; i < max_items; ++i){
-		  if(inParam1 == (long)linuxCheckListCheckWidget[i]){
+                  if(inParam1 == (long)xCheckListCheckWidget[i]){
 		    if(i == checkable){
 		      item_checked(i);
 		      return 1;
 		    }else{
-                      XPSetWidgetProperty(linuxCheckListCheckWidget[i], 
+                      XPSetWidgetProperty(xCheckListCheckWidget[i],
 					  xpProperty_ButtonState, (i < checkable) ? 1 : 0);
 		    }
 		  }
@@ -605,16 +605,16 @@ bool create_checklist(unsigned int size, const char *title,
     create_checklists_menu();
   }
   checkable = 0;
-                    if (linuxCheckListWidget != NULL) {
+                    if (xCheckListWidget != NULL) {
 
                         //get current window dimensions
-                        XPGetWidgetGeometry(linuxCheckListWidget, &outLeft, &outTop, &outRight, &outBottom);
+                        XPGetWidgetGeometry(xCheckListWidget, &outLeft, &outTop, &outRight, &outBottom);
                         x = outLeft;
                         y = outTop;
                         x2 = outRight;
                         y2 = outBottom;
 
-                        XPDestroyWidget(linuxCheckListWidget, 1);
+                        XPDestroyWidget(xCheckListWidget, 1);
 
                     }
   float maxw_1 = 0;
@@ -643,7 +643,7 @@ bool create_checklist(unsigned int size, const char *title,
     
     // Create the Main Widget window.
 
-    linuxCheckListWidget = XPCreateWidget(x, y, x2, y2,
+    xCheckListWidget = XPCreateWidget(x, y, x2, y2,
                                     state[1],	// Visible
                                     title,	// desc
                                     1,		// root
@@ -652,11 +652,11 @@ bool create_checklist(unsigned int size, const char *title,
 
 
 // Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
-    XPSetWidgetProperty(linuxCheckListWidget, xpProperty_MainWindowHasCloseBoxes, 1);
+    XPSetWidgetProperty(xCheckListWidget, xpProperty_MainWindowHasCloseBoxes, 1);
 
     printf("Button # %d has value %s \n", Item, (state[Item])?"true":"false");
     if (state[0] == true) {
-        XPSetWidgetProperty(linuxCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
+        XPSetWidgetProperty(xCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
 
     }
     else {
@@ -673,57 +673,57 @@ bool create_checklist(unsigned int size, const char *title,
 
             // Create a copilot text widget
             cop = !(flip);
-            linuxCheckListCopilotWidget[i] = XPCreateWidget(x+5, y-yOffset, x+60+200, y-yOffset-20,
+            xCheckListCopilotWidget[i] = XPCreateWidget(x+5, y-yOffset, x+60+200, y-yOffset-20,
             items[i].copilot_controlled,	// Visible
             "+",// desc
             0,		// root
-            linuxCheckListWidget,
+            xCheckListWidget,
             xpWidgetClass_Caption);
             if (state[0] == true) {
 
-             XPSetWidgetProperty(linuxCheckListCopilotWidget[i], xpProperty_CaptionLit, 1);
+             XPSetWidgetProperty(xCheckListCopilotWidget[i], xpProperty_CaptionLit, 1);
 
              }
 
 
              // Create a check box for a checklist item widget
 
-             linuxCheckListCheckWidget[i] = XPCreateWidget(x+25, y-yOffset, x+15+20, y-yOffset-20,
+             xCheckListCheckWidget[i] = XPCreateWidget(x+25, y-yOffset, x+15+20, y-yOffset-20,
              !(items[i].item_void),	// Visible
              "",// desc
              0,		// root
-             linuxCheckListWidget,
+             xCheckListWidget,
              xpWidgetClass_Button);
 
-             XPSetWidgetProperty(linuxCheckListCheckWidget[i], xpProperty_ButtonType, xpRadioButton);
-             XPSetWidgetProperty(linuxCheckListCheckWidget[i], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
-             XPSetWidgetProperty(linuxCheckListCheckWidget[i], xpProperty_ButtonState, 0);
+             XPSetWidgetProperty(xCheckListCheckWidget[i], xpProperty_ButtonType, xpRadioButton);
+             XPSetWidgetProperty(xCheckListCheckWidget[i], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
+             XPSetWidgetProperty(xCheckListCheckWidget[i], xpProperty_ButtonState, 0);
 
             // Create the description section for checklist item widget
-            linuxCheckListTextWidget[i] = XPCreateWidget(x+40, y-yOffset, x+maxw_1+20, y-yOffset-20,
+            xCheckListTextWidget[i] = XPCreateWidget(x+40, y-yOffset, x+maxw_1+20, y-yOffset-20,
             1,	// Visible
             items[i].text,// desc
             0,		// root
-            linuxCheckListWidget,
+            xCheckListWidget,
             xpWidgetClass_Caption);
 
             if (state[0] == true) {
 
-               XPSetWidgetProperty(linuxCheckListTextWidget[i], xpProperty_CaptionLit, 1);
+               XPSetWidgetProperty(xCheckListTextWidget[i], xpProperty_CaptionLit, 1);
 
              }
 
              // Create the action for a checklist item widget
-             linuxCheckListTextAWidget[i] = XPCreateWidget(x+maxw_1+40, y-yOffset, x+maxw_1+maxw_2+40, y-yOffset-20,
+             xCheckListTextAWidget[i] = XPCreateWidget(x+maxw_1+40, y-yOffset, x+maxw_1+maxw_2+40, y-yOffset-20,
              1,	// Visible
              items[i].suffix,// desc
              0,		// root
-             linuxCheckListWidget,
+             xCheckListWidget,
              xpWidgetClass_Caption);
 
              if (state[0] == true) {
 
-                XPSetWidgetProperty(linuxCheckListTextAWidget[i], xpProperty_CaptionLit, 1);
+                XPSetWidgetProperty(xCheckListTextAWidget[i], xpProperty_CaptionLit, 1);
 
               }
      }
@@ -732,43 +732,43 @@ bool create_checklist(unsigned int size, const char *title,
      // Create a checklist item sction description text widget
      yOffset = (5+18+(15*20));
 
-     linuxCheckListCopilotInfoWidget = XPCreateWidget(x+5, y-yOffset, x+60+200, y-yOffset-20,
+     xCheckListCopilotInfoWidget = XPCreateWidget(x+5, y-yOffset, x+60+200, y-yOffset-20,
      1,	// Visible
      "+ = Automaticly Checked Items (Copilot)",// desc
      0,		// root
-     linuxCheckListWidget,
+     xCheckListWidget,
      xpWidgetClass_Caption);
 
      if (state[0] == true) {
 
-      XPSetWidgetProperty(linuxCheckListCopilotInfoWidget, xpProperty_CaptionLit, 1);
+      XPSetWidgetProperty(xCheckListCopilotInfoWidget, xpProperty_CaptionLit, 1);
 
       }
 
      int bw = w / 2 - 10;
-     linuxChecklistPreviousButton = XPCreateWidget(WindowCentre-bw, y2+40, WindowCentre-5, y2+10,
-                                     1, "Previous", 0, linuxCheckListWidget,
+     xChecklistPreviousButton = XPCreateWidget(WindowCentre-bw, y2+40, WindowCentre-5, y2+10,
+                                     1, "Previous", 0, xCheckListWidget,
                                      xpWidgetClass_Button);
 
-     XPSetWidgetProperty(linuxChecklistPreviousButton, xpProperty_ButtonType, xpPushButton);
-     XPSetWidgetProperty(linuxChecklistPreviousButton, xpProperty_Enabled, (index == 0) ? 0 : 1);
+     XPSetWidgetProperty(xChecklistPreviousButton, xpProperty_ButtonType, xpPushButton);
+     XPSetWidgetProperty(xChecklistPreviousButton, xpProperty_Enabled, (index == 0) ? 0 : 1);
 
-    linuxChecklistNextButton = XPCreateWidget(WindowCentre+5, y2+40, WindowCentre+bw, y2+10,
-                                     1, "Next", 0, linuxCheckListWidget,
+    xChecklistNextButton = XPCreateWidget(WindowCentre+5, y2+40, WindowCentre+bw, y2+10,
+                                     1, "Next", 0, xCheckListWidget,
                                      xpWidgetClass_Button);
 
-     XPSetWidgetProperty(linuxChecklistNextButton, xpProperty_ButtonType, xpPushButton);
-     XPSetWidgetProperty(linuxChecklistNextButton, xpProperty_Enabled, (index < (checklists_count-1)) ? 1 : 0);
+     XPSetWidgetProperty(xChecklistNextButton, xpProperty_ButtonType, xpPushButton);
+     XPSetWidgetProperty(xChecklistNextButton, xpProperty_Enabled, (index < (checklists_count-1)) ? 1 : 0);
 printf("Checklist index %d (of %d)\n", index, checklists_count);
      // Register our widget handler
-     XPAddWidgetCallback(linuxCheckListWidget, linuxCheckListHandler);
+     XPAddWidgetCallback(xCheckListWidget, xCheckListHandler);
 
-     if(!XPIsWidgetVisible(linuxCheckListWidget)){
-       XPShowWidget(linuxCheckListWidget);
+     if(!XPIsWidgetVisible(xCheckListWidget)){
+       XPShowWidget(xCheckListWidget);
      }
 
      if((!force_show) && (state[1] == false)){
-       XPHideWidget(linuxCheckListWidget);
+       XPHideWidget(xCheckListWidget);
      }
   return true;
 }
@@ -777,7 +777,7 @@ bool check_item(int item)
 {
   printf("Checking item %d\n", item);
   if(item >= 0){
-    XPSetWidgetProperty(linuxCheckListCheckWidget[item], xpProperty_ButtonState, 1);
+    XPSetWidgetProperty(xCheckListCheckWidget[item], xpProperty_ButtonState, 1);
     item_checked(item);
     return true;
   }

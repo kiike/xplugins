@@ -389,11 +389,11 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
 
 // Create the Main Widget window.
         setupWidget = XPCreateWidget(xx, yy, xx2, yy2,
-                                        1,		  // Visible
-                                        "Checklist Setup",  // desc
-                                        1,			  // root
-                                        NULL,			  // no container
-                                        xpWidgetClass_MainWindow);
+                      1,		  // Visible
+                      "Checklist Setup",  // desc
+                      1,			  // root
+                      NULL,			  // no container
+                      xpWidgetClass_MainWindow);
 
 
 // Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
@@ -409,8 +409,8 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
                        1,	// Visible
                        "",      // desc
                        0,	// root
-        setupWidget,
-        xpWidgetClass_Button);
+                       setupWidget,
+                       xpWidgetClass_Button);
 
         XPSetWidgetProperty(setupCheckWidget[l], xpProperty_ButtonType, xpRadioButton);
         XPSetWidgetProperty(setupCheckWidget[l], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
@@ -428,8 +428,11 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
         yOffset = (5+18+(7*25));
 
         setupSaveSettingsButton = XPCreateWidget(xx+10, yy-yOffset, xx+5+200, yy-yOffset-20,
-                                        1, "Save Settings", 0, setupWidget,
-                                        xpWidgetClass_Button);
+                                  1,
+                                  "Save Settings",
+                                  0,
+                                  setupWidget,
+                                  xpWidgetClass_Button);
 
         XPSetWidgetProperty(setupSaveSettingsButton, xpProperty_ButtonType, xpPushButton);
 
@@ -644,11 +647,11 @@ bool create_checklist(unsigned int size, const char *title,
     // Create the Main Widget window.
 
     xCheckListWidget = XPCreateWidget(x, y, x2, y2,
-                                    state[1],	// Visible
-                                    title,	// desc
-                                    1,		// root
-                                    NULL,	// no container
-                                    xpWidgetClass_MainWindow);
+                       state[1],	// Visible
+                       title,	// desc
+                       1,		// root
+                       NULL,	// no container
+                       xpWidgetClass_MainWindow);
 
 
 // Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
@@ -674,11 +677,12 @@ bool create_checklist(unsigned int size, const char *title,
             // Create a copilot text widget
             cop = !(flip);
             xCheckListCopilotWidget[i] = XPCreateWidget(x+5, y-yOffset, x+60+200, y-yOffset-20,
-            items[i].copilot_controlled,	// Visible
-            "+",// desc
-            0,		// root
-            xCheckListWidget,
-            xpWidgetClass_Caption);
+                                         items[i].copilot_controlled,	// Visible
+                                         "+",// desc
+                                         0,		// root
+                                         xCheckListWidget,
+                                         xpWidgetClass_Caption);
+
             if (state[0] == true) {
 
              XPSetWidgetProperty(xCheckListCopilotWidget[i], xpProperty_CaptionLit, 1);
@@ -689,11 +693,11 @@ bool create_checklist(unsigned int size, const char *title,
              // Create a check box for a checklist item widget
 
              xCheckListCheckWidget[i] = XPCreateWidget(x+25, y-yOffset, x+15+20, y-yOffset-20,
-             !(items[i].item_void),	// Visible
-             "",// desc
-             0,		// root
-             xCheckListWidget,
-             xpWidgetClass_Button);
+                                        !(items[i].item_void),	// Visible
+                                        "",// desc
+                                        0,		// root
+                                        xCheckListWidget,
+                                        xpWidgetClass_Button);
 
              XPSetWidgetProperty(xCheckListCheckWidget[i], xpProperty_ButtonType, xpRadioButton);
              XPSetWidgetProperty(xCheckListCheckWidget[i], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
@@ -701,11 +705,11 @@ bool create_checklist(unsigned int size, const char *title,
 
             // Create the description section for checklist item widget
             xCheckListTextWidget[i] = XPCreateWidget(x+40, y-yOffset, x+maxw_1+20, y-yOffset-20,
-            1,	// Visible
-            items[i].text,// desc
-            0,		// root
-            xCheckListWidget,
-            xpWidgetClass_Caption);
+                                      1,	// Visible
+                                      items[i].text,// desc
+                                      0,		// root
+                                      xCheckListWidget,
+                                      xpWidgetClass_Caption);
 
             if (state[0] == true) {
 
@@ -715,11 +719,11 @@ bool create_checklist(unsigned int size, const char *title,
 
              // Create the action for a checklist item widget
              xCheckListTextAWidget[i] = XPCreateWidget(x+maxw_1+40, y-yOffset, x+maxw_1+maxw_2+40, y-yOffset-20,
-             1,	// Visible
-             items[i].suffix,// desc
-             0,		// root
-             xCheckListWidget,
-             xpWidgetClass_Caption);
+                                        1,	// Visible
+                                        items[i].suffix,// desc
+                                        0,		// root
+                                        xCheckListWidget,
+                                        xpWidgetClass_Caption);
 
              if (state[0] == true) {
 
@@ -733,11 +737,11 @@ bool create_checklist(unsigned int size, const char *title,
      yOffset = (5+18+(15*20));
 
      xCheckListCopilotInfoWidget = XPCreateWidget(x+5, y-yOffset, x+60+200, y-yOffset-20,
-     1,	// Visible
-     "+ = Automaticly Checked Items (Copilot)",// desc
-     0,		// root
-     xCheckListWidget,
-     xpWidgetClass_Caption);
+                                   1,	// Visible
+                                   "+ = Automaticly Checked Items (Copilot)",// desc
+                                   0,		// root
+                                   xCheckListWidget,
+                                   xpWidgetClass_Caption);
 
      if (state[0] == true) {
 
@@ -747,8 +751,11 @@ bool create_checklist(unsigned int size, const char *title,
 
      int bw = w / 2 - 10;
      xChecklistPreviousButton = XPCreateWidget(WindowCentre-bw, y2+40, WindowCentre-5, y2+10,
-                                     1, "Previous", 0, xCheckListWidget,
-                                     xpWidgetClass_Button);
+                                1,
+                                "Previous",
+                                0,
+                                xCheckListWidget,
+                                xpWidgetClass_Button);
 
      XPSetWidgetProperty(xChecklistPreviousButton, xpProperty_ButtonType, xpPushButton);
      XPSetWidgetProperty(xChecklistPreviousButton, xpProperty_Enabled, (index == 0) ? 0 : 1);

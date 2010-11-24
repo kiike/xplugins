@@ -123,7 +123,7 @@ static bool do_cleanup();
 
 
 const char setupText[10][200] = {"Translucent Window", "Show Checklist if Checklist exist", \
-                                 "Voice Prompt", "Turn Copilot On"};
+                                 "Turn Copilot On", "Voice Prompt", "Auto Hide"};
 
 char *test;
 
@@ -383,7 +383,7 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
         int yy2 = yy - hh;
 
         int yOffset;
-        int lines = 4;
+        int lines = 5;
 
 
 // Create the Main Widget window.

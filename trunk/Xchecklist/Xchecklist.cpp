@@ -340,8 +340,9 @@ float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void 
   (void) inElapsed2;
   (void) cntr;
   (void) ref;
-  
-  do_processing(XPIsWidgetVisible(linuxCheckListWidget));
+
+  if(state[2])
+    do_processing(XPIsWidgetVisible(linuxCheckListWidget));
   
   return 0.1f;
 }

@@ -2,15 +2,18 @@
 #define SPEECH__H
 
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 extern "C" {
+#else
+#include <stdbool.h>
 #endif
 
 bool init_speech();
 void say(const char *text);
+bool speaking();
 void close_speech();
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 }
 #endif
 #endif

@@ -1,5 +1,5 @@
 #include <espeak/speak_lib.h>
-
+#include "speech.h"
 #include <AL/al.h>
 #include <AL/alc.h>
 
@@ -13,57 +13,43 @@
 
 class speech_alespeak
 {
+  friend int esp_callback(short *wav, int numsamples, espeak_EVENT *events);
  public:
   speech_alespeak();
   ~speech_alespeak();
-  static void say(std::string text);
+  void say(std::string text);
+  bool speaking();
  private:
   int init_speech();
   int close_speech();
   int init_al();
   int close_al();
   
-  static ALenum check_error(bool verbose, const char *id);
+  ALenum check_error(bool verbose, const char *id);
   
-  static void unqueue_buffers();
-  static void play_if_needed();
-  static ALuint find_buffer();
-  static bool queue_buffer(short *wav, int numsamples);
-  static int esp_callback(short *wav, int numsamples, espeak_EVENT *events);
+  void unqueue_buffers();
+  void play_if_needed();
+  ALuint find_buffer();
+  bool queue_buffer(short *wav, int numsamples);
+  ALCdevice *dev;
+  ALCcontext *ctx;
+  ALuint source;
+  ALuint buffers[NUM_BUFFERS];
 
-  static ALCdevice *dev;
-  static ALCcontext *ctx;
-  static ALCcontext *old_ctx;
-  static ALuint source;
-  static ALuint buffers[NUM_BUFFERS];
-
-  static int used_buffers;
-
-  static ALenum format;
-  static ALenum code;
-  static int sample_rate;
-  static unsigned int id;
-
-  static bool verbose_flag;
-  static bool report_success;
-  static bool speaking;
+  int used_buffers;
+  
+  ALenum format;
+  ALenum code;
+  int sample_rate;
+  unsigned int id;
+  
+  bool verbose_flag;
+  bool report_success;
 };
 
-ALCdevice *speech_alespeak::dev;
-ALCcontext *speech_alespeak::ctx;
-ALCcontext *speech_alespeak::old_ctx;
-ALuint speech_alespeak::source;
-ALuint speech_alespeak::buffers[NUM_BUFFERS];
+int esp_callback(short *wav, int numsamples, espeak_EVENT *events);
 
-int speech_alespeak::used_buffers;
-
-ALenum speech_alespeak::format;
-ALenum speech_alespeak::code;
-int speech_alespeak::sample_rate;
-unsigned int speech_alespeak::id;
-bool speech_alespeak::verbose_flag;
-bool speech_alespeak::report_success;
-bool speech_alespeak::speaking;
+static speech_alespeak *speech = NULL;
 
 
 int speech_alespeak::init_speech()
@@ -76,14 +62,15 @@ int speech_alespeak::init_speech()
     printf("Problem initializing espeak!");
     return -1;
   }
-  espeak_SetSynthCallback(speech_alespeak::esp_callback);
+  espeak_SetSynthCallback(esp_callback);
   espeak_SetParameter(espeakRATE, 150, 0);
-  speaking = false;
   return sample_rate;
 }
 
 int speech_alespeak::init_al()
 {
+  ALCcontext *old_ctx;
+
   old_ctx = alcGetCurrentContext();
   dev = alcOpenDevice(NULL);
   if(!dev){
@@ -157,6 +144,7 @@ ALenum speech_alespeak::check_error(bool verbose, const char *id)
 
 speech_alespeak::speech_alespeak()
 {
+  std::cout<<"Initializing speech!"<<std::endl;
   used_buffers = 0;
   format = AL_FORMAT_MONO16;
   verbose_flag = false;
@@ -173,6 +161,8 @@ speech_alespeak::speech_alespeak()
     if(verbose_flag){
       std::cerr<<"OpenAL initialized!"<<std::endl;
     }
+  }else{
+    throw;
   }
 }
 
@@ -253,6 +243,7 @@ ALuint speech_alespeak::find_buffer()
 
 bool speech_alespeak::queue_buffer(short *wav, int numsamples)
 {
+    ALCcontext *old_ctx;
     old_ctx = alcGetCurrentContext();
     alcMakeContextCurrent(ctx);
 
@@ -280,14 +271,14 @@ bool speech_alespeak::queue_buffer(short *wav, int numsamples)
 }
 
 
-int speech_alespeak::esp_callback(short *wav, int numsamples, espeak_EVENT *events)
+int esp_callback(short *wav, int numsamples, espeak_EVENT *events)
 {
   (void) wav;
-  if(verbose_flag){
+  if(speech->verbose_flag){
     printf("Got %d samples...\n", numsamples);
   }
   if(numsamples > 0){
-    queue_buffer(wav, numsamples);
+    speech->queue_buffer(wav, numsamples);
   }
   
   bool end_flag = false;
@@ -315,7 +306,6 @@ int speech_alespeak::esp_callback(short *wav, int numsamples, espeak_EVENT *even
 	break;
       case espeakEVENT_MSG_TERMINATED:
         msg = "Terminated!";
-	speaking = false;
 	break;
       case espeakEVENT_PHONEME:
         msg = "Phoneme!";
@@ -324,7 +314,7 @@ int speech_alespeak::esp_callback(short *wav, int numsamples, espeak_EVENT *even
         msg = "I DON'T KNOW...";
 	break;
     }
-    if(verbose_flag){
+    if(speech->verbose_flag){
       printf("%s\n", msg);
     }
     if(end_flag) break;
@@ -340,10 +330,20 @@ int speech_alespeak::close_speech()
   return 0;
 }
 
+bool speech_alespeak::speaking()
+{
+  ALint res;
+
+  alGetError();
+  alGetSourcei(source, AL_SOURCE_STATE, &res);
+  return res == AL_PLAYING;
+}
+
 int speech_alespeak::close_al()
 {
   int cntr = 100;
   ALint res;
+  ALCcontext *old_ctx;
 
   old_ctx = alcGetCurrentContext();
   alcMakeContextCurrent(ctx);
@@ -383,7 +383,6 @@ int speech_alespeak::close_al()
 
 void speech_alespeak::say(std::string text)
 {
-  static speech_alespeak speech_inst;
   text +=  "<break>";
   std::cout<<"Saying \""<<text.c_str()<<"\""<<std::endl;
   // Size must be + 1, since they count characters, not the trailing NULL.
@@ -391,7 +390,6 @@ void speech_alespeak::say(std::string text)
     espeakCHARS_8BIT | espeakSSML, &id, NULL);
 }
 
-speech_alespeak *speech = NULL;
 
 void say(const char *text)
 {
@@ -402,9 +400,18 @@ void say(const char *text)
 
 bool init_speech()
 {
+  printf("init_speech();\n");
   if(speech == NULL){
     speech = new speech_alespeak();
     return true;
+  }
+  return false;
+}
+
+bool speaking()
+{
+  if(speech != NULL){
+    return speech->speaking();
   }
   return false;
 }

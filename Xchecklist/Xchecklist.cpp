@@ -134,20 +134,20 @@ PLUGIN_API int XPluginStart(
 {
         int		PluginSubMenuItem;
 	int             ChecklistsSubMenuItem;
-        strcpy(outName, "LinuxCheckList");
-        strcpy(outSig, "Michal_Bill.Example.LinuxCheckList");
+        strcpy(outName, "Xchecklist");
+        strcpy(outSig, "Michal_Bill.Example.Xchecklist");
         strcpy(outDesc, "A plugin to display checklists in a widget window.");
 
 
 // Create our menu
         PluginSubMenuItem = XPLMAppendMenuItem(
                     XPLMFindPluginsMenu(),
-                    "LinuxCheckList",
+                    "Xchecklist",
                     NULL,
                     1);
 
         PluginMenu = XPLMCreateMenu(
-                    "LinuxCheckList",
+                    "Xchecklist",
                     XPLMFindPluginsMenu(),
                     PluginSubMenuItem,
                     linuxCheckListMenuHandler,
@@ -292,9 +292,9 @@ bool init_setup()
     *(++last_slash) = '\0';
 
     //Add linuxchecklist.prf to preferences path
-    size_t size = strlen(myPrefsPath) + strlen("linuxchecklist.prf") + 1; //strlen doesn't count terminating null byte!
+    size_t size = strlen(myPrefsPath) + strlen("Xchecklist.prf") + 1; //strlen doesn't count terminating null byte!
     char *cat = (char *)malloc(size); //allocate memory
-    snprintf(cat, size, "%s%s", myPrefsPath, "linuxchecklist.prf");
+    snprintf(cat, size, "%s%s", myPrefsPath, "Xchecklist.prf");
     printf("\nPrefs Path to initilize setup  %s \n\n", cat);
     my_stream = fopen (cat, "r+");
     if (my_stream!=NULL)
@@ -390,7 +390,7 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
 // Create the Main Widget window.
         setupWidget = XPCreateWidget(xx, yy, xx2, yy2,
                                         1,		  // Visible
-                                        "Linux Checklist Setup",  // desc
+                                        "Checklist Setup",  // desc
                                         1,			  // root
                                         NULL,			  // no container
                                         xpWidgetClass_MainWindow);
@@ -517,9 +517,9 @@ int	linuxSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  in
                         char * last_slash = strrchr(myPrefsPath, '/');
                         *(++last_slash) = '\0';
                         //Add linuxchecklist.prf to preferences path
-                        size_t size = strlen(myPrefsPath) + strlen("linuxchecklist.prf") + 1; //strlen doesn't count terminating null byte!
+                        size_t size = strlen(myPrefsPath) + strlen("Xchecklist.prf") + 1; //strlen doesn't count terminating null byte!
                         char *cat = (char *)malloc(size); //allocate memory
-                        snprintf(cat, size, "%s%s", myPrefsPath, "linuxchecklist.prf");
+                        snprintf(cat, size, "%s%s", myPrefsPath, "Xchecklist.prf");
                         printf("\nPrefs Path  %s \n\n", cat);
                         my_stream = fopen (cat, "w");
 

@@ -10,7 +10,7 @@ VERSION = 1.0.0
 INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Wrappers
 INCLUDEPATH += ../SDK/CHeaders/Widgets
-INCLUDEPATH += /home/bill/KernelTesting/linux-source-2.6.35/include
+
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200

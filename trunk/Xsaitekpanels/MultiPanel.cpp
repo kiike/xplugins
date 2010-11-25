@@ -51,9 +51,10 @@ static int APR_BUTTON = 10, REV_BUTTON = 9;
 static int FLAPS_UP_SWITCH = 23, FLAPS_DN_SWITCH = 22;
 static int TRIM_WHEEL_UP = 20, TRIM_WHEEL_DN = 21;
 static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
+static int res, wres;
 
 static unsigned char multibuf[3];
-static char lastmultiwbuf[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static char lastmultiwbuf[12] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 /***** Multi Panel Process ******/
@@ -133,7 +134,7 @@ if (multiseldis == 5) {
   char cdigit1 = btnleds; 
 
 /****** Load Array with Message of Digits and Button LEDS *************/ 
-  char multiwbuf[12] = { 0, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
+  char multiwbuf[12] = { 1, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
    
    
 /******* Only do a read if something new to be read ********/
@@ -148,9 +149,9 @@ if (multiseldis == 5) {
 
   multires = select(multifd+1,&multisready,NULL,NULL,&multinowait);
   if( FD_ISSET(multifd,&multisready) ) {
-      read(multifd, multibuf, sizeof(multibuf));
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+      res = read(multifd, multibuf, sizeof(multibuf));
+      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
+      wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
   }
   else {
@@ -164,8 +165,8 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
+      wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
       lastmultiseldis = multiseldis;
     }
@@ -177,8 +178,8 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
+      wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
       lastbtnleds = btnleds;
     }
@@ -190,16 +191,16 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
+      wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
       strcpy(lastmultiwbuf, multiwbuf);
     }
   }
 
   if (multinowrite == 50) {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
+      wres = write(multifd, multiwbuf, sizeof(multiwbuf));
     multinowrite = 0;
   }
   else {

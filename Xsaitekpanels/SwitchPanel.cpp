@@ -36,7 +36,8 @@ static int COWL_FLAPS = 1, PANEL_LIGHTS = 0;
 static int BEACON_LIGHTS = 15, NAV_LIGHTS = 14;
 static int STROBE_LIGHTS = 13, TAXI_LIGHTS = 12;
 static int LANDING_LIGHTS = 11;
-static int GEAR_SWITCH_UP = 21, GEAR_SWITCH_DN = 20; 
+static int GEAR_SWITCH_UP = 21, GEAR_SWITCH_DN = 20;
+static int res, wres;
 
 static unsigned char switchbuf[3];
 static char switchwbuf[2], gearled;
@@ -61,7 +62,7 @@ void process_switch_panel()
 
   switchres = select(switchfd+1,&switchsready,NULL,NULL,&switchnowait);
   if( FD_ISSET(switchfd,&switchsready) ) {
-      read(switchfd, switchbuf, sizeof(switchbuf));
+      res = read(switchfd, switchbuf, sizeof(switchbuf));
   }
   else {
   }
@@ -69,8 +70,8 @@ void process_switch_panel()
   /* if no gear do not write */
 
   if(XPLMGetDatai(GearRetract) > 0){
-    ioctl(switchfd, HIDIOCSFEATURE(sizeof(switchwbuf)), switchwbuf);
-    /*write(switchfd, switchwbuf, sizeof(switchwbuf));*/
+    //ioctl(switchfd, HIDIOCSFEATURE(sizeof(switchwbuf)), switchwbuf);
+    wres = write(switchfd, switchwbuf, sizeof(switchwbuf));
   }
   else {
   }

@@ -139,14 +139,14 @@ XPLMDataRef GearRetract = NULL, OnGround = NULL;
 /********************** Radio Panel variables ************************/
 int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
 int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
-int radiofd[4] = {-1,-1,-1,-1}, radcnt = 0;
+int radiofd[4] = {-1,-1,-1,-1}, radcnt = 0, wres;
 float interval = -1;
-static char blankradiowbuf[24]= {0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11};
+static char blankradiowbuf[24]= {1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11};
 
 
 /********************** Multi Panel variables ***********************/
 int multifd = -1;
-static char blankmultiwbuf[12] = {0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 0};
+static char blankmultiwbuf[12] = {1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 0};
 
 /****************** Switch Panel variables *******************************/
 int switchfd = -1;
@@ -522,90 +522,90 @@ PLUGIN_API void	XPluginStop(void)
 /*** if open close that radio panel ****/
  
   if (radio0fd > 0) {
-    ioctl(radio0fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio0fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio0fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio0fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio0fd);
   }
   if (radio1fd > 0) {
-    ioctl(radio1fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio1fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio1fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio1fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio1fd);
   }
   if (radio2fd > 0) {
-    ioctl(radio2fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio2fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio2fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio2fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio2fd);
   }
   if (radio3fd > 0) {
-    ioctl(radio3fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio3fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio3fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio3fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio3fd);
   }
   if (radio4fd > 0) {
-    ioctl(radio4fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio4fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio4fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio4fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio4fd);
   }
   if (radio5fd > 0) {
-    ioctl(radio5fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio5fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio5fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio5fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio5fd);
   }
   if (radio6fd > 0) {
-    ioctl(radio6fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio6fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio6fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio6fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio6fd);
   }
   if (radio7fd > 0) {
-    ioctl(radio7fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio7fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio7fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio7fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio7fd);
   }
   if (radio8fd > 0) {
-    ioctl(radio8fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio8fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio8fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio8fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio8fd);
   }
   if (radio9fd > 0) {
-    ioctl(radio9fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio9fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio9fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio9fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio9fd);
   }
   if (radio10fd > 0) {
-    ioctl(radio10fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio10fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio10fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio10fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio10fd);
    }
   if (radio11fd > 0) {
-    ioctl(radio11fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio11fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio11fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio11fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio11fd);
   }
   if (radio12fd > 0) {
-    ioctl(radio12fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio12fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio12fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio12fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio12fd);
   }
   if (radio13fd > 0) {
-    ioctl(radio13fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio13fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio13fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio13fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio13fd);
    }
   if (radio14fd > 0) {
-    ioctl(radio14fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio14fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio14fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio14fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio14fd);
   }
   if (radio15fd > 0) {
-    ioctl(radio15fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
-    /*write(radio15fd, blankradiowbuf, sizeof(blankradiowbuf));*/
+    //ioctl(radio15fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
+    wres = write(radio15fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio15fd);
   }
 
 /*** if open close that multi panel ****/
   if (multifd > 0) {
-    ioctl(multifd, HIDIOCSFEATURE(12), blankmultiwbuf);
-    /*write(multifd, blankmultiwbuf, sizeof(blankmultiwbuf));*/
+    //ioctl(multifd, HIDIOCSFEATURE(12), blankmultiwbuf);
+    wres = write(multifd, blankmultiwbuf, sizeof(blankmultiwbuf));
     close(multifd);
   }
 
@@ -613,8 +613,8 @@ PLUGIN_API void	XPluginStop(void)
   if (switchfd > 0) {
     blankswitchwbuf[0] = 0;
     blankswitchwbuf[1] = 0;
-    ioctl(switchfd, HIDIOCSFEATURE(sizeof(blankswitchwbuf)), blankswitchwbuf);
-    /*write(switchfd, blankswitchwbuf, sizeof(blankswitchwbuf));*/
+    //ioctl(switchfd, HIDIOCSFEATURE(sizeof(blankswitchwbuf)), blankswitchwbuf);
+    wres = write(switchfd, blankswitchwbuf, sizeof(blankswitchwbuf));
     close(switchfd);
   }
 }

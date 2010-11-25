@@ -89,7 +89,8 @@ static int LOWER_COARSE_UP = 17, LOWER_COARSE_DN = 16;
 static int LOWER_COM1 = 0, LOWER_COM2 = 15;
 static int LOWER_NAV1 = 14, LOWER_NAV2 = 13; 
 static int LOWER_ADF = 12, LOWER_DME = 11;
-static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8; 
+static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8;
+static int res, wres;
 
 static unsigned char radiobuf[4][3];
 static char radiowbuf[4][24];
@@ -228,7 +229,7 @@ void process_radio_panel()
   char radioddigit4 = radioddig4, radioddigit5 = radioddig5;
 
 /******************* Load Array with Message of Digits *********************/
-  radiowbuf[radnum][0] = 0; 
+  radiowbuf[radnum][0] = 1;
   radiowbuf[radnum][1] = radioadigit1, radiowbuf[radnum][2] = radioadigit2, radiowbuf[radnum][3] = radioadigit3; 
   radiowbuf[radnum][4] = radioadigit4, radiowbuf[radnum][5] = radioadigit5;
   radiowbuf[radnum][6] = radiobdigit1, radiowbuf[radnum][7] = radiobdigit2, radiowbuf[radnum][8] = radiobdigit3; 
@@ -251,9 +252,9 @@ void process_radio_panel()
 
   radiores = select(radiofd[radnum]+1,&radiosready,NULL,NULL,&radionowait);
   if( FD_ISSET(radiofd[radnum],&radiosready) ) {
-    read(radiofd[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+    res = read(radiofd[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
+    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
+    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
     radionowrite[radnum] = 1;
   }
   else {
@@ -267,8 +268,8 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
+    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
       radionowrite[radnum] = 1;
       lastupseldis[radnum] = upseldis[radnum];
     }
@@ -280,16 +281,16 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
+    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
       radionowrite[radnum] = 1;
       lastloseldis[radnum] = loseldis[radnum];
     }
   }
 
   if (radionowrite[radnum] == 50) {
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
+    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
     radionowrite[radnum] = 0;
   }
   else {

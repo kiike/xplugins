@@ -108,7 +108,6 @@ XPLMCommandRef nextchecklist = NULL;
 XPLMCommandRef cmdcheckitem;
 XPLMCommandRef cmdnextchecklist;
 
-
 int checklists_count = -1;
 
 void xCheckListMenuHandler(void *, void *);
@@ -120,7 +119,6 @@ static float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr
 static bool init_checklists();
 static bool init_setup();
 static bool do_cleanup();
-
 
 const char setupText[10][200] = {"Translucent Window", "Show Checklist if Checklist exist", \
                                  "Turn Copilot On", "Voice Prompt", "Auto Hide"};
@@ -192,7 +190,6 @@ PLUGIN_API int XPluginStart(
                     MyNextChecklistCommandCallback,
                     true,
                     NULL);
-
 
         return 1;
 }
@@ -465,7 +462,7 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inPara
         if (inMessage == xpMsg_ButtonStateChanged)
         {
                 printf("Got button state chenge message!\n");
-                for (Item=0; Item<4; Item++)
+                for (Item=0; Item<5; Item++)
                 {
 		  long tmp;
                         // If the setupCheckWidget check box is checked then set state[Item] true

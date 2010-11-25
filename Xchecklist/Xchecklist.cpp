@@ -904,7 +904,10 @@ int MyCheckItemCommandCallback(
 
 if (inPhase == xplm_CommandBegin) {
           printf ("trying to make check_item to work \n");
-          check_item(checkable);
+          if (XPIsWidgetVisible(xCheckListWidget))
+            check_item(checkable);
+          else
+            XPShowWidget(xCheckListWidget);
 }
 
 return 1;
@@ -921,7 +924,10 @@ int MyNextChecklistCommandCallback(
 
 
   if (inPhase == xplm_CommandBegin) {
-            next_checklist();
+           if (XPIsWidgetVisible(xCheckListWidget))
+             next_checklist();
+           else
+             XPShowWidget(xCheckListWidget);
   }
 
   return 1;

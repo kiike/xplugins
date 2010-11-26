@@ -23,6 +23,7 @@
 
 #include "parser.h"
 #include "interface.h"
+#include "speech.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -50,33 +51,16 @@ int loopnum = 0;
 int item;
 
 int Item;
-bool state[7];
 
 char FileName[256], AircraftPath[256];
 char prefsPath[256];
 
-char state1[10];
-char state2[10];
-char state3[10];
-char state4[10];
-char state5[10];
-char state6[10];
-char state7[10];
+enum {NEXT_CHECKLIST_COMMAND, CHECK_ITEM_COMMAND};
 
-int numb;
-
-int MyNextChecklistCommandCallback(
+int MyCommandCallback(
                                    XPLMCommandRef       inCommand,
                                    XPLMCommandPhase     inPhase,
                                    void *               inRefcon);
-
-
-int MyCheckItemCommandCallback(
-                                   XPLMCommandRef       inCommand,
-                                   XPLMCommandPhase     inPhase,
-                                   void *               inRefcon);
-
-
 
 FILE *my_stream;
 
@@ -119,9 +103,15 @@ static float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr
 static bool init_checklists();
 static bool init_setup();
 static bool do_cleanup();
+static bool set_sound(bool enable);
 
-const char setupText[10][200] = {"Translucent Window", "Show Checklist if Checklist exist", \
+const char* setupText[] = {"Translucent Window", "Show Checklist if Checklist exist", \
                                  "Turn Copilot On", "Voice Prompt", "Auto Hide"};
+
+#define SETUP_TEXT_ITEMS (sizeof(setupText) / sizeof(char*))
+
+enum {TRANSLUCENT, SHOW_CHECKLIST, COPILOT_ON, VOICE, AUTO_HIDE};
+bool state[SETUP_TEXT_ITEMS];
 
 char *test;
 
@@ -173,7 +163,8 @@ PLUGIN_API int XPluginStart(
         XPLMRegisterFlightLoopCallback(dataProcessingCallback, 0.1f, NULL);
 
         init_setup();
-	do_cleanup();
+        set_sound(state[VOICE]);
+        do_cleanup();
 	init_checklists();
 
         cmdcheckitem = XPLMCreateCommand("sim/operation/check_item","Check Item");
@@ -181,15 +172,15 @@ PLUGIN_API int XPluginStart(
 
         XPLMRegisterCommandHandler(
                     cmdcheckitem,
-                    MyCheckItemCommandCallback,
+                    MyCommandCallback,
                     true,
-                    NULL);
+                    (void *)CHECK_ITEM_COMMAND);
 
         XPLMRegisterCommandHandler(
                     cmdnextchecklist,
-                    MyNextChecklistCommandCallback,
+                    MyCommandCallback,
                     true,
-                    NULL);
+                    (void *)NEXT_CHECKLIST_COMMAND);
 
         return 1;
 }
@@ -299,24 +290,30 @@ bool init_setup()
         //ToDo read the preference file and set check boxes to match
         printf ("preference file is open for updating read and write \n\n");
         rewind (my_stream);
-        numb = fscanf (my_stream, "%s %s %s %s %s %s %s",
-                state1, state2, state3, state4, state5,
-                state6, state7);
-        
-        state[0] = get_truth_val(state1);
-        state[1] = get_truth_val(state2);
-        state[2] = get_truth_val(state3);
-        state[3] = get_truth_val(state4);
-        state[4] = get_truth_val(state5);
-        state[5] = get_truth_val(state6);
-        state[6] = get_truth_val(state7);
+        char buf[1024];
+        int numb;
+
+        for(size_t i = 0; i < SETUP_TEXT_ITEMS; ++i){
+            numb = fscanf (my_stream, "%1023s", buf);
+            if(numb > 0){
+               state[i] = get_truth_val(buf);
+            }else{
+               state[i] = true;
+            }
+        }
 
         fclose (my_stream);
-      }
+    }else{
+        //no setup to load, load defaults.
+        state[TRANSLUCENT] = true;
+        state[SHOW_CHECKLIST] = true;
+        state[COPILOT_ON] = true;
+        state[VOICE] = true;
+        state[AUTO_HIDE] = true;
+    }
 
     free(cat); //to avoid the memory leak
     cat = NULL; //if you try to use it now, you know it immediately
-
     return 1;
 
 }
@@ -338,7 +335,7 @@ float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void 
   (void) cntr;
   (void) ref;
 
-  if(state[2])
+  if(state[COPILOT_ON])
     do_processing(XPIsWidgetVisible(xCheckListWidget));
   
   return 0.1f;
@@ -381,7 +378,6 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
         int yy2 = yy - hh;
 
         int yOffset;
-        int lines = 5;
 
 
 // Create the Main Widget window.
@@ -398,7 +394,7 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
 
 // Display each line of setup.
 
-        for(int l = 0; l < lines; ++l){
+        for(size_t l = 0; l < SETUP_TEXT_ITEMS; ++l){
 
         yOffset = (5+18+(l*25));
 
@@ -440,6 +436,22 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
 
 }
 
+bool set_sound(bool enable)
+{
+    static bool prev = false;
+    if(prev != enable){
+        prev = enable;
+        if(enable){
+            return init_speech();
+        }else{
+            close_speech();
+            return true;
+        }
+    }
+    return true;
+}
+
+
 
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
 int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2)
@@ -462,7 +474,7 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inPara
         if (inMessage == xpMsg_ButtonStateChanged)
         {
                 printf("Got button state chenge message!\n");
-                for (Item=0; Item<5; Item++)
+                for (size_t Item=0; Item<SETUP_TEXT_ITEMS; Item++)
                 {
 		  long tmp;
                         // If the setupCheckWidget check box is checked then set state[Item] true
@@ -474,8 +486,9 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inPara
                         }
 
                 }
+                set_sound(state[VOICE]);
 
-                if(state[0]){
+                if(state[TRANSLUCENT]){
 
                   XPSetWidgetProperty(xCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
                   
@@ -523,14 +536,9 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inPara
                         printf("\nPrefs Path  %s \n\n", cat);
                         my_stream = fopen (cat, "w");
 
-                        fprintf (my_stream, "%s %s %s %s %s %s %s",
-                                ((state[0])?"true":"false"),
-                                ((state[1])?"true":"false"),
-                                ((state[2])?"true":"false"),
-                                ((state[3])?"true":"false"),
-                                ((state[4])?"true":"false"),
-                                ((state[5])?"true":"false"),
-                                ((state[6])?"true":"false"));
+                        for(size_t i = 0; i < SETUP_TEXT_ITEMS; ++i){
+                            fprintf(my_stream, "%s ", ((state[i])?"true":"false"));
+                        }
 
                         fclose (my_stream);
 
@@ -644,7 +652,7 @@ bool create_checklist(unsigned int size, const char *title,
     // Create the Main Widget window.
 
     xCheckListWidget = XPCreateWidget(x, y, x2, y2,
-                       state[1],	// Visible
+                       state[SHOW_CHECKLIST],	// Visible
                        title,	// desc
                        1,		// root
                        NULL,	// no container
@@ -655,13 +663,8 @@ bool create_checklist(unsigned int size, const char *title,
     XPSetWidgetProperty(xCheckListWidget, xpProperty_MainWindowHasCloseBoxes, 1);
 
     printf("Button # %d has value %s \n", Item, (state[Item])?"true":"false");
-    if (state[0] == true) {
+    if (state[TRANSLUCENT] == true) {
         XPSetWidgetProperty(xCheckListWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
-
-    }
-    else {
-
-
     }
 
 // Print each line of the checklist in widget window
@@ -680,11 +683,9 @@ bool create_checklist(unsigned int size, const char *title,
                                          xCheckListWidget,
                                          xpWidgetClass_Caption);
 
-            if (state[0] == true) {
-
-             XPSetWidgetProperty(xCheckListCopilotWidget[i], xpProperty_CaptionLit, 1);
-
-             }
+            if (state[TRANSLUCENT] == true) {
+              XPSetWidgetProperty(xCheckListCopilotWidget[i], xpProperty_CaptionLit, 1);
+            }
 
 
              // Create a check box for a checklist item widget
@@ -708,7 +709,7 @@ bool create_checklist(unsigned int size, const char *title,
                                       xCheckListWidget,
                                       xpWidgetClass_Caption);
 
-            if (state[0] == true) {
+            if (state[TRANSLUCENT] == true) {
 
                XPSetWidgetProperty(xCheckListTextWidget[i], xpProperty_CaptionLit, 1);
 
@@ -722,7 +723,7 @@ bool create_checklist(unsigned int size, const char *title,
                                         xCheckListWidget,
                                         xpWidgetClass_Caption);
 
-             if (state[0] == true) {
+             if (state[TRANSLUCENT] == true) {
 
                 XPSetWidgetProperty(xCheckListTextAWidget[i], xpProperty_CaptionLit, 1);
 
@@ -740,7 +741,7 @@ bool create_checklist(unsigned int size, const char *title,
                                    xCheckListWidget,
                                    xpWidgetClass_Caption);
 
-     if (state[0] == true) {
+     if (state[TRANSLUCENT] == true) {
 
       XPSetWidgetProperty(xCheckListCopilotInfoWidget, xpProperty_CaptionLit, 1);
 
@@ -771,7 +772,7 @@ printf("Checklist index %d (of %d)\n", index, checklists_count);
        XPShowWidget(xCheckListWidget);
      }
 
-     if((!force_show) && (state[1] == false)){
+     if((!force_show) && (state[SHOW_CHECKLIST] == false)){
        XPHideWidget(xCheckListWidget);
      }
   return true;
@@ -890,42 +891,31 @@ void get_sim_path(char *path)
 }
 
 
-int MyCheckItemCommandCallback(
-                                   XPLMCommandRef       inCommand,
-                                   XPLMCommandPhase     inPhase,
-                                   void *               inRefcon)
+int MyCommandCallback(XPLMCommandRef       inCommand,
+                      XPLMCommandPhase     inPhase,
+                      void *               inRefcon)
 {
-(void) inCommand;
-//(void) inPhase;
-(void) inRefcon;
+    (void) inCommand;
+    //(void) inPhase;
+    //(void) inRefcon;
 
-if (inPhase == xplm_CommandBegin) {
-          printf ("trying to make check_item to work \n");
-          if (XPIsWidgetVisible(xCheckListWidget))
-            check_item(checkable);
-          else
-            XPShowWidget(xCheckListWidget);
-}
+    if (inPhase == xplm_CommandBegin) {
+        switch((int)inRefcon){
+        case CHECK_ITEM_COMMAND:
+            printf ("trying to make check_item to work \n");
+            if (XPIsWidgetVisible(xCheckListWidget))
+                check_item(checkable);
+            else
+                XPShowWidget(xCheckListWidget);
+            break;
+        case NEXT_CHECKLIST_COMMAND:
+            if (XPIsWidgetVisible(xCheckListWidget))
+                next_checklist();
+            else
+                XPShowWidget(xCheckListWidget);
+            break;
+        }
+    }
 
-return 1;
-}
-
-int MyNextChecklistCommandCallback(
-                                   XPLMCommandRef       inCommand,
-                                   XPLMCommandPhase     inPhase,
-                                   void *               inRefcon)
-{
-  (void) inCommand;
-  //(void) inPhase;
-  (void) inRefcon;
-
-
-  if (inPhase == xplm_CommandBegin) {
-           if (XPIsWidgetVisible(xCheckListWidget))
-             next_checklist();
-           else
-             XPShowWidget(xCheckListWidget);
-  }
-
-  return 1;
+    return 1;
 }

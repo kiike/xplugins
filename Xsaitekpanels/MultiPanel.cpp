@@ -1,8 +1,3 @@
-/****** MultiPanel.c **********/
-/****  William R. Good  ********/ 
-/******** ver 1.13 ************/
-/****** Oct 25 2010 **********/
-
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
 #include <linux/hidraw.h>
@@ -127,15 +122,17 @@ if (multiseldis == 5) {
   }
 
 /****** Make Message One Digit at A Time and Turn on Button LEDS  *******/ 
-  char multiadigit1 = multiadig1, multiadigit2 = multiadig2, multiadigit3 = multiadig3;
+  //char multiadigit1 = multiadig1,
+  char multiadigit2 = multiadig2, multiadigit3 = multiadig3;
   char multiadigit4 = multiadig4, multiadigit5 = multiadig5;
   char multibdigit1 = multibdig1, multibdigit2 = multibdig2, multibdigit3 = multibdig3;
   char multibdigit4 = multibdig4, multibdigit5 = multibdig5;	
   char cdigit1 = btnleds; 
 
 /****** Load Array with Message of Digits and Button LEDS *************/ 
-  char multiwbuf[12] = { 1, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
-   
+  //char multiwbuf[12] = { 1, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
+  //have to adjust on Ubuntu 10.10 untill can get libusb working
+  char multiwbuf[12] = { 1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
    
 /******* Only do a read if something new to be read ********/
   int             multires;
@@ -150,7 +147,6 @@ if (multiseldis == 5) {
   multires = select(multifd+1,&multisready,NULL,NULL,&multinowait);
   if( FD_ISSET(multifd,&multisready) ) {
       res = read(multifd, multibuf, sizeof(multibuf));
-      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
       wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
   }
@@ -165,7 +161,6 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
       wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
       lastmultiseldis = multiseldis;
@@ -178,7 +173,6 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
       wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
       lastbtnleds = btnleds;
@@ -191,7 +185,6 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
       wres = write(multifd, multiwbuf, sizeof(multiwbuf));
       multinowrite = 1;
       strcpy(lastmultiwbuf, multiwbuf);
@@ -199,8 +192,7 @@ if (multiseldis == 5) {
   }
 
   if (multinowrite == 50) {
-      //ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      wres = write(multifd, multiwbuf, sizeof(multiwbuf));
+    wres = write(multifd, multiwbuf, sizeof(multiwbuf));
     multinowrite = 0;
   }
   else {

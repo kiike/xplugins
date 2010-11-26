@@ -1,7 +1,10 @@
-/****** SaitekPanels.c **********/
-/****  William R. Good  ********/ 
-/******** ver 1.13 ************/
-/****** Oct 13 2010 **********/
+//**********************************
+//      Xsaitekpanels
+//      William R. Good
+//      ver 1.11 use libusb interface
+//      Nov 26 2010
+//************************************
+
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -171,7 +174,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 	/* First set up our plugin info. */
   strcpy(outName, "Xsaitekpanels");
-  strcpy(outSig, "saitekpanels.hardware uses hidraw interface");
+  strcpy(outSig, "saitekpanels.hardware uses libusb interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels");
 
 /************ Find Radio Panel Commands Ref ******************/
@@ -522,89 +525,72 @@ PLUGIN_API void	XPluginStop(void)
 /*** if open close that radio panel ****/
  
   if (radio0fd > 0) {
-    //ioctl(radio0fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio0fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio0fd);
   }
   if (radio1fd > 0) {
-    //ioctl(radio1fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio1fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio1fd);
   }
   if (radio2fd > 0) {
-    //ioctl(radio2fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio2fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio2fd);
   }
   if (radio3fd > 0) {
-    //ioctl(radio3fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio3fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio3fd);
   }
   if (radio4fd > 0) {
-    //ioctl(radio4fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio4fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio4fd);
   }
   if (radio5fd > 0) {
-    //ioctl(radio5fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio5fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio5fd);
   }
   if (radio6fd > 0) {
-    //ioctl(radio6fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio6fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio6fd);
   }
   if (radio7fd > 0) {
-    //ioctl(radio7fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio7fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio7fd);
   }
   if (radio8fd > 0) {
-    //ioctl(radio8fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio8fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio8fd);
   }
   if (radio9fd > 0) {
-    //ioctl(radio9fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio9fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio9fd);
   }
   if (radio10fd > 0) {
-    //ioctl(radio10fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio10fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio10fd);
    }
   if (radio11fd > 0) {
-    //ioctl(radio11fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio11fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio11fd);
   }
   if (radio12fd > 0) {
-    //ioctl(radio12fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio12fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio12fd);
   }
   if (radio13fd > 0) {
-    //ioctl(radio13fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio13fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio13fd);
    }
   if (radio14fd > 0) {
-    //ioctl(radio14fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio14fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio14fd);
   }
   if (radio15fd > 0) {
-    //ioctl(radio15fd, HIDIOCSFEATURE(sizeof(blankradiowbuf)), blankradiowbuf);
     wres = write(radio15fd, blankradiowbuf, sizeof(blankradiowbuf));
     close(radio15fd);
   }
 
 /*** if open close that multi panel ****/
   if (multifd > 0) {
-    //ioctl(multifd, HIDIOCSFEATURE(12), blankmultiwbuf);
     wres = write(multifd, blankmultiwbuf, sizeof(blankmultiwbuf));
     close(multifd);
   }
@@ -613,7 +599,6 @@ PLUGIN_API void	XPluginStop(void)
   if (switchfd > 0) {
     blankswitchwbuf[0] = 0;
     blankswitchwbuf[1] = 0;
-    //ioctl(switchfd, HIDIOCSFEATURE(sizeof(blankswitchwbuf)), blankswitchwbuf);
     wres = write(switchfd, blankswitchwbuf, sizeof(blankswitchwbuf));
     close(switchfd);
   }

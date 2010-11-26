@@ -1,8 +1,3 @@
-/****** RadioPanels.c **********/
-/****  William R. Good  ********/ 
-/******** ver 1.13 ************/
-/****** Oct 25 2010 **********/
-
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
 
@@ -219,7 +214,8 @@ void process_radio_panel()
 
 
 /****************** Make Message One Digit at A Time ************************/ 
-  char radioadigit1 = radioadig1, radioadigit2 = radioadig2, radioadigit3 = radioadig3;
+  //char radioadigit1 = radioadig1,
+  char radioadigit2 = radioadig2, radioadigit3 = radioadig3;
   char radioadigit4 = radioadig4, radioadigit5 = radioadig5;
   char radiobdigit1 = radiobdig1, radiobdigit2 = radiobdig2, radiobdigit3 = radiobdig3;
   char radiobdigit4 = radiobdig4, radiobdigit5 = radiobdig5;	
@@ -230,14 +226,15 @@ void process_radio_panel()
 
 /******************* Load Array with Message of Digits *********************/
   radiowbuf[radnum][0] = 1;
-  radiowbuf[radnum][1] = radioadigit1, radiowbuf[radnum][2] = radioadigit2, radiowbuf[radnum][3] = radioadigit3; 
-  radiowbuf[radnum][4] = radioadigit4, radiowbuf[radnum][5] = radioadigit5;
-  radiowbuf[radnum][6] = radiobdigit1, radiowbuf[radnum][7] = radiobdigit2, radiowbuf[radnum][8] = radiobdigit3; 
-  radiowbuf[radnum][9] = radiobdigit4, radiowbuf[radnum][10] = radiobdigit5;
-  radiowbuf[radnum][11] = radiocdigit1, radiowbuf[radnum][12] = radiocdigit2, radiowbuf[radnum][13] = radiocdigit3; 
-  radiowbuf[radnum][14] = radiocdigit4, radiowbuf[radnum][15] = radiocdigit5;
-  radiowbuf[radnum][16] = radioddigit1, radiowbuf[radnum][17] = radioddigit2, radiowbuf[radnum][18] = radioddigit3; 
-  radiowbuf[radnum][19] = radioddigit4, radiowbuf[radnum][20] = radioddigit5;
+  //radiowbuf[radnum][1] = radioadigit1
+  radiowbuf[radnum][1] = radioadigit2, radiowbuf[radnum][2] = radioadigit3;
+  radiowbuf[radnum][3] = radioadigit4, radiowbuf[radnum][4] = radioadigit5;
+  radiowbuf[radnum][5] = radiobdigit1, radiowbuf[radnum][6] = radiobdigit2, radiowbuf[radnum][7] = radiobdigit3;
+  radiowbuf[radnum][8] = radiobdigit4, radiowbuf[radnum][9] = radiobdigit5;
+  radiowbuf[radnum][10] = radiocdigit1, radiowbuf[radnum][11] = radiocdigit2, radiowbuf[radnum][12] = radiocdigit3;
+  radiowbuf[radnum][13] = radiocdigit4, radiowbuf[radnum][14] = radiocdigit5;
+  radiowbuf[radnum][15] = radioddigit1, radiowbuf[radnum][16] = radioddigit2, radiowbuf[radnum][17] = radioddigit3;
+  radiowbuf[radnum][18] = radioddigit4, radiowbuf[radnum][19] = radioddigit5;
 
 
 /******* Only do a read if something new to be read ********/
@@ -253,7 +250,6 @@ void process_radio_panel()
   radiores = select(radiofd[radnum]+1,&radiosready,NULL,NULL,&radionowait);
   if( FD_ISSET(radiofd[radnum],&radiosready) ) {
     res = read(radiofd[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
-    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
     wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
     radionowrite[radnum] = 1;
   }
@@ -268,8 +264,7 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
-    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+      wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
       radionowrite[radnum] = 1;
       lastupseldis[radnum] = upseldis[radnum];
     }
@@ -281,15 +276,13 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
-    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+      wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
       radionowrite[radnum] = 1;
       lastloseldis[radnum] = loseldis[radnum];
     }
   }
 
   if (radionowrite[radnum] == 50) {
-    //ioctl(radiofd[radnum], HIDIOCSFEATURE(sizeof(radiowbuf[radnum])), radiowbuf[radnum]);
     wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
     radionowrite[radnum] = 0;
   }

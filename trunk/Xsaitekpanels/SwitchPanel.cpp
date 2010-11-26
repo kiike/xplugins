@@ -1,8 +1,3 @@
-/****** SwitchPanels.c **********/
-/****  William R. Good  ********/ 
-/******** ver 1.09 ************/
-/****** Oct 13 2010 **********/
-
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
 #include <linux/hidraw.h>
@@ -70,7 +65,6 @@ void process_switch_panel()
   /* if no gear do not write */
 
   if(XPLMGetDatai(GearRetract) > 0){
-    //ioctl(switchfd, HIDIOCSFEATURE(sizeof(switchwbuf)), switchwbuf);
     wres = write(switchfd, switchwbuf, sizeof(switchwbuf));
   }
   else {

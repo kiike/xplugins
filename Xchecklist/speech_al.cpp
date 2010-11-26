@@ -19,9 +19,10 @@ class speech_alespeak
   ~speech_alespeak();
   void say(std::string text);
   bool speaking();
+  static int close_speech();
  private:
+  static bool espeech_initialized;
   int init_speech();
-  int close_speech();
   int init_al();
   int close_al();
   
@@ -40,12 +41,14 @@ class speech_alespeak
   
   ALenum format;
   ALenum code;
-  int sample_rate;
+  static int sample_rate;
   unsigned int id;
   
   bool verbose_flag;
   bool report_success;
 };
+
+int speech_alespeak::sample_rate = -1;
 
 int esp_callback(short *wav, int numsamples, espeak_EVENT *events);
 
@@ -150,9 +153,11 @@ speech_alespeak::speech_alespeak()
   verbose_flag = false;
   report_success = true;
 
-  sample_rate = init_speech();
   if(sample_rate < 0){
-    throw;
+    sample_rate = init_speech();
+    if(sample_rate < 0){
+      throw;
+    }
   }
   if(verbose_flag){
     std::cerr<<"Espeak initialized @ "<<sample_rate<<"Hz"<<std::endl;
@@ -169,7 +174,7 @@ speech_alespeak::speech_alespeak()
 speech_alespeak::~speech_alespeak()
 {
   std::cout<<"Closing speaker!"<<std::endl;
-  close_speech();
+  //close_speech();
   std::cout<<"Closing al!"<<std::endl;
   close_al();
 }
@@ -326,6 +331,7 @@ int esp_callback(short *wav, int numsamples, espeak_EVENT *events)
 
 int speech_alespeak::close_speech()
 {
+  //Espeak seems to be a bit unstable when initialized after its termination
   espeak_Terminate();
   return 0;
 }
@@ -400,7 +406,6 @@ void say(const char *text)
 
 bool init_speech()
 {
-  printf("init_speech();\n");
   if(speech == NULL){
     speech = new speech_alespeak();
     return true;
@@ -418,6 +423,13 @@ bool speaking()
 
 void close_speech()
 {
-  delete speech;
-  speech = NULL;
+    if(speech != NULL){
+      delete speech;
+      speech = NULL;
+    }
+}
+
+void cleanup_speech()
+{
+    speech_alespeak::close_speech();
 }

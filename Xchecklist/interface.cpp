@@ -10,13 +10,13 @@ bool start_checklists(char *fname)
   if(!parse_clist(fname, 0)){
     return false;
   }
-  init_speech();
   return binder->select_checklist(0);
 }
 
 bool stop_checklists()
 {
   close_speech();
+  cleanup_speech();
   return true;
 }
 

@@ -362,7 +362,7 @@ checklist_item_desc_t pageItems[50];
     }
     if (!strcmp((char *) inItemRef, "setup")){
       if (setupWidget == NULL){
-        CreateSetupWidget(400, 550, 215, 225);	//left, top, right, bottom.
+        CreateSetupWidget(400, 550, 215, 175);	//left, top, right, bottom.
       }else{
         if(!XPIsWidgetVisible(setupWidget))
           XPShowWidget(setupWidget);
@@ -422,7 +422,7 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
                        xpWidgetClass_Caption);
         }
 
-        yOffset = (5+18+(7*25));
+        yOffset = (5+18+(5*25));
 
         setupSaveSettingsButton = XPCreateWidget(xx+10, yy-yOffset, xx+5+200, yy-yOffset-20,
                                   1,

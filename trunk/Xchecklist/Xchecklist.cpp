@@ -912,6 +912,7 @@ int MyCommandCallback(XPLMCommandRef       inCommand,
             if (XPIsWidgetVisible(xCheckListWidget))
                 next_checklist();
             else
+                XPSetWidgetProperty(setupCheckWidget[1], xpProperty_ButtonState, 1);
                 XPShowWidget(xCheckListWidget);
             break;
         }

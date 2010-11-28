@@ -41,10 +41,12 @@ macx {
     CONFIG += x86 ppc
 }
 
-HEADERS += SaitekPanels.h
+HEADERS += \
+    SaitekPanels.h
 
 
-SOURCES += SaitekPanels.cpp\
+SOURCES += \
     RadioPanels.cpp \
-    MultiPanel.cpp \
-    SwitchPanel.cpp
+    SwitchPanel.cpp \
+    SaitekPanels.cpp \
+    MultiPanel.cpp

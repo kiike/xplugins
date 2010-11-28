@@ -46,10 +46,11 @@ static int APR_BUTTON = 10, REV_BUTTON = 9;
 static int FLAPS_UP_SWITCH = 23, FLAPS_DN_SWITCH = 22;
 static int TRIM_WHEEL_UP = 20, TRIM_WHEEL_DN = 21;
 static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
+
 static int res, wres;
 
 static unsigned char multibuf[3];
-static char lastmultiwbuf[12] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static char lastmultiwbuf[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 /***** Multi Panel Process ******/
@@ -130,9 +131,8 @@ if (multiseldis == 5) {
   char cdigit1 = btnleds; 
 
 /****** Load Array with Message of Digits and Button LEDS *************/ 
-  //char multiwbuf[12] = { 1, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
-  //have to adjust on Ubuntu 10.10 untill can get libusb working
   char multiwbuf[12] = { 1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
+   
    
 /******* Only do a read if something new to be read ********/
   int             multires;
@@ -192,7 +192,7 @@ if (multiseldis == 5) {
   }
 
   if (multinowrite == 50) {
-    wres = write(multifd, multiwbuf, sizeof(multiwbuf));
+      wres = write(multifd, multiwbuf, sizeof(multiwbuf));
     multinowrite = 0;
   }
   else {
@@ -351,7 +351,7 @@ if (multiseldis == 5) {
 	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
 	      apbtncnt++;
 	    }
-              if (apbtncnt == 1) {
+	      if (apbtncnt == 2) {
 	        XPLMCommandOnce(ApMstrBtnUp);
 	        apbtncnt = 0;
 	      }	 
@@ -409,6 +409,7 @@ if (multiseldis == 5) {
 	if (XPLMGetDatai(ApMstrStat) == 0) {
 	  btnleds &= ~(1<<1);   /* clear bit 1 in btnleds to 0 */   
 	}
+
 /***************** NAV Button and light *******************/
 
 	if (multires == 1) {

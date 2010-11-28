@@ -85,6 +85,7 @@ static int LOWER_COM1 = 0, LOWER_COM2 = 15;
 static int LOWER_NAV1 = 14, LOWER_NAV2 = 13; 
 static int LOWER_ADF = 12, LOWER_DME = 11;
 static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8;
+
 static int res, wres;
 
 static unsigned char radiobuf[4][3];
@@ -225,15 +226,15 @@ void process_radio_panel()
   char radioddigit4 = radioddig4, radioddigit5 = radioddig5;
 
 /******************* Load Array with Message of Digits *********************/
-  radiowbuf[radnum][0] = 1;
-  //radiowbuf[radnum][1] = radioadigit1
-  radiowbuf[radnum][1] = radioadigit2, radiowbuf[radnum][2] = radioadigit3;
+  radiowbuf[radnum][0] = 1; 
+  /*radiowbuf[radnum][1] = radioadigit1,*/ 
+  radiowbuf[radnum][1] = radioadigit2, radiowbuf[radnum][2] = radioadigit3; 
   radiowbuf[radnum][3] = radioadigit4, radiowbuf[radnum][4] = radioadigit5;
-  radiowbuf[radnum][5] = radiobdigit1, radiowbuf[radnum][6] = radiobdigit2, radiowbuf[radnum][7] = radiobdigit3;
+  radiowbuf[radnum][5] = radiobdigit1, radiowbuf[radnum][6] = radiobdigit2, radiowbuf[radnum][7] = radiobdigit3; 
   radiowbuf[radnum][8] = radiobdigit4, radiowbuf[radnum][9] = radiobdigit5;
-  radiowbuf[radnum][10] = radiocdigit1, radiowbuf[radnum][11] = radiocdigit2, radiowbuf[radnum][12] = radiocdigit3;
+  radiowbuf[radnum][10] = radiocdigit1, radiowbuf[radnum][11] = radiocdigit2, radiowbuf[radnum][12] = radiocdigit3; 
   radiowbuf[radnum][13] = radiocdigit4, radiowbuf[radnum][14] = radiocdigit5;
-  radiowbuf[radnum][15] = radioddigit1, radiowbuf[radnum][16] = radioddigit2, radiowbuf[radnum][17] = radioddigit3;
+  radiowbuf[radnum][15] = radioddigit1, radiowbuf[radnum][16] = radioddigit2, radiowbuf[radnum][17] = radioddigit3; 
   radiowbuf[radnum][18] = radioddigit4, radiowbuf[radnum][19] = radioddigit5;
 
 

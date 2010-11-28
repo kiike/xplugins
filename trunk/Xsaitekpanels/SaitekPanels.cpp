@@ -1,10 +1,10 @@
+//*********************************
+//
+//     Xsaitekpanels
+//     William R. Good
+//     Nov 29 2010
+//
 //**********************************
-//      Xsaitekpanels
-//      William R. Good
-//      ver 1.11 use libusb interface
-//      Nov 26 2010
-//************************************
-
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -174,7 +174,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 	/* First set up our plugin info. */
   strcpy(outName, "Xsaitekpanels");
-  strcpy(outSig, "saitekpanels.hardware uses libusb interface");
+  strcpy(outSig, "Xsaitekpanels.hardware ver to use libusb");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels");
 
 /************ Find Radio Panel Commands Ref ******************/
@@ -597,7 +597,7 @@ PLUGIN_API void	XPluginStop(void)
 
 /*** if open close that switch panel ****/ 
   if (switchfd > 0) {
-    blankswitchwbuf[0] = 0;
+    blankswitchwbuf[0] = 1;
     blankswitchwbuf[1] = 0;
     wres = write(switchfd, blankswitchwbuf, sizeof(blankswitchwbuf));
     close(switchfd);
@@ -617,9 +617,9 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 				      long		inMessage,
 				      void *		inParam)
 {
-  (void) inFromWho; // To get rid of warnings on unused variables
-  (void) inMessage; // To get rid of warnings on unused variables
-  (void) inParam; // To get rid of warnings on unused variables
+    (void) inFromWho; // To get rid of warnings on unused variables
+    (void) inMessage; // To get rid of warnings on unused variables
+    (void) inParam; // To get rid of warnings on unused variables
 }
 
 /************************* Panels Callback  *************************/
@@ -630,10 +630,10 @@ float	MyPanelsFlightLoopCallback(
                                    void *               inRefcon)
 
 {
-  (void) inElapsedSinceLastCall; // To get rid of warnings on unused variables
-  (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
-  (void) inCounter; // To get rid of warnings on unused variables
-  (void) inRefcon; // To get rid of warnings on unused variables
+    (void) inElapsedSinceLastCall; // To get rid of warnings on unused variables
+    (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
+    (void) inCounter; // To get rid of warnings on unused variables
+    (void) inRefcon; // To get rid of warnings on unused variables
 
 
   if(radcnt > 0){

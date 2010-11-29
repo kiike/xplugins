@@ -77,3 +77,10 @@ bool free_checklist_names(int size, constname_t *names[])
   return binder->free_checklist_names(size, names);
 }
 
+bool checklist_finished()
+{
+    if(binder == NULL){
+      return false;
+    }
+    return binder->checklist_finished();
+}

@@ -44,12 +44,14 @@ class checklist{
   bool activate_next_item(bool init = false);
   const std::string& get_name()const;
   bool triggered();
+  bool checklist_finished();
  private:
   std::string displaytext;
   std::string menutext;
   std::vector<checklist_item *> items;
   int width;
   int current_item;
+  bool finished;
 };
 
 //Collection of checklists
@@ -66,6 +68,7 @@ class checklist_binder{
     bool do_processing(bool visible);
     bool get_checklist_names(int *size, constname_t *names[]);
     bool free_checklist_names(int size, constname_t *names[]);
+    bool checklist_finished();
   private:
     std::vector<checklist*> checklists;
     int current;
@@ -125,6 +128,7 @@ class item_label{
   item_label(std::string label_left);
   bool getDesc(checklist_item_desc_t &desc);
   void say_label();
+  void say_suffix();
  private:
   std::string label;
   std::string suffix;

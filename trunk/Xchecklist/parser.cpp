@@ -18,6 +18,7 @@ checklist::checklist(std::string display, std::string menu)
 {
   displaytext = display;
   menutext = menu;
+  finished = false;
 }
 
 checklist::checklist(std::string display)
@@ -25,6 +26,7 @@ checklist::checklist(std::string display)
   displaytext = display;
   menutext = display;
   width = 300;
+  finished = false;
 }
 
 checklist::~checklist()
@@ -388,7 +390,7 @@ bool dataref_dsc::trigered()
 
 
 
-item_label::item_label(std::string label_left, std::string label_right = "")
+item_label::item_label(std::string label_left, std::string label_right)
 {
   label = label_left;
   suffix = label_right;
@@ -397,7 +399,7 @@ item_label::item_label(std::string label_left, std::string label_right = "")
 item_label::item_label(std::string label_left)
 {
   label = label_left;
-  suffix = "";
+  suffix = "CHECK";
 }
 
 void item_label::say_label()
@@ -405,6 +407,10 @@ void item_label::say_label()
   say(label.c_str());
 }
 
+void item_label::say_suffix()
+{
+  say(suffix.c_str());
+}
 
 void_item::void_item(std::string s)
 {
@@ -540,6 +546,7 @@ bool chk_item::activate()
 bool chk_item::process()
 {
   if((dataref != NULL) && dataref->trigered()){
+    label->say_suffix();
     return check_item(index);
   }
   return true;
@@ -559,6 +566,7 @@ bool checklist::activate_next_item(bool init)
 {
   if(init){
     current_item = -1;
+    finished = false;
   }
   ++current_item;
   while(1){
@@ -567,6 +575,7 @@ bool checklist::activate_next_item(bool init)
 	return true;
       }
     }else{
+      finished = true;
       current_item = -1;
       return false;
     }
@@ -684,5 +693,21 @@ void chklerror(char const *s)
 {
   fprintf(stderr, "%s in file %s, line %d near '%s'\n",
                  s, parsed_file, chkllineno, chkltext);
+}
+
+
+bool checklist_binder::checklist_finished()
+{
+    if((current < 0) || (current > ((int)checklists.size() - 1))){
+        return false;
+    }else{
+        return checklists[current]->checklist_finished();
+    }
+    return false;
+}
+
+bool checklist::checklist_finished()
+{
+    return finished;
 }
 

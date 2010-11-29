@@ -11,6 +11,8 @@
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
 #include "XPLMProcessing.h"
+#include "libusb_interface.h"
+
 
 #include <linux/hidraw.h>
 
@@ -25,6 +27,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+
+
 
 /******** Radio Panel Defines ********/
 #define RADIO0 "/dev/saitekradiopanel0"
@@ -423,6 +427,9 @@ PLUGIN_API int XPluginStart(char *		outName,
   GenNum         = XPLMFindDataRef("sim/aircraft/electrical/num_generators");
   EngNum         = XPLMFindDataRef("sim/aircraft/engine/acf_num_engines");
 
+
+  if(find_saitek_panels())
+     printf("\n*************   returned true from find_saitek_panels   ******************\n\n");
 
 /************* Open any Radio that is connected *****************/
   radio0fd = open(RADIO0, O_RDWR), radio1fd = open(RADIO1, O_RDWR);

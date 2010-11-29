@@ -27,6 +27,8 @@ unix:!macx {
     TARGET = lin.xpl
     # WARNING! This requires the latest version of the X-SDK !!!!
     QMAKE_CXXFLAGS += -fvisibility=hidden
+    QMAKE_CFLAGS += -g -c `pkg-config libusb-1.0 --cflags`
+    LIBS+= `pkg-config libusb-1.0 --libs`
 }
 
 macx {
@@ -42,11 +44,13 @@ macx {
 }
 
 HEADERS += \
-    SaitekPanels.h
+    SaitekPanels.h \
+    libusb_interface.h
 
 
 SOURCES += \
     RadioPanels.cpp \
     SwitchPanel.cpp \
     SaitekPanels.cpp \
-    MultiPanel.cpp
+    MultiPanel.cpp \
+    libusb_interface.cpp

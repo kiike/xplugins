@@ -339,7 +339,7 @@ float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void 
   if(state[COPILOT_ON])
     do_processing(XPIsWidgetVisible(xCheckListWidget));
 
-  if(XPIsWidgetVisible(xCheckListWidget)){
+  if((XPIsWidgetVisible(xCheckListWidget)) && (state[AUTO_HIDE])){
       if(checklist_finished()){
           ++hide_cntr;
           if(hide_cntr > 30){

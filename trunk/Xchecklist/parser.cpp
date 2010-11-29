@@ -515,7 +515,11 @@ bool checklist::triggered()
 bool checklist_binder::do_processing(bool visible)
 {
   if(visible){
-    return checklists[current]->process_datarefs();
+     if(!speaking()){
+        return checklists[current]->process_datarefs();
+     }else{
+        return true;
+     }
   }else{
     for(unsigned int i = 0; i < checklists.size(); ++i){
       if(checklists[i]->triggered()){

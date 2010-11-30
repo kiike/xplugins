@@ -6,5 +6,10 @@
 //  Find saitek radio multi and switch panels
 //  Returns true if no problems were encountered
 bool find_saitek_panels();
+bool close_saitek_panels();
+
+
+
+
 
 #endif // LIBUSB_INTERFACE_H

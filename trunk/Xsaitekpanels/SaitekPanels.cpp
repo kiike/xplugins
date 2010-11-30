@@ -429,7 +429,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 
   if(find_saitek_panels())
-     printf("\n*************   returned true from find_saitek_panels   ******************\n\n");
+     printf("\n*************   returned true from find_saitek_panels   ******************\n");
 
 /************* Open any Radio that is connected *****************/
   radio0fd = open(RADIO0, O_RDWR), radio1fd = open(RADIO1, O_RDWR);
@@ -526,6 +526,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 PLUGIN_API void	XPluginStop(void)
 {
+
   /********** Unregitser the callback on quit. *************/
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
 
@@ -609,6 +610,9 @@ PLUGIN_API void	XPluginStop(void)
     wres = write(switchfd, blankswitchwbuf, sizeof(blankswitchwbuf));
     close(switchfd);
   }
+
+  if(close_saitek_panels())
+     printf("\n*************   returned true from close_saitek_panels   ******************\n\n");
 }
 
 PLUGIN_API void XPluginDisable(void)

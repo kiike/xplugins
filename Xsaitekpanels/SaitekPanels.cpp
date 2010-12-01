@@ -431,6 +431,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   if(find_saitek_panels())
      printf("\n*************   returned true from find_saitek_panels   ******************\n");
 
+  //write_radio_panel();
+
 /************* Open any Radio that is connected *****************/
   radio0fd = open(RADIO0, O_RDWR), radio1fd = open(RADIO1, O_RDWR);
   radio2fd = open(RADIO2, O_RDWR), radio3fd = open(RADIO3, O_RDWR);

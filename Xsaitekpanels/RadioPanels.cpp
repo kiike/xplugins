@@ -3,6 +3,10 @@
 
 #include "SaitekPanels.h"
 
+#include "libusb_interface.h"
+
+#include <libusb-1.0/libusb.h>
+
 #include <linux/hidraw.h>
 
 #include <stdio.h>
@@ -16,6 +20,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+
+
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
@@ -89,7 +95,9 @@ static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8;
 static int res, wres;
 
 static unsigned char radiobuf[4][3];
-static char radiowbuf[4][24];
+static char unsigned radiowbuf[4][24];
+
+libusb_device_handle *radio_handle[4];
 
 void process_upper_nav_com_freq();
 void process_lower_nav_com_freq();
@@ -252,6 +260,7 @@ void process_radio_panel()
   if( FD_ISSET(radiofd[radnum],&radiosready) ) {
     res = read(radiofd[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
     wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+    write_radio_panel(&radio_handle[radnum], radiowbuf[radnum]);
     radionowrite[radnum] = 1;
   }
   else {

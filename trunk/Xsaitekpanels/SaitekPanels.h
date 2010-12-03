@@ -32,9 +32,8 @@ extern XPLMDataRef Nav1PwrOn, Nav2PwrOn, Com1PwrOn, Com2PwrOn;
 extern XPLMDataRef Afd1PwrOn, DmePwrOn;
 
 /************************ Radio Panel variables **************************/
-extern int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
-extern int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
-extern int radiofd[4], radcnt;
+
+
 extern float interval;
 
 /****************  End Radio Panel Section  ***************************/

@@ -25,7 +25,7 @@
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
-static int radnum = 0, radionowrite[4] = {0, 0, 0, 0};
+static int radnum = 1, radionowrite[4] = {0, 0, 0, 0};
 
 static int upactcomnavfreq[4], upstbycomnavfreq[4], loactcomnavfreq[4], lostbycomnavfreq[4];
 static int upadffreq[4], loadffreq[4], updmedist[4], updmespeed[4], lodmedist[4], lodmespeed[4]; 
@@ -92,12 +92,15 @@ static int LOWER_NAV1 = 14, LOWER_NAV2 = 13;
 static int LOWER_ADF = 12, LOWER_DME = 11;
 static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8;
 
-static int res, wres;
+//static int res, wres;
+
+int cnt = 0, radio1cnt = 2;
+
 
 static unsigned char radiobuf[4][3];
 static char unsigned radiowbuf[4][24];
 
-libusb_device_handle *radio_handle[4];
+
 
 void process_upper_nav_com_freq();
 void process_lower_nav_com_freq();
@@ -105,6 +108,193 @@ void process_lower_nav_com_freq();
 /***** Radio Panel Process  *******/
 void process_radio_panel()
 
+{
+
+    /*************** Upper Display info **********************/
+
+    upseldis[radnum] = 1;
+
+    if (upseldis[radnum] == 1) {
+      process_upper_nav_com_freq();
+    }
+
+    else if (upseldis[radnum] == 2) {
+      process_upper_nav_com_freq();
+    }
+
+    else if (upseldis[radnum] == 3) {
+      process_upper_nav_com_freq();
+    }
+
+    else if (upseldis[radnum] == 4) {
+      process_upper_nav_com_freq();
+    }
+
+    else if (upseldis[radnum] == 5) {
+      radiobstby = upadffreq[radnum];
+      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
+      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+      radiobdig5 = radiobrem4;
+    }
+
+    else if (upseldis[radnum] == 6) {
+      radioaactv = updmedist[radnum];
+      radioadig1 = radioaactv/10000, radioarem1 = radioaactv%10000;
+      radioadig2 = radioarem1 /1000, radioarem2 = radioarem1%1000;
+      radioadig3 = radioarem2/100, radioarem3 = radioarem2%100;
+      radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
+      radioadig4 = radioadig4+208, radioadig5 = radioarem4;
+
+      radiobstby = updmespeed[radnum];
+      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
+      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+      radiobdig5 = radiobrem4;
+    }
+
+    else if (upseldis[radnum] == 7) {
+      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radiobstby = upxpdrcode[radnum];
+      radiobdig1 = 11, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+      radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
+      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+      radiobdig5 = radiobrem4;
+    }
+
+    else if (upseldis[radnum] == 8) {
+      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radiobdig1 = 11, radiobdig2 = 11, radiobdig3 = 11, radiobdig4 = 11, radiobdig5 = 11;
+    }
+
+    /************************ Lower Display info ********************/
+
+    loseldis[radnum] = 1;
+
+    if (loseldis[radnum] == 1) {
+      process_lower_nav_com_freq();
+    }
+
+    else if (loseldis[radnum] == 2) {
+      process_lower_nav_com_freq();
+    }
+
+    else if (loseldis[radnum] == 3) {
+      process_lower_nav_com_freq();
+    }
+
+    else if (loseldis[radnum] == 4) {
+      process_lower_nav_com_freq();
+    }
+
+    else if (loseldis[radnum] == 5) {
+      radiodstby = loadffreq[radnum];
+      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radioddig1 = 11, radioddig2 = 11;
+      radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
+      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+      radioddig5 = radiodrem4;
+    }
+
+    else if (loseldis[radnum] == 6) {
+      radiocactv = lodmedist[radnum];
+      radiocdig1 = radiocactv/10000, radiocrem1 = radiocactv%10000;
+      radiocdig2 = radiocrem1 /1000, radiocrem2 = radiocrem1%1000;
+      radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
+      radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
+      radiocdig4 = radiocdig4+208, radiocdig5 = radiocrem4;
+
+      radiodstby = lodmespeed[radnum];
+      radioddig1 = 11, radioddig2 = 11;
+      radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
+      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+      radioddig5 = radiodrem4;
+    }
+
+    else if (loseldis[radnum] == 7) {
+      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+
+      radiodstby = loxpdrcode[radnum];
+      radioddig1 = 11, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+      radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
+      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+      radioddig5 = radiodrem4;
+
+    }
+
+    else if (loseldis[radnum] == 8) {
+      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radioddig1 = 11, radioddig2 = 11, radioddig3 = 11, radioddig4 = 11, radioddig5 = 11;
+    }
+
+
+    /****************** Make Message One Digit at A Time ************************/
+      //char radioadigit1 = radioadig1,
+      unsigned char radioadigit2 = radioadig2, radioadigit3 = radioadig3;
+      unsigned char radioadigit4 = radioadig4, radioadigit5 = radioadig5;
+      unsigned char radiobdigit1 = radiobdig1, radiobdigit2 = radiobdig2, radiobdigit3 = radiobdig3;
+      unsigned char radiobdigit4 = radiobdig4, radiobdigit5 = radiobdig5;
+      unsigned char radiocdigit1 = radiocdig1, radiocdigit2 = radiocdig2, radiocdigit3 = radiocdig3;
+      unsigned char radiocdigit4 = radiocdig4, radiocdigit5 = radiocdig5;
+      unsigned char radioddigit1 = radioddig1, radioddigit2 = radioddig2, radioddigit3 = radioddig3;
+      unsigned char radioddigit4 = radioddig4, radioddigit5 = radioddig5;
+
+      /******************* Load Array with Message of Digits *********************/
+        radiowbuf[radnum][0] = 1;
+        /*radiowbuf[radnum][1] = radioadigit1,*/
+        radiowbuf[radnum][1] = radioadigit2, radiowbuf[radnum][2] = radioadigit3;
+        radiowbuf[radnum][3] = radioadigit4, radiowbuf[radnum][4] = radioadigit5;
+        radiowbuf[radnum][5] = radiobdigit1, radiowbuf[radnum][6] = radiobdigit2, radiowbuf[radnum][7] = radiobdigit3;
+        radiowbuf[radnum][8] = radiobdigit4, radiowbuf[radnum][9] = radiobdigit5;
+        radiowbuf[radnum][10] = radiocdigit1, radiowbuf[radnum][11] = radiocdigit2, radiowbuf[radnum][12] = radiocdigit3;
+        radiowbuf[radnum][13] = radiocdigit4, radiowbuf[radnum][14] = radiocdigit5;
+        radiowbuf[radnum][15] = radioddigit1, radiowbuf[radnum][16] = radioddigit2, radiowbuf[radnum][17] = radioddigit3;
+        radiowbuf[radnum][18] = radioddigit4, radiowbuf[radnum][19] = radioddigit5;
+
+
+        radiowbuf[radnum][0] = 1;
+        /*radiowbuf[radnum][1] = radioadigit1,*/
+        radiowbuf[radnum][1] = 2, radiowbuf[radnum][2] = 3;
+        radiowbuf[radnum][3] = 4, radiowbuf[radnum][4] = radioadigit5;
+        radiowbuf[radnum][5] = radiobdigit1, radiowbuf[radnum][6] = radiobdigit2, radiowbuf[radnum][7] = radiobdigit3;
+        radiowbuf[radnum][8] = radiobdigit4, radiowbuf[radnum][9] = radiobdigit5;
+        radiowbuf[radnum][10] = radiocdigit1, radiowbuf[radnum][11] = radiocdigit2, radiowbuf[radnum][12] = radiocdigit3;
+        radiowbuf[radnum][13] = radiocdigit4, radiowbuf[radnum][14] = radiocdigit5;
+        radiowbuf[radnum][15] = radioddigit1, radiowbuf[radnum][16] = radioddigit2, radiowbuf[radnum][17] = radioddigit3;
+        radiowbuf[radnum][18] = radioddigit4, radiowbuf[radnum][19] = radioddigit5;
+
+
+
+        //if (cnt < 100){
+
+         write_radio_panel(radio_handle[radnum], radiowbuf[radnum]);
+
+        //}
+
+        //cnt++;
+
+
+        //if (cnt > 500){
+
+        //cnt = 0;
+
+        //}
+
+         /*********** loop untill all radios serviced *************/
+         /**************   then start again    *******************/
+
+           radnum++;
+           if (radnum == radio1cnt) {
+             radnum = 1;
+           }
+
+
+
+    return;
+}
+
+void process_radio_panel1()
 {
 
   /*************** Upper Display info **********************/ 
@@ -222,6 +412,7 @@ void process_radio_panel()
   } 
 
 
+
 /****************** Make Message One Digit at A Time ************************/ 
   //char radioadigit1 = radioadig1,
   char radioadigit2 = radioadig2, radioadigit3 = radioadig3;
@@ -247,26 +438,38 @@ void process_radio_panel()
 
 
 /******* Only do a read if something new to be read ********/
-  int             radiores;
-  fd_set          radiosready;
-  struct timeval  radionowait;
+  //int             radiores;
+  //fd_set          radiosready;
+  //struct timeval  radionowait;
 
-  FD_ZERO(&radiosready);
-  FD_SET((unsigned int)radiofd[radnum],&radiosready);
-  radionowait.tv_sec = 0;    // specify how many seconds you would like to wait for timeout
-  radionowait.tv_usec = 0;   // how many microseconds? If both is zero, select will return immediately
+  //FD_ZERO(&radiosready);
+  //FD_SET((unsigned int)radiofd[radnum],&radiosready);
+  //radionowait.tv_sec = 0;    // specify how many seconds you would like to wait for timeout
+  //radionowait.tv_usec = 0;   // how many microseconds? If both is zero, select will return immediately
 
-  radiores = select(radiofd[radnum]+1,&radiosready,NULL,NULL,&radionowait);
-  if( FD_ISSET(radiofd[radnum],&radiosready) ) {
-    res = read(radiofd[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
-    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
-    write_radio_panel(&radio_handle[radnum], radiowbuf[radnum]);
-    radionowrite[radnum] = 1;
-  }
-  else {
-  }
+  //radiores = select(radiofd[radnum]+1,&radiosready,NULL,NULL,&radionowait);
+  //if( FD_ISSET(radiofd[radnum],&radiosready) ) {
+  //  res = read(radiofd[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
+  //  wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+
+  //  radionowrite[radnum] = 1;
+  //}
+  //else {
+  //}
+
+  //********************************************************************************************
+  //trying to test libusb write
+  //unsigned char radio1wbuf[4][20]= {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+  //write_radio_panel(radio_handle1[radnum], radio1wbuf[radnum]);
+
+  //test_write_radio_panel();
+
+  //*********************************************************************************************
 
   /***** Trying to only write on changes ********/
+
+
 
   if (lastupseldis[radnum] == upseldis[radnum]) {
   }
@@ -274,7 +477,7 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-      wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+      //wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
       radionowrite[radnum] = 1;
       lastupseldis[radnum] = upseldis[radnum];
     }
@@ -286,14 +489,14 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-      wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+      //wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
       radionowrite[radnum] = 1;
       lastloseldis[radnum] = loseldis[radnum];
     }
   }
 
   if (radionowrite[radnum] == 50) {
-    wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+    //wres = write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
     radionowrite[radnum] = 0;
   }
   else {
@@ -304,14 +507,14 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_COM1)) {
       upseldis[radnum] = 1;
-      if (radiores == 1) {	    
+      //if (radiores == 1) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upcom1dbncfninc[radnum]++;
 	  if (upcom1dbncfninc[radnum] == 3) {
 	    XPLMCommandOnce(Com1StbyFineUp);
 	    upcom1dbncfninc[radnum] = 0;
 	  }
-        }
+        //}
         if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
 	  upcom1dbncfndec[radnum]++;
 	  if (upcom1dbncfndec[radnum] == 3) {
@@ -346,7 +549,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_COM2)) {
       upseldis[radnum] = 2;
-      if (radiores == 1) {
+      //if (radiores == 1) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upcom2dbncfninc[radnum]++;
 	  if (upcom2dbncfninc[radnum] == 3) {
@@ -378,7 +581,7 @@ void process_radio_panel()
 	if(testbit(radiobuf[radnum],UPPER_ACT_STBY)) {
 	  XPLMCommandOnce(Com2ActStby);
         }
-      }
+      //}
     upactcomnavfreq[radnum] = XPLMGetDatai(Com2ActFreq);
     upstbycomnavfreq[radnum] = XPLMGetDatai(Com2StbyFreq);
     upcom2[radnum] = 1;	 
@@ -388,14 +591,14 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_NAV1)) {
       upseldis[radnum] = 3;
-      if (radiores == 1) {  
+      //if (radiores == 1) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upnav1dbncfninc[radnum]++;
 	  if (upnav1dbncfninc[radnum] == 3) {
 	    XPLMCommandOnce(Nav1StbyFineUp);
 	    upnav1dbncfninc[radnum] = 0;
 	  } 
-        }
+       // }
         if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
 	  upnav1dbncfndec[radnum]++;
 	  if (upnav1dbncfndec[radnum] == 3) {
@@ -431,14 +634,14 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_NAV2)) {
       upseldis[radnum] = 4;
-      if (radiores == 1) {
+      //if (radiores == 1) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upnav2dbncfninc[radnum]++;
 	  if (upnav2dbncfninc[radnum] == 3) {
 	    XPLMCommandOnce(Nav2StbyFineUp);
 	    upnav2dbncfninc[radnum] = 0;
 	  }
-        }
+        //}
         if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
 	  upnav2dbncfndec[radnum]++;
 	  if (upnav2dbncfndec[radnum] == 3) {
@@ -475,7 +678,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_ADF)) {
       upseldis[radnum] = 5;
-      if (radiores == 1) {
+      //if (radiores == 1) {
         if (upadfsel[radnum] == 1) {
 	  if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
 	    upadfdbncfninc[radnum]++;
@@ -543,7 +746,7 @@ void process_radio_panel()
 	        upadfsel[radnum] = 1;
 	      }
             }
-	  }
+         // }
     upadffreq[radnum] = XPLMGetDatai(AdfFreq);
     }
 
@@ -570,7 +773,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_XPDR)) {
       upseldis[radnum] = 7;
-      if (radiores == 1) {
+     // if (radiores == 1) {
         if (upxpdrsel[radnum] == 1) {	
           if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
             upxpdrdbncfninc[radnum]++;
@@ -637,7 +840,7 @@ void process_radio_panel()
 	      upxpdrsel[radnum] = 1;
 	    }
 	  }
-        }
+       // }
     upxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
     }
 
@@ -645,7 +848,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_COM1)) {
       loseldis[radnum] = 1;
-      if (radiores == 1) {
+      //if (radiores == 1) {
         if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
           locom1dbncfninc[radnum]++;
           if (locom1dbncfninc[radnum] == 3) {
@@ -677,7 +880,7 @@ void process_radio_panel()
         if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {
 	  XPLMCommandOnce(Com1ActStby);
         }
-      }
+      //}
     loactcomnavfreq[radnum] = XPLMGetDatai(Com1ActFreq);
     lostbycomnavfreq[radnum] = XPLMGetDatai(Com1StbyFreq);
     locom1[radnum] = 1;	 
@@ -687,7 +890,7 @@ void process_radio_panel()
 
    if(testbit(radiobuf[radnum],LOWER_COM2)) {
      loseldis[radnum] = 2;
-     if (radiores == 1) {
+     //if (radiores == 1) {
        if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
          locom2dbncfninc[radnum]++;
          if (locom2dbncfninc[radnum] == 3) {
@@ -719,7 +922,7 @@ void process_radio_panel()
        if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {
          XPLMCommandOnce(Com2ActStby);
        }
-     }
+     //}
     loactcomnavfreq[radnum] = XPLMGetDatai(Com2ActFreq);
     lostbycomnavfreq[radnum] = XPLMGetDatai(Com2StbyFreq);
     locom2[radnum] = 1;
@@ -729,7 +932,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_NAV1)) {
       loseldis[radnum] = 3;
-      if (radiores == 1) {
+      //if (radiores == 1) {
         if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
           lonav1dbncfninc[radnum]++;
 	  if (lonav1dbncfninc[radnum] == 3) {
@@ -762,7 +965,7 @@ void process_radio_panel()
 	if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {
 	  XPLMCommandOnce(Nav1ActStby);
         }
-      } 
+     // }
     loactcomnavfreq[radnum] = XPLMGetDatai(Nav1ActFreq);
     lostbycomnavfreq[radnum] = XPLMGetDatai(Nav1StbyFreq);
     lonav1[radnum] = 0;	 
@@ -772,7 +975,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_NAV2)) {
       loseldis[radnum] = 4;
-      if (radiores == 1) {
+      //if (radiores == 1) {
         if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
           lonav2dbncfninc[radnum]++;
 	  if (lonav2dbncfninc[radnum] == 3) {
@@ -804,7 +1007,7 @@ void process_radio_panel()
         if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {
 	  XPLMCommandOnce(Nav2ActStby);
         }
-      }
+     // }
     loactcomnavfreq[radnum] = XPLMGetDatai(Nav2ActFreq);
     lostbycomnavfreq[radnum] = XPLMGetDatai(Nav2StbyFreq);
     lonav2[radnum] = 0;	 
@@ -814,7 +1017,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_ADF)) {
       loseldis[radnum] = 5;
-      if (radiores == 1) {
+      //if (radiores == 1) {
         if (loadfsel[radnum] == 1) {
 	  if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
 	    loadfdbncfninc[radnum]++;
@@ -881,7 +1084,7 @@ void process_radio_panel()
               loadfsel[radnum] = 1;
 	    }
 	  }
-	}
+        //}
     loadffreq[radnum] = XPLMGetDatai(AdfFreq);
     }
 
@@ -908,7 +1111,7 @@ void process_radio_panel()
  
    if(testbit(radiobuf[radnum],LOWER_XPDR)) {
      loseldis[radnum] = 7;
-     if (radiores == 1) {
+     //if (radiores == 1) {
        if (loxpdrsel[radnum] == 1) {	
          if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
 	   loxpdrdbncfninc[radnum]++;
@@ -975,7 +1178,7 @@ void process_radio_panel()
                loxpdrsel[radnum] = 1;
 	     }
 	   }
-         }
+         //}
     loxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
     }
 
@@ -1031,7 +1234,7 @@ void process_radio_panel()
 /**************   then start again    *******************/
 
   radnum++;
-  if (radnum == radcnt) {
+  if (radnum == radio1cnt) {
     radnum = 0;
   }
   

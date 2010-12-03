@@ -13,6 +13,8 @@
 #include "XPLMProcessing.h"
 #include "libusb_interface.h"
 
+#include <libusb-1.0/libusb.h>
+
 
 #include <linux/hidraw.h>
 
@@ -28,25 +30,6 @@
 #include <unistd.h>
 #include <string.h>
 
-
-
-/******** Radio Panel Defines ********/
-#define RADIO0 "/dev/saitekradiopanel0"
-#define RADIO1 "/dev/saitekradiopanel1"
-#define RADIO2 "/dev/saitekradiopanel2"
-#define RADIO3 "/dev/saitekradiopanel3"
-#define RADIO4 "/dev/saitekradiopanel4"
-#define RADIO5 "/dev/saitekradiopanel5"
-#define RADIO6 "/dev/saitekradiopanel6"
-#define RADIO7 "/dev/saitekradiopanel7"
-#define RADIO8 "/dev/saitekradiopanel8"
-#define RADIO9 "/dev/saitekradiopanel9"
-#define RADIO10 "/dev/saitekradiopanel10"
-#define RADIO11 "/dev/saitekradiopanel11"
-#define RADIO12 "/dev/saitekradiopanel12"
-#define RADIO13 "/dev/saitekradiopanel13"
-#define RADIO14 "/dev/saitekradiopanel14"
-#define RADIO15 "/dev/saitekradiopanel15"
 
 /******* Multi Panel Defines *******/
 #define MULTI "/dev/saitekmultipanel"
@@ -144,11 +127,10 @@ XPLMDataRef CowlFlaps = NULL, CockpitLights = NULL, AntiIce = NULL;
 XPLMDataRef GearRetract = NULL, OnGround = NULL;
 
 /********************** Radio Panel variables ************************/
-int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
-int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
-int radiofd[4] = {-1,-1,-1,-1}, radcnt = 0, wres;
+
+int radcnt = 0, wres;
 float interval = -1;
-static char blankradiowbuf[24]= {1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11};
+//static char blankradiowbuf[24]= {1, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11};
 
 
 /********************** Multi Panel variables ***********************/
@@ -169,6 +151,7 @@ float	MyPanelsFlightLoopCallback(
 void process_radio_panel();
 void process_multi_panel();
 void process_switch_panel();
+
 
 /******************Plugin Calls ******************/
 PLUGIN_API int XPluginStart(char *		outName,
@@ -428,85 +411,13 @@ PLUGIN_API int XPluginStart(char *		outName,
   EngNum         = XPLMFindDataRef("sim/aircraft/engine/acf_num_engines");
 
 
-  if(find_saitek_panels())
-     printf("\n*************   returned true from find_saitek_panels   ******************\n");
 
-  //write_radio_panel();
+  printf("\n***********   trying to get this call working    ********************\n");
 
-/************* Open any Radio that is connected *****************/
-  radio0fd = open(RADIO0, O_RDWR), radio1fd = open(RADIO1, O_RDWR);
-  radio2fd = open(RADIO2, O_RDWR), radio3fd = open(RADIO3, O_RDWR);
-  radio4fd = open(RADIO4, O_RDWR), radio5fd = open(RADIO5, O_RDWR);
-  radio6fd = open(RADIO6, O_RDWR), radio7fd = open(RADIO7, O_RDWR);
-  radio8fd = open(RADIO8, O_RDWR), radio9fd = open(RADIO9, O_RDWR);
-  radio10fd = open(RADIO10, O_RDWR), radio11fd = open(RADIO11, O_RDWR);
-  radio12fd = open(RADIO12, O_RDWR), radio13fd = open(RADIO13, O_RDWR);
-  radio14fd = open(RADIO14, O_RDWR), radio15fd = open(RADIO15, O_RDWR);
 
-/** If any found add to list of found Radios **/
-  if (radio0fd > 0) {
-    radiofd[radcnt] = radio0fd;
-    radcnt++;
-  }
-  if (radio1fd > 0) {
-    radiofd[radcnt] = radio1fd;
-    radcnt++;
-  }
-  if (radio2fd > 0) {
-    radiofd[radcnt] = radio2fd;
-    radcnt++;
-  }
-  if (radio3fd > 0) {
-    radiofd[radcnt] = radio3fd;
-    radcnt++;
-  }
-  if (radio4fd > 0) {
-    radiofd[radcnt] = radio4fd;
-    radcnt++;
-  }
-  if (radio5fd > 0) {
-    radiofd[radcnt] = radio5fd;
-    radcnt++;
-  }
-  if (radio6fd > 0) {
-    radiofd[radcnt] = radio6fd;
-    radcnt++;
-  }
-  if (radio7fd > 0) {
-    radiofd[radcnt] = radio7fd;
-    radcnt++;
-  }
-  if (radio8fd > 0) {
-    radiofd[radcnt] = radio8fd;
-    radcnt++;
-  }
-  if (radio9fd > 0) {
-    radiofd[radcnt] = radio9fd;
-    radcnt++;
-  }
-  if (radio10fd > 0) {
-    radiofd[radcnt] = radio10fd;
-    radcnt++;
-  }
-  if (radio11fd > 0) {
-    radiofd[radcnt] = radio11fd;
-    radcnt++;
-  }
-  if (radio12fd > 0) {
-    radiofd[radcnt] = radio12fd;
-    radcnt++;
-  }
-  if (radio13fd > 0) {
-    radiofd[radcnt] = radio13fd;
-    radcnt++;
-  }
-  if (radio14fd > 0) {
-    radiofd[radcnt] = radio14fd;
-    radcnt++;
-  }
-  if (radio15fd > 0) {
-    radiofd[radcnt] = radio15fd;
-    radcnt++;
+  if(find_saitek_panels()){
+    printf("\n*************   returned true from find_saitek_panels   ******************\n");
+
   }
 
 /*** Find Connected Multi Panel *****/
@@ -534,70 +445,7 @@ PLUGIN_API void	XPluginStop(void)
 
 /*** if open close that radio panel ****/
  
-  if (radio0fd > 0) {
-    wres = write(radio0fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio0fd);
-  }
-  if (radio1fd > 0) {
-    wres = write(radio1fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio1fd);
-  }
-  if (radio2fd > 0) {
-    wres = write(radio2fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio2fd);
-  }
-  if (radio3fd > 0) {
-    wres = write(radio3fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio3fd);
-  }
-  if (radio4fd > 0) {
-    wres = write(radio4fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio4fd);
-  }
-  if (radio5fd > 0) {
-    wres = write(radio5fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio5fd);
-  }
-  if (radio6fd > 0) {
-    wres = write(radio6fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio6fd);
-  }
-  if (radio7fd > 0) {
-    wres = write(radio7fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio7fd);
-  }
-  if (radio8fd > 0) {
-    wres = write(radio8fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio8fd);
-  }
-  if (radio9fd > 0) {
-    wres = write(radio9fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio9fd);
-  }
-  if (radio10fd > 0) {
-    wres = write(radio10fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio10fd);
-   }
-  if (radio11fd > 0) {
-    wres = write(radio11fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio11fd);
-  }
-  if (radio12fd > 0) {
-    wres = write(radio12fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio12fd);
-  }
-  if (radio13fd > 0) {
-    wres = write(radio13fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio13fd);
-   }
-  if (radio14fd > 0) {
-    wres = write(radio14fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio14fd);
-  }
-  if (radio15fd > 0) {
-    wres = write(radio15fd, blankradiowbuf, sizeof(blankradiowbuf));
-    close(radio15fd);
-  }
+
 
 /*** if open close that multi panel ****/
   if (multifd > 0) {
@@ -649,9 +497,17 @@ float	MyPanelsFlightLoopCallback(
     (void) inRefcon; // To get rid of warnings on unused variables
 
 
-  if(radcnt > 0){
+  //if(radcnt > 0){
+  //  process_radio_panel();
+  //}
+
+  if((radio_handle[1]) != NULL){
+    printf("found first radio ok to process\n");
     process_radio_panel();
   }
+
+
+
   if(multifd > 0){
     process_multi_panel();
   }

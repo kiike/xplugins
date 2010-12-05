@@ -3,15 +3,33 @@
 #include <stdio.h>
 #include <unistd.h>
 
+/*
+enum {
+    LIB_USB_CLOSED,
+    LIB_USB_OPENED,
+    LIB_USB_DEVICE_OPENDED,
+    LIB_USB_KERNEL_DETACHED,
+    LIB_USB_INTERFACE_CLAIMED,
+    LIB_USB_TRANSFERS_ALLOCATED
+} libusb_state = LIB_USB_CLOSED;
+
+*/
 
 static libusb_device **devs; //pointer to pointer of device, used to retrieve a list of devices
 static libusb_context *context = NULL; //a libusb session
 static libusb_context *ctx = NULL;     //a libusb session
+
+static struct libusb_transfer *interrupt_transfer;
+
 libusb_device_handle *radio_handle[4];
 
 libusb_device_handle *multi_handle;
 libusb_device_handle *switch_handle;
+
+
+
 unsigned char radiowdata[4][20]; //data to write
+unsigned char radiodata[4][3];   //data to read
 
 int radiocnt = 0, multicnt = 0, switchcnt = 0;
 int radionumb = 0;
@@ -19,13 +37,14 @@ int radionumb = 0;
 int r; //for return values
 
 
+
 bool find_saitek_panels()
 {
-   //int r; //for return values
+
    ssize_t cnt; //holding number of devices in list
    r = libusb_init(&context);  //initialize a library session
    libusb_device_descriptor desc;
-   //int radiocnt = 0;
+
    if(r != 0)              //there was an init error
      return false;
    libusb_set_debug(ctx, 3); //set verbosity level to 3, as suggested in the documentation
@@ -128,6 +147,24 @@ bool find_saitek_panels()
 }
 
 
+static void event_callback(struct libusb_transfer *transfer)
+{
+    printf("event_callback length=%d actual_length=%d: ",
+           transfer->length, transfer->actual_length);
+        if (transfer->status == LIBUSB_TRANSFER_COMPLETED) {
+        int i;
+        for (i=0;i<transfer->actual_length; i++) printf("0x%02x ", transfer->buffer[i]);
+        printf("\n");
+
+        //hci_dump_packet( HCI_EVENT_PACKET, 1, transfer->buffer, transfer->actual_length);
+        //event_packet_handler(transfer->buffer, transfer->actual_length);
+    }
+        //int r = libusb_submit_transfer(transfer);
+        //if (r) {
+        //        printf("Error submitting interrupt transfer %d\n", r);
+        //}
+}
+
 bool write_radio_panel(libusb_device_handle *radio_handle, unsigned char radiowdata[]){
 
 
@@ -138,10 +175,10 @@ bool write_radio_panel(libusb_device_handle *radio_handle, unsigned char radiowd
             0,                        //index
             radiowdata,    //data
             20,                       //length
-            500);                    //timeout
+            50);                    //timeout
 
 
-    if(r > 0) //we wrote the 4 bytes successfully
+    if(r > 0) //we wrote the 20 bytes successfully
             printf("Writing To Radio Successfuly!\n");
     else
             printf("Write To Radio Error\n");
@@ -150,61 +187,47 @@ bool write_radio_panel(libusb_device_handle *radio_handle, unsigned char radiowd
 }
 
 
-bool test_write_radio_panel(){
+bool async_read_radio_panel(libusb_device_handle *radio_handle, unsigned char radiodata[]){
 
-    unsigned char radiowdata[4][20];
+    interrupt_transfer = libusb_alloc_transfer(0); // 0 isochronous transfers Events
 
-    radiowdata[1][0] = 1, radiowdata[1][1] = 1, radiowdata[1][2] = 1, radiowdata[1][3] = 1;
-    radiowdata[1][4] = 5, radiowdata[1][5] = 6, radiowdata[1][6] = 7, radiowdata[1][7] = 8;
-    radiowdata[1][8] = 9, radiowdata[1][9] = 0, radiowdata[1][10] = 1, radiowdata[1][11] = 2;
-    radiowdata[1][12] = 3, radiowdata[1][13] = 4, radiowdata[1][14] = 5, radiowdata[1][15] = 6;
-    radiowdata[1][16] = 7, radiowdata[1][17] = 8, radiowdata[1][18] = 9, radiowdata[1][19] = 0;
+    // interrupt (= HCI event) handler
+    libusb_fill_interrupt_transfer(interrupt_transfer, radio_handle, 0x81, radiodata, 3, event_callback, NULL, 3000) ;
+        // interrupt_transfer->flags = LIBUSB_TRANSFER_SHORT_NOT_OK;
+    r = libusb_submit_transfer(interrupt_transfer);
+    if (r) {
+                printf("Error submitting interrupt transfer %d\n", r);
+    }
+    printf("interrupt started\n");
 
-    radiowdata[2][0] = 2, radiowdata[2][1] = 2, radiowdata[2][2] = 2, radiowdata[2][3] = 2;
-    radiowdata[2][4] = 5, radiowdata[2][5] = 6, radiowdata[2][6] = 7, radiowdata[2][7] = 8;
-    radiowdata[2][8] = 9, radiowdata[2][9] = 0, radiowdata[2][10] = 1, radiowdata[2][11] = 2;
-    radiowdata[2][12] = 3, radiowdata[2][13] = 4, radiowdata[2][14] = 5, radiowdata[2][15] = 6;
-    radiowdata[2][16] = 7, radiowdata[2][17] = 8, radiowdata[2][18] = 9, radiowdata[2][19] = 0;
-
-
-
- //unsigned char radio1wbuf[4][20]= {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-
- r = libusb_control_transfer(radio_handle[1], //handle
-         LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE|LIBUSB_ENDPOINT_OUT,  //request type
-         0x09,                     //HID set_report request
-         (3<< 8),                  //HID feature value
-         0,                        //index
-         radiowdata[1],    //data
-         20,                       //length
-         500);                    //timeout
-
-
- if(r > 0) //we wrote the 4 bytes successfully
-         printf("radio Writing Successful!\n");
- else
-         printf("radio Write Error\n");
-
- r = libusb_control_transfer(radio_handle[2], //handle
-         LIBUSB_REQUEST_TYPE_CLASS|LIBUSB_RECIPIENT_INTERFACE|LIBUSB_ENDPOINT_OUT,  //request type
-         0x09,                     //HID set_report request
-         (3<< 8),                  //HID feature value
-         0,                        //index
-         radiowdata[2],    //data
-         20,                       //length
-         500);                    //timeout
-
-
- if(r > 0) //we wrote the 4 bytes successfully
-         printf("radio Writing Successful!\n");
- else
-         printf("radio Write Error\n");
-
- return true;
-
-
+    return true;
 
 }
+
+bool sync_read_radio_panel(libusb_device_handle *radio_handle, unsigned char radiodata[]){
+
+
+    int transfered;
+    r = libusb_interrupt_transfer(radio_handle,
+                                  0x81,
+                                  radiodata,
+                                  3, //length
+                                  &transfered,
+                                  500);
+
+    //cout<<"Read Data -> "<<radiodata[radcnt]<<  "<- -> ";
+    // cout<<"transfered -> "<<transfered<<  " ";
+    if(r == 0) //we read the 3 bytes successfully
+            printf("Reading Successful!\n");
+    else
+            printf("Read Error\n");
+
+
+
+    return true;
+
+}
+
 
 
 

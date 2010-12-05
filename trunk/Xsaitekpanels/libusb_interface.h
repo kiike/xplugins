@@ -10,10 +10,19 @@ extern unsigned char radiowdata[];
 //  Find saitek radio multi and switch panels
 //  Returns true if no problems were encountered
 bool find_saitek_panels();
+
+
+
 bool write_radio_panel(libusb_device_handle *radio_handle, unsigned char radiowdata[]);
+
+bool async_read_radio_panel(libusb_device_handle *radio_handle, unsigned char radiodata[]);
+
+bool sync_read_radio_panel(libusb_device_handle *radio_handle, unsigned char radiodata[]);
+
 bool close_saitek_panels();
 
-bool test_write_radio_panel();
+
+
 
 
 #endif // LIBUSB_INTERFACE_H

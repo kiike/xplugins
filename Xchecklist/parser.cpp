@@ -515,11 +515,7 @@ bool checklist::triggered()
 bool checklist_binder::do_processing(bool visible)
 {
   if(visible){
-     if(!speaking()){
-        return checklists[current]->process_datarefs();
-     }else{
-        return true;
-     }
+    return checklists[current]->do_processing();
   }else{
     for(unsigned int i = 0; i < checklists.size(); ++i){
       if(checklists[i]->triggered()){
@@ -530,29 +526,64 @@ bool checklist_binder::do_processing(bool visible)
   }
 }
 
-bool checklist::process_datarefs()
+bool checklist::do_processing()
 {
   if(current_item > -1){
-    items[current_item]->process();
+    items[current_item]->do_processing();
   }
   return true;
 }
 
 bool chk_item::activate()
 {
-  if(label != NULL){
-    label->say_label();
-  }
-  bool res = activate_item(index);
-  return res;
+  state = INACTIVE;
+  return true;
 }
 
-bool chk_item::process()
+bool chk_item::do_processing()
 {
-  if((dataref != NULL) && dataref->trigered()){
-    label->say_suffix();
-    return check_item(index);
-  }
+
+    switch(state){
+    case INACTIVE:
+        if(speech_active()){
+            label->say_label();
+            state = SAY_LABEL;
+        }else{
+            state = CHECKABLE;
+        }
+        break;
+    case SAY_LABEL:
+        if(spoken()){
+            state = CHECKABLE;
+        }
+        break;
+    case CHECKABLE:
+        activate_item(index);
+        checked = false;
+        state = PROCESSING;
+        break;
+    case PROCESSING:
+        if(checked){
+            state = NEXT;
+            break;
+        }
+        if((dataref != NULL) && dataref->trigered()){
+          state = SAY_SUFFIX;
+          label->say_suffix();
+        }
+        break;
+    case SAY_SUFFIX:
+        if(spoken()){
+            state = NEXT;
+        }
+        break;
+    case NEXT:
+        return check_item(index);
+        break;
+    default:
+        state = INACTIVE; //defensive
+        break;
+    }
   return true;
 }
 

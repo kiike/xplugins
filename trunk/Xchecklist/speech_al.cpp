@@ -53,6 +53,7 @@ int speech_alespeak::sample_rate = -1;
 int esp_callback(short *wav, int numsamples, espeak_EVENT *events);
 
 static speech_alespeak *speech = NULL;
+static bool spoken_flag;
 
 
 int speech_alespeak::init_speech()
@@ -150,7 +151,7 @@ speech_alespeak::speech_alespeak()
   std::cout<<"Initializing speech!"<<std::endl;
   used_buffers = 0;
   format = AL_FORMAT_MONO16;
-  verbose_flag = false;
+  verbose_flag = true;
   report_success = true;
 
   if(sample_rate < 0){
@@ -311,7 +312,8 @@ int esp_callback(short *wav, int numsamples, espeak_EVENT *events)
 	break;
       case espeakEVENT_MSG_TERMINATED:
         msg = "Terminated!";
-	break;
+        spoken_flag = true;
+        break;
       case espeakEVENT_PHONEME:
         msg = "Phoneme!";
 	break;
@@ -396,10 +398,10 @@ void speech_alespeak::say(std::string text)
     espeakCHARS_8BIT | espeakSSML, &id, NULL);
 }
 
-
 void say(const char *text)
 {
   if(speech != NULL){
+    spoken_flag = false;
     speech->say(text);
   }
 }
@@ -419,6 +421,24 @@ bool speaking()
     return speech->speaking();
   }
   return false;
+}
+
+bool spoken()
+{
+    if(speech != NULL){
+        return spoken_flag;
+    }else{
+        return true;
+    }
+}
+
+bool speech_active()
+{
+    if(speech != NULL){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 void close_speech()

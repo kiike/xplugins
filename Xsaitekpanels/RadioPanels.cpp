@@ -23,7 +23,8 @@
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
-static int radnum = 1, loopcnt[4] = {0, 0, 0, 0};
+static int radnum = 1;
+static int loopcnt[4] = {0, 0, 0, 0};
 //static int radionowrite[4] = {0, 0, 0, 0};
 
 static int upactcomnavfreq[4], upstbycomnavfreq[4], loactcomnavfreq[4], lostbycomnavfreq[4];
@@ -253,6 +254,11 @@ void process_radio_panel()
         radiowbuf[radnum][16] = radioddigit2, radiowbuf[radnum][17] = radioddigit3;
         radiowbuf[radnum][18] = radioddigit4, radiowbuf[radnum][19] = radioddigit5;
 
+//******************************************************************************************
+// Trying to get my reading and writing working correctly
+
+
+
 
 
          write_radio_panel(radio_handle[radnum], radiowbuf[radnum]);
@@ -261,19 +267,19 @@ void process_radio_panel()
 
          //Trying to get async working but it seems to crash Linux
          //async_read_radio_panel(radio_handle[radnum], radiobuf[radnum]);
-         //printf("Radio # %d Reading Data\n", radnum);
+         //printf("Radio # %d async_read_radio_panel Reading Data\n", radnum);
 
          //sync works but with real slow frame rates
          //This kinda works but is not the correct approach
          loopcnt[radnum]++;
-         if (loopcnt[radnum] == 50){
-         sync_read_radio_panel(radio_handle[radnum], radiobuf[radnum]);
-         printf("Radio # %d Reading Data\n", radnum);
-         loopcnt[radnum] = 0;
+         if (loopcnt[radnum] == 150){
+           sync_read_radio_panel(radio_handle[radnum], radiobuf[radnum]);
+           printf("Radio # %d sync_read_radio_panel Reading Data\n", radnum);
+           loopcnt[radnum] = 0;
          }
 
 
-
+//***************************************************************************************************
 
 
 

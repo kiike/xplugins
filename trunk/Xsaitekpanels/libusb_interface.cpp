@@ -32,7 +32,7 @@ unsigned char radiowdata[4][20]; //data to write
 unsigned char radiodata[4][3];   //data to read
 
 int radiocnt = 0, multicnt = 0, switchcnt = 0;
-int radionumb = 0;
+int radionumb = 0, firstpass = 0;
 
 int r; //for return values
 
@@ -163,6 +163,10 @@ static void event_callback(struct libusb_transfer *transfer)
         //if (r) {
         //        printf("Error submitting interrupt transfer %d\n", r);
         //}
+
+        // Release the USB transfer...
+        //libusb_free_transfer( transfer );
+
 }
 
 bool write_radio_panel(libusb_device_handle *radio_handle, unsigned char radiowdata[]){
@@ -189,20 +193,28 @@ bool write_radio_panel(libusb_device_handle *radio_handle, unsigned char radiowd
 
 bool async_read_radio_panel(libusb_device_handle *radio_handle, unsigned char radiodata[]){
 
-    interrupt_transfer = libusb_alloc_transfer(0); // 0 isochronous transfers Events
+      if(firstpass == 0){
+        interrupt_transfer = libusb_alloc_transfer(0); // 0 isochronous transfers Events
+        firstpass = 1;
+        printf("first pass async_read_radio_panel\n");
+      }
 
     // interrupt (= HCI event) handler
     libusb_fill_interrupt_transfer(interrupt_transfer, radio_handle, 0x81, radiodata, 3, event_callback, NULL, 3000) ;
         // interrupt_transfer->flags = LIBUSB_TRANSFER_SHORT_NOT_OK;
     r = libusb_submit_transfer(interrupt_transfer);
-    if (r) {
-                printf("Error submitting interrupt transfer %d\n", r);
+    if (r == 0) {
+       printf("interrupt started\n");
+       return true;
     }
-    printf("interrupt started\n");
+    if(r == -6){
+     printf("LIBUSB_ERROR_BUSY = -6\n");
+     return true;
+    }
+     else
+       return false;
 
-    return true;
-
-}
+   }
 
 bool sync_read_radio_panel(libusb_device_handle *radio_handle, unsigned char radiodata[]){
 
@@ -233,6 +245,7 @@ bool sync_read_radio_panel(libusb_device_handle *radio_handle, unsigned char rad
 
 bool close_saitek_panels(){
    radionumb = radiocnt;
+   libusb_free_transfer(interrupt_transfer);
    while (radionumb > 0){
      r = libusb_release_interface(radio_handle[radionumb], 0); //release the claimed interface
      if(r!=0) {

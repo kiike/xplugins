@@ -10,7 +10,10 @@ bool start_checklists(char *fname)
   if(!parse_clist(fname, 0)){
     return false;
   }
-  return binder->select_checklist(0);
+  if(binder != NULL){
+    return binder->select_checklist(0);
+  }
+  return false;
 }
 
 bool stop_checklists()

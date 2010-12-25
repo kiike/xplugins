@@ -32,6 +32,7 @@
 #include <windows.h>
 #endif
 #include <vector>
+#include <string>
 
 checklist_binder *binder = NULL;
 
@@ -241,6 +242,24 @@ bool create_checklists_menu(void)
   return false;
 }
 
+char *find_checklist(char *path)
+{
+    std::string name1 = std::string(path) + "/clist.txt";
+    std::string name2 = std::string(path) + "/plane.txt";
+    FILE *f;
+    if((f = fopen(name1.c_str(), "r")) != NULL){
+        fclose(f);
+        return strdup(name1.c_str());
+    }
+
+    if((f = fopen(name2.c_str(), "r")) != NULL){
+        fclose(f);
+        return strdup(name2.c_str());
+    }
+    return NULL;
+}
+
+
 bool init_checklists()
 {
         XPLMGetNthAircraftModel(0, FileName, AircraftPath);
@@ -248,22 +267,21 @@ bool init_checklists()
 	if(strlen(AircraftPath) == 0){
 	  return false; 
 	}
+        //Aircraft path contains path to the *.acf file
+        //  but we need only the directory name
 	char *myACFPath = strdup(AircraftPath);
 	char *last_slash = strrchr(myACFPath, '/');
 	*(++last_slash) = '\0';
-        //Add clist.txt to aircraft path
-        size_t size = strlen(myACFPath) + strlen("clist.txt") + 1; //strlen doesn't count terminating null byte!
-        char *cat = (char *)malloc(size); //allocate memory
-        snprintf(cat, size, "%s%s", myACFPath, "clist.txt");
-        //printf("\nPrefs Path  %s \n\n", cat);
 
-        printf("\nFilename  %s  \n\nAircraft Path  %s \n\n", FileName, cat);
-        checklists_count = -1; // to make it rebuild menus...
-        //Get corect checklist for current aircraft
-        bool res = start_checklists((char *)cat);
-        free(cat);
+        bool res = false;
+        char *clist = find_checklist(myACFPath);
+        if(clist != NULL){
+          res = start_checklists(clist);
+        }
+        free(clist);
         free(myACFPath);
-	return res;
+        checklists_count = -1; // to make it rebuild menus...
+        return res;
 }
 
 bool get_truth_val(const char* str)

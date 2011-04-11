@@ -2,7 +2,7 @@
 //
 //     Xchecklist Plugin
 //
-//     Michal
+//     Michal Navratil
 //     William Good
 //
 //
@@ -56,7 +56,7 @@ int Item;
 char FileName[256], AircraftPath[256];
 char prefsPath[256];
 
-enum {NEXT_CHECKLIST_COMMAND, CHECK_ITEM_COMMAND};
+enum {NEXT_CHECKLIST_COMMAND, CHECK_ITEM_COMMAND, HIDE_CHECKLIST_COMMAND};
 
 int MyCommandCallback(
                                    XPLMCommandRef       inCommand,
@@ -92,6 +92,7 @@ XPLMCommandRef nextchecklist = NULL;
 
 XPLMCommandRef cmdcheckitem;
 XPLMCommandRef cmdnextchecklist;
+XPLMCommandRef cmdhidechecklist;
 
 int checklists_count = -1;
 
@@ -123,7 +124,7 @@ PLUGIN_API int XPluginStart(
 {
         int		PluginSubMenuItem;
 	int             ChecklistsSubMenuItem;
-        strcpy(outName, "Xchecklist");
+        strcpy(outName, "Xchecklist v.1");
         strcpy(outSig, "Michal_Bill.Example.Xchecklist");
         strcpy(outDesc, "A plugin to display checklists in a widget window.");
 
@@ -168,8 +169,9 @@ PLUGIN_API int XPluginStart(
         do_cleanup();
 	init_checklists();
 
-        cmdcheckitem = XPLMCreateCommand("sim/operation/check_item","Check Item");
-        cmdnextchecklist = XPLMCreateCommand("sim/operation/next_checklist","Next Checklist");
+        cmdcheckitem = XPLMCreateCommand("xplugins/xchecklist/check_item","Check Item");
+        cmdnextchecklist = XPLMCreateCommand("xplugins/xchecklist/next_checklist","Next Checklist");
+        cmdhidechecklist = XPLMCreateCommand("xplugins/xchecklist/hide_checklist","Hide Checklist");
 
         XPLMRegisterCommandHandler(
                     cmdcheckitem,
@@ -182,6 +184,12 @@ PLUGIN_API int XPluginStart(
                     MyCommandCallback,
                     true,
                     (void *)NEXT_CHECKLIST_COMMAND);
+
+        XPLMRegisterCommandHandler(
+                    cmdhidechecklist,
+                    MyCommandCallback,
+                    true,
+                    (void *)HIDE_CHECKLIST_COMMAND);
 
         return 1;
 }
@@ -947,7 +955,10 @@ int MyCommandCallback(XPLMCommandRef       inCommand,
                 XPSetWidgetProperty(setupCheckWidget[1], xpProperty_ButtonState, 1);
                 XPShowWidget(xCheckListWidget);
             break;
-        }
+        case HIDE_CHECKLIST_COMMAND:
+            XPHideWidget(xCheckListWidget);
+            break;
+         }
     }
 
     return 1;

@@ -124,7 +124,7 @@ PLUGIN_API int XPluginStart(
 {
         int		PluginSubMenuItem;
 	int             ChecklistsSubMenuItem;
-        strcpy(outName, "Xchecklist v.2");
+        strcpy(outName, "Xchecklist ver 0.01");
         strcpy(outSig, "Michal_Bill.Example.Xchecklist");
         strcpy(outDesc, "A plugin to display checklists in a widget window.");
 

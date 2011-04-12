@@ -363,8 +363,11 @@ bool dataref_dsc::checkTrig(float val)
 
 bool dataref_dsc::trigered()
 {
-  float val = get_float_dataref(dataref_struct);
   bool res = false; 
+  if(dataref_struct == NULL){
+    return res;
+  }
+  float val = get_float_dataref(dataref_struct);
   switch(op){
     case NOT:
       res = (val == *val1) ? false : true;

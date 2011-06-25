@@ -5,6 +5,8 @@
 //     Michal Navratil
 //     William Good
 //
+//     Ver 0.5 First version in down load section of
+//     X-Plane.org
 //
 //     A plugin to display a clist.txt in widget window
 //
@@ -124,7 +126,7 @@ PLUGIN_API int XPluginStart(
 {
         int		PluginSubMenuItem;
 	int             ChecklistsSubMenuItem;
-        strcpy(outName, "Xchecklist ver 0.01");
+        strcpy(outName, "Xchecklist ver 0.5");
         strcpy(outSig, "Michal_Bill.Example.Xchecklist");
         strcpy(outDesc, "A plugin to display checklists in a widget window.");
 

@@ -2,15 +2,15 @@
 TEMPLATE = lib
 QT -= gui core
 
-CONFIG += warn_on plugin debug
-CONFIG -= thread exceptions qt rtti release
+CONFIG += warn_on plugin release
+CONFIG -= thread exceptions qt rtti debug
 
 VERSION = 1.0.0
 
 INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Wrappers
 INCLUDEPATH += ../SDK/CHeaders/Widgets
-
+INCLUDEPATH += /usr/src/linux-headers-2.6.39-020639rc4/include
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200
@@ -27,8 +27,6 @@ unix:!macx {
     TARGET = lin.xpl
     # WARNING! This requires the latest version of the X-SDK !!!!
     QMAKE_CXXFLAGS += -fvisibility=hidden
-    QMAKE_CFLAGS += -g -c `pkg-config libusb-1.0 --cflags`
-    LIBS+= `pkg-config libusb-1.0 --libs`
 }
 
 macx {
@@ -43,14 +41,10 @@ macx {
     CONFIG += x86 ppc
 }
 
-HEADERS += \
-    SaitekPanels.h \
-    libusb_interface.h
+HEADERS += saitekpanels.h
 
 
-SOURCES += \
-    RadioPanels.cpp \
-    SwitchPanel.cpp \
-    SaitekPanels.cpp \
-    MultiPanel.cpp \
-    libusb_interface.cpp
+SOURCES += saitekpanels.cpp\
+    radiopanels.cpp \
+    multipanel.cpp \
+    switchpanel.cpp

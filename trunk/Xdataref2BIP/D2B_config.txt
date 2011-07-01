@@ -1,0 +1,40 @@
+Fill this file with your button assignments!
+
+Read the manual!
+
+This is Button2DataRef 1.4
+
+#SET BIP A 0 R FROM  ARRAY sim/cockpit2/annunciators/generator_off 0 RANGE 1 TO 1
+#SET BIP A 1 R FROM  DATAREF sim/cockpit/warnings/annunciators/low_voltage RANGE 1 TO 1
+#SET BIP A 2 R FROM  DATAREF sim/cockpit2/annunciators/fuel_quantity RANGE 1 TO 1
+#SET BIP A 3 R FROM  DATAREF sim/cockpit2/controls/parking_brake_ratio RANGE 1 TO 1
+#SET BIP B 0 R FROM  ARRAY sim/cockpit2/annunciators/oil_pressure_low 0 RANGE 1 TO 1
+#SET BIP B 1 R FROM  ARRAY sim/cockpit2/annunciators/oil_temperature_high 0 RANGE 1 TO 1
+#SET BIP B 2 R FROM  DATAREF sim/cockpit2/annunciators/low_vacuum RANGE 1 TO 1
+#SET BIP B 3 R FROM  DATAREF sim/cockpit2/annunciators/autopilot_disconnect RANGE 1 TO 1
+
+[BIP_TEST]
+#SET BIP A 0 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP A 1 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP A 2 A FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP A 3 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP A 4 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP A 5 A FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP A 6 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP A 7 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 0 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 1 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 2 A FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 3 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 4 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 5 A FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 6 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP B 7 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 0 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 1 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 2 A FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 3 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 4 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 5 A FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 6 G FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1
+#SET BIP C 7 R FROM  DATAREF sim/cockpit/warnings/annunciator_test_pressed RANGE 1 TO 1

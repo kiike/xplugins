@@ -1,0 +1,37 @@
+First I want to thank Carsten of "Button2DataRef" fame for allowing me to use his program as a starting block for my Xdataref2BIP. My program allows a similar config file as "Button2DataRef" uses to tell the Saitek BIP which indicators and what color to turn from a data reference. There is one issue that I have to get resolved before I can release this. For some reason I cannot get this panel to initialize in Linux. I have to run the setup program in windows and after that this panel will work great until I reboot or shutdown. I have been using Virtual box to make this painless but for the Linux people that this is not a option I must find a solution. 
+
+ This is a fat plugin so the folder named Xdataref2BIP will have a lin.xpl and a D2B_config.txt in it and it will reside in /Resources/plugins/Xdataref2BIP. The default D2B_config.txt that comes with this archive will emulate a Cessna 172 indicator panel in a 4 wide by 2 high fashion. There is also a test function that will turn on all of the indicators.
+
+
+The first thing to know is only things that start with a # sign will execute. This means that all other lines are comments.
+
+
+#SET BIP A 0 R FROM  ARRAY sim/cockpit2/annunciators/generator_off 0 RANGE 1 TO 1
+
+
+So to start we have #SET BIP translation we will set a indicator on the BIP
+
+We have three rows of indicators A, B, C so that is the A or the top row.
+
+We have 8 positions 0 - 7 so this is first position
+
+We have three colors R, G, A for red, green and amber
+
+So that is the A 0 R part
+
+Next we have FROM  ARRAY which in the first example is a generator which we can have more than one.
+
+sim/cockpit2/annunciators/generator_off is the array that we will be using to turn a indicator
+
+0 RANGE 1 TO 1 means that when generator 0 turns on the indicator will also 
+
+
+Next is a FROM  DATAREF so the only difference is that it is not a array
+
+
+#SET BIP A 1 R FROM  DATAREF sim/cockpit/warnings/annunciators/low_voltage RANGE 1 TO 1
+
+
+Hope this helps and will work on this more in the future.
+
+Bill

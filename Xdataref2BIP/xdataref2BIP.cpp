@@ -463,8 +463,6 @@ PLUGIN_API int XPluginStart(
     strcpy(outSig, "BIP_Plugin.D2B");
     strcpy(outDesc, "Plugin for Saitek BIP.");
 
-    //gJoystickButtonsXDataRef = XPLMFindDataRef("sim/joystick/joystick_button_values");
-    //gJoystickAxisXDataRef = XPLMFindDataRef("sim/joystick/joystick_axis_values");
     gTimeSimIsRunningXDataRef = XPLMFindDataRef("sim/time/total_running_time_sec");
 
     for (int i = 0; i < MAXINDICATORS; i++)
@@ -476,20 +474,14 @@ PLUGIN_API int XPluginStart(
 
 
     /*** Find Connected Bip Panel *****/
-      printf("*****************  Try to open bipfd = %d", bipfd);
-      printf("  ***********************\n");
+
       bipfd = open(BIP, O_RDWR);
-      /*** if open close that bip panel ****/
-
-
 
     // Check in the main function
     XPLMRegisterFlightLoopCallback(
         D2BLoopCallback,	    /* Callback */
         -1.0,               	/* Interval */
         NULL);  	     	    /* refcon not used. */
-
-
 
     D2BWidgetID = XPCreateWidget(XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-150,
                                  XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")),
@@ -516,9 +508,8 @@ PLUGIN_API void    XPluginStop(void)
       if (bipfd > 0) {
         bipwbuf[9] = 0,bipwbuf[17] = 0,bipwbuf[25] = 0;
         bipwbuf[33] = 0,bipwbuf[41] = 0,bipwbuf[49] = 0;
-
-        ioctl(bipfd, HIDIOCSFEATURE(50), bipwbuf);
-        /*write(multifd, blankmultiwbuf, sizeof(blankmultiwbuf));*/
+        //ioctl(bipfd, HIDIOCSFEATURE(50), bipwbuf);
+        bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
         close(bipfd);
       }
 }
@@ -583,8 +574,6 @@ float	D2BLoopCallback(
     }
 
     Now = XPLMGetDataf(gTimeSimIsRunningXDataRef);
-
-
 
     for (i = 0; i <= LastTableElement; i++)
     {
@@ -685,8 +674,6 @@ float	D2BLoopCallback(
 
             continue;
         }
-
-
 
         if (D2BTable[i].WhatToDo == 'T')  // "#RESET AUTHORITY"
         {
@@ -853,7 +840,8 @@ float	D2BLoopCallback(
     //ActualValues[2499] = 0;
     if (bipfd > 0) {
 
-        bipfdw = ioctl(bipfd, HIDIOCSFEATURE(50), bipwbuf);
+        //bipfdw = ioctl(bipfd, HIDIOCSFEATURE(50), bipwbuf);
+        bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
 
     }
 

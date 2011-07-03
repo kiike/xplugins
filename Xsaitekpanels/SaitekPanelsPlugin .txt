@@ -1,0 +1,76 @@
+Thanks to Sandy Barbour, Tom Sedge, Michal (uglyDwarf), Philipp, Stefan Oberender, Andy Goldstein, Bernhard (JaXXoN) and Fabio I have completed my plugin for the Saitek Pro Flight Panels. This version has my three seprate versions combinded into one plugin and supports the switch panel, multiple radio panels and the multi panel. I plan to add the Saitek Pro Flight Yoke some time in the future. Since I am dedicated to X-Plane on Ubuntu I needed all my panels to fully work and think I have achived that. I'm making this available free to the Linux X-Plane community.
+
+Here is a link to the switch panel web site http://www.saitek.com/uk/prod/pfpanel.htm
+The switch panel is fully supported:
+
+- Engine mags off for up to four engines (Up to eight if needed).
+- Engine mags right for up to four engines (Up to eight if needed).
+- Engine mags left for up to four engines (Up to eight if needed).
+- Engine mags left for up to four engines (Up to eight if needed).
+- Engine mags both for up to four engines (Up to eight if needed).
+- Engine start for up to four engines (Up to eight if needed).
+- Master generator for up to four generators (Up to eight if needed).
+- Master Battery switch for up to two batteries.
+- Avionics master switch.
+- Fuel pump switch for up to four pumps (Up to eight if needed).
+- De-Ice systems switch.
+- Pitot heat switch.
+- Cowl Flaps for up to four engines ( Up to eight if needed).
+- Panel lights switch.
+- Beacon light switch.
+- Nav lights switch.
+- Strobe lights switch.
+- Taxi lights switch.  
+- Landing Lights switch.
+- Gear Up and Down lever.
+- Gear Up and Down indicator (green is down and good and up is off)
+
+
+Here is a link to the radio panel web site http://www.saitek.com/uk/prod/pfradio.htm 
+The radio panel is fully supported:
+
+- COM1/COM2, NAV1/NAV2, ADF, DME, Transponder available using the upper and lower radios.
+- Inner/outer knob adjustments to set fractional and integer radio frequency's like in the real world.
+- Have desensitized the knob adjustments to make single digit changes easer.
+- Active/Standby buttons work with COM1/COM2 and NAV1/NAV2 like in the real world.
+- Active/Standby buttons select individual digit adjustment for ADF and Transponder like in real world.
+- Radios follow avionics on and battery on.
+
+
+Here is a link to the multi panel web site http://www.saitek.com/uk/prod/pfmulti.htm
+The multi panel is fully supported:
+
+- Flaps up/down.
+- Autothrottle off/armed.
+- Elevator trim up/down.
+- FD mode selection and display using the rotary switch.
+- Asjustment of FD ALT, VS, IAS, HDG, CRS using a desensitized knob.
+- AP, HDG, NAV, IAS, ALT, VS, APR, REV modes supported and functional.
+- Mode indicator lights flash for armed and solid for active.
+
+
+My supported platforms are Ubuntu 9.10 & 10.04 and X-Plane 9.50, 9.55, 9.60, 9.61
+
+To install: Extract the LinuxSaitekPanelsPlugin.tar.gz file and you will have two files. Put the saitekpanels.xpl into your Resources/plugins directory and put the 51-SaitekPanels.rules into your lib/udev/rules.d directory. You will have to reboot for the rule to become active and you should have a saitekpanels file in your dev directory if all is working correctly.
+
+Please connect your panels before starting X-Plane and keep them connected until after you shut X-Plane down.
+
+Release version 1.00 merged my three seperate plugins into one.
+
+Updated version 1.05 for improved frame rates. Put version number in outDesc field.
+
+Updated version 1.06 minor bug with multi panel display on initialization. Moved version number to outName field.
+
+Updated version 1.07 Changed how Flight Dir operates from the AP button. From off postion of the Flight Dir first press of AP button puts Fliught Dir in the ON position, Second press puts the Flight Dir in the Auto position and the the next press turns the Flight Dir to the off position.
+
+Updated version 1.08 When X-Plane turns off I blank out the led displays on the radio and multi panels. I also turn off the leds on the switch and multi panel at the same time. I have fixed the landing gear leds to turn red if you move the gear selector to up when you are on the ground.
+
+Updated version 1.09 Fixed a bug when displaying a negative vertical speed on the multi panel.
+
+Updated version 1.10 Fixed a bug with the trim wheel on the multi panel. Also improved the button leds for autopilot on the multi panel.
+
+You'll find the plugin in the download manager.
+
+Bill
+
+

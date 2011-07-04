@@ -2,6 +2,7 @@
 //
 // Version 1.0
 // William Good
+// 07-04-11
 
 
 #if IBM
@@ -58,8 +59,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 using namespace std;
 
 #define MAXTABLEELEMENTS 1000
-//#define MAXBUTTONS 1600
-//#define MAXINTERNBUTTONS 2500
+
 //MAXINDICATORS is the number of indicators in one row
 #define MAXINDICATORS 8
 
@@ -430,9 +430,6 @@ bool ReadConfigFile(string PlaneICAO)
             continue;
         }
 
-
-
-
         if (LineToEncrypt.find('#') == 0)
         {
             logMsg("Xdataref2BIP: Can't understand the line of code!");
@@ -473,9 +470,13 @@ PLUGIN_API int XPluginStart(
 
 
 
-    /*** Find Connected Bip Panel *****/
-
+    //   Find Connected Bip Panel
       bipfd = open(BIP, O_RDWR);
+   //  If Found Set brightness to full (0 - 100)
+      if (bipfd > 0) {
+        bipwbuf[0] = 0,bipwbuf[1] = 0xb2,bipwbuf[2] = 100;
+        bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
+      }
 
     // Check in the main function
     XPLMRegisterFlightLoopCallback(
@@ -508,7 +509,6 @@ PLUGIN_API void    XPluginStop(void)
       if (bipfd > 0) {
         bipwbuf[9] = 0,bipwbuf[17] = 0,bipwbuf[25] = 0;
         bipwbuf[33] = 0,bipwbuf[41] = 0,bipwbuf[49] = 0;
-        //ioctl(bipfd, HIDIOCSFEATURE(50), bipwbuf);
         bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
         close(bipfd);
       }
@@ -555,10 +555,10 @@ float	D2BLoopCallback(
     int                  inCounter,
     void *               inRefcon)
 {
-    (void) inElapsedSinceLastCall; // To get rid of warnings on unused variables
-    (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
-    (void) inCounter; // To get rid of warnings on unused variables
-    (void) inRefcon; // To get rid of warnings on unused variables
+    (void) inElapsedSinceLastCall;            // To get rid of warnings on unused variables
+    (void) inElapsedTimeSinceLastFlightLoop;  // To get rid of warnings on unused variables
+    (void) inCounter;                         // To get rid of warnings on unused variables
+    (void) inRefcon;                          // To get rid of warnings on unused variables
     int     xi;
     float   xf;
     float   Now;
@@ -836,13 +836,8 @@ float	D2BLoopCallback(
         LastValues[i] = ActualValues[i];
     }
 
-    // Button 2499 indicates a reload
-    //ActualValues[2499] = 0;
     if (bipfd > 0) {
-
-        //bipfdw = ioctl(bipfd, HIDIOCSFEATURE(50), bipwbuf);
-        bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
-
+         bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
     }
 
 

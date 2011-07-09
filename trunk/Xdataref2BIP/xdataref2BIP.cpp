@@ -1,6 +1,6 @@
 // Xdataref2BIP Plugin for X-Plane 9
 //
-// Version 1.0
+// Version 1.0a
 // William Good
 // 07-04-11
 
@@ -35,7 +35,9 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
 
-#include <linux/hidraw.h>
+#include "hidapi.h"
+
+//#include <linux/hidraw.h>
 
 #include <time.h>
 #include <iostream>
@@ -47,14 +49,14 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <stdlib.h>
 
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+//#include <sys/ioctl.h>
+//#include <unistd.h>
 #include <sys/types.h>
-#include <asm/types.h>
+//#include <asm/types.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
+//#include <sys/socket.h>
 #include <fcntl.h>
-#include <unistd.h>
+
 
 using namespace std;
 
@@ -93,6 +95,11 @@ static int                  ActualValues[MAXINDICATORS];
 static int                  LastTableElement = -1;
 static int                  ErrorInLine = 0;
 static bool                 InSilentMode = false;
+
+int loop;
+int res;
+hid_device *handle;
+int i;
 
 
 void            D2BMenuHandler(void *, void *);
@@ -139,7 +146,6 @@ void D2BMenuHandler(void * mRef, void * iRef)
     }
     return;
 }
-
 
 
 float	D2BLoopCallback(
@@ -448,7 +454,7 @@ bool ReadConfigFile(string PlaneICAO)
 int bipfd = -1;
 int bipfdw = -1;
 
-static char bipwbuf[50] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+unsigned char bipwbuf[10];
 
 PLUGIN_API int XPluginStart(
     char *        outName,
@@ -456,7 +462,7 @@ PLUGIN_API int XPluginStart(
     char *        outDesc)
 {
     // Plugin Info
-    strcpy(outName, "Xdataref2BIP V1.0");
+    strcpy(outName, "Xdataref2BIP V1.0a");
     strcpy(outSig, "BIP_Plugin.D2B");
     strcpy(outDesc, "Plugin for Saitek BIP.");
 
@@ -471,11 +477,18 @@ PLUGIN_API int XPluginStart(
 
 
     //   Find Connected Bip Panel
-      bipfd = open(BIP, O_RDWR);
+      //bipfd = open(BIP, O_RDWR);
+      handle = hid_open(0x6a3, 0xb4e, NULL);
    //  If Found Set brightness to full (0 - 100)
-      if (bipfd > 0) {
-        bipwbuf[0] = 0,bipwbuf[1] = 0xb2,bipwbuf[2] = 100;
-        bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
+   // 0xb2 Report ID for brightness
+   // Next byte 0 - 100 brightness value
+      if (handle > 0) {
+        bipwbuf[0] = 0xb2; // 0xb2 Report ID for brightness
+        bipwbuf[1] = 100;  // Set brightness to 100%
+        res = hid_send_feature_report(handle, bipwbuf, 10);
+
+        loop = 1;
+
       }
 
     // Check in the main function
@@ -506,11 +519,13 @@ PLUGIN_API void    XPluginStop(void)
     XPDestroyWidget(D2BWidgetID, 1);
 
     /*** if open close that bip panel ****/
-      if (bipfd > 0) {
-        bipwbuf[9] = 0,bipwbuf[17] = 0,bipwbuf[25] = 0;
-        bipwbuf[33] = 0,bipwbuf[41] = 0,bipwbuf[49] = 0;
-        bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
-        close(bipfd);
+      if (handle > 0) {
+        bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
+        bipwbuf[1] = 0,bipwbuf[2] = 0,bipwbuf[3] = 0;
+        bipwbuf[4] = 0,bipwbuf[5] = 0,bipwbuf[6] = 0;
+        res = hid_send_feature_report(handle, bipwbuf, 10);
+
+        hid_close(handle);
       }
 }
 
@@ -547,6 +562,8 @@ PLUGIN_API void XPluginReceiveMessage(
     {
         ReadConfigFile(PlaneICAO);
     }
+
+
 }
 
 float	D2BLoopCallback(
@@ -590,23 +607,24 @@ float	D2BLoopCallback(
             }
             if ((LookAtThisValue >= D2BTable[i].FloatValueToSet) && (LookAtThisValue <= D2BTable[i].FloatLimit))
             {
+
                 //printf("********************************  ON   **************************************\n");
                 if (D2BTable[i].Row == 'A')
                 {
                     if (D2BTable[i].Color == 'G')
                     {
                         // Make D2BTable[i].Number position Top Row Green
-                        bipwbuf[9] |= (1<<(D2BTable[i].Number)), bipwbuf[33] &= ~(1<<(D2BTable[i].Number));
+                        bipwbuf[1] |= (1<<(D2BTable[i].Number)), bipwbuf[4] &= ~(1<<(D2BTable[i].Number));
                     }
                     if (D2BTable[i].Color == 'R')
                     {
                         // Make D2BTable[i].Number position Top Row Red
-                        bipwbuf[9] &= ~(1<<(D2BTable[i].Number)), bipwbuf[33] |= (1<<(D2BTable[i].Number));
+                        bipwbuf[1] &= ~(1<<(D2BTable[i].Number)), bipwbuf[4] |= (1<<(D2BTable[i].Number));
                     }
                     if (D2BTable[i].Color == 'A')
                     {
                         // Make D2BTable[i].Number position Top Row Amber
-                        bipwbuf[9] |= (1<<(D2BTable[i].Number)), bipwbuf[33] |= (1<<(D2BTable[i].Number));
+                        bipwbuf[1] |= (1<<(D2BTable[i].Number)), bipwbuf[4] |= (1<<(D2BTable[i].Number));
                     }
                 }
 
@@ -615,17 +633,17 @@ float	D2BLoopCallback(
                     if (D2BTable[i].Color == 'G')
                     {
                         // Make D2BTable[i].Number position Middle Row Green
-                        bipwbuf[17] |= (1<<(D2BTable[i].Number)), bipwbuf[41] &= ~(1<<(D2BTable[i].Number));
+                        bipwbuf[2] |= (1<<(D2BTable[i].Number)), bipwbuf[5] &= ~(1<<(D2BTable[i].Number));
                     }
                     if (D2BTable[i].Color == 'R')
                     {
                         // Make D2BTable[i].Number position Middle Row Red
-                        bipwbuf[17] &= ~(1<<(D2BTable[i].Number)), bipwbuf[41] |= (1<<(D2BTable[i].Number));
+                        bipwbuf[2] &= ~(1<<(D2BTable[i].Number)), bipwbuf[5] |= (1<<(D2BTable[i].Number));
                     }
                     if (D2BTable[i].Color == 'A')
                     {
                         // Make D2BTable[i].Number position Middle Row Amber
-                        bipwbuf[17] |= (1<<(D2BTable[i].Number)), bipwbuf[41] |= (1<<(D2BTable[i].Number));
+                        bipwbuf[2] |= (1<<(D2BTable[i].Number)), bipwbuf[5] |= (1<<(D2BTable[i].Number));
                     }
                 }
 
@@ -634,17 +652,17 @@ float	D2BLoopCallback(
                     if (D2BTable[i].Color == 'G')
                     {
                         // Make D2BTable[i].Number position Bottom Row Green
-                        bipwbuf[25] |= (1<<(D2BTable[i].Number)), bipwbuf[49] &= ~(1<<(D2BTable[i].Number));
+                        bipwbuf[3] |= (1<<(D2BTable[i].Number)), bipwbuf[6] &= ~(1<<(D2BTable[i].Number));
                     }
                     if (D2BTable[i].Color == 'R')
                     {
                         // Make D2BTable[i].Number position Bottom Row Red
-                        bipwbuf[25] &= ~(1<<(D2BTable[i].Number)), bipwbuf[49] |= (1<<(D2BTable[i].Number));
+                        bipwbuf[3] &= ~(1<<(D2BTable[i].Number)), bipwbuf[6] |= (1<<(D2BTable[i].Number));
                     }
                     if (D2BTable[i].Color == 'A')
                     {
                         // Make D2BTable[i].Number position Bottom Row Amber
-                        bipwbuf[25] |= (1<<(D2BTable[i].Number)), bipwbuf[49] |= (1<<(D2BTable[i].Number));
+                        bipwbuf[3] |= (1<<(D2BTable[i].Number)), bipwbuf[6] |= (1<<(D2BTable[i].Number));
                     }
                 }
             }
@@ -655,17 +673,17 @@ float	D2BLoopCallback(
                 if (D2BTable[i].Row == 'A')
                 {
                     // Make D2BTable[i].Number position Top Row Off
-                    bipwbuf[9] &= ~(1<<(D2BTable[i].Number)), bipwbuf[33] &= ~(1<<(D2BTable[i].Number));
+                    bipwbuf[1] &= ~(1<<(D2BTable[i].Number)), bipwbuf[4] &= ~(1<<(D2BTable[i].Number));
                 }
                 if (D2BTable[i].Row == 'B')
                 {
                     // Make D2BTable[i].Number position Middle Row Off
-                    bipwbuf[17] &= ~(1<<(D2BTable[i].Number)), bipwbuf[41] &= ~(1<<(D2BTable[i].Number));
+                    bipwbuf[2] &= ~(1<<(D2BTable[i].Number)), bipwbuf[5] &= ~(1<<(D2BTable[i].Number));
                 }
                 if (D2BTable[i].Row == 'C')
                 {
                     // Make D2BTable[i].Number position Bottom Row Off
-                    bipwbuf[25] &= ~(1<<(D2BTable[i].Number)), bipwbuf[49] &= ~(1<<(D2BTable[i].Number));
+                    bipwbuf[3] &= ~(1<<(D2BTable[i].Number)), bipwbuf[6] &= ~(1<<(D2BTable[i].Number));
                 }
 
 
@@ -836,8 +854,22 @@ float	D2BLoopCallback(
         LastValues[i] = ActualValues[i];
     }
 
-    if (bipfd > 0) {
-         bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
+    if (handle > 0) {
+        if (loop < 2){
+        // Clear Display on first loop
+        bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
+        bipwbuf[1] = 0,bipwbuf[2] = 0,bipwbuf[3] = 0;
+        bipwbuf[4] = 0,bipwbuf[5] = 0,bipwbuf[6] = 0;
+        res = hid_send_feature_report(handle, bipwbuf, 10);
+        //ioctl(bipfd, HIDIOCSFEATURE(10), bipwbuf);
+        loop++;
+        }
+
+        if(loop == 2){
+          res = hid_send_feature_report(handle, bipwbuf, 10);
+          //ioctl(bipfd, HIDIOCSFEATURE(10), bipwbuf);
+        }
+        //bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
     }
 
 

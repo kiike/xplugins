@@ -1,6 +1,25 @@
-First I want to thank Carsten of "Button2DataRef" fame for allowing me to use his program as a starting point for my Xdataref2BIP. My program allows a similar config file as "Button2DataRef" uses it to tell the Saitek BIP which indicators and what color to turn on from a data reference. There is one issue that I have to get resolved before I can release this. For some reason I cannot get this panel to initialize in Linux. I have to run the setup program in windows with virtual box and after that this panel will work great until I shutdown. Since I have been using Virtual box this is about as painless as possible but not a option for the long term so I have to find a workable solution. 
+Well one of the reasons for not buying a Saitek BIP just went away. "There is not plugin for X-Plane" is not something you can say anymore at least for lucky people that run Linux and now Windows. People who run Mac will have to wait a little longer but I plan to support you also.
 
- This is a fat plugin so the folder named Xdataref2BIP will have a lin.xpl and a D2B_config.txt in it and will reside in /Resources/plugins/Xdataref2BIP. The default D2B_config.txt that comes with this archive will emulate a Cessna 172 indicator panel in a 4 wide by 2 high fashion. There is also a test function that will turn on all of the indicators.
+First I want to thank Carsten of "Button2DataRef" fame for allowing me to use his program as a starting point for my Xdataref2BIP. My program allows a similar config file as "Button2DataRef" uses it to tell the Saitek BIP which indicators and what color to turn on from a data reference. 
+
+****************************************************************************************************************
+****************************************************************************************************************
+
+Linux
+
+Supported platforms at this release are Patched Ubuntu 10.10, Patched 11.04, and 11.04 with kernel 2.6.39 X-Plane 9.69 & 9.70. See my patch downloads for more info on what is needed.  Other version may work but have not been tested. You will need to install a new 51-SaitekPanlels.rules in /lib/udev/rules.d for this panel to be seen by my this plugin. It is included in this archive. 
+
+****************************************************************************************************************
+****************************************************************************************************************
+
+Windows
+
+Supported and tested platforms at this release is Windows XP and X-Plane 9.69 & 9.70. For this version you will need to copy two Dll's to X-Planes root directory. There names are libgcc_s_dw2-1.dll & mingwm10.dll and are included in this archive.
+
+*******************************************************************************************************************
+*******************************************************************************************************************
+
+This is a fat plugin so the folder named Xdataref2BIP which have a lin.xpl, win.xpl and a D2B_config.txt in it and need to reside in /Resources/plugins/. The default D2B_config.txt that comes with this archive will emulate a Cessna 172 indicator panel in a 4 wide by 2 high fashion. There is also a test function that will turn on all of the indicators.
 
 
 The first thing to know is only things that start with a # sign will execute. This means that all other lines are comments.

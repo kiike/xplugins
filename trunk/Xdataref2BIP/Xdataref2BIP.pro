@@ -42,6 +42,7 @@ macx {
     QMAKE_LFLAGS += -flat_namespace -undefined suppress
     SOURCES += \
           ../hidapi-0.6.0/mac/hid.c
+    LIBS += -framework IOKit -framework CoreFoundation
 
     # Build for multiple architectures.
     # The following line is only needed to build universal on PPC architectures.

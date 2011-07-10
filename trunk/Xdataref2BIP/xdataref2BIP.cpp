@@ -554,7 +554,7 @@ PLUGIN_API void XPluginReceiveMessage(
     XPLMGetDatab(XPLMFindDataRef("sim/aircraft/view/acf_ICAO"), ICAOString, 0, 40);
     PlaneICAO.insert(1,ICAOString);
 
-    if ((inMessage == XPLM_MSG_PLANE_LOADED) and ((int) inParam == 0))
+    if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((int) inParam == 0))
     {
         ReadConfigFile(PlaneICAO);
     }

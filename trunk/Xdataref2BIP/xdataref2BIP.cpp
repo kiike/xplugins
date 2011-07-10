@@ -1,8 +1,11 @@
 // Xdataref2BIP Plugin for X-Plane 9
-//
-// Version 1.0a
+// Allows use of Saitek BIP on all platforms
+// Linux Windows Mac
+// Uses Hidapi for Hid interface
+// https://github.com/signal11/hidapi
+// Version 1.0c
 // William Good
-// 07-04-11
+// 07-10-11
 
 
 #if IBM
@@ -49,12 +52,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <stdlib.h>
 
 #include <stdlib.h>
-//#include <sys/ioctl.h>
-//#include <unistd.h>
 #include <sys/types.h>
-//#include <asm/types.h>
 #include <sys/stat.h>
-//#include <sys/socket.h>
 #include <fcntl.h>
 
 
@@ -462,7 +461,7 @@ PLUGIN_API int XPluginStart(
     char *        outDesc)
 {
     // Plugin Info
-    strcpy(outName, "Xdataref2BIP V1.0a");
+    strcpy(outName, "Xdataref2BIP V1.0c");
     strcpy(outSig, "BIP_Plugin.D2B");
     strcpy(outDesc, "Plugin for Saitek BIP.");
 
@@ -861,17 +860,13 @@ float	D2BLoopCallback(
         bipwbuf[1] = 0,bipwbuf[2] = 0,bipwbuf[3] = 0;
         bipwbuf[4] = 0,bipwbuf[5] = 0,bipwbuf[6] = 0;
         res = hid_send_feature_report(handle, bipwbuf, 10);
-        //ioctl(bipfd, HIDIOCSFEATURE(10), bipwbuf);
         loop++;
         }
 
         if(loop == 2){
           res = hid_send_feature_report(handle, bipwbuf, 10);
-          //ioctl(bipfd, HIDIOCSFEATURE(10), bipwbuf);
         }
-        //bipfdw = write(bipfd, bipwbuf, sizeof(bipwbuf));
     }
-
 
     return -1.0;
 }

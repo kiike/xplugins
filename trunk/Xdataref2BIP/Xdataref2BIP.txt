@@ -7,18 +7,30 @@ First I want to thank Carsten of "Button2DataRef" fame for allowing me to use hi
 
 Linux
 
-Supported platforms at this release are Patched Ubuntu 10.10, Patched 11.04, and 11.04 with kernel 2.6.39 X-Plane 9.69 & 9.70. See my patch downloads for more info on what is needed.  Other version may work but have not been tested. You will need to install a new 51-SaitekPanlels.rules in /lib/udev/rules.d for this panel to be seen by my this plugin. It is included in this archive. 
+Supported platforms at this release are Patched Ubuntu 10.10, Patched 11.04, and 11.04 with kernel 2.6.39 X-Plane 9.69 & 9.70. See my patch downloads for more info on what is needed.  I am glad to announce that 11.10 runs this plugin unpatched and is my present testing version. Other versions may work but have not been tested. You will need to install a new 51-SaitekPanlels.rules in /lib/udev/rules.d for this panel to be seen by my this plugin. It is included in this archive. 
 
 ****************************************************************************************************************
 ****************************************************************************************************************
 
 Windows
 
-Supported and tested platforms at this release is Windows XP and X-Plane 9.69 & 9.70. For this version you will need to copy two Dll's to X-Planes root directory. There names are libgcc_s_dw2-1.dll & mingwm10.dll and are included in this archive.
+Supported and tested platforms at this release is Windows XP and X-Plane 9.69 & 9.70. I would like to add more but I will have to get feedback as to what versions of windows this is running on.
 
 *******************************************************************************************************************
 *******************************************************************************************************************
 
+Mac
+
+What I need is a Mac user that had a Development setup like Philipp shows at http://forums.x-plane.org/index.php?showtopic=48012. I think I have all that is needed just has to be built. If there are any issues I am more than willing to work through them. I do not have a Mac and do not plan on buying one so I cannot do this part. I am hoping to find a volunteer to help with this part.
+
+********************************************************************************************************************
+********************************************************************************************************************
+
+This project and my projects going forward will be open source and reside at http://code.google.com/p/xplugins/source/checkout for anyone interested in how A HID plugin is created for all platforms.
+
+**********************************************************************************************************************
+**********************************************************************************************************************
+ 
 This is a fat plugin so the folder named Xdataref2BIP which have a lin.xpl, win.xpl and a D2B_config.txt in it and need to reside in /Resources/plugins/. The default D2B_config.txt that comes with this archive will emulate a Cessna 172 indicator panel in a 4 wide by 2 high fashion. There is also a test function that will turn on all of the indicators.
 
 

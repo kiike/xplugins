@@ -1,13 +1,15 @@
 /****** saitekpanels.cpp ***********/
 /****  William R. Good   ***********/
-/******** ver 1.15   ***************/
-/****** Jun 29 2011   **************/
+/******** ver 1.16   ***************/
+/****** Jul 11 2011   **************/
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
 #include "XPLMProcessing.h"
+
+#include "hidapi.h"
 
 #include <linux/hidraw.h>
 
@@ -149,7 +151,13 @@ static char blankradiowbuf[21]= {0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 
 
 /********************** Multi Panel variables ***********************/
 int multifd = -1;
-static char blankmultiwbuf[12] = {0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 0};
+int multires, stopmulticnt;
+static unsigned char blankmultiwbuf[12];
+unsigned char multibuf[3], multiwbuf[12];
+
+hid_device *multihandle;
+
+//static char blankmultiwbuf[12] = {0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 0};
 
 /****************** Switch Panel variables *******************************/
 int switchfd = -1;
@@ -175,13 +183,9 @@ PLUGIN_API int XPluginStart(char *		outName,
 {
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.15");
+  strcpy(outName, "Xsaitekpanels v1.16");
   strcpy(outSig, "saitekpanels.hardware uses hidraw interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels in Linux");
-
-
-
-
 
 /************ Find Radio Panel Commands Ref ******************/
   Com1StbyFineDn = XPLMFindCommand("sim/radios/stby_com1_fine_down");
@@ -508,7 +512,21 @@ PLUGIN_API int XPluginStart(char *		outName,
   }
 
 /*** Find Connected Multi Panel *****/
-  multifd = open(MULTI, O_RDWR);
+
+  struct hid_device_info *multi_devs, *multi_cur_dev;
+
+  multi_devs = hid_enumerate(0x6a3, 0x0d06);
+  multi_cur_dev = multi_devs;
+  multihandle = hid_open_path(multi_cur_dev->path);
+  hid_free_enumeration(multi_devs);
+
+  // Set up the command buffer.
+  memset(multibuf,0x00,sizeof(multibuf));
+  multibuf[0] = 0x01;
+  multibuf[1] = 0x81;
+
+
+  //multifd = open(MULTI, O_RDWR);
 
 /*** Find Connected Switch Panel *****/
   switchfd = open(SWITCH, O_RDWR);
@@ -612,12 +630,18 @@ PLUGIN_API void	XPluginStop(void)
     close(radio15fd);
   }
 
-/*** if open close that multi panel ****/
-  if (multifd > 0) {
-    ioctl(multifd, HIDIOCSFEATURE(12), blankmultiwbuf);
-    /*write(multifd, blankmultiwbuf, sizeof(blankmultiwbuf));*/
-    close(multifd);
-  }
+  /*** if open blank display and then close that multi panel ****/
+    if (multihandle) {
+        blankmultiwbuf[0] = 0, blankmultiwbuf[1] = 11, blankmultiwbuf[2] = 11;
+        blankmultiwbuf[3] = 11, blankmultiwbuf[4] = 11, blankmultiwbuf[5] = 11;
+        blankmultiwbuf[6] = 11, blankmultiwbuf[7] = 11, blankmultiwbuf[8] = 11;
+        blankmultiwbuf[9] = 11, blankmultiwbuf[10] = 11, blankmultiwbuf[11] = 0;
+        multires = hid_send_feature_report(multihandle, blankmultiwbuf, 12);
+        hid_close(multihandle);
+
+    }
+
+
 
 /*** if open close that switch panel ****/ 
   if (switchfd > 0) {
@@ -663,9 +687,12 @@ float	MyPanelsFlightLoopCallback(
   if(radcnt > 0){
     process_radio_panel();
   }
-  if(multifd > 0){
-    process_multi_panel();
+
+  if (multihandle) {
+        process_multi_panel();
   }
+
+
   if(switchfd > 0){
     process_switch_panel();
   }

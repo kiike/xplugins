@@ -1,7 +1,9 @@
-#ifndef RADIOPANELS_H
-#define RADIOPANELS_H
+#ifndef SAITEKPANELS_H
+#define SAITEKPANELS_H
 
 #include "XPLMUtilities.h"
+
+#include "hidapi.h"
 
 /****************  Start Radio Panel Section  ***************************/
 
@@ -65,6 +67,7 @@ extern XPLMDataRef x737athr_armed;
 
 /**************** Multi Panel variables *******************/
 extern int multifd;
+extern hid_device *multihandle;
 
 /****************  End Multi Panel Section  ***************************/
 

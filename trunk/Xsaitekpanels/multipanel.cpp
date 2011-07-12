@@ -24,7 +24,8 @@
 
 /********************** Multi Panel variables ***********************/
 static int multinowrite = 0, lastmultiseldis = 0;
-static int rres;
+static int mulres, multires;
+//static int rres;
 
 static int upapalt, upapvs, upapas, upaphdg, upapcrs, neg;
 static int flashcnt = 0, flashon = 0, apbtncnt = 0;
@@ -53,7 +54,8 @@ static int TRIM_WHEEL_UP = 20, TRIM_WHEEL_DN = 21;
 static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
 
 static unsigned char multibuf[3];
-static char lastmultiwbuf[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static unsigned char multiwbuf[12];
+//static char lastmultiwbuf[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 /***** Multi Panel Process ******/
@@ -132,40 +134,36 @@ if (multiseldis == 5) {
   char multibdigit4 = multibdig4, multibdigit5 = multibdig5;	
   char cdigit1 = btnleds; 
 
-/****** Load Array with Message of Digits and Button LEDS *************/ 
-  char multiwbuf[12] = { 0, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
+/****** Load Array with Message of Digits and Button LEDS *************/
+  multiwbuf[0] = 0;
+  multiwbuf[1] = multiadigit1, multiwbuf[2] = multiadigit2, multiwbuf[3] = multiadigit3;
+  multiwbuf[4] = multiadigit4, multiwbuf[5] = multiadigit5;
+  multiwbuf[6] = multibdigit1, multiwbuf[7] = multibdigit2, multiwbuf[8] = multibdigit3;
+  multiwbuf[9] = multibdigit4, multiwbuf[10] = multibdigit5, multiwbuf[11] = cdigit1;
+
+
+  //char multiwbuf[12] = { 0, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
    
    
 /******* Only do a read if something new to be read ********/
-  int             multires;
-  fd_set          multisready;
-  struct timeval  multinowait;
 
-  FD_ZERO(&multisready);
-  FD_SET((unsigned int)multifd,&multisready);
-  multinowait.tv_sec = 0;    // specify how many seconds you would like to wait for timeout
-  multinowait.tv_usec = 0;   // how many microseconds? If both is zero, select will return immediately
-
-  multires = select(multifd+1,&multisready,NULL,NULL,&multinowait);
-  if( FD_ISSET(multifd,&multisready) ) {
-      rres = read(multifd, multibuf, sizeof(multibuf));
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+  hid_set_nonblocking(multihandle, 1);
+  multires = hid_read(multihandle, multibuf, sizeof(multibuf));
+  if (multires > 0) {
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
       multinowrite = 1;
   }
-  else {
-  }
+
+
 
  /**** Trying to only write on changes ****/
-
   if (lastmultiseldis == multiseldis) {
   }
   else {
     if (multinowrite == 1) {
     }
     else {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
       multinowrite = 1;
       lastmultiseldis = multiseldis;
     }
@@ -177,34 +175,21 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
       multinowrite = 1;
       lastbtnleds = btnleds;
     }
   }
 
-  if ( strcmp(multiwbuf,lastmultiwbuf) == 0 ) {
-  }
-  else {
-    if (multinowrite == 1) {
-    }
-    else {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
-      multinowrite = 1;
-      strcpy(lastmultiwbuf, multiwbuf);
-    }
-  }
 
   if (multinowrite == 50) {
-      ioctl(multifd, HIDIOCSFEATURE(12), multiwbuf);
-      /*write(multifd, multiwbuf, sizeof(multiwbuf));*/
-    multinowrite = 0;
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
+      multinowrite = 0;
   }
   else {
     multinowrite++;
-  }   
+  }
+
 
 /***************** ALT Switch Position *******************/
 
@@ -356,7 +341,7 @@ if (multiseldis == 5) {
 /***************** AP Master Button and light *******************/
 
 	if (XPLMGetDatai(ApMstrStat) == 0) {
-	  if (multires == 1) {
+          if (multires > 0) {
 	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
 	      XPLMCommandOnce(ApMstrBtnUp);
 	    }
@@ -364,7 +349,7 @@ if (multiseldis == 5) {
 	}
 
 	if (XPLMGetDatai(ApMstrStat) == 1) {
-	  if (multires == 1) {   
+          if (multires > 0) {
 	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
 	      apbtncnt++;
 	    }
@@ -376,7 +361,7 @@ if (multiseldis == 5) {
 	}
 
 	if (XPLMGetDatai(ApMstrStat) == 2) {
-	  if (multires == 1) {   
+          if (multires > 0) {
 	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
 	      apbtncnt++;
 	    }
@@ -404,7 +389,7 @@ if (multiseldis == 5) {
 
 /***************** HDG Button and light *******************/
 
-	if (multires == 1) {
+        if (multires > 0) {
           if(testbit(multibuf,HDG_BUTTON)) {
 	    XPLMCommandOnce(ApHdgBtn);
 	  }
@@ -428,7 +413,7 @@ if (multiseldis == 5) {
 	}
 /***************** NAV Button and light *******************/
 
-	if (multires == 1) {
+        if (multires > 0) {
           if(testbit(multibuf,NAV_BUTTON)) {
 	    XPLMCommandOnce(ApNavBtn);	 
 	  }
@@ -470,7 +455,7 @@ if (multiseldis == 5) {
 
 /***************** ALT Button and light *******************/
 
-	if (multires == 1) {
+        if (multires > 0) {
 	  if(testbit(multibuf,ALT_BUTTON)) {
 	    XPLMCommandOnce(ApAltBtn);	 
 	  }
@@ -494,7 +479,7 @@ if (multiseldis == 5) {
 	}
 /***************** VS Button and light *******************/
 
-	if (multires == 1) {
+        if (multires > 0) {
 	  if(testbit(multibuf,VS_BUTTON)) {
  	    XPLMCommandOnce(ApVsBtn);	 
 	  }
@@ -516,7 +501,7 @@ if (multiseldis == 5) {
 
 /***************** APR Button and light *******************/
 
-	if (multires == 1) {
+        if (multires > 0) {
 	  if(testbit(multibuf,APR_BUTTON)) {
 	    XPLMCommandOnce(ApAprBtn);	 
 	  }
@@ -538,7 +523,7 @@ if (multiseldis == 5) {
 
 /***************** REV Button and light *******************/
 
-	if (multires == 1) {
+        if (multires > 0) {
 	  if(testbit(multibuf,REV_BUTTON)) {
 	    XPLMCommandOnce(ApRevBtn);	 
 	  }
@@ -560,25 +545,25 @@ if (multiseldis == 5) {
 
 /***************** Flaps Switch *******************/
 
-	if (multires == 1) {
+        if (multires > 0) {
 	  if(testbit(multibuf,FLAPS_UP_SWITCH)) {
 	    XPLMCommandOnce(FlapsUp);	 
-	  }	
+          }
 	}
-	if (multires == 1) {
+        if (multires > 0) {
 	  if(testbit(multibuf,FLAPS_DN_SWITCH)) {
 	    XPLMCommandOnce(FlapsDn);	 
 	  }
-	}
+        }
 
 /*************** Trim Wheel *********************/
 
-	if (multires == 1) {
+        if (multires > 0) {
 	  if(testbit(multibuf,TRIM_WHEEL_UP)) {
 	    XPLMCommandOnce(PitchTrimUp);		 
 	  }	
 	}
-	if (multires == 1) {
+        if (multires > 0) {
 
 	  if(testbit(multibuf,TRIM_WHEEL_DN)) {
 	    XPLMCommandOnce(PitchTrimDn);	 

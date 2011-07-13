@@ -4,7 +4,6 @@
 
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
-#include <linux/hidraw.h>
 
 #include "saitekpanels.h"
 
@@ -25,7 +24,6 @@
 /********************** Multi Panel variables ***********************/
 static int multinowrite = 0, lastmultiseldis = 0;
 static int mulres, multires;
-//static int rres;
 
 static int upapalt, upapvs, upapas, upaphdg, upapcrs, neg;
 static int flashcnt = 0, flashon = 0, apbtncnt = 0;
@@ -55,7 +53,6 @@ static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
 
 static unsigned char multibuf[3];
 static unsigned char multiwbuf[12];
-//static char lastmultiwbuf[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 /***** Multi Panel Process ******/
@@ -142,9 +139,6 @@ if (multiseldis == 5) {
   multiwbuf[9] = multibdigit4, multiwbuf[10] = multibdigit5, multiwbuf[11] = cdigit1;
 
 
-  //char multiwbuf[12] = { 0, multiadigit1, multiadigit2, multiadigit3, multiadigit4, multiadigit5, multibdigit1, multibdigit2, multibdigit3, multibdigit4, multibdigit5, cdigit1};
-   
-   
 /******* Only do a read if something new to be read ********/
 
   hid_set_nonblocking(multihandle, 1);

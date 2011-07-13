@@ -7,8 +7,6 @@
 
 #include "saitekpanels.h"
 
-#include <linux/hidraw.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -24,7 +22,7 @@
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
 static int radnum = 0, radionowrite[4] = {0, 0, 0, 0};
-static int rres;
+static int radiores = 0;
 
 static int upactcomnavfreq[4], upstbycomnavfreq[4], loactcomnavfreq[4], lostbycomnavfreq[4];
 static int upadffreq[4], loadffreq[4], updmedist[4], updmespeed[4], lodmedist[4], lodmespeed[4]; 
@@ -92,7 +90,7 @@ static int LOWER_ADF = 12, LOWER_DME = 11;
 static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8; 
 
 static unsigned char radiobuf[4][3];
-static char radiowbuf[4][24];
+static unsigned char radiowbuf[4][24];
 
 void process_upper_nav_com_freq();
 void process_lower_nav_com_freq();
@@ -240,24 +238,14 @@ void process_radio_panel()
 
 
 /******* Only do a read if something new to be read ********/
-  int             radiores;
-  fd_set          radiosready;
-  struct timeval  radionowait;
 
-  FD_ZERO(&radiosready);
-  FD_SET((unsigned int)radiofd[radnum],&radiosready);
-  radionowait.tv_sec = 0;    // specify how many seconds you would like to wait for timeout
-  radionowait.tv_usec = 0;   // how many microseconds? If both is zero, select will return immediately
-
-  radiores = select(radiofd[radnum]+1,&radiosready,NULL,NULL,&radionowait);
-  if( FD_ISSET(radiofd[radnum],&radiosready) ) {
-    rres = read(radiofd[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(21), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+  hid_set_nonblocking(radhandle[radnum], 1);
+  radiores = hid_read(radhandle[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
+  if (radiores > 0) {
+    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
     radionowrite[radnum] = 1;
   }
-  else {
-  }
+
 
   /***** Trying to only write on changes ********/
 
@@ -267,8 +255,7 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(21), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
       radionowrite[radnum] = 1;
       lastupseldis[radnum] = upseldis[radnum];
     }
@@ -280,27 +267,26 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(21), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
       radionowrite[radnum] = 1;
       lastloseldis[radnum] = loseldis[radnum];
     }
   }
 
   if (radionowrite[radnum] == 50) {
-    ioctl(radiofd[radnum], HIDIOCSFEATURE(21), radiowbuf[radnum]);
-    /*write(radiofd[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));*/
+    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
     radionowrite[radnum] = 0;
   }
   else {
     radionowrite[radnum]++;
-  } 
+  }
+
 
 /***************** Upper COM1 Switch Position *******************/
 
     if(testbit(radiobuf[radnum],UPPER_COM1)) {
       upseldis[radnum] = 1;
-      if (radiores == 1) {	    
+      if (radiores > 0) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upcom1dbncfninc[radnum]++;
 	  if (upcom1dbncfninc[radnum] == 3) {
@@ -342,7 +328,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_COM2)) {
       upseldis[radnum] = 2;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upcom2dbncfninc[radnum]++;
 	  if (upcom2dbncfninc[radnum] == 3) {
@@ -384,7 +370,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_NAV1)) {
       upseldis[radnum] = 3;
-      if (radiores == 1) {  
+      if (radiores > 0) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upnav1dbncfninc[radnum]++;
 	  if (upnav1dbncfninc[radnum] == 3) {
@@ -427,7 +413,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_NAV2)) {
       upseldis[radnum] = 4;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
           upnav2dbncfninc[radnum]++;
 	  if (upnav2dbncfninc[radnum] == 3) {
@@ -471,7 +457,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_ADF)) {
       upseldis[radnum] = 5;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if (upadfsel[radnum] == 1) {
 	  if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
 	    upadfdbncfninc[radnum]++;
@@ -566,7 +552,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],UPPER_XPDR)) {
       upseldis[radnum] = 7;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if (upxpdrsel[radnum] == 1) {	
           if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
             upxpdrdbncfninc[radnum]++;
@@ -641,7 +627,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_COM1)) {
       loseldis[radnum] = 1;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
           locom1dbncfninc[radnum]++;
           if (locom1dbncfninc[radnum] == 3) {
@@ -683,7 +669,7 @@ void process_radio_panel()
 
    if(testbit(radiobuf[radnum],LOWER_COM2)) {
      loseldis[radnum] = 2;
-     if (radiores == 1) {
+     if (radiores > 0) {
        if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
          locom2dbncfninc[radnum]++;
          if (locom2dbncfninc[radnum] == 3) {
@@ -725,7 +711,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_NAV1)) {
       loseldis[radnum] = 3;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
           lonav1dbncfninc[radnum]++;
 	  if (lonav1dbncfninc[radnum] == 3) {
@@ -768,7 +754,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_NAV2)) {
       loseldis[radnum] = 4;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
           lonav2dbncfninc[radnum]++;
 	  if (lonav2dbncfninc[radnum] == 3) {
@@ -810,7 +796,7 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_ADF)) {
       loseldis[radnum] = 5;
-      if (radiores == 1) {
+      if (radiores > 0) {
         if (loadfsel[radnum] == 1) {
 	  if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
 	    loadfdbncfninc[radnum]++;
@@ -904,7 +890,7 @@ void process_radio_panel()
  
    if(testbit(radiobuf[radnum],LOWER_XPDR)) {
      loseldis[radnum] = 7;
-     if (radiores == 1) {
+     if (radiores > 0) {
        if (loxpdrsel[radnum] == 1) {	
          if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
 	   loxpdrdbncfninc[radnum]++;

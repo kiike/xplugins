@@ -11,7 +11,6 @@
 
 #include "hidapi.h"
 
-#include <linux/hidraw.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -144,9 +143,14 @@ XPLMDataRef GearRetract = NULL, OnGround = NULL;
 /********************** Radio Panel variables ************************/
 int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
 int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
-int radiofd[4] = {-1,-1,-1,-1}, radcnt = 0;
+int radiofd[4] = {-1,-1,-1,-1}, radcnt = 0, stopradcnt;
+int radres, radnum = 0;
 float interval = -1;
-static char blankradiowbuf[21]= {0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11};
+static unsigned char blankradiowbuf[4][24];
+
+unsigned char radbuf[4], radwbuf[21];
+
+hid_device *radhandle[4];
 
 
 /********************** Multi Panel variables ***********************/
@@ -157,11 +161,15 @@ unsigned char multibuf[3], multiwbuf[12];
 
 hid_device *multihandle;
 
-//static char blankmultiwbuf[12] = {0, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 0};
-
 /****************** Switch Panel variables *******************************/
 int switchfd = -1;
-static char blankswitchwbuf[2];
+int switchres, stopswitchcnt;
+static unsigned char blankswitchwbuf[2];
+unsigned char switchbuf[3], switchwbuf[2];
+
+hid_device *switchhandle;
+
+
 
 /********************* MyPanelsFlightLoopCallback **************************/
 float	MyPanelsFlightLoopCallback(
@@ -184,8 +192,8 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 	/* First set up our plugin info. */
   strcpy(outName, "Xsaitekpanels v1.16");
-  strcpy(outSig, "saitekpanels.hardware uses hidraw interface");
-  strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels in Linux");
+  strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
+  strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
 /************ Find Radio Panel Commands Ref ******************/
   Com1StbyFineDn = XPLMFindCommand("sim/radios/stby_com1_fine_down");
@@ -436,80 +444,22 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 
 /************* Open any Radio that is connected *****************/
-  radio0fd = open(RADIO0, O_RDWR), radio1fd = open(RADIO1, O_RDWR);
-  radio2fd = open(RADIO2, O_RDWR), radio3fd = open(RADIO3, O_RDWR);
-  radio4fd = open(RADIO4, O_RDWR), radio5fd = open(RADIO5, O_RDWR);
-  radio6fd = open(RADIO6, O_RDWR), radio7fd = open(RADIO7, O_RDWR);
-  radio8fd = open(RADIO8, O_RDWR), radio9fd = open(RADIO9, O_RDWR);
-  radio10fd = open(RADIO10, O_RDWR), radio11fd = open(RADIO11, O_RDWR);
-  radio12fd = open(RADIO12, O_RDWR), radio13fd = open(RADIO13, O_RDWR);
-  radio14fd = open(RADIO14, O_RDWR), radio15fd = open(RADIO15, O_RDWR);
 
-/** If any found add to list of found Radios **/
-  if (radio0fd > 0) {
-    radiofd[radcnt] = radio0fd;
-    radcnt++;
+  struct hid_device_info *rad_devs, *rad_cur_dev;
+
+  rad_devs = hid_enumerate(0x6a3, 0x0d05);
+  rad_cur_dev = rad_devs;
+  while (rad_cur_dev) {
+          radhandle[radcnt] = hid_open_path(rad_cur_dev->path);
+          radcnt++;
+          rad_cur_dev = rad_cur_dev->next;
   }
-  if (radio1fd > 0) {
-    radiofd[radcnt] = radio1fd;
-    radcnt++;
-  }
-  if (radio2fd > 0) {
-    radiofd[radcnt] = radio2fd;
-    radcnt++;
-  }
-  if (radio3fd > 0) {
-    radiofd[radcnt] = radio3fd;
-    radcnt++;
-  }
-  if (radio4fd > 0) {
-    radiofd[radcnt] = radio4fd;
-    radcnt++;
-  }
-  if (radio5fd > 0) {
-    radiofd[radcnt] = radio5fd;
-    radcnt++;
-  }
-  if (radio6fd > 0) {
-    radiofd[radcnt] = radio6fd;
-    radcnt++;
-  }
-  if (radio7fd > 0) {
-    radiofd[radcnt] = radio7fd;
-    radcnt++;
-  }
-  if (radio8fd > 0) {
-    radiofd[radcnt] = radio8fd;
-    radcnt++;
-  }
-  if (radio9fd > 0) {
-    radiofd[radcnt] = radio9fd;
-    radcnt++;
-  }
-  if (radio10fd > 0) {
-    radiofd[radcnt] = radio10fd;
-    radcnt++;
-  }
-  if (radio11fd > 0) {
-    radiofd[radcnt] = radio11fd;
-    radcnt++;
-  }
-  if (radio12fd > 0) {
-    radiofd[radcnt] = radio12fd;
-    radcnt++;
-  }
-  if (radio13fd > 0) {
-    radiofd[radcnt] = radio13fd;
-    radcnt++;
-  }
-  if (radio14fd > 0) {
-    radiofd[radcnt] = radio14fd;
-    radcnt++;
-  }
-  if (radio15fd > 0) {
-    radiofd[radcnt] = radio15fd;
-    radcnt++;
-  }
+  hid_free_enumeration(rad_devs);
+
+  // Set up the command buffer.
+  memset(radbuf,0x00,sizeof(radbuf));
+  radbuf[0] = 0x01;
+  radbuf[1] = 0x81;
 
 /*** Find Connected Multi Panel *****/
 
@@ -526,10 +476,20 @@ PLUGIN_API int XPluginStart(char *		outName,
   multibuf[1] = 0x81;
 
 
-  //multifd = open(MULTI, O_RDWR);
-
 /*** Find Connected Switch Panel *****/
-  switchfd = open(SWITCH, O_RDWR);
+
+  struct hid_device_info *switch_devs, *switch_cur_dev;
+
+  switch_devs = hid_enumerate(0x6a3, 0x0d67);
+  switch_cur_dev = switch_devs;
+  switchhandle = hid_open_path(switch_cur_dev->path);
+  hid_free_enumeration(switch_devs);
+
+  // Set up the command buffer.
+  memset(switchbuf,0x00,sizeof(switchbuf));
+  switchbuf[0] = 0x01;
+  switchbuf[1] = 0x81;
+
 
   /* Register our callback for every loop. Positive intervals
   * are in seconds, negative are the negative of sim frames.  Zero
@@ -546,91 +506,72 @@ PLUGIN_API void	XPluginStop(void)
 {
   /********** Unregitser the callback on quit. *************/
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
+  stopradcnt = radcnt - 1;
 
-/*** if open close that radio panel ****/
- 
-  if (radio0fd > 0) {
-    ioctl(radio0fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio0fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio0fd);
-  }
-  if (radio1fd > 0) {
-    ioctl(radio1fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio1fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio1fd);
-  }
-  if (radio2fd > 0) {
-    ioctl(radio2fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio2fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio2fd);
-  }
-  if (radio3fd > 0) {
-    ioctl(radio3fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio3fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio3fd);
-  }
-  if (radio4fd > 0) {
-    ioctl(radio4fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio4fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio4fd);
-  }
-  if (radio5fd > 0) {
-    ioctl(radio5fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio5fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio5fd);
-  }
-  if (radio6fd > 0) {
-    ioctl(radio6fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio6fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio6fd);
-  }
-  if (radio7fd > 0) {
-    ioctl(radio7fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio7fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio7fd);
-  }
-  if (radio8fd > 0) {
-    ioctl(radio8fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio8fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio8fd);
-  }
-  if (radio9fd > 0) {
-    ioctl(radio9fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio9fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio9fd);
-  }
-  if (radio10fd > 0) {
-    ioctl(radio10fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio10fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio10fd);
-   }
-  if (radio11fd > 0) {
-    ioctl(radio11fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio11fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio11fd);
-  }
-  if (radio12fd > 0) {
-    ioctl(radio12fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio12fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio12fd);
-  }
-  if (radio13fd > 0) {
-    ioctl(radio13fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio13fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio13fd);
-   }
-  if (radio14fd > 0) {
-    ioctl(radio14fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio14fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio14fd);
-  }
-  if (radio15fd > 0) {
-    ioctl(radio15fd, HIDIOCSFEATURE(21), blankradiowbuf);
-    /*write(radio15fd, blankradiowbuf, sizeof(blankradiowbuf));*/
-    close(radio15fd);
-  }
+  // *** if open blank display and then close that radio panel ****
 
-  /*** if open blank display and then close that multi panel ****/
+    if (stopradcnt == 3) {
+
+      blankradiowbuf[3][0] = 0, blankradiowbuf[3][1] = 11, blankradiowbuf[3][2] = 11;
+      blankradiowbuf[3][3] = 11, blankradiowbuf[3][4] = 11, blankradiowbuf[3][5] = 11;
+      blankradiowbuf[3][6] = 11, blankradiowbuf[3][7] = 11, blankradiowbuf[3][8] = 11;
+      blankradiowbuf[3][9] = 11, blankradiowbuf[3][10] = 11, blankradiowbuf[3][11] = 11;
+      blankradiowbuf[3][12] = 11, blankradiowbuf[3][13] = 11, blankradiowbuf[3][14] = 11;
+      blankradiowbuf[3][15] = 11, blankradiowbuf[3][16] = 11, blankradiowbuf[3][17] = 11;
+      blankradiowbuf[3][18] = 11, blankradiowbuf[3][19] = 11, blankradiowbuf[3][20] = 11;
+
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      hid_close(radhandle[stopradcnt]);
+      stopradcnt--;
+    }
+
+    if (stopradcnt == 2) {
+
+      blankradiowbuf[2][0] = 0, blankradiowbuf[2][1] = 11, blankradiowbuf[2][2] = 11;
+      blankradiowbuf[2][3] = 11, blankradiowbuf[2][4] = 11, blankradiowbuf[2][5] = 11;
+      blankradiowbuf[2][6] = 11, blankradiowbuf[2][7] = 11, blankradiowbuf[2][8] = 11;
+      blankradiowbuf[2][9] = 11, blankradiowbuf[2][10] = 11, blankradiowbuf[2][11] = 11;
+      blankradiowbuf[2][12] = 11, blankradiowbuf[2][13] = 11, blankradiowbuf[2][14] = 11;
+      blankradiowbuf[2][15] = 11, blankradiowbuf[2][16] = 11, blankradiowbuf[2][17] = 11;
+      blankradiowbuf[2][18] = 11, blankradiowbuf[2][19] = 11, blankradiowbuf[2][20] = 11;
+
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      hid_close(radhandle[stopradcnt]);
+      stopradcnt--;
+    }
+
+    if (stopradcnt == 1) {
+
+      blankradiowbuf[1][0] = 0, blankradiowbuf[1][1] = 11, blankradiowbuf[1][2] = 11;
+      blankradiowbuf[1][3] = 11, blankradiowbuf[1][4] = 11, blankradiowbuf[1][5] = 11;
+      blankradiowbuf[1][6] = 11, blankradiowbuf[1][7] = 11, blankradiowbuf[1][8] = 11;
+      blankradiowbuf[1][9] = 11, blankradiowbuf[1][10] = 11, blankradiowbuf[1][11] = 11;
+      blankradiowbuf[1][12] = 11, blankradiowbuf[1][13] = 11, blankradiowbuf[1][14] = 11;
+      blankradiowbuf[1][15] = 11, blankradiowbuf[1][16] = 11, blankradiowbuf[1][17] = 11;
+      blankradiowbuf[1][18] = 11, blankradiowbuf[1][19] = 11, blankradiowbuf[1][20] = 11;
+
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      hid_close(radhandle[stopradcnt]);
+      stopradcnt--;
+    }
+
+    if (stopradcnt == 0) {
+
+      blankradiowbuf[0][0] = 0, blankradiowbuf[0][1] = 11, blankradiowbuf[0][2] = 11;
+      blankradiowbuf[0][3] = 11, blankradiowbuf[0][4] = 11, blankradiowbuf[0][5] = 11;
+      blankradiowbuf[0][6] = 11, blankradiowbuf[0][7] = 11, blankradiowbuf[0][8] = 11;
+      blankradiowbuf[0][9] = 11, blankradiowbuf[0][10] = 11, blankradiowbuf[0][11] = 11;
+      blankradiowbuf[0][12] = 11, blankradiowbuf[0][13] = 11, blankradiowbuf[0][14] = 11;
+      blankradiowbuf[0][15] = 11, blankradiowbuf[0][16] = 11, blankradiowbuf[0][17] = 11;
+      blankradiowbuf[0][18] = 11, blankradiowbuf[0][19] = 11, blankradiowbuf[0][20] = 11;
+
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      hid_close(radhandle[stopradcnt]);
+    }
+
+
+
+  // *** if open blank display and then close that multi panel ***
     if (multihandle) {
         blankmultiwbuf[0] = 0, blankmultiwbuf[1] = 11, blankmultiwbuf[2] = 11;
         blankmultiwbuf[3] = 11, blankmultiwbuf[4] = 11, blankmultiwbuf[5] = 11;
@@ -643,14 +584,17 @@ PLUGIN_API void	XPluginStop(void)
 
 
 
-/*** if open close that switch panel ****/ 
-  if (switchfd > 0) {
-    blankswitchwbuf[0] = 0;
-    blankswitchwbuf[1] = 0;
-    ioctl(switchfd, HIDIOCSFEATURE(sizeof(blankswitchwbuf)), blankswitchwbuf);
-    /*write(switchfd, blankswitchwbuf, sizeof(blankswitchwbuf));*/
-    close(switchfd);
-  }
+// *** if open close that switch panel ***
+
+    if (switchhandle) {
+
+      blankswitchwbuf[0] = 0;
+      blankswitchwbuf[1] = 0;
+      switchres = hid_send_feature_report(switchhandle, blankswitchwbuf, 2);
+      hid_close(switchhandle);
+    }
+
+
 }
 
 PLUGIN_API void XPluginDisable(void)
@@ -693,7 +637,7 @@ float	MyPanelsFlightLoopCallback(
   }
 
 
-  if(switchfd > 0){
+  if(switchhandle){
     process_switch_panel();
   }
 

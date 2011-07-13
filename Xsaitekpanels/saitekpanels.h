@@ -36,8 +36,11 @@ extern XPLMDataRef Afd1PwrOn, DmePwrOn;
 /************************ Radio Panel variables **************************/
 extern int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
 extern int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
-extern int radiofd[4], radcnt;
+extern int radiofd[4], radcnt, radres;
 extern float interval;
+extern unsigned char radbuf[4], radwbuf[21];
+
+extern hid_device *radhandle[4];
 
 /****************  End Radio Panel Section  ***************************/
 
@@ -120,6 +123,8 @@ extern XPLMDataRef GearRetract, OnGround, x737swBatBus;
 
 /***************** Switch Panel variables ********************/
 extern int switchfd;
+
+extern hid_device *switchhandle;
 
 extern int loaded737;
 

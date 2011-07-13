@@ -4,7 +4,6 @@
 
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
-#include <linux/hidraw.h>
 
 #include "saitekpanels.h"
 
@@ -23,8 +22,10 @@
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
 /****************** Switch Panel variables *******************************/
+static int switchnowrite = 0;
+static int switchres;
+
 static int batnum = 0, gennum = 0, engnum = 0;
-static int rres;
 
 static float opencowl = 1, closecowl = 0;
 
@@ -41,7 +42,7 @@ static int GEAR_SWITCH_UP = 21, GEAR_SWITCH_DN = 20;
 static int BatArrayOn[8];
 
 static unsigned char switchbuf[3];
-static char switchwbuf[2], gearled;
+static unsigned char switchwbuf[2], gearled;
 
 
 /** Switch Panel Process  **/
@@ -52,31 +53,21 @@ void process_switch_panel()
   switchwbuf[0] = 0;
   switchwbuf[1] = gearled;
 
-/******* Only do a read if something new to be read ********/   
-  int             switchres;
-  fd_set          switchsready;
-  struct timeval  switchnowait;
+/******* Only do a read if something new to be read ********/
 
-  FD_ZERO(&switchsready);
-  FD_SET((unsigned int)switchfd,&switchsready);
-  switchnowait.tv_sec = 0;    // specify how many seconds you would like to wait for timeout
-  switchnowait.tv_usec = 0;   // how many microseconds? If both is zero, select will return immediately
+  hid_set_nonblocking(switchhandle, 1);
+  hid_read(switchhandle, switchbuf, sizeof(switchbuf));
+  switchres = hid_send_feature_report(switchhandle, switchwbuf, 12);
+  switchnowrite = 1;
 
-  switchres = select(switchfd+1,&switchsready,NULL,NULL,&switchnowait);
-  if( FD_ISSET(switchfd,&switchsready) ) {
-      rres = read(switchfd, switchbuf, sizeof(switchbuf));
-  }
-  else {
-  }
-
-  /* if no gear do not write */
+/* if no gear do not write */
 
   if(XPLMGetDatai(GearRetract) > 0){
-    ioctl(switchfd, HIDIOCSFEATURE(2), switchwbuf);
-    /*write(switchfd, switchwbuf, sizeof(switchwbuf));*/
+    switchres = hid_send_feature_report(switchhandle, switchwbuf, 12);
   }
   else {
   }
+
 
   batnum = XPLMGetDatai(BatNum), gennum = XPLMGetDatai(GenNum), engnum = XPLMGetDatai(EngNum);
 

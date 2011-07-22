@@ -9,14 +9,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <asm/types.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
@@ -51,8 +46,8 @@ static int FLAPS_UP_SWITCH = 23, FLAPS_DN_SWITCH = 22;
 static int TRIM_WHEEL_UP = 20, TRIM_WHEEL_DN = 21;
 static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
 
-static unsigned char multibuf[3];
-static unsigned char multiwbuf[12];
+static unsigned char multibuf[4];
+static unsigned char multiwbuf[13];
 
 
 /***** Multi Panel Process ******/
@@ -144,10 +139,9 @@ if (multiseldis == 5) {
   hid_set_nonblocking(multihandle, 1);
   multires = hid_read(multihandle, multibuf, sizeof(multibuf));
   if (multires > 0) {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
       multinowrite = 1;
   }
-
 
 
  /**** Trying to only write on changes ****/
@@ -157,7 +151,7 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
       multinowrite = 1;
       lastmultiseldis = multiseldis;
     }
@@ -169,7 +163,7 @@ if (multiseldis == 5) {
     if (multinowrite == 1) {
     }
     else {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
       multinowrite = 1;
       lastbtnleds = btnleds;
     }
@@ -177,7 +171,7 @@ if (multiseldis == 5) {
 
 
   if (multinowrite == 50) {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 12);
+      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
       multinowrite = 0;
   }
   else {

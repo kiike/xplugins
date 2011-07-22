@@ -14,39 +14,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <sys/types.h>
-#include <asm/types.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
-
-/******** Radio Panel Defines ********/
-#define RADIO0 "/dev/saitekradiopanel0"
-#define RADIO1 "/dev/saitekradiopanel1"
-#define RADIO2 "/dev/saitekradiopanel2"
-#define RADIO3 "/dev/saitekradiopanel3"
-#define RADIO4 "/dev/saitekradiopanel4"
-#define RADIO5 "/dev/saitekradiopanel5"
-#define RADIO6 "/dev/saitekradiopanel6"
-#define RADIO7 "/dev/saitekradiopanel7"
-#define RADIO8 "/dev/saitekradiopanel8"
-#define RADIO9 "/dev/saitekradiopanel9"
-#define RADIO10 "/dev/saitekradiopanel10"
-#define RADIO11 "/dev/saitekradiopanel11"
-#define RADIO12 "/dev/saitekradiopanel12"
-#define RADIO13 "/dev/saitekradiopanel13"
-#define RADIO14 "/dev/saitekradiopanel14"
-#define RADIO15 "/dev/saitekradiopanel15"
-
-/******* Multi Panel Defines *******/
-#define MULTI "/dev/saitekmultipanel"
-
-/* Switch Panel Defines */
-#define SWITCH "/dev/saitekswitchpanel"
 
 /************* Radio Panel Command Ref ****************/
 XPLMCommandRef Com1StbyFineDn = NULL, Com1StbyFineUp = NULL, Com1StbyCorseDn = NULL, Com1StbyCorseUp = NULL;
@@ -141,9 +112,7 @@ XPLMDataRef CowlFlaps = NULL, CockpitLights = NULL, AntiIce = NULL;
 XPLMDataRef GearRetract = NULL, OnGround = NULL;
 
 /********************** Radio Panel variables ************************/
-int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
-int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
-int radiofd[4] = {-1,-1,-1,-1}, radcnt = 0, stopradcnt;
+int radcnt = 0, stopradcnt;
 int radres, radnum = 0;
 float interval = -1;
 static unsigned char blankradiowbuf[4][24];
@@ -154,7 +123,6 @@ hid_device *radhandle[4];
 
 
 /********************** Multi Panel variables ***********************/
-int multifd = -1;
 int multires, stopmulticnt;
 static unsigned char blankmultiwbuf[12];
 unsigned char multibuf[3], multiwbuf[12];
@@ -162,7 +130,6 @@ unsigned char multibuf[3], multiwbuf[12];
 hid_device *multihandle;
 
 /****************** Switch Panel variables *******************************/
-int switchfd = -1;
 int switchres, stopswitchcnt;
 static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[3], switchwbuf[2];
@@ -581,7 +548,6 @@ PLUGIN_API void	XPluginStop(void)
         hid_close(multihandle);
 
     }
-
 
 
 // *** if open close that switch panel ***

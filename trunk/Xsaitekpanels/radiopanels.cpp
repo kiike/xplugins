@@ -9,14 +9,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+
 #include <sys/types.h>
-#include <asm/types.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
@@ -89,8 +85,8 @@ static int LOWER_NAV1 = 14, LOWER_NAV2 = 13;
 static int LOWER_ADF = 12, LOWER_DME = 11;
 static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8; 
 
-static unsigned char radiobuf[4][3];
-static unsigned char radiowbuf[4][24];
+static unsigned char radiobuf[4][4];
+static unsigned char radiowbuf[4][23];
 
 void process_upper_nav_com_freq();
 void process_lower_nav_com_freq();

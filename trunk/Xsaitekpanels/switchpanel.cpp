@@ -9,14 +9,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
+
 #include <sys/types.h>
-#include <asm/types.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <string.h>
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
@@ -41,7 +37,7 @@ static int LANDING_LIGHTS = 11;
 static int GEAR_SWITCH_UP = 21, GEAR_SWITCH_DN = 20; 
 static int BatArrayOn[8];
 
-static unsigned char switchbuf[3];
+static unsigned char switchbuf[4];
 static unsigned char switchwbuf[2], gearled;
 
 
@@ -57,13 +53,13 @@ void process_switch_panel()
 
   hid_set_nonblocking(switchhandle, 1);
   hid_read(switchhandle, switchbuf, sizeof(switchbuf));
-  switchres = hid_send_feature_report(switchhandle, switchwbuf, 12);
+  switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
   switchnowrite = 1;
 
 /* if no gear do not write */
 
   if(XPLMGetDatai(GearRetract) > 0){
-    switchres = hid_send_feature_report(switchhandle, switchwbuf, 12);
+    switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
   }
   else {
   }

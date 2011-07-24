@@ -97,7 +97,7 @@ static bool                 InSilentMode = false;
 
 int loop;
 int res;
-hid_device *handle;
+hid_device *biphandle;
 int i;
 
 
@@ -452,8 +452,10 @@ bool ReadConfigFile(string PlaneICAO)
 /********************** Bip Panel variables ***********************/
 int bipfd = -1;
 int bipfdw = -1;
+int n;
 
 unsigned char bipwbuf[10];
+unsigned char lastbipwbuf[10];
 
 PLUGIN_API int XPluginStart(
     char *        outName,
@@ -461,7 +463,7 @@ PLUGIN_API int XPluginStart(
     char *        outDesc)
 {
     // Plugin Info
-    strcpy(outName, "Xdataref2BIP V1.0c");
+    strcpy(outName, "Xdataref2BIP V1.0d");
     strcpy(outSig, "BIP_Plugin.D2B");
     strcpy(outDesc, "Plugin for Saitek BIP.");
 
@@ -477,14 +479,14 @@ PLUGIN_API int XPluginStart(
 
     //   Find Connected Bip Panel
       //bipfd = open(BIP, O_RDWR);
-      handle = hid_open(0x6a3, 0xb4e, NULL);
+      biphandle = hid_open(0x6a3, 0xb4e, NULL);
    //  If Found Set brightness to full (0 - 100)
    // 0xb2 Report ID for brightness
    // Next byte 0 - 100 brightness value
-      if (handle > 0) {
+      if (biphandle > 0) {
         bipwbuf[0] = 0xb2; // 0xb2 Report ID for brightness
         bipwbuf[1] = 100;  // Set brightness to 100%
-        res = hid_send_feature_report(handle, bipwbuf, 10);
+        res = hid_send_feature_report(biphandle, bipwbuf, 10);
 
         loop = 1;
 
@@ -518,13 +520,13 @@ PLUGIN_API void    XPluginStop(void)
     XPDestroyWidget(D2BWidgetID, 1);
 
     /*** if open close that bip panel ****/
-      if (handle > 0) {
+      if (biphandle > 0) {
         bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
-        bipwbuf[1] = 0,bipwbuf[2] = 0,bipwbuf[3] = 0;
-        bipwbuf[4] = 0,bipwbuf[5] = 0,bipwbuf[6] = 0;
-        res = hid_send_feature_report(handle, bipwbuf, 10);
+        bipwbuf[1] = 0, bipwbuf[2] = 0, bipwbuf[3] = 0;
+        bipwbuf[4] = 0, bipwbuf[5] = 0, bipwbuf[6] = 0;
+        res = hid_send_feature_report(biphandle, bipwbuf, 10);
 
-        hid_close(handle);
+        hid_close(biphandle);
       }
 }
 
@@ -853,19 +855,26 @@ float	D2BLoopCallback(
         LastValues[i] = ActualValues[i];
     }
 
-    if (handle > 0) {
+    if (biphandle > 0) {
         if (loop < 2){
-        // Clear Display on first loop
-        bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
-        bipwbuf[1] = 0,bipwbuf[2] = 0,bipwbuf[3] = 0;
-        bipwbuf[4] = 0,bipwbuf[5] = 0,bipwbuf[6] = 0;
-        res = hid_send_feature_report(handle, bipwbuf, 10);
-        loop++;
+          // Clear Display on first loop
+          bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
+          bipwbuf[1] = 0, bipwbuf[2] = 0, bipwbuf[3] = 0;
+          bipwbuf[4] = 0, bipwbuf[5] = 0, bipwbuf[6] = 0;
+          res = hid_send_feature_report(biphandle, bipwbuf, 10);
+          loop++;
         }
 
+        // Trying to only write on changes to improve FPS impact
         if(loop == 2){
-          res = hid_send_feature_report(handle, bipwbuf, 10);
-        }
+          n = memcmp(bipwbuf, lastbipwbuf, 10);
+          if (n == 0){
+          }
+          if (n =! 0) {
+            res = hid_send_feature_report(biphandle, bipwbuf, 10);
+            memcpy(lastbipwbuf, bipwbuf, 10);
+          }
+       }
     }
 
     return -1.0;

@@ -3,9 +3,9 @@
 // Linux Windows Mac
 // Uses Hidapi for Hid interface
 // https://github.com/signal11/hidapi
-// Version 1.0c
+// Version 1.0d
 // William Good
-// 07-10-11
+// 07-24-11
 
 
 #if IBM
@@ -39,8 +39,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include "XPStandardWidgets.h"
 
 #include "hidapi.h"
-
-//#include <linux/hidraw.h>
 
 #include <time.h>
 #include <iostream>
@@ -452,7 +450,7 @@ bool ReadConfigFile(string PlaneICAO)
 /********************** Bip Panel variables ***********************/
 int bipfd = -1;
 int bipfdw = -1;
-int n;
+int change;
 
 unsigned char bipwbuf[10];
 unsigned char lastbipwbuf[10];
@@ -467,6 +465,22 @@ PLUGIN_API int XPluginStart(
     strcpy(outSig, "BIP_Plugin.D2B");
     strcpy(outDesc, "Plugin for Saitek BIP.");
 
+    // Create our menu
+
+    D2BMenuItem = XPLMAppendMenuItem(
+                XPLMFindPluginsMenu(),
+                "Xdataref2BIP",
+                NULL,
+                1);
+
+    D2BMenuId = XPLMCreateMenu(
+                "Xdataref2BIP",
+                XPLMFindPluginsMenu(),
+                D2BMenuItem,
+                D2BMenuHandler,
+                NULL);
+
+
     gTimeSimIsRunningXDataRef = XPLMFindDataRef("sim/time/total_running_time_sec");
 
     for (int i = 0; i < MAXINDICATORS; i++)
@@ -475,22 +489,18 @@ PLUGIN_API int XPluginStart(
         LastValues[i] = 0;
     }
 
-
-
     //   Find Connected Bip Panel
-      //bipfd = open(BIP, O_RDWR);
-      biphandle = hid_open(0x6a3, 0xb4e, NULL);
+    biphandle = hid_open(0x6a3, 0xb4e, NULL);
    //  If Found Set brightness to full (0 - 100)
    // 0xb2 Report ID for brightness
    // Next byte 0 - 100 brightness value
-      if (biphandle > 0) {
-        bipwbuf[0] = 0xb2; // 0xb2 Report ID for brightness
-        bipwbuf[1] = 100;  // Set brightness to 100%
-        res = hid_send_feature_report(biphandle, bipwbuf, 10);
+   if (biphandle > 0) {
+      bipwbuf[0] = 0xb2; // 0xb2 Report ID for brightness
+      bipwbuf[1] = 100;  // Set brightness to 100%
+      res = hid_send_feature_report(biphandle, bipwbuf, 10);
+      loop = 1;
 
-        loop = 1;
-
-      }
+    }
 
     // Check in the main function
     XPLMRegisterFlightLoopCallback(
@@ -516,8 +526,8 @@ PLUGIN_API int XPluginStart(
 PLUGIN_API void    XPluginStop(void)
 {
     XPLMUnregisterFlightLoopCallback(D2BLoopCallback, NULL);
-
     XPDestroyWidget(D2BWidgetID, 1);
+    XPLMDestroyMenu(D2BMenuId);
 
     /*** if open close that bip panel ****/
       if (biphandle > 0) {
@@ -530,16 +540,15 @@ PLUGIN_API void    XPluginStop(void)
       }
 }
 
-PLUGIN_API void XPluginDisable(void)
-{
-    XPLMDestroyMenu(D2BMenuId);
-}
+
 
 PLUGIN_API int XPluginEnable(void)
 {
-    D2BMenuItem = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "Xdataref2BIP", NULL, 1);
-    D2BMenuId = XPLMCreateMenu("Xdataref2BIP", XPLMFindPluginsMenu(), D2BMenuItem, D2BMenuHandler, NULL);
     return 1;
+}
+
+PLUGIN_API void XPluginDisable(void)
+{
 }
 
 PLUGIN_API void XPluginReceiveMessage(
@@ -867,10 +876,10 @@ float	D2BLoopCallback(
 
         // Trying to only write on changes to improve FPS impact
         if(loop == 2){
-          n = memcmp(bipwbuf, lastbipwbuf, 10);
-          if (n == 0){
+          change = memcmp(bipwbuf, lastbipwbuf, 10);
+          if (change == 0){
           }
-          if (n =! 0) {
+          if (change != 0){
             res = hid_send_feature_report(biphandle, bipwbuf, 10);
             memcpy(lastbipwbuf, bipwbuf, 10);
           }

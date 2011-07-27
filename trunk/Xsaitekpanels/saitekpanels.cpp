@@ -115,7 +115,7 @@ XPLMDataRef GearRetract = NULL, OnGround = NULL;
 int radcnt = 0, stopradcnt;
 int radres, radnum = 0;
 float interval = -1;
-static unsigned char blankradiowbuf[4][24];
+static unsigned char blankradiowbuf[4][23];
 
 unsigned char radbuf[4], radwbuf[21];
 
@@ -124,7 +124,7 @@ hid_device *radhandle[4];
 
 /********************** Multi Panel variables ***********************/
 int multires, stopmulticnt;
-static unsigned char blankmultiwbuf[12];
+static unsigned char blankmultiwbuf[13];
 unsigned char multibuf[3], multiwbuf[12];
 
 hid_device *multihandle;
@@ -487,7 +487,7 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[3][15] = 11, blankradiowbuf[3][16] = 11, blankradiowbuf[3][17] = 11;
       blankradiowbuf[3][18] = 11, blankradiowbuf[3][19] = 11, blankradiowbuf[3][20] = 11;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
       stopradcnt--;
     }
@@ -502,7 +502,7 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[2][15] = 11, blankradiowbuf[2][16] = 11, blankradiowbuf[2][17] = 11;
       blankradiowbuf[2][18] = 11, blankradiowbuf[2][19] = 11, blankradiowbuf[2][20] = 11;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
       stopradcnt--;
     }
@@ -517,7 +517,7 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[1][15] = 11, blankradiowbuf[1][16] = 11, blankradiowbuf[1][17] = 11;
       blankradiowbuf[1][18] = 11, blankradiowbuf[1][19] = 11, blankradiowbuf[1][20] = 11;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
       stopradcnt--;
     }
@@ -532,7 +532,7 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[0][15] = 11, blankradiowbuf[0][16] = 11, blankradiowbuf[0][17] = 11;
       blankradiowbuf[0][18] = 11, blankradiowbuf[0][19] = 11, blankradiowbuf[0][20] = 11;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 21);
+      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
     }
 
@@ -544,7 +544,7 @@ PLUGIN_API void	XPluginStop(void)
         blankmultiwbuf[3] = 11, blankmultiwbuf[4] = 11, blankmultiwbuf[5] = 11;
         blankmultiwbuf[6] = 11, blankmultiwbuf[7] = 11, blankmultiwbuf[8] = 11;
         blankmultiwbuf[9] = 11, blankmultiwbuf[10] = 11, blankmultiwbuf[11] = 0;
-        multires = hid_send_feature_report(multihandle, blankmultiwbuf, 12);
+        multires = hid_send_feature_report(multihandle, blankmultiwbuf, 13);
         hid_close(multihandle);
 
     }

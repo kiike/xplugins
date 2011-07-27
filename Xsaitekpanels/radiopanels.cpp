@@ -238,7 +238,7 @@ void process_radio_panel()
   hid_set_nonblocking(radhandle[radnum], 1);
   radiores = hid_read(radhandle[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
   if (radiores > 0) {
-    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
+    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
     radionowrite[radnum] = 1;
   }
 
@@ -251,7 +251,7 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
+      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
       radionowrite[radnum] = 1;
       lastupseldis[radnum] = upseldis[radnum];
     }
@@ -263,14 +263,14 @@ void process_radio_panel()
     if (radionowrite[radnum] == 1) {
     }
     else {
-      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
+      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
       radionowrite[radnum] = 1;
       lastloseldis[radnum] = loseldis[radnum];
     }
   }
 
   if (radionowrite[radnum] == 50) {
-    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 21);
+    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
     radionowrite[radnum] = 0;
   }
   else {

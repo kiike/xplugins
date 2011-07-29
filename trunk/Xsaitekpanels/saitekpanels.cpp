@@ -1,6 +1,6 @@
 /****** saitekpanels.cpp ***********/
 /****  William R. Good   ***********/
-/******** ver 1.16   ***************/
+/******** ver 1.17   ***************/
 /****** Jul 11 2011   **************/
 
 #include "XPLMDisplay.h"
@@ -121,22 +121,19 @@ unsigned char radbuf[4], radwbuf[21];
 
 hid_device *radhandle[4];
 
-
 /********************** Multi Panel variables ***********************/
-int multires, stopmulticnt;
+int multicnt = 0, multires, stopmulticnt;
 static unsigned char blankmultiwbuf[13];
 unsigned char multibuf[3], multiwbuf[12];
 
 hid_device *multihandle;
 
 /****************** Switch Panel variables *******************************/
-int switchres, stopswitchcnt;
+int switchcnt = 0, switchres, stopswitchcnt;
 static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[3], switchwbuf[2];
 
 hid_device *switchhandle;
-
-
 
 /********************* MyPanelsFlightLoopCallback **************************/
 float	MyPanelsFlightLoopCallback(
@@ -158,7 +155,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 {
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.16");
+  strcpy(outName, "Xsaitekpanels v1.17");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -423,25 +420,18 @@ PLUGIN_API int XPluginStart(char *		outName,
   }
   hid_free_enumeration(rad_devs);
 
-  // Set up the command buffer.
-  memset(radbuf,0x00,sizeof(radbuf));
-  radbuf[0] = 0x01;
-  radbuf[1] = 0x81;
-
 /*** Find Connected Multi Panel *****/
 
   struct hid_device_info *multi_devs, *multi_cur_dev;
 
   multi_devs = hid_enumerate(0x6a3, 0x0d06);
   multi_cur_dev = multi_devs;
-  multihandle = hid_open_path(multi_cur_dev->path);
+  while (multi_cur_dev) {
+         multihandle = hid_open_path(multi_cur_dev->path);
+         multicnt++;
+         multi_cur_dev = multi_cur_dev->next;
+  }
   hid_free_enumeration(multi_devs);
-
-  // Set up the command buffer.
-  memset(multibuf,0x00,sizeof(multibuf));
-  multibuf[0] = 0x01;
-  multibuf[1] = 0x81;
-
 
 /*** Find Connected Switch Panel *****/
 
@@ -449,14 +439,12 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   switch_devs = hid_enumerate(0x6a3, 0x0d67);
   switch_cur_dev = switch_devs;
-  switchhandle = hid_open_path(switch_cur_dev->path);
+  while (switch_cur_dev) {
+        switchhandle = hid_open_path(switch_cur_dev->path);
+        switchcnt++;
+        switch_cur_dev = switch_cur_dev->next;
+  }
   hid_free_enumeration(switch_devs);
-
-  // Set up the command buffer.
-  memset(switchbuf,0x00,sizeof(switchbuf));
-  switchbuf[0] = 0x01;
-  switchbuf[1] = 0x81;
-
 
   /* Register our callback for every loop. Positive intervals
   * are in seconds, negative are the negative of sim frames.  Zero
@@ -539,7 +527,7 @@ PLUGIN_API void	XPluginStop(void)
 
 
   // *** if open blank display and then close that multi panel ***
-    if (multihandle) {
+    if (multicnt > 0) {
         blankmultiwbuf[0] = 0, blankmultiwbuf[1] = 11, blankmultiwbuf[2] = 11;
         blankmultiwbuf[3] = 11, blankmultiwbuf[4] = 11, blankmultiwbuf[5] = 11;
         blankmultiwbuf[6] = 11, blankmultiwbuf[7] = 11, blankmultiwbuf[8] = 11;
@@ -552,7 +540,7 @@ PLUGIN_API void	XPluginStop(void)
 
 // *** if open close that switch panel ***
 
-    if (switchhandle) {
+    if (switchcnt > 0) {
 
       blankswitchwbuf[0] = 0;
       blankswitchwbuf[1] = 0;
@@ -598,12 +586,12 @@ float	MyPanelsFlightLoopCallback(
     process_radio_panel();
   }
 
-  if (multihandle) {
+  if (multicnt > 0) {
         process_multi_panel();
   }
 
 
-  if(switchhandle){
+  if(switchcnt > 0){
     process_switch_panel();
   }
 

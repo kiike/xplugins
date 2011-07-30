@@ -1,6 +1,6 @@
 /****** saitekpanels.cpp ***********/
 /****  William R. Good   ***********/
-/******** ver 1.17   ***************/
+/******** ver 1.18   ***************/
 /****** Jul 11 2011   **************/
 
 #include "XPLMDisplay.h"
@@ -155,7 +155,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 {
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.17");
+  strcpy(outName, "Xsaitekpanels v1.18");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 

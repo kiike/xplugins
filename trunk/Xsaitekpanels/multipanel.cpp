@@ -331,8 +331,12 @@ if (multiseldis == 5) {
 	if (XPLMGetDatai(ApMstrStat) == 0) {
           if (multires > 0) {
 	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
-	      XPLMCommandOnce(ApMstrBtnUp);
-	    }
+              apbtncnt++;
+            }
+            if (apbtncnt == 1) {
+              XPLMCommandOnce(ApMstrBtnUp);
+              apbtncnt = 0;
+            }
 	  }
 	}
 
@@ -341,7 +345,7 @@ if (multiseldis == 5) {
 	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
 	      apbtncnt++;
 	    }
-              if (apbtncnt == 1) {
+              if (apbtncnt == 2) {
 	        XPLMCommandOnce(ApMstrBtnUp);
 	        apbtncnt = 0;
 	      }	 

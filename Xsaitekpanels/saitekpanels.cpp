@@ -112,10 +112,11 @@ XPLMDataRef CowlFlaps = NULL, CockpitLights = NULL, AntiIce = NULL;
 XPLMDataRef GearRetract = NULL, OnGround = NULL;
 
 /********************** Radio Panel variables ************************/
-int radcnt = 0, stopradcnt;
+int radcnt = 0, radiores, stopradcnt;
 int radres, radnum = 0;
 float interval = -1;
 static unsigned char blankradiowbuf[4][23];
+static unsigned char radiobuf[4][4], radiowbuf[4][23];
 
 unsigned char radbuf[4], radwbuf[21];
 
@@ -124,14 +125,14 @@ hid_device *radhandle[4];
 /********************** Multi Panel variables ***********************/
 int multicnt = 0, multires, stopmulticnt;
 static unsigned char blankmultiwbuf[13];
-unsigned char multibuf[3], multiwbuf[12];
+unsigned char multibuf[4], multiwbuf[13];
 
 hid_device *multihandle;
 
 /****************** Switch Panel variables *******************************/
 int switchcnt = 0, switchres, stopswitchcnt;
 static unsigned char blankswitchwbuf[2];
-unsigned char switchbuf[3], switchwbuf[2];
+unsigned char switchbuf[4], switchwbuf[2];
 
 hid_device *switchhandle;
 
@@ -415,6 +416,9 @@ PLUGIN_API int XPluginStart(char *		outName,
   rad_cur_dev = rad_devs;
   while (rad_cur_dev) {
           radhandle[radcnt] = hid_open_path(rad_cur_dev->path);
+          hid_set_nonblocking(radhandle[radcnt], 1);
+          radiores = hid_read(radhandle[radcnt], radiobuf[radcnt], sizeof(radiobuf[radcnt]));
+          hid_send_feature_report(radhandle[radcnt], radiowbuf[radcnt], 23);
           radcnt++;
           rad_cur_dev = rad_cur_dev->next;
   }
@@ -428,6 +432,9 @@ PLUGIN_API int XPluginStart(char *		outName,
   multi_cur_dev = multi_devs;
   while (multi_cur_dev) {
          multihandle = hid_open_path(multi_cur_dev->path);
+         hid_set_nonblocking(multihandle, 1);
+         multires = hid_read(multihandle, multibuf, sizeof(multibuf));
+         hid_send_feature_report(multihandle, multiwbuf, 13);
          multicnt++;
          multi_cur_dev = multi_cur_dev->next;
   }
@@ -441,6 +448,9 @@ PLUGIN_API int XPluginStart(char *		outName,
   switch_cur_dev = switch_devs;
   while (switch_cur_dev) {
         switchhandle = hid_open_path(switch_cur_dev->path);
+        hid_set_nonblocking(switchhandle, 1);
+        switchres = hid_read(switchhandle, switchbuf, sizeof(switchbuf));
+        hid_send_feature_report(switchhandle, switchwbuf, 2);
         switchcnt++;
         switch_cur_dev = switch_cur_dev->next;
   }

@@ -18,7 +18,8 @@
 
 /********************** Multi Panel variables ***********************/
 static int multinowrite = 0, lastmultiseldis = 0;
-static int mulres, multires;
+static int mulres, multires, lastappos = 0;
+static int appushed = 0, loop = 0;
 
 static int upapalt, upapvs, upapas, upaphdg, upapcrs, neg;
 static int flashcnt = 0, flashon = 0, apbtncnt = 0;
@@ -328,41 +329,50 @@ if (multiseldis == 5) {
 
 /***************** AP Master Button and light *******************/
 
-	if (XPLMGetDatai(ApMstrStat) == 0) {
-          if (multires > 0) {
-	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
-              apbtncnt++;
-            }
-            if (apbtncnt == 1) {
-              XPLMCommandOnce(ApMstrBtnUp);
-              apbtncnt = 0;
-            }
-	  }
-	}
+        if (appushed == 0) {
+          if (XPLMGetDatai(ApMstrStat) == 0) {
+              if(testbit(multibuf,AP_MASTER_BUTTON)) {
+                XPLMSetDatai(ApMstrStat, 1);
+                appushed = 1;
+                lastappos = 1;
+              }
+          }
+        }
 
-	if (XPLMGetDatai(ApMstrStat) == 1) {
-          if (multires > 0) {
-	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
-	      apbtncnt++;
-	    }
-              if (apbtncnt == 2) {
-	        XPLMCommandOnce(ApMstrBtnUp);
-	        apbtncnt = 0;
-	      }	 
-	  }	
-	}
+        if (appushed == 0) {
+          if (XPLMGetDatai(ApMstrStat) == 1) {
+             if(testbit(multibuf,AP_MASTER_BUTTON)) {
+                 if (lastappos == 1){
+                   XPLMSetDatai(ApMstrStat, 2);
+                   appushed = 1;
+                 }
+                 if (lastappos == 2){
+                     XPLMSetDatai(ApMstrStat, 0);
+                     appushed = 1;
+                 }
+              }
+          }
+        }
 
-	if (XPLMGetDatai(ApMstrStat) == 2) {
-          if (multires > 0) {
-	    if(testbit(multibuf,AP_MASTER_BUTTON)) {
-	      apbtncnt++;
-	    }
-	    if (apbtncnt == 2) {
-	      XPLMSetDatai(ApMstrStat, 0);
-	      apbtncnt = 0;
-	    }
-	  }	
-	}
+        if (appushed == 0) {
+          if (XPLMGetDatai(ApMstrStat) == 2) {
+              if(testbit(multibuf,AP_MASTER_BUTTON)) {
+                 XPLMSetDatai(ApMstrStat, 1);
+                 appushed = 1;
+                 lastappos = 2;
+              }
+          }
+        }
+
+        if (appushed == 1){
+            loop++;
+            if (loop == 50){
+               appushed = 0;
+               loop = 0;
+            }
+
+        }
+
 
 	if (XPLMGetDatai(ApMstrStat) == 0) {
 	  btnleds &= ~(1<<0);   /* clear bit 0 in btnleds to 0 */   

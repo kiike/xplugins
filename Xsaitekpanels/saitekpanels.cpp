@@ -415,12 +415,12 @@ PLUGIN_API int XPluginStart(char *		outName,
   rad_devs = hid_enumerate(0x6a3, 0x0d05);
   rad_cur_dev = rad_devs;
   while (rad_cur_dev) {
-          radhandle[radcnt] = hid_open_path(rad_cur_dev->path);
-          hid_set_nonblocking(radhandle[radcnt], 1);
-          radiores = hid_read(radhandle[radcnt], radiobuf[radcnt], sizeof(radiobuf[radcnt]));
-          hid_send_feature_report(radhandle[radcnt], radiowbuf[radcnt], 23);
-          radcnt++;
-          rad_cur_dev = rad_cur_dev->next;
+        radhandle[radcnt] = hid_open_path(rad_cur_dev->path);
+        hid_set_nonblocking(radhandle[radcnt], 1);
+        radiores = hid_read(radhandle[radcnt], radiobuf[radcnt], sizeof(radiobuf[radcnt]));
+        hid_send_feature_report(radhandle[radcnt], radiowbuf[radcnt], 23);
+        radcnt++;
+        rad_cur_dev = rad_cur_dev->next;
   }
   hid_free_enumeration(rad_devs);
 
@@ -431,12 +431,12 @@ PLUGIN_API int XPluginStart(char *		outName,
   multi_devs = hid_enumerate(0x6a3, 0x0d06);
   multi_cur_dev = multi_devs;
   while (multi_cur_dev) {
-         multihandle = hid_open_path(multi_cur_dev->path);
-         hid_set_nonblocking(multihandle, 1);
-         multires = hid_read(multihandle, multibuf, sizeof(multibuf));
-         hid_send_feature_report(multihandle, multiwbuf, 13);
-         multicnt++;
-         multi_cur_dev = multi_cur_dev->next;
+        multihandle = hid_open_path(multi_cur_dev->path);
+        hid_set_nonblocking(multihandle, 1);
+        multires = hid_read(multihandle, multibuf, sizeof(multibuf));
+        hid_send_feature_report(multihandle, multiwbuf, 13);
+        multicnt++;
+        multi_cur_dev = multi_cur_dev->next;
   }
   hid_free_enumeration(multi_devs);
 

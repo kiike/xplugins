@@ -18,8 +18,11 @@
 
 /********************** Multi Panel variables ***********************/
 static int multinowrite = 0, lastmultiseldis = 0;
-static int mulres, multires, lastappos = 0;
-static int appushed = 0, loop = 0;
+static int mulres, multires;
+
+static int appushed = 0, hdgpushed = 0;
+static int lastappos = 0, lasthdgpos = 0;
+static int aploop = 0, hdgloop = 0;
 
 static int upapalt, upapvs, upapas, upaphdg, upapcrs, neg;
 static int flashcnt = 0, flashon = 0, apbtncnt = 0;
@@ -331,7 +334,7 @@ if (multiseldis == 5) {
 
         if (appushed == 0) {
           if (XPLMGetDatai(ApMstrStat) == 0) {
-              if(testbit(multibuf,AP_MASTER_BUTTON)) {
+              if(testbit(multibuf, AP_MASTER_BUTTON)) {
                 XPLMSetDatai(ApMstrStat, 1);
                 appushed = 1;
                 lastappos = 1;
@@ -341,7 +344,7 @@ if (multiseldis == 5) {
 
         if (appushed == 0) {
           if (XPLMGetDatai(ApMstrStat) == 1) {
-             if(testbit(multibuf,AP_MASTER_BUTTON)) {
+             if(testbit(multibuf, AP_MASTER_BUTTON)) {
                  if (lastappos == 1){
                    XPLMSetDatai(ApMstrStat, 2);
                    appushed = 1;
@@ -356,7 +359,7 @@ if (multiseldis == 5) {
 
         if (appushed == 0) {
           if (XPLMGetDatai(ApMstrStat) == 2) {
-              if(testbit(multibuf,AP_MASTER_BUTTON)) {
+              if(testbit(multibuf, AP_MASTER_BUTTON)) {
                  XPLMSetDatai(ApMstrStat, 1);
                  appushed = 1;
                  lastappos = 2;
@@ -365,10 +368,10 @@ if (multiseldis == 5) {
         }
 
         if (appushed == 1){
-            loop++;
-            if (loop == 50){
+            aploop++;
+            if (aploop == 50){
                appushed = 0;
-               loop = 0;
+               aploop = 0;
             }
 
         }
@@ -393,9 +396,11 @@ if (multiseldis == 5) {
 
         if (multires > 0) {
           if(testbit(multibuf,HDG_BUTTON)) {
-	    XPLMCommandOnce(ApHdgBtn);
-	  }
-	}
+            XPLMCommandOnce(ApHdgBtn);
+            lastappos = 1;
+          }
+        }
+
 	if (XPLMGetDatai(ApHdgStat) == 2) {
 	  btnleds |= (1<<1);   /* set bit 1 in btnleds to 1 */    
 	}
@@ -417,9 +422,12 @@ if (multiseldis == 5) {
 
         if (multires > 0) {
           if(testbit(multibuf,NAV_BUTTON)) {
-	    XPLMCommandOnce(ApNavBtn);	 
+            XPLMCommandOnce(ApNavBtn);
+            lastappos = 1;
 	  }
 	}
+
+
 	if (XPLMGetDatai(ApNavStat) == 2) {
 	  btnleds |= (1<<2);   /* set bit 2 in btnleds to 1 */    
 	}
@@ -437,10 +445,12 @@ if (multiseldis == 5) {
 
 /***************** IAS Button and light *******************/
 
-	if(testbit(multibuf,IAS_BUTTON)) {
-	  XPLMCommandOnce(ApIasBtn);
-	}
-	if (XPLMGetDatai(ApIasStat) == 2) {
+        if (multires > 0) {
+          if(testbit(multibuf,IAS_BUTTON)) {
+            XPLMCommandOnce(ApIasBtn);
+          }
+        }
+        if (XPLMGetDatai(ApIasStat) == 2) {
 	  btnleds |= (1<<3);   /* set bit 3 in btnleds to 1 */    
 	}
 	if (XPLMGetDatai(ApIasStat) == 1) {
@@ -459,7 +469,8 @@ if (multiseldis == 5) {
 
         if (multires > 0) {
 	  if(testbit(multibuf,ALT_BUTTON)) {
-	    XPLMCommandOnce(ApAltBtn);	 
+            XPLMCommandOnce(ApAltBtn);
+            lastappos = 1;
 	  }
 	}
 	if (XPLMGetDatai(ApAltStat) == 2) {
@@ -483,7 +494,8 @@ if (multiseldis == 5) {
 
         if (multires > 0) {
 	  if(testbit(multibuf,VS_BUTTON)) {
- 	    XPLMCommandOnce(ApVsBtn);	 
+            XPLMCommandOnce(ApVsBtn);
+            lastappos = 1;
 	  }
 	}
 	if (XPLMGetDatai(ApVsStat) == 2) {
@@ -551,7 +563,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,FLAPS_UP_SWITCH)) {
 	    XPLMCommandOnce(FlapsUp);	 
           }
-	}
+        }
         if (multires > 0) {
 	  if(testbit(multibuf,FLAPS_DN_SWITCH)) {
 	    XPLMCommandOnce(FlapsDn);	 

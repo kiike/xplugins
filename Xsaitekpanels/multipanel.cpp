@@ -448,6 +448,7 @@ if (multiseldis == 5) {
         if (multires > 0) {
           if(testbit(multibuf,IAS_BUTTON)) {
             XPLMCommandOnce(ApIasBtn);
+            lastappos = 1;
           }
         }
         if (XPLMGetDatai(ApIasStat) == 2) {
@@ -517,7 +518,8 @@ if (multiseldis == 5) {
 
         if (multires > 0) {
 	  if(testbit(multibuf,APR_BUTTON)) {
-	    XPLMCommandOnce(ApAprBtn);	 
+            XPLMCommandOnce(ApAprBtn);
+            lastappos = 1;
 	  }
 	}
 	if (XPLMGetDatai(ApAprStat) == 2) {
@@ -539,7 +541,8 @@ if (multiseldis == 5) {
 
         if (multires > 0) {
 	  if(testbit(multibuf,REV_BUTTON)) {
-	    XPLMCommandOnce(ApRevBtn);	 
+            XPLMCommandOnce(ApRevBtn);
+            lastappos = 1;
 	  }
 	}
 	if (XPLMGetDatai(ApRevStat) == 2) {

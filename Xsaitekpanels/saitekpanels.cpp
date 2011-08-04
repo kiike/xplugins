@@ -279,7 +279,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApVsStat = XPLMFindDataRef("sim/cockpit2/autopilot/vvi_status");
   ApAprStat = XPLMFindDataRef("sim/cockpit2/autopilot/approach_status");
   ApRevStat = XPLMFindDataRef("sim/cockpit2/autopilot/backcourse_status");
-
   AvPwrOn = XPLMFindDataRef("sim/cockpit/electrical/avionics_on");
   BatPwrOn = XPLMFindDataRef("sim/cockpit/electrical/battery_on");
 

@@ -1,7 +1,7 @@
 /****** saitekpanels.cpp ***********/
 /****  William R. Good   ***********/
-/******** ver 1.18   ***************/
-/****** Jul 11 2011   **************/
+/******** ver 1.19   ***************/
+/****** Aug 06 2011   **************/
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -53,10 +53,12 @@ XPLMCommandRef ApAsDn = NULL, ApAsUp = NULL, ApHdgDn = NULL, ApHdgUp = NULL;
 XPLMCommandRef ApCrsDn = NULL, ApCrsUp = NULL;
 
 XPLMCommandRef ApMstrBtnUp = NULL, ApMstrBtnDn = NULL, ApMstrBtnOff = NULL;
-XPLMCommandRef ApHdgBtn = NULL, ApNavBtn = NULL, ApIasBtn = NULL, ApAltBtn = NULL;
+XPLMCommandRef ApHdgBtn = NULL, ApNavBtn = NULL, ApAltBtn = NULL;
+XPLMCommandRef ApIasBtn = NULL;
+
 XPLMCommandRef ApVsBtn = NULL, ApAprBtn = NULL, ApRevBtn = NULL;
 
-XPLMCommandRef ApAutThrOn = NULL, ApAutThrOff = NULL, FlapsDn = NULL, FlapsUp = NULL;
+XPLMCommandRef ApAutThrToggle = NULL, FlapsDn = NULL, FlapsUp = NULL;
 XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
 /***************** Multi Panel Data Ref *********************/
@@ -65,6 +67,7 @@ XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL;
 XPLMDataRef ApMstrStat = NULL, ApHdgStat = NULL, ApNavStat = NULL, ApIasStat = NULL;
 XPLMDataRef ApAltStat = NULL, ApVsStat = NULL, ApAprStat = NULL, ApRevStat = NULL;
 XPLMDataRef x737athr_armed = NULL, x737swBatBus = NULL, x737stbyPwr = NULL;
+XPLMDataRef ApState = NULL;
 
 
 /*************** Switch Panel Command Ref *******************/
@@ -156,7 +159,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 {
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.18");
+  strcpy(outName, "Xsaitekpanels v1.19");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -249,14 +252,13 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApMstrBtnOff = XPLMFindCommand("sim/autopilot/servos_and_flight_dir_off");
   ApHdgBtn = XPLMFindCommand("sim/autopilot/heading");
   ApNavBtn = XPLMFindCommand("sim/autopilot/NAV");
-  ApIasBtn = XPLMFindCommand("sim/autopilot/level_change");
+   ApIasBtn = XPLMFindCommand("sim/autopilot/level_change");
   ApAltBtn = XPLMFindCommand("sim/autopilot/altitude_hold");
   ApVsBtn = XPLMFindCommand("sim/autopilot/vertical_speed");
   ApAprBtn = XPLMFindCommand("sim/autopilot/approach");
   ApRevBtn = XPLMFindCommand("sim/autopilot/back_course");
 
-
-
+  ApAutThrToggle = XPLMFindCommand("sim/autopilot/autothrottle_toggle");
 
   PitchTrimDn = XPLMFindCommand("sim/flight_controls/pitch_trim_down");
   PitchTrimUp = XPLMFindCommand("sim/flight_controls/pitch_trim_up");
@@ -272,6 +274,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 /**************** Find Multi Panel Data Ref ********************/
   ApMstrStat = XPLMFindDataRef("sim/cockpit2/autopilot/flight_director_mode");
+  ApState = XPLMFindDataRef("sim/cockpit/autopilot/autopilot_state");
   ApHdgStat = XPLMFindDataRef("sim/cockpit2/autopilot/heading_status");
   ApNavStat = XPLMFindDataRef("sim/cockpit2/autopilot/nav_status");
   ApIasStat = XPLMFindDataRef("sim/cockpit2/autopilot/speed_status");
@@ -603,21 +606,6 @@ float	MyPanelsFlightLoopCallback(
   if(switchcnt > 0){
     process_switch_panel();
   }
-
-  if (XPLMIsDataRefGood(XPLMFindDataRef("x737/systems/afds/plugin_status"))) {
-     loaded737 = 1;
-
-     x737athr_armed = XPLMFindDataRef("x737/systems/athr/athr_armed");
-
-  }
-  else{
-       loaded737 = 0;
-
-       ApAutThrOn = XPLMFindCommand("sim/autopilot/autothrottle_on");
-       ApAutThrOff = XPLMFindCommand("sim/autopilot/autothrottle_off");
-
-  }
-
 
 
   return interval;

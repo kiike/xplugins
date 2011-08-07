@@ -54,10 +54,11 @@ extern XPLMCommandRef ApAsDn, ApAsUp, ApHdgDn, ApHdgUp;
 extern XPLMCommandRef ApCrsDn, ApCrsUp;
 
 extern XPLMCommandRef ApMstrBtnUp, ApMstrBtnDn, ApMstrBtnOff;
-extern XPLMCommandRef ApHdgBtn, ApNavBtn, ApIasBtn, ApAltBtn;
+extern XPLMCommandRef ApHdgBtn, ApNavBtn, ApAltBtn;
+extern XPLMCommandRef ApIasBtn;
 extern XPLMCommandRef ApVsBtn, ApAprBtn, ApRevBtn;
 
-extern XPLMCommandRef ApAutThrOn, ApAutThrOff, FlapsDn, FlapsUp;
+extern XPLMCommandRef ApAutThrToggle, FlapsDn, FlapsUp;
 extern XPLMCommandRef PitchTrimDn, PitchTrimUp, PitchTrimTkOff;
 
 
@@ -67,6 +68,7 @@ extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs;
 extern XPLMDataRef ApMstrStat, ApHdgStat, ApNavStat, ApIasStat;
 extern XPLMDataRef ApAltStat, ApVsStat, ApAprStat, ApRevStat;
 extern XPLMDataRef x737athr_armed;
+extern XPLMDataRef ApState;
 
 /**************** Multi Panel variables *******************/
 extern int multifd;

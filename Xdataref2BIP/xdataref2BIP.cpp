@@ -68,21 +68,14 @@ using namespace std;
 struct  D2BTableStructure
 {
     char            Row;
-    int             Number, Number2;
+    int             Number;
     char            Color;
-    int             ValueFrom, ValueFrom2;
-    int             ValueTo, ValueTo2;
     XPLMDataRef     DataRefToSet;
     XPLMDataTypeID  DataRefType;
-    XPLMCommandRef  CommandToExecute;
     int             DataRefIndex;
     char            WhatToDo;
-    int             IntValueToSet;
     float           FloatValueToSet;
-    int             IntLimit;
     float           FloatLimit;
-    int             IntToggle;
-    float           FloatToggle;
     string          CSVDebugString;
 };
 
@@ -178,23 +171,12 @@ void WriteCSVTableToDisk(void)
     {
         CSVFile << "\"" << D2BTable[i].Row << "\",";
         CSVFile << "\"" << D2BTable[i].Number << "\",";
-        CSVFile << "\"" << D2BTable[i].Number2 << "\",";
         CSVFile << "\"" << D2BTable[i].Color << "\",";
-        CSVFile << "\"" << D2BTable[i].ValueFrom << "\",";
-        CSVFile << "\"" << D2BTable[i].ValueFrom2 << "\",";
-        CSVFile << "\"" << D2BTable[i].ValueTo << "\",";
-        CSVFile << "\"" << D2BTable[i].ValueTo2 << "\",";
         CSVFile << "\"" << D2BTable[i].DataRefToSet << "\",";
         CSVFile << "\"" << D2BTable[i].DataRefType << "\",";
-        CSVFile << "\"" << D2BTable[i].CommandToExecute << "\",";
         CSVFile << "\"" << D2BTable[i].DataRefIndex << "\",";
         CSVFile << "\"" << D2BTable[i].WhatToDo << "\",";
-        CSVFile << "\"" << D2BTable[i].IntValueToSet << "\",";
-        CSVFile << "\"" << D2BTable[i].FloatValueToSet << "\",";
-        CSVFile << "\"" << D2BTable[i].IntLimit << "\",";
         CSVFile << "\"" << D2BTable[i].FloatLimit << "\",";
-        CSVFile << "\"" << D2BTable[i].IntToggle << "\",";
-        CSVFile << "\"" << D2BTable[i].FloatToggle << "\",";
         CSVFile << "\"" << D2BTable[i].CSVDebugString << "\"\n";
     }
     CSVFile.close();
@@ -206,8 +188,7 @@ bool ReadConfigFile(string PlaneICAO)
     string          LineToEncrypt;
     bool            CorrectICAO = true;
     char            RowString[1];
-    int             BipNumber, ButtonFrom, ButtomTo;
-    int             BipNumber2, ButtonFrom2, ButtomTo2;
+    int             BipNumber;
     char            ColorString[1];
     char            DataRefString[512];
     XPLMDataRef     DataRefNumber;
@@ -240,23 +221,12 @@ bool ReadConfigFile(string PlaneICAO)
     {
         D2BTable[i].Row = '0';
         D2BTable[i].Number = 0;
-        D2BTable[i].Number2 = 0;
-        D2BTable[i].Color = '0';
-        D2BTable[i].ValueFrom = 0;
-        D2BTable[i].ValueFrom2 = 0;
-        D2BTable[i].ValueTo = 0;
-        D2BTable[i].ValueTo2 = 0;
         D2BTable[i].DataRefToSet = NULL;
         D2BTable[i].DataRefType = 0;
-        D2BTable[i].CommandToExecute = NULL;
         D2BTable[i].DataRefIndex = 0;
         D2BTable[i].WhatToDo = '0';
-        D2BTable[i].IntValueToSet = 0;
         D2BTable[i].FloatValueToSet = 0;
-        D2BTable[i].IntLimit = 0;
         D2BTable[i].FloatLimit = 0;
-        D2BTable[i].IntToggle = 0;
-        D2BTable[i].FloatToggle = 0;
         D2BTable[i].CSVDebugString = "";
     }
 
@@ -399,39 +369,6 @@ bool ReadConfigFile(string PlaneICAO)
             continue;
         }
 
-        if (sscanf(LineToEncrypt.c_str(), "#IF PAIR %i %i SWITCHES FROM %i %i TO %i %i LOAD CONFIG %s", &BipNumber, &BipNumber2, &ButtonFrom, &ButtonFrom2, &ButtomTo, &ButtomTo2, DataRefString) == 7)
-        {
-            if ((BipNumber >= MAXINDICATORS) || (BipNumber < 0) || (BipNumber2 >= MAXINDICATORS) || (BipNumber2 < 0))
-            {
-                logMsg("Xdataref2BIP: Indicator does not exist!");
-                ReadFile.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            if ((ButtonFrom == ButtomTo) && (ButtonFrom2 == ButtomTo2))
-            {
-                logMsg("Xdataref2BIP: LOAD CONFIG not allowed for constant button states!");
-                ReadFile.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            if (++LastTableElement >= MAXTABLEELEMENTS)
-            {
-                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            D2BTable[LastTableElement].Number = BipNumber;
-            D2BTable[LastTableElement].Number2 = BipNumber2;
-            D2BTable[LastTableElement].ValueFrom = ButtonFrom;
-            D2BTable[LastTableElement].ValueFrom2 = ButtonFrom2;
-            D2BTable[LastTableElement].ValueTo = ButtomTo;
-            D2BTable[LastTableElement].ValueTo2 = ButtomTo2;
-            D2BTable[LastTableElement].WhatToDo = 'L';
-            D2BTable[LastTableElement].CSVDebugString = std::string("[").append(DataRefString).append("]");
-            continue;
-        }
 
         if (LineToEncrypt.find('#') == 0)
         {
@@ -602,96 +539,77 @@ float	D2BLoopCallback(
 
     Now = XPLMGetDataf(gTimeSimIsRunningXDataRef);
 
-    for (i = 0; i <= LastTableElement; i++)
-    {
+    for (i = 0; i <= LastTableElement; i++) {
 
-        if (D2BTable[i].WhatToDo == 'v')  // "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f" or "#SET BIP %s %i %s FROM ARRAY %s %i RANGE %f TO %f""
-        {
+        if (D2BTable[i].WhatToDo == 'v') {
+            // "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f" or "#SET BIP %s %i %s FROM ARRAY %s %i RANGE %f TO %f""
             if (D2BTable[i].DataRefType == xplmType_Float) LookAtThisValue = XPLMGetDataf(D2BTable[i].DataRefToSet);
             if (D2BTable[i].DataRefType == xplmType_Int) LookAtThisValue = (float) XPLMGetDatai(D2BTable[i].DataRefToSet);
             if (D2BTable[i].DataRefType == xplmType_FloatArray) XPLMGetDatavf(D2BTable[i].DataRefToSet, &LookAtThisValue, D2BTable[i].DataRefIndex, 1);
-            if (D2BTable[i].DataRefType == xplmType_IntArray)
-            {
+            if (D2BTable[i].DataRefType == xplmType_IntArray) {
                 XPLMGetDatavi(D2BTable[i].DataRefToSet, &LookAtThisIntValue, D2BTable[i].DataRefIndex, 1);
                 LookAtThisValue = (float) LookAtThisIntValue;
             }
-            if ((LookAtThisValue >= D2BTable[i].FloatValueToSet) && (LookAtThisValue <= D2BTable[i].FloatLimit))
-            {
+            if ((LookAtThisValue >= D2BTable[i].FloatValueToSet) && (LookAtThisValue <= D2BTable[i].FloatLimit)) {
 
                 //printf("********************************  ON   **************************************\n");
-                if (D2BTable[i].Row == 'A')
-                {
-                    if (D2BTable[i].Color == 'G')
-                    {
+                if (D2BTable[i].Row == 'A') {
+                    if (D2BTable[i].Color == 'G') {
                         // Make D2BTable[i].Number position Top Row Green
                         bipwbuf[1] |= (1<<(D2BTable[i].Number)), bipwbuf[4] &= ~(1<<(D2BTable[i].Number));
                     }
-                    if (D2BTable[i].Color == 'R')
-                    {
+                    if (D2BTable[i].Color == 'R') {
                         // Make D2BTable[i].Number position Top Row Red
                         bipwbuf[1] &= ~(1<<(D2BTable[i].Number)), bipwbuf[4] |= (1<<(D2BTable[i].Number));
                     }
-                    if (D2BTable[i].Color == 'A')
-                    {
+                    if (D2BTable[i].Color == 'A') {
                         // Make D2BTable[i].Number position Top Row Amber
                         bipwbuf[1] |= (1<<(D2BTable[i].Number)), bipwbuf[4] |= (1<<(D2BTable[i].Number));
                     }
                 }
 
-                if (D2BTable[i].Row == 'B')
-                {
-                    if (D2BTable[i].Color == 'G')
-                    {
+                if (D2BTable[i].Row == 'B') {
+                    if (D2BTable[i].Color == 'G') {
                         // Make D2BTable[i].Number position Middle Row Green
                         bipwbuf[2] |= (1<<(D2BTable[i].Number)), bipwbuf[5] &= ~(1<<(D2BTable[i].Number));
                     }
-                    if (D2BTable[i].Color == 'R')
-                    {
+                    if (D2BTable[i].Color == 'R') {
                         // Make D2BTable[i].Number position Middle Row Red
                         bipwbuf[2] &= ~(1<<(D2BTable[i].Number)), bipwbuf[5] |= (1<<(D2BTable[i].Number));
                     }
-                    if (D2BTable[i].Color == 'A')
-                    {
+                    if (D2BTable[i].Color == 'A') {
                         // Make D2BTable[i].Number position Middle Row Amber
                         bipwbuf[2] |= (1<<(D2BTable[i].Number)), bipwbuf[5] |= (1<<(D2BTable[i].Number));
                     }
                 }
 
-                if (D2BTable[i].Row == 'C')
-                {
-                    if (D2BTable[i].Color == 'G')
-                    {
+                if (D2BTable[i].Row == 'C') {
+                    if (D2BTable[i].Color == 'G') {
                         // Make D2BTable[i].Number position Bottom Row Green
                         bipwbuf[3] |= (1<<(D2BTable[i].Number)), bipwbuf[6] &= ~(1<<(D2BTable[i].Number));
                     }
-                    if (D2BTable[i].Color == 'R')
-                    {
+                    if (D2BTable[i].Color == 'R') {
                         // Make D2BTable[i].Number position Bottom Row Red
                         bipwbuf[3] &= ~(1<<(D2BTable[i].Number)), bipwbuf[6] |= (1<<(D2BTable[i].Number));
                     }
-                    if (D2BTable[i].Color == 'A')
-                    {
+                    if (D2BTable[i].Color == 'A') {
                         // Make D2BTable[i].Number position Bottom Row Amber
                         bipwbuf[3] |= (1<<(D2BTable[i].Number)), bipwbuf[6] |= (1<<(D2BTable[i].Number));
                     }
                 }
             }
 
-            else
-            {
+            else {
                 //printf("**********************   OFF   *********************************\n");
-                if (D2BTable[i].Row == 'A')
-                {
+                if (D2BTable[i].Row == 'A') {
                     // Make D2BTable[i].Number position Top Row Off
                     bipwbuf[1] &= ~(1<<(D2BTable[i].Number)), bipwbuf[4] &= ~(1<<(D2BTable[i].Number));
                 }
-                if (D2BTable[i].Row == 'B')
-                {
+                if (D2BTable[i].Row == 'B') {
                     // Make D2BTable[i].Number position Middle Row Off
                     bipwbuf[2] &= ~(1<<(D2BTable[i].Number)), bipwbuf[5] &= ~(1<<(D2BTable[i].Number));
                 }
-                if (D2BTable[i].Row == 'C')
-                {
+                if (D2BTable[i].Row == 'C')  {
                     // Make D2BTable[i].Number position Bottom Row Off
                     bipwbuf[3] &= ~(1<<(D2BTable[i].Number)), bipwbuf[6] &= ~(1<<(D2BTable[i].Number));
                 }
@@ -699,164 +617,8 @@ float	D2BLoopCallback(
 
             }
 
-
-            continue;
         }
 
-        if (D2BTable[i].WhatToDo == 'T')  // "#RESET AUTHORITY"
-        {
-            WorkPermitted = true;
-            continue;
-        }
-        if (    WorkPermitted
-            && (ActualValues[D2BTable[i].Number]  == D2BTable[i].ValueTo)
-            && (LastValues[D2BTable[i].Number]    == D2BTable[i].ValueFrom)
-            && (ActualValues[D2BTable[i].Number2] == D2BTable[i].ValueTo2)
-            && (LastValues[D2BTable[i].Number2]   == D2BTable[i].ValueFrom2))
-        {
-
-            if (D2BTable[i].WhatToDo == 'S')  // "#IF ... SPEAK %s"
-            {
-                XPLMSpeakString(D2BTable[i].CSVDebugString.c_str());
-                continue;
-            }
-            if (D2BTable[i].WhatToDo == 'L')  // "#IF ... LOAD CONFIG %s"
-            {
-                ReadConfigFile(D2BTable[i].CSVDebugString);
-                return 0.5;
-            }
-            if (D2BTable[i].DataRefType == xplmType_Int)
-            {
-                switch(D2BTable[i].WhatToDo)
-                {
-                    case '=':   XPLMSetDatai(D2BTable[i].DataRefToSet, D2BTable[i].IntValueToSet);
-                                break;
-                    case '+':   xi = XPLMGetDatai(D2BTable[i].DataRefToSet);
-                                xi += D2BTable[i].IntValueToSet;
-                                if (xi <= D2BTable[i].IntLimit)
-                                {
-                                    XPLMSetDatai(D2BTable[i].DataRefToSet, xi);
-                                }
-                                break;
-                    case '-':   xi = XPLMGetDatai(D2BTable[i].DataRefToSet);
-                                xi -= D2BTable[i].IntValueToSet;
-                                if (xi >= D2BTable[i].IntLimit)
-                                {
-                                    XPLMSetDatai(D2BTable[i].DataRefToSet, xi);
-                                }
-                                break;
-                    case 't':   xi = XPLMGetDatai(D2BTable[i].DataRefToSet);
-                                if (xi == D2BTable[i].IntValueToSet)
-                                {
-                                    XPLMSetDatai(D2BTable[i].DataRefToSet, D2BTable[i].IntToggle);
-                                }
-                                else
-                                {
-                                    XPLMSetDatai(D2BTable[i].DataRefToSet, D2BTable[i].IntValueToSet);
-                                }
-                }
-            }
-            if (D2BTable[i].DataRefType == xplmType_Float)
-            {
-                switch(D2BTable[i].WhatToDo)
-                {
-                    case '=':   XPLMSetDataf(D2BTable[i].DataRefToSet, D2BTable[i].FloatValueToSet);
-                                break;
-                    case '+':   xf = XPLMGetDataf(D2BTable[i].DataRefToSet);
-                                xf += D2BTable[i].FloatValueToSet;
-                                if (xf <= D2BTable[i].FloatLimit)
-                                {
-                                    XPLMSetDataf(D2BTable[i].DataRefToSet, xf);
-                                }
-                                break;
-                    case '-':   xf = XPLMGetDataf(D2BTable[i].DataRefToSet);
-                                xf -= D2BTable[i].FloatValueToSet;
-                                if (xf >= D2BTable[i].FloatLimit)
-                                {
-                                    XPLMSetDataf(D2BTable[i].DataRefToSet, xf);
-                                }
-                                break;
-                    case 't':   xf = XPLMGetDataf(D2BTable[i].DataRefToSet);
-                                if (xf == D2BTable[i].FloatValueToSet)
-                                {
-                                    XPLMSetDataf(D2BTable[i].DataRefToSet, D2BTable[i].FloatToggle);
-                                }
-                                else
-                                {
-                                    XPLMSetDataf(D2BTable[i].DataRefToSet, D2BTable[i].FloatValueToSet);
-                                }
-                }
-            }
-            if (D2BTable[i].DataRefType == xplmType_IntArray)
-            {
-                switch(D2BTable[i].WhatToDo)
-                {
-                    case '=':   XPLMSetDatavi(D2BTable[i].DataRefToSet, &D2BTable[i].IntValueToSet, D2BTable[i].DataRefIndex, 1);
-                                break;
-                    case '+':   XPLMGetDatavi(D2BTable[i].DataRefToSet, &xi, D2BTable[i].DataRefIndex, 1);
-                                xi += D2BTable[i].IntValueToSet;
-                                if (xi <= D2BTable[i].IntLimit)
-                                {
-                                    XPLMSetDatavi(D2BTable[i].DataRefToSet, &xi, D2BTable[i].DataRefIndex, 1);
-                                }
-                                break;
-                    case '-':   XPLMGetDatavi(D2BTable[i].DataRefToSet, &xi, D2BTable[i].DataRefIndex, 1);
-                                xi -= D2BTable[i].IntValueToSet;
-                                if (xi >= D2BTable[i].IntLimit)
-                                {
-                                    XPLMSetDatavi(D2BTable[i].DataRefToSet, &xi, D2BTable[i].DataRefIndex, 1);
-                                }
-                                break;
-                    case 't':   XPLMGetDatavi(D2BTable[i].DataRefToSet, &xi, D2BTable[i].DataRefIndex, 1);
-                                if (xi == D2BTable[i].IntValueToSet)
-                                {
-                                    XPLMSetDatavi(D2BTable[i].DataRefToSet, &D2BTable[i].IntToggle, D2BTable[i].DataRefIndex, 1);
-                                }
-                                else
-                                {
-                                    XPLMSetDatavi(D2BTable[i].DataRefToSet, &D2BTable[i].IntValueToSet, D2BTable[i].DataRefIndex, 1);
-                                }
-                }
-            }
-            if (D2BTable[i].DataRefType == xplmType_FloatArray)
-            {
-                switch(D2BTable[i].WhatToDo)
-                {
-                    case '=':   XPLMSetDatavf(D2BTable[i].DataRefToSet, &D2BTable[i].FloatValueToSet, D2BTable[i].DataRefIndex, 1);
-                                break;
-                    case '+':   XPLMGetDatavf(D2BTable[i].DataRefToSet, &xf, D2BTable[i].DataRefIndex, 1);
-                                xf += D2BTable[i].FloatValueToSet;
-                                if (xf <= D2BTable[i].FloatLimit)
-                                {
-                                    XPLMSetDatavf(D2BTable[i].DataRefToSet, &xf, D2BTable[i].DataRefIndex, 1);
-                                }
-                                break;
-                    case '-':   XPLMGetDatavf(D2BTable[i].DataRefToSet, &xf, D2BTable[i].DataRefIndex, 1);
-                                xf -= D2BTable[i].FloatValueToSet;
-                                if (xf >= D2BTable[i].FloatLimit)
-                                {
-                                    XPLMSetDatavf(D2BTable[i].DataRefToSet, &xf, D2BTable[i].DataRefIndex, 1);
-                                }
-                                break;
-                    case 't':   XPLMGetDatavf(D2BTable[i].DataRefToSet, &xf, D2BTable[i].DataRefIndex, 1);
-                                if (xf == D2BTable[i].FloatValueToSet)
-                                {
-                                    XPLMSetDatavf(D2BTable[i].DataRefToSet, &D2BTable[i].FloatToggle, D2BTable[i].DataRefIndex, 1);
-                                }
-                                else
-                                {
-                                    XPLMSetDatavf(D2BTable[i].DataRefToSet, &D2BTable[i].FloatValueToSet, D2BTable[i].DataRefIndex, 1);
-                                }
-                }
-            }
-        }
-        else
-        {
-            if (D2BTable[i].WhatToDo == '&')  // "... PERMIT"
-            {
-                WorkPermitted = false;
-            }
-        }
     }
 
     for (i=0; i<MAXINDICATORS; i++)

@@ -1,5 +1,5 @@
-/****** switchpanels.cpp **********/
-/****  William R. Good  ********/ 
+// ****** switchpanels.cpp **********
+// ****  William R. Good  ********
 
 
 #include "XPLMUtilities.h"
@@ -17,7 +17,7 @@
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
-/****************** Switch Panel variables *******************************/
+// ****************** Switch Panel variables *******************************
 static int switchnowrite = 0;
 static int switchres;
 
@@ -49,14 +49,14 @@ void process_switch_panel()
   switchwbuf[0] = 0;
   switchwbuf[1] = gearled;
 
-/******* Only do a read if something new to be read ********/
+// ******* Only do a read if something new to be read ********
 
   hid_set_nonblocking(switchhandle, 1);
   hid_read(switchhandle, switchbuf, sizeof(switchbuf));
   switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
   switchnowrite = 1;
 
-/* if no gear do not write */
+// * if no gear do not write *
 
   if(XPLMGetDatai(GearRetract) > 0){
     switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
@@ -67,7 +67,7 @@ void process_switch_panel()
 
   batnum = XPLMGetDatai(BatNum), gennum = XPLMGetDatai(GenNum), engnum = XPLMGetDatai(EngNum);
 
-/***************** Engines Mag Off ********************/
+// ***************** Engines Mag Off ********************
 
 	if(testbit(switchbuf,MAG_OFF)) {
 	  if(engnum == 1){
@@ -90,7 +90,7 @@ void process_switch_panel()
 	  }
  	}
 
-/***************** Engines Right Mag *******************/
+// ***************** Engines Right Mag *******************
 
 	if(testbit(switchbuf,MAG_RIGHT)) {
 	  if(engnum == 1){
@@ -113,7 +113,7 @@ void process_switch_panel()
 	  }
  	}
 
-/***************** Engines Left Mag *******************/
+// ***************** Engines Left Mag *******************
 
 	if(testbit(switchbuf,MAG_LEFT)) {
 	  if(engnum == 1){
@@ -136,7 +136,7 @@ void process_switch_panel()
 	  }
  	}
 
-/***************** Engines Both Mags *******************/
+// ***************** Engines Both Mags *******************
 
 	if(testbit(switchbuf,MAG_BOTH)) {
 	  if(engnum == 1){
@@ -159,7 +159,7 @@ void process_switch_panel()
 	  }
 	}
 
-/***************** Engines Starting *******************/
+// ***************** Engines Starting *******************
 
 	if(testbit(switchbuf,ENG_START)) {
 	  if(engnum == 1){
@@ -182,7 +182,7 @@ void process_switch_panel()
 	  }
 	}
 
-/***************** Master Battery *******************/
+// ***************** Master Battery *******************
 
 	if(testbit(switchbuf,MASTER_BATTERY)) {
           if(batnum == 1){
@@ -294,7 +294,7 @@ void process_switch_panel()
         }
         XPLMSetDatavi(BatArrayOnDR, BatArrayOn, 0, 8);
 
-/***************** Master Altenator *******************/
+// ***************** Master Altenator *******************
 
 	if(testbit(switchbuf,MASTER_ALTENATOR)) {
 	  if(gennum == 1){
@@ -338,7 +338,7 @@ void process_switch_panel()
 	  }
  	}
 
-/***************** Avionics Power *******************/
+// ***************** Avionics Power *******************
 
 	if(testbit(switchbuf,AVIONICS_POWER)) {
           XPLMCommandOnce(AvLtOn);
@@ -347,7 +347,7 @@ void process_switch_panel()
           XPLMCommandOnce(AvLtOff);
  	}
 
-/***************** Fuel Pump *******************/
+// ***************** Fuel Pump *******************
 
 	if(testbit(switchbuf,FUEL_PUMP)) {
 	  if(engnum == 1){
@@ -390,7 +390,7 @@ void process_switch_panel()
 	  }
  	}
 
-/***************** De Ice *******************/
+// ***************** De Ice *******************
 
 	if(testbit(switchbuf,DE_ICE)) {
           XPLMSetDatai(AntiIce, 1);
@@ -399,7 +399,7 @@ void process_switch_panel()
           XPLMSetDatai(AntiIce, 0);
  	}
 
-/***************** Pitot Heat *******************/
+// ***************** Pitot Heat *******************
 
 	if(testbit(switchbuf,PITOT_HEAT)) {
           XPLMCommandOnce(PtHtOn);
@@ -408,7 +408,7 @@ void process_switch_panel()
           XPLMCommandOnce(PtHtOff);
  	}
 
-/***************** Cowl Flaps *******************/
+// ***************** Cowl Flaps *******************
 
 	if(testbit(switchbuf,COWL_FLAPS)) {
 	  if(engnum == 1){
@@ -453,7 +453,7 @@ void process_switch_panel()
 	  }
  	}
 
-/***************** Panel Lights *******************/
+// ***************** Panel Lights *******************
 
 	if(testbit(switchbuf,PANEL_LIGHTS)) {
 	  XPLMSetDataf(CockpitLights, 1);
@@ -462,7 +462,7 @@ void process_switch_panel()
 	  XPLMSetDataf(CockpitLights, 0);
 	}
 
-/***************** Beacon Lights *******************/
+// ***************** Beacon Lights *******************
 
 	if(testbit(switchbuf,BEACON_LIGHTS)) {
           XPLMCommandOnce(BcLtOn);
@@ -471,7 +471,7 @@ void process_switch_panel()
           XPLMCommandOnce(BcLtOff);
  	}
 
-/***************** Nav Lights *******************/
+// ***************** Nav Lights *******************
 
 	if(testbit(switchbuf,NAV_LIGHTS)) {
           XPLMCommandOnce(NvLtOn);
@@ -480,7 +480,7 @@ void process_switch_panel()
           XPLMCommandOnce(NvLtOff);
  	}
 
-/***************** Strobe Lights *******************/
+// ***************** Strobe Lights *******************
 
 	if(testbit(switchbuf,STROBE_LIGHTS)) {
           XPLMCommandOnce(StLtOn);
@@ -489,7 +489,7 @@ void process_switch_panel()
           XPLMCommandOnce(StLtOff);
  	}
 
-/***************** Taxi Lights *******************/
+// ***************** Taxi Lights *******************
 
 	if(testbit(switchbuf,TAXI_LIGHTS)) {
           XPLMCommandOnce(TxLtOn);
@@ -498,7 +498,7 @@ void process_switch_panel()
           XPLMCommandOnce(TxLtOff);
  	}
 
-/***************** Landing Lights *******************/
+// ***************** Landing Lights *******************
 
 	if(testbit(switchbuf,LANDING_LIGHTS)) {
           XPLMCommandOnce(LnLtOn);
@@ -507,7 +507,7 @@ void process_switch_panel()
           XPLMCommandOnce(LnLtOff);
  	}
 
-/***************** Gear Switch *******************/
+// ***************** Gear Switch *******************
 	
 	if(XPLMGetDatai(GearRetract) > 0){
 	  if(testbit(switchbuf,GEAR_SWITCH_UP)) {

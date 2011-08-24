@@ -2,12 +2,19 @@
 #define SAITEKPANELS_H
 
 #include "XPLMUtilities.h"
+#include "XPLMMenus.h"
+#include "XPWidgets.h"
+#include "XPStandardWidgets.h"
 
 #include "hidapi.h"
 
-/****************  Start Radio Panel Section  ***************************/
+#include <string>
 
-/************** Radio Panel SDK Command Ref **********************/
+using namespace std;
+
+// ****************  Start Radio Panel Section  ***************************
+
+// ************** Radio Panel SDK Command Ref **********************
 extern XPLMCommandRef Com1StbyFineDn, Com1StbyFineUp, Com1StbyCorseDn, Com1StbyCorseUp;
 extern XPLMCommandRef Com2StbyFineDn, Com2StbyFineUp, Com2StbyCorseDn, Com2StbyCorseUp;
 extern XPLMCommandRef Nav1StbyFineDn, Nav1StbyFineUp, Nav1StbyCorseDn, Nav1StbyCorseUp;
@@ -21,7 +28,7 @@ extern XPLMCommandRef XpdrTensUp, XpdrTensDn, XpdrOnesUp, XpdrOnesDn;
 
 extern XPLMCommandRef Com1ActStby, Com2ActStby, Nav1ActStby, Nav2ActStby;
 
-/************** Radio Panel SDK Data Ref **********************/
+// ************** Radio Panel SDK Data Ref **********************
 extern XPLMDataRef Com1ActFreq, Com2ActFreq, Nav1ActFreq, Nav2ActFreq;
 extern XPLMDataRef Com1StbyFreq, Com2StbyFreq, Nav1StbyFreq, Nav2StbyFreq;
 
@@ -33,7 +40,7 @@ extern XPLMDataRef AvPwrOn, BatPwrOn;
 extern XPLMDataRef Nav1PwrOn, Nav2PwrOn, Com1PwrOn, Com2PwrOn;
 extern XPLMDataRef Afd1PwrOn, DmePwrOn;
 
-/************************ Radio Panel variables **************************/
+// ************************ Radio Panel variables **************************
 extern int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
 extern int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
 extern int radiofd[4], radcnt, radres;
@@ -42,13 +49,13 @@ extern unsigned char radbuf[4], radwbuf[21];
 
 extern hid_device *radhandle[4];
 
-/****************  End Radio Panel Section  ***************************/
+// ****************  End Radio Panel Section  ***************************
 
-/*************************************************************************/
+// *************************************************************************
 
-/****************  Start Multi Panel Section  ***************************/
+// ****************  Start Multi Panel Section  ***************************
 
-/********** Multi Panel Command Ref ***************/
+// ********** Multi Panel Command Ref ***************
 extern XPLMCommandRef ApAltDn, ApAltUp, ApVsDn, ApVsUp;
 extern XPLMCommandRef ApAsDn, ApAsUp, ApHdgDn, ApHdgUp;
 extern XPLMCommandRef ApCrsDn, ApCrsUp;
@@ -58,11 +65,11 @@ extern XPLMCommandRef ApHdgBtn, ApNavBtn, ApAltBtn;
 extern XPLMCommandRef ApIasBtn;
 extern XPLMCommandRef ApVsBtn, ApAprBtn, ApRevBtn;
 
-extern XPLMCommandRef ApAutThrToggle, FlapsDn, FlapsUp;
+extern XPLMCommandRef ApAutThrOn, ApAutThrOff, FlapsDn, FlapsUp;
 extern XPLMCommandRef PitchTrimDn, PitchTrimUp, PitchTrimTkOff;
 
 
-/************ Multi Panel Data Ref *****************/
+// ************ Multi Panel Data Ref *****************
 extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs;
 
 extern XPLMDataRef ApMstrStat, ApHdgStat, ApNavStat, ApIasStat;
@@ -70,17 +77,17 @@ extern XPLMDataRef ApAltStat, ApVsStat, ApAprStat, ApRevStat;
 extern XPLMDataRef x737athr_armed;
 extern XPLMDataRef ApState;
 
-/**************** Multi Panel variables *******************/
+// **************** Multi Panel variables *******************
 extern int multifd;
 extern hid_device *multihandle;
 
-/****************  End Multi Panel Section  ***************************/
+// ****************  End Multi Panel Section  ***************************
 
-/**************************************************************************/
+// **************************************************************************
 
-/****************  Start Switch Panel Section  ***************************/
+// ****************  Start Switch Panel Section  ***************************
 
-/************ Switch Panel Command Ref ***************/
+// ************ Switch Panel Command Ref ***************
 extern XPLMCommandRef ClFlOpn, ClFlCls, PtHtOn, PtHtOff;
 extern XPLMCommandRef AvLtOn, AvLtOff, BatOn, BatOff;
 extern XPLMCommandRef LnLtOn, LnLtOff, TxLtOn, TxLtOff;
@@ -116,19 +123,32 @@ extern XPLMCommandRef FuelPumpOn5, FuelPumpOn6, FuelPumpOn7, FuelPumpOn8;
 extern XPLMCommandRef FuelPumpOff1, FuelPumpOff2, FuelPumpOff3, FuelPumpOff4;
 extern XPLMCommandRef FuelPumpOff5, FuelPumpOff6, FuelPumpOff7, FuelPumpOff8;
 
-/************** Switch Panel Data Ref ******************/
+// ************** Switch Panel Data Ref ******************
 extern XPLMDataRef BatNum, GenNum, EngNum;
 extern XPLMDataRef BatArrayOnDR;
 
 extern XPLMDataRef CowlFlaps, CockpitLights, AntiIce;
 extern XPLMDataRef GearRetract, OnGround, x737swBatBus;
 
-/***************** Switch Panel variables ********************/
+// ***************** Switch Panel variables ********************
 extern int switchfd;
 
 extern hid_device *switchhandle;
 
 extern int loaded737;
+
+// ************** Bip Panel Data Ref ******************
+extern XPLMDataRef gTimeSimIsRunningXDataRef;
+
+extern XPLMMenuID      BipMenu;
+extern XPLMMenuID      BipMenuId;
+extern XPWidgetID      BipWidgetID;
+
+// ***************** Bip Panel variables ********************
+extern hid_device *biphandle;
+
+void WriteCSVTableToDisk(void);
+bool ReadConfigFile(string PlaneICAO);
 
 
 #endif

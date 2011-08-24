@@ -57,4 +57,5 @@ HEADERS += saitekpanels.h
 SOURCES += saitekpanels.cpp\
     radiopanels.cpp \
     multipanel.cpp \
-    switchpanel.cpp
+    switchpanel.cpp \
+    bippanel.cpp

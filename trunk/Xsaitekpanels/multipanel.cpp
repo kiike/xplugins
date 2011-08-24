@@ -1,5 +1,5 @@
-/****** multipanel.cpp **********/
-/****  William R. Good  ********/ 
+// ****** multipanel.cpp **********
+// ****  William R. Good  ********
 
 
 #include "XPLMUtilities.h"
@@ -16,7 +16,7 @@
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
-/********************** Multi Panel variables ***********************/
+// ********************** Multi Panel variables ***********************
 static int multinowrite = 0, lastmultiseldis = 0;
 static int mulres, multires;
 
@@ -54,12 +54,12 @@ static unsigned char multibuf[4];
 static unsigned char multiwbuf[13];
 
 
-/***** Multi Panel Process ******/
+// ***** Multi Panel Process ******
 void process_multi_panel()
 
 {
 
-/***** Setup Display for ALT or VS Switch Position *********/
+// ***** Setup Display for ALT or VS Switch Position *********
 if (multiseldis == 1) { 
 
   multiaactv = upapalt;
@@ -84,7 +84,7 @@ if (multiseldis == 1) {
 
   }
 
-/***** Setup Display for IAS Switch Position *********/
+// ***** Setup Display for IAS Switch Position *********
 if (multiseldis == 2) { 
   multiaactv = upapas;
   multiadig1 = 11, multiadig2 = 11 ;
@@ -94,7 +94,7 @@ if (multiseldis == 2) {
 
   }
 
-/***** Setup Display for HDG Switch Position *********/
+// ***** Setup Display for HDG Switch Position *********
 if (multiseldis == 3) { 
   multiaactv = upaphdg;
   multiadig1 = 11, multiadig2 = 11 ;
@@ -104,7 +104,7 @@ if (multiseldis == 3) {
 
   }
 
-/***** Setup Display for CRS Switch Position *********/
+// ***** Setup Display for CRS Switch Position *********
 if (multiseldis == 4) { 
   multiaactv = upapcrs;
   multiadig1 = 11, multiadig2 = 11 ;
@@ -114,7 +114,7 @@ if (multiseldis == 4) {
 
   }
 
-/********** Setup the Display to be Blank *******************/
+// ********** Setup the Display to be Blank *******************
 if (multiseldis == 5) { 
   
   multiadig1 = 11, multiadig2 = 11, multiadig3 = 11, multiadig4 = 11, multiadig5 = 11;
@@ -123,14 +123,14 @@ if (multiseldis == 5) {
 
   }
 
-/****** Make Message One Digit at A Time and Turn on Button LEDS  *******/ 
+// ****** Make Message One Digit at A Time and Turn on Button LEDS  *******
   char multiadigit1 = multiadig1, multiadigit2 = multiadig2, multiadigit3 = multiadig3;
   char multiadigit4 = multiadig4, multiadigit5 = multiadig5;
   char multibdigit1 = multibdig1, multibdigit2 = multibdig2, multibdigit3 = multibdig3;
   char multibdigit4 = multibdig4, multibdigit5 = multibdig5;	
   char cdigit1 = btnleds; 
 
-/****** Load Array with Message of Digits and Button LEDS *************/
+// ****** Load Array with Message of Digits and Button LEDS *************
   multiwbuf[0] = 0;
   multiwbuf[1] = multiadigit1, multiwbuf[2] = multiadigit2, multiwbuf[3] = multiadigit3;
   multiwbuf[4] = multiadigit4, multiwbuf[5] = multiadigit5;
@@ -138,7 +138,7 @@ if (multiseldis == 5) {
   multiwbuf[9] = multibdigit4, multiwbuf[10] = multibdigit5, multiwbuf[11] = cdigit1;
 
 
-/******* Only do a read if something new to be read ********/
+// ******* Only do a read if something new to be read ********
 
   hid_set_nonblocking(multihandle, 1);
   multires = hid_read(multihandle, multibuf, sizeof(multibuf));
@@ -148,7 +148,7 @@ if (multiseldis == 5) {
   }
 
 
- /**** Trying to only write on changes ****/
+ // **** Trying to only write on changes ****
   if (lastmultiseldis == multiseldis) {
   }
   else {
@@ -183,7 +183,7 @@ if (multiseldis == 5) {
   }
 
 
-/***************** ALT Switch Position *******************/
+// ***************** ALT Switch Position *******************
 
 	if(testbit(multibuf,ALT_SWITCH)) {
           multiseldis = 1;
@@ -214,7 +214,7 @@ if (multiseldis == 5) {
 	  }
 	}
 
-/***************** VS Switch Position *******************/
+// ***************** VS Switch Position *******************
 
 	if(testbit(multibuf,VS_SWITCH)) {
           multiseldis = 1;
@@ -245,7 +245,7 @@ if (multiseldis == 5) {
 	  }
 	}
 
-/***************** IAS Switch Position *******************/
+// ***************** IAS Switch Position *******************
 
 
         if(testbit(multibuf,IAS_SWITCH)) {
@@ -269,7 +269,7 @@ if (multiseldis == 5) {
         }
 
 
-/***************** HDG Switch Position *******************/
+// ***************** HDG Switch Position *******************
 
 	if(testbit(multibuf,HDG_SWITCH)) {
           multiseldis = 3;
@@ -291,7 +291,7 @@ if (multiseldis == 5) {
 	  upaphdg = (int)(upaphdgf);
 	}
 
-/***************** CRS Switch Position *******************/
+// ***************** CRS Switch Position *******************
 
 	if(testbit(multibuf,CRS_SWITCH)) {
           multiseldis = 4;
@@ -313,14 +313,26 @@ if (multiseldis == 5) {
 	  upapcrs = (int)(upapcrsf);
 	}
 
-/***************** Auto Throttle Switch Position *******************/
+// ***************** Auto Throttle Switch Position *******************
 
         if(testbit(multibuf,AUTO_THROTTLE_SWITCH)) {
-          XPLMCommandOnce(ApAutThrToggle);
+          if (loaded737 == 0){
+             XPLMCommandOnce(ApAutThrOn);
+          }
+          if (loaded737 == 1){
+             XPLMSetDatai(x737athr_armed, 1);
+          }
         }
+        else {
+           if (loaded737 == 0){
+             XPLMCommandOnce(ApAutThrOff);
+           }
+           if (loaded737 == 1){
+             XPLMSetDatai(x737athr_armed, 0);
+           }
+         }
 
-
-/***************** AP Master Button and light *******************/
+// ***************** AP Master Button and light *******************
 
         if (appushed == 0) {
           if (XPLMGetDatai(ApMstrStat) == 0) {
@@ -368,21 +380,21 @@ if (multiseldis == 5) {
 
 
 	if (XPLMGetDatai(ApMstrStat) == 0) {
-	  btnleds &= ~(1<<0);   /* clear bit 0 in btnleds to 0 */   
+          btnleds &= ~(1<<0);   // * clear bit 0 in btnleds to 0 *
 	}
 	if (XPLMGetDatai(ApMstrStat) == 1) {
 	  if (flashon == 1) {
-	    btnleds |= (1<<0);   /* set bit 0 in btnleds to 1 */ 
+            btnleds |= (1<<0);   // * set bit 0 in btnleds to 1 *
 	  }
 	  if (flashon == 0) {   
-	    btnleds &= ~(1<<0);   /* clear bit 0 in btnleds to 0 */
+            btnleds &= ~(1<<0);   // * clear bit 0 in btnleds to 0 *
 	  }
 	}
 	if (XPLMGetDatai(ApMstrStat) == 2) {
-	  btnleds |= (1<<0);   /* set bit 0 in btnleds to 1 */ 
+          btnleds |= (1<<0);   // * set bit 0 in btnleds to 1 *
 	}
 
-/***************** HDG Button and light *******************/
+// ***************** HDG Button and light *******************
 
         if (multires > 0) {
           if(testbit(multibuf,HDG_BUTTON)) {
@@ -392,23 +404,24 @@ if (multiseldis == 5) {
         }
 
 	if (XPLMGetDatai(ApHdgStat) == 2) {
-	  btnleds |= (1<<1);   /* set bit 1 in btnleds to 1 */    
+          btnleds |= (1<<1);   // * set bit 1 in btnleds to 1 *
 	}
 	if (XPLMGetDatai(ApHdgStat) == 1) {
 	  if (flashon == 1) {
-	    btnleds |= (1<<1);   /* set bit 1 in btnleds to 1 */
+            btnleds |= (1<<1);   // * set bit 1 in btnleds to 1 *
 	  }
 	  if (flashon == 0) {   
-	    btnleds &= ~(1<<1);   /* clear bit 1 in btnleds to 0 */
+            btnleds &= ~(1<<1);   // * clear bit 1 in btnleds to 0 *
 	  }
 	}
 	if (XPLMGetDatai(ApHdgStat) == 0) {
-	  btnleds &= ~(1<<1);   /* clear bit 1 in btnleds to 0 */   
+          btnleds &= ~(1<<1);   // * clear bit 1 in btnleds to 0 *
 	}
 	if (XPLMGetDatai(ApMstrStat) == 0) {
-	  btnleds &= ~(1<<1);   /* clear bit 1 in btnleds to 0 */   
+          btnleds &= ~(1<<1);   // * clear bit 1 in btnleds to 0 *
 	}
-/***************** NAV Button and light *******************/
+
+// ***************** NAV Button and light *******************
 
         if (multires > 0) {
           if(testbit(multibuf,NAV_BUTTON)) {
@@ -419,21 +432,21 @@ if (multiseldis == 5) {
 
 
 	if (XPLMGetDatai(ApNavStat) == 2) {
-	  btnleds |= (1<<2);   /* set bit 2 in btnleds to 1 */    
+          btnleds |= (1<<2);   // * set bit 2 in btnleds to 1 *
 	}
 	if (XPLMGetDatai(ApNavStat) == 1) {
 	  if (flashon == 1) {
-	    btnleds |= (1<<2);   /* set bit 1 in btnleds to 1 */ 
+            btnleds |= (1<<2);   // * set bit 1 in btnleds to 1 *
 	  }
 	  if (flashon == 0) {   
-	    btnleds &= ~(1<<2);   /* clear bit 2 in btnleds to 0 */
+            btnleds &= ~(1<<2);   // * clear bit 2 in btnleds to 0 *
 	  }
 	}
 	if (XPLMGetDatai(ApNavStat) == 0) {
-	  btnleds &= ~(1<<2);   /* clear bit 2 in btnleds to 0 */   
+          btnleds &= ~(1<<2);   // * clear bit 2 in btnleds to 0 *
 	}
 
-/***************** IAS Button and light *******************/
+// ***************** IAS Button and light *******************
 
         if (multires > 0) {
           if(testbit(multibuf,IAS_BUTTON)) {
@@ -442,21 +455,21 @@ if (multiseldis == 5) {
           }
         }
         if (XPLMGetDatai(ApIasStat) == 2) {
-          btnleds |= (1<<3);   /* set bit 3 in btnleds to 1 */
+          btnleds |= (1<<3);   // * set bit 3 in btnleds to 1 *
         }
         if (XPLMGetDatai(ApIasStat) == 1) {
           if (flashon == 1) {
-            btnleds |= (1<<3);   /* set bit 3 in btnleds to 1 */
+            btnleds |= (1<<3);   // * set bit 3 in btnleds to 1 *
           }
           if (flashon == 0) {
-            btnleds &= ~(1<<3);   /* clear bit 3 in btnleds to 0 */
+            btnleds &= ~(1<<3);   // * clear bit 3 in btnleds to 0 *
           }
         }
         if (XPLMGetDatai(ApIasStat) == 0) {
-          btnleds &= ~(1<<3);   /* clear bit 3 in btnleds to 0 */
+          btnleds &= ~(1<<3);   // * clear bit 3 in btnleds to 0 *
         }
 
-/***************** ALT Button and light *******************/
+// ***************** ALT Button and light *******************
 
         if (multires > 0) {
           if(testbit(multibuf,ALT_BUTTON)) {
@@ -465,23 +478,23 @@ if (multiseldis == 5) {
           }
         }
 	if (XPLMGetDatai(ApAltStat) == 2) {
-	  btnleds |= (1<<4);   /* set bit 4 in btnleds to 1 */ 
+          btnleds |= (1<<4);   // * set bit 4 in btnleds to 1 *
 	} 
 	if (XPLMGetDatai(ApAltStat) == 1) {
 	  if (flashon == 1) {
-	    btnleds |= (1<<4);   /* set bit 4 in btnleds to 1 */ 
+            btnleds |= (1<<4);   // * set bit 4 in btnleds to 1 *
 	  }  
 	  if (flashon == 0) {    
-	    btnleds &= ~(1<<4);   /* clear bit 4 in btnleds to 0 */
+            btnleds &= ~(1<<4);   // * clear bit 4 in btnleds to 0 *
 	  }
 	}
 	if (XPLMGetDatai(ApAltStat) == 0) {
-	  btnleds &= ~(1<<4);   /* clear bit 4 in btnleds to 0 */   
+          btnleds &= ~(1<<4);   // * clear bit 4 in btnleds to 0 *
 	}
 	if (XPLMGetDatai(ApMstrStat) == 0) {
-	  btnleds &= ~(1<<4);   /* clear bit 4 in btnleds to 0 */   
+          btnleds &= ~(1<<4);   // * clear bit 4 in btnleds to 0 *
 	}
-/***************** VS Button and light *******************/
+// ***************** VS Button and light *******************
 
         if (multires > 0) {
           if(testbit(multibuf,VS_BUTTON)) {
@@ -490,21 +503,21 @@ if (multiseldis == 5) {
           }
         }
 	if (XPLMGetDatai(ApVsStat) == 2) {
-	  btnleds |= (1<<5);   /* set bit 5 in btnleds to 1 */ 
+          btnleds |= (1<<5);   // * set bit 5 in btnleds to 1 *
 	} 
 	if (XPLMGetDatai(ApVsStat) == 1) {
 	  if (flashon == 0) {
-	    btnleds |= (1<<5);   /* set bit 5 in btnleds to 1 */
+            btnleds |= (1<<5);   // * set bit 5 in btnleds to 1 *
 	  } 
 	  if (flashon == 1) {   
-	    btnleds &= ~(1<<5);   /* clear bit 5 in btnleds to 0 */
+            btnleds &= ~(1<<5);   // * clear bit 5 in btnleds to 0 *
 	  }
 	}
 	if (XPLMGetDatai(ApVsStat) == 0) {
-	  btnleds &= ~(1<<5);   /* clear bit 5 in btnleds to 0 */   
+          btnleds &= ~(1<<5);   // * clear bit 5 in btnleds to 0 *
 	}
 
-/***************** APR Button and light *******************/
+// ***************** APR Button and light *******************
 
         if (multires > 0) {
           if(testbit(multibuf,APR_BUTTON)) {
@@ -513,21 +526,21 @@ if (multiseldis == 5) {
           }
         }
 	if (XPLMGetDatai(ApAprStat) == 2) {
-	  btnleds |= (1<<6);   /* set bit 6 in btnleds to 1 */ 
+          btnleds |= (1<<6);   // * set bit 6 in btnleds to 1 *
 	} 
 	if (XPLMGetDatai(ApAprStat) == 1) {
 	  if (flashon == 1) {
-	    btnleds |= (1<<6);   /* set bit 6 in btnleds to 1 */
+            btnleds |= (1<<6);   // * set bit 6 in btnleds to 1 *
 	  } 
 	  if (flashon == 0) {   
-	    btnleds &= ~(1<<6);   /* clear bit 6 in btnleds to 0 */
+            btnleds &= ~(1<<6);   // * clear bit 6 in btnleds to 0 *
 	  }
 	}
 	if (XPLMGetDatai(ApAprStat) == 0) {
-	  btnleds &= ~(1<<6);   /* clear bit 6 in btnleds to 0 */   
+          btnleds &= ~(1<<6);   // * clear bit 6 in btnleds to 0 *
 	}
 
-/***************** REV Button and light *******************/
+// ***************** REV Button and light *******************
 
         if (multires > 0) {
           if(testbit(multibuf,REV_BUTTON)) {
@@ -536,21 +549,21 @@ if (multiseldis == 5) {
           }
         }
 	if (XPLMGetDatai(ApRevStat) == 2) {
-	  btnleds |= (1<<7);   /* set bit 7 in btnleds to 1 */ 
+          btnleds |= (1<<7);   // * set bit 7 in btnleds to 1 *
 	} 
 	if (XPLMGetDatai(ApRevStat) == 1) {
 	  if (flashon == 1) {
-	    btnleds |= (1<<7);   /* set bit 7 in btnleds to 1 */
+            btnleds |= (1<<7);   // * set bit 7 in btnleds to 1 *
 	  } 
 	  if (flashon == 0) {    
-	    btnleds &= ~(1<<7);   /* clear bit 7 in btnleds to 0 */
+            btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
 	  }
 	}
 	if (XPLMGetDatai(ApRevStat) == 0) {
-	  btnleds &= ~(1<<7);   /* clear bit 7 in btnleds to 0 */   
+          btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
 	}
 
-/***************** Flaps Switch *******************/
+// ***************** Flaps Switch *******************
 
         if (multires > 0) {
 	  if(testbit(multibuf,FLAPS_UP_SWITCH)) {
@@ -563,7 +576,7 @@ if (multiseldis == 5) {
 	  }
         }
 
-/*************** Trim Wheel *********************/
+// *************** Trim Wheel *********************
 
         if (multires > 0) {
 	  if(testbit(multibuf,TRIM_WHEEL_UP)) {
@@ -577,7 +590,7 @@ if (multiseldis == 5) {
 	  }
 	}
 
-/***************** Flasher for Button LEDS *******************/
+// ***************** Flasher for Button LEDS *******************
 
 	flashcnt++;	
 	if (flashcnt < 50) {
@@ -590,7 +603,7 @@ if (multiseldis == 5) {
 	  flashcnt = 0;
 	}
 
-/***************** Blank Display *******************/
+// ***************** Blank Display *******************
 
 	if (XPLMGetDatai(AvPwrOn) == 0) {
           multiseldis = 5;	  

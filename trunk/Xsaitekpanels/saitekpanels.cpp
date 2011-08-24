@@ -1,7 +1,7 @@
-/****** saitekpanels.cpp ***********/
-/****  William R. Good   ***********/
-/******** ver 1.19   ***************/
-/****** Aug 06 2011   **************/
+// ****** saitekpanels.cpp ***********
+// ****  William R. Good   ***********
+// ******** ver 1.20   ***************
+// ****** Aug 23 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -11,7 +11,6 @@
 
 #include "hidapi.h"
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -19,7 +18,37 @@
 #include <fcntl.h>
 #include <string.h>
 
-/************* Radio Panel Command Ref ****************/
+
+#include "XPLMPlugin.h"
+#include "XPLMProcessing.h"
+#include "XPLMDataAccess.h"
+#include "XPLMUtilities.h"
+#include "XPLMDisplay.h"
+#include "XPLMGraphics.h"
+#include "XPLMMenus.h"
+#include "XPWidgets.h"
+#include "XPStandardWidgets.h"
+
+#include "hidapi.h"
+
+#include <time.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
+using namespace std;
+
+// ************* Radio Panel Command Ref ****************
 XPLMCommandRef Com1StbyFineDn = NULL, Com1StbyFineUp = NULL, Com1StbyCorseDn = NULL, Com1StbyCorseUp = NULL;
 XPLMCommandRef Com2StbyFineDn = NULL, Com2StbyFineUp = NULL, Com2StbyCorseDn = NULL, Com2StbyCorseUp = NULL;
 XPLMCommandRef	Nav1StbyFineDn = NULL, Nav1StbyFineUp = NULL, Nav1StbyCorseDn = NULL, Nav1StbyCorseUp = NULL;
@@ -34,7 +63,7 @@ XPLMCommandRef	XpdrTensUp = NULL, XpdrTensDn = NULL, XpdrOnesUp = NULL, XpdrOnes
 XPLMCommandRef Com1ActStby = NULL, Com2ActStby = NULL, Nav1ActStby = NULL, Nav2ActStby = NULL;
 
 
-/************* Radio Panel Data Ref ****************/
+// ************* Radio Panel Data Ref ****************
 XPLMDataRef Com1ActFreq = NULL, Com2ActFreq = NULL, Nav1ActFreq = NULL, Nav2ActFreq = NULL;
 XPLMDataRef Com1StbyFreq = NULL, Com2StbyFreq = NULL, Nav1StbyFreq = NULL, Nav2StbyFreq = NULL;
 
@@ -47,7 +76,7 @@ XPLMDataRef Nav1PwrOn = NULL, Nav2PwrOn = NULL, Com1PwrOn = NULL, Com2PwrOn = NU
 XPLMDataRef Afd1PwrOn = NULL, DmePwrOn = NULL;
 
 
-/****************** Multi Panel Command Ref **********************/
+// ****************** Multi Panel Command Ref **********************
 XPLMCommandRef ApAltDn = NULL, ApAltUp = NULL, ApVsDn = NULL, ApVsUp = NULL;
 XPLMCommandRef ApAsDn = NULL, ApAsUp = NULL, ApHdgDn = NULL, ApHdgUp = NULL;
 XPLMCommandRef ApCrsDn = NULL, ApCrsUp = NULL;
@@ -58,10 +87,10 @@ XPLMCommandRef ApIasBtn = NULL;
 
 XPLMCommandRef ApVsBtn = NULL, ApAprBtn = NULL, ApRevBtn = NULL;
 
-XPLMCommandRef ApAutThrToggle = NULL, FlapsDn = NULL, FlapsUp = NULL;
+XPLMCommandRef ApAutThrOn = NULL, ApAutThrOff = NULL, FlapsDn = NULL, FlapsUp = NULL;
 XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
-/***************** Multi Panel Data Ref *********************/
+// ***************** Multi Panel Data Ref *********************
 XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL;
 
 XPLMDataRef ApMstrStat = NULL, ApHdgStat = NULL, ApNavStat = NULL, ApIasStat = NULL;
@@ -70,7 +99,7 @@ XPLMDataRef x737athr_armed = NULL, x737swBatBus = NULL, x737stbyPwr = NULL;
 XPLMDataRef ApState = NULL;
 
 
-/*************** Switch Panel Command Ref *******************/
+// *************** Switch Panel Command Ref *******************
 XPLMCommandRef ClFlOpn = NULL, ClFlCls = NULL, PtHtOn = NULL, PtHtOff = NULL;
 XPLMCommandRef AvLtOn = NULL, AvLtOff = NULL, BatOn = NULL, BatOff = NULL;
 XPLMCommandRef LnLtOn = NULL, LnLtOff = NULL, TxLtOn = NULL, TxLtOff = NULL;
@@ -106,7 +135,7 @@ XPLMCommandRef FuelPumpOn5 = NULL, FuelPumpOn6 = NULL, FuelPumpOn7 = NULL, FuelP
 XPLMCommandRef FuelPumpOff1 = NULL, FuelPumpOff2 = NULL, FuelPumpOff3 = NULL, FuelPumpOff4 = NULL;
 XPLMCommandRef FuelPumpOff5 = NULL, FuelPumpOff6 = NULL, FuelPumpOff7 = NULL, FuelPumpOff8 = NULL;
 
-/******************* Switch Panel Data Ref ********************/
+// ******************* Switch Panel Data Ref ********************
 XPLMDataRef BatNum = NULL, GenNum = NULL, EngNum = NULL;
 XPLMDataRef BatArrayOnDR = NULL;
 
@@ -114,7 +143,21 @@ XPLMDataRef BatArrayOnDR = NULL;
 XPLMDataRef CowlFlaps = NULL, CockpitLights = NULL, AntiIce = NULL;
 XPLMDataRef GearRetract = NULL, OnGround = NULL;
 
-/********************** Radio Panel variables ************************/
+
+// ****************** BIP Panel Command Ref **********************
+
+//  ***************** BIP Panel Data Ref *********************
+XPLMDataRef gTimeSimIsRunningXDataRef = NULL;
+
+XPLMMenuID      XsaitekpanelsMenu;
+XPLMMenuID      BipMenu;
+XPLMMenuID      BipMenuId;
+
+XPWidgetID      XsaitekpanelsWidgetID = NULL;
+XPWidgetID      BipWidgetID = NULL;
+
+
+// ********************** Radio Panel variables ************************
 int radcnt = 0, radiores, stopradcnt;
 int radres, radnum = 0;
 float interval = -1;
@@ -125,45 +168,71 @@ unsigned char radbuf[4], radwbuf[21];
 
 hid_device *radhandle[4];
 
-/********************** Multi Panel variables ***********************/
+// ********************** Multi Panel variables ***********************
 int multicnt = 0, multires, stopmulticnt;
 static unsigned char blankmultiwbuf[13];
 unsigned char multibuf[4], multiwbuf[13];
+int loaded737 = 0;
 
 hid_device *multihandle;
 
-/****************** Switch Panel variables *******************************/
+// ****************** Switch Panel variables *******************************
 int switchcnt = 0, switchres, stopswitchcnt;
 static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
 
+
 hid_device *switchhandle;
 
-/********************* MyPanelsFlightLoopCallback **************************/
+// ****************** BIP Panel variables *******************************
+int bipcnt = 0, bipres, biploop, stopbipcnt;
+unsigned char bipwbuf[10];
+
+hid_device *biphandle;
+
+// ****************** Saitek Panels variables *******************************
+void            XsaitekpanelsMenuHandler(void *, void *);
+void WriteCSVTableToDisk(void);
+
+bool ReadConfigFile(string PlaneICAO);
+
+int             XsaitekpanelsMenuItem;
+int             BipMenuItem;
+
+void process_radio_panel();
+void process_multi_panel();
+void process_switch_panel();
+void process_bip_panel();
+
+// ********************* MyPanelsFlightLoopCallback **************************
 float	MyPanelsFlightLoopCallback(
                                    float                inElapsedSinceLastCall,    
                                    float                inElapsedTimeSinceLastFlightLoop,    
                                    int                  inCounter,    
                                    void *               inRefcon);
 
-void process_radio_panel();
-void process_multi_panel();
-void process_switch_panel();
 
-int loaded737 = 0;
 
-/******************Plugin Calls ******************/
+void WriteCSVTableToDisk(void);
+
+bool ReadConfigFile(string PlaneICAO);
+
+
+
+// ******************Plugin Calls ******************
 PLUGIN_API int XPluginStart(char *		outName,
 			    char *		outSig,
 			    char *		outDesc)
 {
 
+  int BipSubMenuItem;
+
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.19");
+  strcpy(outName, "Xsaitekpanels v1.20");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
-/************ Find Radio Panel Commands Ref ******************/
+// ************ Find Radio Panel Commands Ref ******************
   Com1StbyFineDn = XPLMFindCommand("sim/radios/stby_com1_fine_down");
   Com1StbyFineUp = XPLMFindCommand("sim/radios/stby_com1_fine_up");
   Com1StbyCorseDn = XPLMFindCommand("sim/radios/stby_com1_coarse_down");
@@ -205,7 +274,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   Nav1ActStby = XPLMFindCommand("sim/radios/nav1_standy_flip");
   Nav2ActStby = XPLMFindCommand("sim/radios/nav2_standy_flip");
 
-/************ Find Radio Panel Data Ref ******************/
+// ************ Find Radio Panel Data Ref ******************
   Com1ActFreq = XPLMFindDataRef("sim/cockpit/radios/com1_freq_hz");
   Com2ActFreq = XPLMFindDataRef("sim/cockpit/radios/com2_freq_hz");
   Nav1ActFreq = XPLMFindDataRef("sim/cockpit/radios/nav1_freq_hz");
@@ -235,7 +304,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   DmePwrOn = XPLMFindDataRef("sim/cockpit2/radios/actuators/dme_power");
 
 
-/************ Find Multi Panel Commands Ref ***************/
+// ************ Find Multi Panel Commands Ref ***************
   ApAltDn = XPLMFindCommand("sim/autopilot/altitude_down");
   ApAltUp = XPLMFindCommand("sim/autopilot/altitude_up");
   ApVsDn = XPLMFindCommand("sim/autopilot/vertical_speed_down");
@@ -258,8 +327,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApAprBtn = XPLMFindCommand("sim/autopilot/approach");
   ApRevBtn = XPLMFindCommand("sim/autopilot/back_course");
 
-  ApAutThrToggle = XPLMFindCommand("sim/autopilot/autothrottle_toggle");
-
   PitchTrimDn = XPLMFindCommand("sim/flight_controls/pitch_trim_down");
   PitchTrimUp = XPLMFindCommand("sim/flight_controls/pitch_trim_up");
   PitchTrimTkOff = XPLMFindCommand("sim/flight_controls/pitch_trim_takeoff");
@@ -272,7 +339,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApHdg = XPLMFindDataRef("sim/cockpit/autopilot/heading_mag");
   ApCrs = XPLMFindDataRef("sim/cockpit2/radios/actuators/hsi_obs_deg_mag_pilot");
 
-/**************** Find Multi Panel Data Ref ********************/
+// **************** Find Multi Panel Data Ref ********************
   ApMstrStat = XPLMFindDataRef("sim/cockpit2/autopilot/flight_director_mode");
   ApState = XPLMFindDataRef("sim/cockpit/autopilot/autopilot_state");
   ApHdgStat = XPLMFindDataRef("sim/cockpit2/autopilot/heading_status");
@@ -286,7 +353,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   BatPwrOn = XPLMFindDataRef("sim/cockpit/electrical/battery_on");
 
 
-/**************** Find Switch Panel Commands Ref *******************/
+// **************** Find Switch Panel Commands Ref *******************
   ClFlOpn  = XPLMFindCommand("sim/flight_controls/cowl_flaps_open");
   ClFlCls  = XPLMFindCommand("sim/flight_controls/cowl_flaps_closed");
   PtHtOn   = XPLMFindCommand("sim/ice/pitot_heat_on");
@@ -397,7 +464,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   FuelPumpOff7 = XPLMFindCommand("sim/fuel/fuel_pump_7_off");
   FuelPumpOff8 = XPLMFindCommand("sim/fuel/fuel_pump_8_off");
 
-/**************** Find Switch Panel Data Ref *******************/
+// **************** Find Switch Panel Data Ref *******************
   AntiIce        = XPLMFindDataRef("sim/cockpit/switches/anti_ice_on");
   CockpitLights  = XPLMFindDataRef("sim/cockpit/electrical/cockpit_lights");
   CowlFlaps      = XPLMFindDataRef("sim/flightmodel/engine/ENGN_cowl");
@@ -410,7 +477,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   BatArrayOnDR   = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
 
 
-/************* Open any Radio that is connected *****************/
+// ************* Open any Radio that is connected *****************
 
   struct hid_device_info *rad_devs, *rad_cur_dev;
 
@@ -426,7 +493,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   }
   hid_free_enumeration(rad_devs);
 
-/*** Find Connected Multi Panel *****/
+// *** Find Connected Multi Panel *****
 
   struct hid_device_info *multi_devs, *multi_cur_dev;
 
@@ -442,7 +509,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   }
   hid_free_enumeration(multi_devs);
 
-/*** Find Connected Switch Panel *****/
+// *** Find Connected Switch Panel *****
 
   struct hid_device_info *switch_devs, *switch_cur_dev;
 
@@ -458,20 +525,95 @@ PLUGIN_API int XPluginStart(char *		outName,
   }
   hid_free_enumeration(switch_devs);
 
-  /* Register our callback for every loop. Positive intervals
-  * are in seconds, negative are the negative of sim frames.  Zero
-  * registers but does not schedule a callback for time. */
-  XPLMRegisterFlightLoopCallback(		
-			MyPanelsFlightLoopCallback,	/* Callback */
-			interval,			/* Interval -1 every loop*/
-			NULL);				/* refcon not used. */
 
-  return 1;
+  // *** Find Connected BIP Panel *****
+
+  struct hid_device_info *bip_devs, *bip_cur_dev;
+
+  bip_devs = hid_enumerate(0x6a3, 0xb4e);
+  bip_cur_dev = bip_devs;
+  while (bip_cur_dev) {
+        biphandle = hid_open_path(bip_cur_dev->path);
+        //  If Found Set brightness to full (0 - 100)
+        // 0xb2 Report ID for brightness
+        // Next byte 0 - 100 brightness value
+        if (biphandle > 0) {
+           bipwbuf[0] = 0xb2; // 0xb2 Report ID for brightness
+           bipwbuf[1] = 100;  // Set brightness to 100%
+           bipres = hid_send_feature_report(biphandle, bipwbuf, 10);
+           biploop = 1;
+        }
+
+        hid_send_feature_report(biphandle, bipwbuf, 10);
+        bipcnt++;
+        bip_cur_dev = bip_cur_dev->next;
+    }
+  printf("bipres =  %d\n",bipres);
+  hid_free_enumeration(bip_devs);
+
+
+
+  // * Register our callback for every loop. Positive intervals
+  // * are in seconds, negative are the negative of sim frames.  Zero
+  // * registers but does not schedule a callback for time.
+  XPLMRegisterFlightLoopCallback(		
+                        MyPanelsFlightLoopCallback,	// * Callback *
+                        interval,			// * Interval -1 every loop*
+                        NULL);				// * refcon not used. *
+
+
+
+  // Create our menu
+
+   XsaitekpanelsMenuItem = XPLMAppendMenuItem(
+              XPLMFindPluginsMenu(),
+              "Xsaitekpanels",
+               NULL,
+               1);
+
+   XsaitekpanelsMenu = XPLMCreateMenu(
+               "Xsaitekpanels",
+               XPLMFindPluginsMenu(),
+               XsaitekpanelsMenuItem,
+               XsaitekpanelsMenuHandler,
+               (void *)0);
+
+   if (bipcnt > 0) {
+
+       BipSubMenuItem = XPLMAppendMenuItem(
+               XsaitekpanelsMenu,
+               "Bip",
+               NULL,
+               1);
+
+
+       BipMenuId = XPLMCreateMenu(
+               "Bip",
+               XsaitekpanelsMenu,
+               BipSubMenuItem,
+               XsaitekpanelsMenuHandler,
+               (void *)1);
+
+
+
+   BipWidgetID = XPCreateWidget(XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-150,
+                                    XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")),
+                                    XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-10,
+                                    XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height"))-10,         // screen coordinates
+                                    1,                            // visible
+                                    "Xdataref2BIP is working!", // description
+                                    1, NULL,                      // we want it root
+                                    xpWidgetClass_Caption);
+   XPSetWidgetProperty(BipWidgetID, xpProperty_CaptionLit, 0);
+
+   }
+
+   return 1;
 }
 
 PLUGIN_API void	XPluginStop(void)
 {
-  /********** Unregitser the callback on quit. *************/
+  // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
   stopradcnt = radcnt - 1;
 
@@ -560,6 +702,18 @@ PLUGIN_API void	XPluginStop(void)
       hid_close(switchhandle);
     }
 
+// *** if open close that bip panel ***
+
+    if (bipcnt > 0) {
+
+       bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
+       bipwbuf[1] = 0, bipwbuf[2] = 0, bipwbuf[3] = 0;
+       bipwbuf[4] = 0, bipwbuf[5] = 0, bipwbuf[6] = 0;
+       bipres = hid_send_feature_report(biphandle, bipwbuf, 10);
+       hid_close(biphandle);
+    }
+
+
 
 }
 
@@ -577,11 +731,58 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 				      void *		inParam)
 {
     (void) inFromWho; // To get rid of warnings on unused variables
-    (void) inMessage; // To get rid of warnings on unused variables
-    (void) inParam; // To get rid of warnings on unused variables
+
+
+
+    string          PlaneICAO = "[]";
+    char            ICAOString[40];
+
+
+    XPLMGetDatab(XPLMFindDataRef("sim/aircraft/view/acf_ICAO"), ICAOString, 0, 40);
+
+
+    PlaneICAO.insert(1,ICAOString);
+
+
+    if(bipcnt > 0){
+
+        if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((long) inParam == 0)) {
+          //printf("if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((long) inParam == 0)) is true\n");
+          ReadConfigFile(PlaneICAO);
+        }
+        if (inMessage == XPLM_MSG_AIRPORT_LOADED) {
+          //printf("if (inMessage == XPLM_MSG_AIRPORT_LOADED) is true \n");
+          ReadConfigFile(PlaneICAO);
+        }
+
+    }
+
 }
 
-/************************* Panels Callback  *************************/
+void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
+{
+    (void) inMenuRef; // To get rid of warnings on unused variables
+    printf("void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)  \n");
+    if((int)inMenuRef == 1){
+         if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
+             WriteCSVTableToDisk();
+             printf(" WriteCSVTableToDisk();     \n");
+         }
+         else {
+            ReadConfigFile((char *) inItemRef);
+            printf(" ReadConfigFile((char *) inItemRef);     \n");
+         }
+
+    }
+
+
+
+    return;
+}
+
+
+
+// ************************* Panels Callback  *************************
 float	MyPanelsFlightLoopCallback(
                                    float                inElapsedSinceLastCall,    
                                    float                inElapsedTimeSinceLastFlightLoop,    
@@ -605,6 +806,24 @@ float	MyPanelsFlightLoopCallback(
 
   if(switchcnt > 0){
     process_switch_panel();
+  }
+
+  if(bipcnt > 0){
+    process_bip_panel();
+  }
+
+  if (XPLMIsDataRefGood(XPLMFindDataRef("x737/systems/afds/plugin_status"))) {
+     loaded737 = 1;
+
+     x737athr_armed = XPLMFindDataRef("x737/systems/athr/athr_armed");
+
+  }
+  else{
+       loaded737 = 0;
+
+       ApAutThrOn = XPLMFindCommand("sim/autopilot/autothrottle_on");
+       ApAutThrOff = XPLMFindCommand("sim/autopilot/autothrottle_off");
+
   }
 
 

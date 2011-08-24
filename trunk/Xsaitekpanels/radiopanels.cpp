@@ -1,5 +1,5 @@
-/****** radiopanels.cpp **********/
-/****  William R. Good  ********/ 
+// ****** radiopanels.cpp **********
+// *****  William R. Good **********
 
 
 #include "XPLMUtilities.h"
@@ -91,12 +91,12 @@ static unsigned char radiowbuf[4][23];
 void process_upper_nav_com_freq();
 void process_lower_nav_com_freq();
 
-/***** Radio Panel Process  *******/
+// ***** Radio Panel Process  *******
 void process_radio_panel()
 
 {
 
-  /*************** Upper Display info **********************/ 
+  // *************** Upper Display info **********************
 
   if (upseldis[radnum] == 1) { 
     process_upper_nav_com_freq();
@@ -152,7 +152,7 @@ void process_radio_panel()
     radiobdig1 = 11, radiobdig2 = 11, radiobdig3 = 11, radiobdig4 = 11, radiobdig5 = 11; 
   }
 
-  /************************ Lower Display info ********************/
+  // ************************ Lower Display info ********************
   
   if (loseldis[radnum] == 1) { 
     process_lower_nav_com_freq();
@@ -211,7 +211,7 @@ void process_radio_panel()
   } 
 
 
-/****************** Make Message One Digit at A Time ************************/ 
+// ****************** Make Message One Digit at A Time ************************
   char radioadigit1 = radioadig1, radioadigit2 = radioadig2, radioadigit3 = radioadig3;
   char radioadigit4 = radioadig4, radioadigit5 = radioadig5;
   char radiobdigit1 = radiobdig1, radiobdigit2 = radiobdig2, radiobdigit3 = radiobdig3;
@@ -221,7 +221,7 @@ void process_radio_panel()
   char radioddigit1 = radioddig1, radioddigit2 = radioddig2, radioddigit3 = radioddig3;
   char radioddigit4 = radioddig4, radioddigit5 = radioddig5;
 
-/******************* Load Array with Message of Digits *********************/
+// ******************* Load Array with Message of Digits *********************
   radiowbuf[radnum][0] = 0; 
   radiowbuf[radnum][1] = radioadigit1, radiowbuf[radnum][2] = radioadigit2, radiowbuf[radnum][3] = radioadigit3; 
   radiowbuf[radnum][4] = radioadigit4, radiowbuf[radnum][5] = radioadigit5;
@@ -233,7 +233,7 @@ void process_radio_panel()
   radiowbuf[radnum][19] = radioddigit4, radiowbuf[radnum][20] = radioddigit5;
 
 
-/******* Only do a read if something new to be read ********/
+// ******* Only do a read if something new to be read ********
 
   hid_set_nonblocking(radhandle[radnum], 1);
   radiores = hid_read(radhandle[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
@@ -243,7 +243,7 @@ void process_radio_panel()
   }
 
 
-  /***** Trying to only write on changes ********/
+  // ***** Trying to only write on changes ********
 
   if (lastupseldis[radnum] == upseldis[radnum]) {
   }
@@ -278,7 +278,7 @@ void process_radio_panel()
   }
 
 
-/***************** Upper COM1 Switch Position *******************/
+// ***************** Upper COM1 Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_COM1)) {
       upseldis[radnum] = 1;
@@ -320,7 +320,7 @@ void process_radio_panel()
     upcom1[radnum] = 1;
     }
 
-/***************** Upper COM2 Switch Position *******************/
+// ***************** Upper COM2 Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_COM2)) {
       upseldis[radnum] = 2;
@@ -362,7 +362,7 @@ void process_radio_panel()
     upcom2[radnum] = 1;	 
     }
 
-/***************** Upper NAV1 Switch Position *******************/
+// ***************** Upper NAV1 Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_NAV1)) {
       upseldis[radnum] = 3;
@@ -405,7 +405,7 @@ void process_radio_panel()
     upnav1[radnum] = 1;	 
     }
 
-/***************** Upper NAV2 Switch Position *******************/
+// ***************** Upper NAV2 Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_NAV2)) {
       upseldis[radnum] = 4;
@@ -449,7 +449,7 @@ void process_radio_panel()
     upnav2[radnum] = 1;	 
     }
 
-/***************** Upper AFD Switch Position *******************/
+// ***************** Upper AFD Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_ADF)) {
       upseldis[radnum] = 5;
@@ -525,7 +525,7 @@ void process_radio_panel()
     upadffreq[radnum] = XPLMGetDatai(AdfFreq);
     }
 
-/***************** Upper DME Switch Position *******************/
+// ***************** Upper DME Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_DME)) {
       upseldis[radnum] = 6;
@@ -544,7 +544,7 @@ void process_radio_panel()
        }
     }
 
-/***************** Upper Transponder Switch Position *******************/
+// ***************** Upper Transponder Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_XPDR)) {
       upseldis[radnum] = 7;
@@ -619,7 +619,7 @@ void process_radio_panel()
     upxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
     }
 
-/***************** Lower COM1 Switch Position *******************/
+// ***************** Lower COM1 Switch Position *******************
 
     if(testbit(radiobuf[radnum],LOWER_COM1)) {
       loseldis[radnum] = 1;
@@ -661,7 +661,7 @@ void process_radio_panel()
     locom1[radnum] = 1;	 
     }
 
-/***************** Lower COM2 Switch Position *******************/
+// ***************** Lower COM2 Switch Position *******************
 
    if(testbit(radiobuf[radnum],LOWER_COM2)) {
      loseldis[radnum] = 2;
@@ -703,7 +703,7 @@ void process_radio_panel()
     locom2[radnum] = 1;
     }
 
-/***************** Lower NAV1 Switch Position *******************/
+// ***************** Lower NAV1 Switch Position *******************
 
     if(testbit(radiobuf[radnum],LOWER_NAV1)) {
       loseldis[radnum] = 3;
@@ -746,7 +746,7 @@ void process_radio_panel()
     lonav1[radnum] = 0;	 
     }
 
-/***************** Lower NAV2 Switch Position *******************/
+// ***************** Lower NAV2 Switch Position *******************
 
     if(testbit(radiobuf[radnum],LOWER_NAV2)) {
       loseldis[radnum] = 4;
@@ -788,7 +788,7 @@ void process_radio_panel()
     lonav2[radnum] = 0;	 
     }
 
-/***************** Lower ADF Switch Position *******************/
+// ***************** Lower ADF Switch Position *******************
 
     if(testbit(radiobuf[radnum],LOWER_ADF)) {
       loseldis[radnum] = 5;
@@ -863,7 +863,7 @@ void process_radio_panel()
     loadffreq[radnum] = XPLMGetDatai(AdfFreq);
     }
 
-/***************** Lower DME Switch Position *******************/
+// ***************** Lower DME Switch Position *******************
 
     if(testbit(radiobuf[radnum],LOWER_DME)) {
       loseldis[radnum] = 6;
@@ -882,7 +882,7 @@ void process_radio_panel()
       }
     }
 
-/***************** Lower Transponder Switch Position *******************/
+// ***************** Lower Transponder Switch Position *******************
  
    if(testbit(radiobuf[radnum],LOWER_XPDR)) {
      loseldis[radnum] = 7;
@@ -957,7 +957,7 @@ void process_radio_panel()
     loxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
     }
 
-/***************** Blank Display *******************/
+// ***************** Blank Display *******************
 
 	if (XPLMGetDatai(AvPwrOn) == 0) {
           upseldis[radnum] = 8;
@@ -1005,8 +1005,8 @@ void process_radio_panel()
           }
 	}
 
-/*********** loop untill all radios serviced *************/
-/**************   then start again    *******************/
+// *********** loop untill all radios serviced *************
+// **************   then start again    *******************
 
   radnum++;
   if (radnum == radcnt) {

@@ -763,7 +763,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 {
     (void) inMenuRef; // To get rid of warnings on unused variables
     printf("void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)  \n");
-    if((int)inMenuRef == 1){
+    if((long)inMenuRef == 1){
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
              printf(" WriteCSVTableToDisk();     \n");

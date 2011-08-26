@@ -141,7 +141,7 @@ XPLMDataRef BatArrayOnDR = NULL;
 
 
 XPLMDataRef CowlFlaps = NULL, CockpitLights = NULL, AntiIce = NULL;
-XPLMDataRef GearRetract = NULL, OnGround = NULL;
+XPLMDataRef GearRetract = NULL, OnGround = NULL, LandingGearStatus = {NULL};
 
 
 // ****************** BIP Panel Command Ref **********************
@@ -180,6 +180,7 @@ hid_device *multihandle;
 int switchcnt = 0, switchres, stopswitchcnt;
 static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
+float LandingGearDeployRatio[10];
 
 
 hid_device *switchhandle;
@@ -465,16 +466,17 @@ PLUGIN_API int XPluginStart(char *		outName,
   FuelPumpOff8 = XPLMFindCommand("sim/fuel/fuel_pump_8_off");
 
 // **************** Find Switch Panel Data Ref *******************
-  AntiIce        = XPLMFindDataRef("sim/cockpit/switches/anti_ice_on");
-  CockpitLights  = XPLMFindDataRef("sim/cockpit/electrical/cockpit_lights");
-  CowlFlaps      = XPLMFindDataRef("sim/flightmodel/engine/ENGN_cowl");
-  GearRetract    = XPLMFindDataRef("sim/aircraft/gear/acf_gear_retract");
-  OnGround       = XPLMFindDataRef("sim/flightmodel/failures/onground_any");
+  AntiIce           = XPLMFindDataRef("sim/cockpit/switches/anti_ice_on");
+  CockpitLights     = XPLMFindDataRef("sim/cockpit/electrical/cockpit_lights");
+  CowlFlaps         = XPLMFindDataRef("sim/flightmodel/engine/ENGN_cowl");
+  GearRetract       = XPLMFindDataRef("sim/aircraft/gear/acf_gear_retract");
+  LandingGearStatus = XPLMFindDataRef("sim/flightmodel2/gear/deploy_ratio");
+  OnGround          = XPLMFindDataRef("sim/flightmodel/failures/onground_any");
 
-  BatNum         = XPLMFindDataRef("sim/aircraft/electrical/num_batteries");
-  GenNum         = XPLMFindDataRef("sim/aircraft/electrical/num_generators");
-  EngNum         = XPLMFindDataRef("sim/aircraft/engine/acf_num_engines");
-  BatArrayOnDR   = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
+  BatNum            = XPLMFindDataRef("sim/aircraft/electrical/num_batteries");
+  GenNum            = XPLMFindDataRef("sim/aircraft/electrical/num_generators");
+  EngNum            = XPLMFindDataRef("sim/aircraft/engine/acf_num_engines");
+  BatArrayOnDR      = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
 
 
 // ************* Open any Radio that is connected *****************

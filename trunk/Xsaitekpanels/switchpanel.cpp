@@ -510,23 +510,65 @@ void process_switch_panel()
 // ***************** Gear Switch *******************
 	
 	if(XPLMGetDatai(GearRetract) > 0){
+          XPLMGetDatavf(LandingGearStatus, LandingGearDeployRatio, 0, 10);
+          // Gear is down and locked
+          if (LandingGearDeployRatio[0] == 1) {
+              gearled |= (1<<0);   // * set bit 1 in gearled to 1 *
+              gearled &= ~(1<<3);   // * clear bit 3 in gearled to 0 *
+          }
+          if (LandingGearDeployRatio[1] == 1) {
+              gearled |= (1<<1);   // * set bit 2 in gearled to 1 *
+              gearled &= ~(1<<4);   // * clear bit 4 in gearled to 0 *
+          }
+          if (LandingGearDeployRatio[2] == 1) {
+              gearled |= (1<<2);   // * set bit 3 in gearled to 1 *
+              gearled &= ~(1<<5);   // * clear bit 5 in gearled to 0 *
+          }
+          // Gear is in motion
+          if ((LandingGearDeployRatio[0] > 0) &&(LandingGearDeployRatio[0] < 1)) {
+              gearled |= (1<<3);   // * set bit 3 in gearled to 1 *
+              gearled &= ~(1<<0);   // * clear bit 0 in gearled to 0 *
+          }
+          if ((LandingGearDeployRatio[1] > 0) &&(LandingGearDeployRatio[0] < 1)) {
+              gearled |= (1<<4);   // * set bit 4 in gearled to 1 *
+              gearled &= ~(1<<1);   // * clear bit 1 in gearled to 0 *
+          }
+          if ((LandingGearDeployRatio[1] > 0) &&(LandingGearDeployRatio[0] < 1)) {
+              gearled |= (1<<5);   // * set bit 5 in gearled to 1 *
+              gearled &= ~(1<<2);   // * clear bit 2 in gearled to 0 *
+          }
+          // Gear is up
+          if (LandingGearDeployRatio[0] == 0) {
+              gearled &= ~(1<<0);   // * clear bit 0 in gearled to 0 *
+              gearled &= ~(1<<3);   // * clear bit 3 in gearled to 0 *
+          }
+          if (LandingGearDeployRatio[1] == 0) {
+              gearled &= ~(1<<1);   // * clear bit 1 in gearled to 0 *
+              gearled &= ~(1<<4);   // * clear bit 4 in gearled to 0 *
+          }
+          if (LandingGearDeployRatio[2] == 0) {
+              gearled &= ~(1<<2);   // * clear bit 2 in gearled to 0 *
+              gearled &= ~(1<<5);   // * clear bit 5 in gearled to 0 *
+          }
+
+
 	  if(testbit(switchbuf,GEAR_SWITCH_UP)) {
             XPLMCommandOnce(GearUp);
             if(XPLMGetDatai(OnGround) > 0){
-	      gearled = 0x38;
+              gearled = 0x38;
             }
-            if(XPLMGetDatai(OnGround) == 0){
-	      gearled = 0x00;
-            }
- 	  }
+
+          }
+
 	  if(testbit(switchbuf,GEAR_SWITCH_DN)) {
             XPLMCommandOnce(GearDn);
-	    gearled = 0x07;	  
  	  }
+
 	}
 	if(XPLMGetDatai(GearRetract) == 0){
 	  gearled = 0x00;
 	}
+
 
   return;
 }

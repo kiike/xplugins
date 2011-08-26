@@ -74,11 +74,12 @@ extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs;
 
 extern XPLMDataRef ApMstrStat, ApHdgStat, ApNavStat, ApIasStat;
 extern XPLMDataRef ApAltStat, ApVsStat, ApAprStat, ApRevStat;
-extern XPLMDataRef x737athr_armed;
+extern XPLMDataRef x737athr_armed ,x737swBatBus ,x737stbyPwr ;
 extern XPLMDataRef ApState;
 
 // **************** Multi Panel variables *******************
 extern int multifd;
+extern int loaded737;
 extern hid_device *multihandle;
 
 // ****************  End Multi Panel Section  ***************************
@@ -128,14 +129,14 @@ extern XPLMDataRef BatNum, GenNum, EngNum;
 extern XPLMDataRef BatArrayOnDR;
 
 extern XPLMDataRef CowlFlaps, CockpitLights, AntiIce;
-extern XPLMDataRef GearRetract, OnGround, x737swBatBus;
+extern XPLMDataRef GearRetract, OnGround, LandingGearStatus;
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;
-
+extern float LandingGearDeployRatio[10];
 extern hid_device *switchhandle;
 
-extern int loaded737;
+
 
 // ************** Bip Panel Data Ref ******************
 extern XPLMDataRef gTimeSimIsRunningXDataRef;

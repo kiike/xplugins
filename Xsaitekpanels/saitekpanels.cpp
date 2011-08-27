@@ -142,7 +142,7 @@ XPLMDataRef BatArrayOnDR = NULL;
 
 XPLMDataRef CowlFlaps = NULL, CockpitLights = NULL, AntiIce = NULL;
 XPLMDataRef GearRetract = NULL, OnGround = NULL, LandingGearStatus = {NULL};
-
+XPLMDataRef Gear1Fail = NULL, Gear2Fail = NULL, Gear3Fail = NULL;
 
 // ****************** BIP Panel Command Ref **********************
 
@@ -178,6 +178,7 @@ hid_device *multihandle;
 
 // ****************** Switch Panel variables *******************************
 int switchcnt = 0, switchres, stopswitchcnt;
+
 static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
 float LandingGearDeployRatio[10];
@@ -470,7 +471,11 @@ PLUGIN_API int XPluginStart(char *		outName,
   CockpitLights     = XPLMFindDataRef("sim/cockpit/electrical/cockpit_lights");
   CowlFlaps         = XPLMFindDataRef("sim/flightmodel/engine/ENGN_cowl");
   GearRetract       = XPLMFindDataRef("sim/aircraft/gear/acf_gear_retract");
-  LandingGearStatus = XPLMFindDataRef("sim/flightmodel2/gear/deploy_ratio");
+  LandingGearStatus = XPLMFindDataRef("sim/aircraft/parts/acf_gear_deploy");
+  Gear1Fail         = XPLMFindDataRef("sim/operation/failures/rel_lagear1");
+  Gear2Fail         = XPLMFindDataRef("sim/operation/failures/rel_lagear2");
+  Gear3Fail         = XPLMFindDataRef("sim/operation/failures/rel_lagear3");
+
   OnGround          = XPLMFindDataRef("sim/flightmodel/failures/onground_any");
 
   BatNum            = XPLMFindDataRef("sim/aircraft/electrical/num_batteries");

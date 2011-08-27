@@ -130,6 +130,7 @@ extern XPLMDataRef BatArrayOnDR;
 
 extern XPLMDataRef CowlFlaps, CockpitLights, AntiIce;
 extern XPLMDataRef GearRetract, OnGround, LandingGearStatus;
+extern XPLMDataRef Gear1Fail, Gear2Fail, Gear3Fail;
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;

@@ -36,6 +36,8 @@ static int STROBE_LIGHTS = 13, TAXI_LIGHTS = 12;
 static int LANDING_LIGHTS = 11;
 static int GEAR_SWITCH_UP = 21, GEAR_SWITCH_DN = 20; 
 static int BatArrayOn[8];
+static int failed1up = 0, failed2up = 0, failed3up = 0;
+static int failed1dn = 0, failed2dn = 0, failed3dn = 0;
 
 static unsigned char switchbuf[4];
 static unsigned char switchwbuf[2], gearled;
@@ -552,17 +554,140 @@ void process_switch_panel()
           }
           // Gear has failed
 
-          if (XPLMGetDatai(Gear1Fail) == 6) {
-              gearled |= (1<<3);   // * set bit 3 in gearled to 1 *
-              gearled &= ~(1<<0);   // * clear bit 0 in gearled to 0 *
-          }
-          if (XPLMGetDatai(Gear2Fail) == 6) {
-              gearled |= (1<<4);   // * set bit 3 in gearled to 1 *
-              gearled &= ~(1<<1);   // * clear bit 0 in gearled to 0 *
-          }
-          if (XPLMGetDatai(Gear3Fail) == 6) {
-              gearled |= (1<<5);   // * set bit 3 in gearled to 1 *
-              gearled &= ~(1<<2);   // * clear bit 0 in gearled to 0 *
+          if(testbit(switchbuf,GEAR_SWITCH_UP)) {
+
+             // ********************************************************************************************
+             // Nose gear had failed
+
+             if (failed1dn == 0) {
+               if (XPLMGetDatai(Gear1Fail) == 6) {
+                 failed1up = 1;
+               }
+               if (XPLMGetDatai(Gear1Fail) == 0) {
+                 failed1up = 0;
+               }
+               if (failed1up == 1) {
+                   gearled &= ~(1<<3);   // * set bit 3 in gearled to 1 *
+                   gearled &= ~(1<<0);   // * clear bit 1 in gearled to 0 *
+               }
+
+             }
+             if (failed1dn == 1) {
+                 gearled |= (1<<3);   // * set bit 3 in gearled to 1 *
+                 gearled &= ~(1<<0);   // * clear bit 0 in gearled to 0 *
+             }
+
+             // *********************************************************************************************
+             // Left gear has failed
+
+             if (failed2dn == 0) {
+               if (XPLMGetDatai(Gear2Fail) == 6) {
+                 failed2up = 1;
+               }
+               if (XPLMGetDatai(Gear2Fail) == 0) {
+                 failed2up = 0;
+               }
+               if (failed2up == 1) {
+                   gearled &= ~(1<<4);   // * set bit 3 in gearled to 1 *
+                   gearled &= ~(1<<1);   // * clear bit 1 in gearled to 0 *
+               }
+
+             }
+             if (failed2dn == 1) {
+                 gearled |= (1<<4);   // * set bit 3 in gearled to 1 *
+                 gearled &= ~(1<<1);   // * clear bit 0 in gearled to 0 *
+             }
+
+             // **************************************************************************************************
+             // Right gear has failed
+
+             if (failed3dn == 0) {
+               if (XPLMGetDatai(Gear3Fail) == 6) {
+                 failed3up = 1;
+               }
+               if (XPLMGetDatai(Gear3Fail) == 0) {
+                 failed3up = 0;
+               }
+               if (failed3up == 1) {
+                   gearled &= ~(1<<5);   // * set bit 3 in gearled to 1 *
+                   gearled &= ~(1<<2);   // * clear bit 1 in gearled to 0 *
+               }
+
+             }
+             if (failed3dn == 1) {
+                 gearled |= (1<<5);   // * set bit 3 in gearled to 1 *
+                 gearled &= ~(1<<2);   // * clear bit 0 in gearled to 0 *
+             }
+
+
+
+           }
+
+          if(testbit(switchbuf,GEAR_SWITCH_DN)) {
+
+              // ******************************************************************************************************
+             // Nose gear has failed
+
+             if (failed1up == 0) {
+               if (XPLMGetDatai(Gear1Fail) == 6) {
+                 failed1dn = 1;
+               }
+               if (XPLMGetDatai(Gear1Fail) == 0) {
+                 failed1dn = 0;
+               }
+               if (failed1dn == 1) {
+                   gearled |= (1<<0);   // * set bit 0 in gearled to 1 *
+                   gearled &= ~(1<<3);   // * clear bit 3 in gearled to 0 *
+               }
+
+             }
+             if (failed1up == 1) {
+                 gearled |= (1<<3);   // * set bit 3 in gearled to 1 *
+                 gearled &= ~(1<<0);   // * clear bit 0 in gearled to 0 *
+             }
+
+             // *******************************************************************************************************
+             // Left gear has failed
+
+             if (failed2up == 0) {
+               if (XPLMGetDatai(Gear2Fail) == 6) {
+                 failed2dn = 1;
+               }
+               if (XPLMGetDatai(Gear2Fail) == 0) {
+                 failed2dn = 0;
+               }
+               if (failed2dn == 1) {
+                   gearled |= (1<<1);   // * set bit 0 in gearled to 1 *
+                   gearled &= ~(1<<4);   // * clear bit 3 in gearled to 0 *
+               }
+
+             }
+             if (failed2up == 1) {
+                 gearled |= (1<<4);   // * set bit 3 in gearled to 1 *
+                 gearled &= ~(1<<1);   // * clear bit 0 in gearled to 0 *
+             }
+
+             // *******************************************************************************************************
+             // Right gear has failed
+
+             if (failed3up == 0) {
+               if (XPLMGetDatai(Gear3Fail) == 6) {
+                 failed3dn = 1;
+               }
+               if (XPLMGetDatai(Gear3Fail) == 0) {
+                 failed3dn = 0;
+               }
+               if (failed3dn == 1) {
+                   gearled |= (1<<2);   // * set bit 0 in gearled to 1 *
+                   gearled &= ~(1<<5);   // * clear bit 3 in gearled to 0 *
+               }
+
+             }
+             if (failed3up == 1) {
+                 gearled |= (1<<5);   // * set bit 3 in gearled to 1 *
+                 gearled &= ~(1<<2);   // * clear bit 0 in gearled to 0 *
+             }
+
           }
 
 	  if(testbit(switchbuf,GEAR_SWITCH_UP)) {

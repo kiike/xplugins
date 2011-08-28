@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.20   ***************
-// ****** Aug 23 2011   **************
+// ****** Aug 26 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -555,7 +555,6 @@ PLUGIN_API int XPluginStart(char *		outName,
         bipcnt++;
         bip_cur_dev = bip_cur_dev->next;
     }
-  printf("bipres =  %d\n",bipres);
   hid_free_enumeration(bip_devs);
 
 
@@ -622,6 +621,9 @@ PLUGIN_API void	XPluginStop(void)
 {
   // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
+  XPDestroyWidget(BipWidgetID, 1);
+  XPLMDestroyMenu(BipMenuId);
+
   stopradcnt = radcnt - 1;
 
   // *** if open blank display and then close that radio panel ****
@@ -754,11 +756,9 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
     if(bipcnt > 0){
 
         if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((long) inParam == 0)) {
-          //printf("if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((long) inParam == 0)) is true\n");
           ReadConfigFile(PlaneICAO);
         }
         if (inMessage == XPLM_MSG_AIRPORT_LOADED) {
-          //printf("if (inMessage == XPLM_MSG_AIRPORT_LOADED) is true \n");
           ReadConfigFile(PlaneICAO);
         }
 
@@ -769,15 +769,13 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 {
     (void) inMenuRef; // To get rid of warnings on unused variables
-    printf("void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)  \n");
     if((long)inMenuRef == 1){
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
-             printf(" WriteCSVTableToDisk();     \n");
          }
          else {
             ReadConfigFile((char *) inItemRef);
-            printf(" ReadConfigFile((char *) inItemRef);     \n");
+
          }
 
     }

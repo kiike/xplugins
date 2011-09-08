@@ -72,7 +72,7 @@ XPLMDataRef XpdrCode = NULL, AdfFreq = NULL;
 XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
 XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
 XPLMDataRef Nav2DmeNmDist = NULL, Nav2DmeSpeed = NULL;
-XPLMDataRef DmeFreq = NULL, DmeTime = NULL;
+XPLMDataRef DmeFreq = NULL, DmeTime = NULL, DmeSpeed = NULL;
 
 
 XPLMDataRef AvPwrOn = NULL, BatPwrOn = NULL;
@@ -301,6 +301,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   Nav1DmeSpeed	= XPLMFindDataRef("sim/cockpit2/radios/indicators/nav1_dme_speed_kts");
   Nav2DmeNmDist	= XPLMFindDataRef("sim/cockpit2/radios/indicators/nav2_dme_distance_nm");
   Nav2DmeSpeed	= XPLMFindDataRef("sim/cockpit2/radios/indicators/nav2_dme_speed_kts");
+  DmeSpeed	= XPLMFindDataRef("sim/cockpit2/radios/indicators/dme_dme_speed_kts");
+
   DmeFreq	= XPLMFindDataRef("sim/cockpit2/radios/actuators/dme_frequency_hz");
   DmeTime	= XPLMFindDataRef("sim/cockpit2/radios/indicators/dme_dme_time_min");
 

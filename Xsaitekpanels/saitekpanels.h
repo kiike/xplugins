@@ -32,8 +32,11 @@ extern XPLMCommandRef Com1ActStby, Com2ActStby, Nav1ActStby, Nav2ActStby;
 extern XPLMDataRef Com1ActFreq, Com2ActFreq, Nav1ActFreq, Nav2ActFreq;
 extern XPLMDataRef Com1StbyFreq, Com2StbyFreq, Nav1StbyFreq, Nav2StbyFreq;
 
-extern XPLMDataRef XpdrCode, AdfFreq, Nav1DmeNmDist, Nav1DmeSpeed;
-extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed, DmeSlvSource;
+extern XPLMDataRef XpdrCode, AdfFreq;
+extern XPLMDataRef DmeMode, DmeSlvSource;
+extern XPLMDataRef Nav1DmeNmDist, Nav1DmeSpeed;
+extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed;
+extern XPLMDataRef DmeFreq, DmeTime;
 
 extern XPLMDataRef AvPwrOn, BatPwrOn;
 

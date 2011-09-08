@@ -67,8 +67,13 @@ XPLMCommandRef Com1ActStby = NULL, Com2ActStby = NULL, Nav1ActStby = NULL, Nav2A
 XPLMDataRef Com1ActFreq = NULL, Com2ActFreq = NULL, Nav1ActFreq = NULL, Nav2ActFreq = NULL;
 XPLMDataRef Com1StbyFreq = NULL, Com2StbyFreq = NULL, Nav1StbyFreq = NULL, Nav2StbyFreq = NULL;
 
-XPLMDataRef XpdrCode = NULL, AdfFreq = NULL, Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
-XPLMDataRef Nav2DmeNmDist = NULL, Nav2DmeSpeed = NULL, DmeSlvSource;
+XPLMDataRef XpdrCode = NULL, AdfFreq = NULL;
+
+XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
+XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
+XPLMDataRef Nav2DmeNmDist = NULL, Nav2DmeSpeed = NULL;
+XPLMDataRef DmeFreq = NULL, DmeTime = NULL;
+
 
 XPLMDataRef AvPwrOn = NULL, BatPwrOn = NULL;
 
@@ -289,11 +294,15 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
   AdfFreq	= XPLMFindDataRef("sim/cockpit/radios/adf1_freq_hz");
+  DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
+  DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");
+
   Nav1DmeNmDist	= XPLMFindDataRef("sim/cockpit2/radios/indicators/nav1_dme_distance_nm");
   Nav1DmeSpeed	= XPLMFindDataRef("sim/cockpit2/radios/indicators/nav1_dme_speed_kts");
   Nav2DmeNmDist	= XPLMFindDataRef("sim/cockpit2/radios/indicators/nav2_dme_distance_nm");
   Nav2DmeSpeed	= XPLMFindDataRef("sim/cockpit2/radios/indicators/nav2_dme_speed_kts");
-  DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");
+  DmeFreq	= XPLMFindDataRef("sim/cockpit2/radios/actuators/dme_frequency_hz");
+  DmeTime	= XPLMFindDataRef("sim/cockpit2/radios/indicators/dme_dme_time_min");
 
   AvPwrOn = XPLMFindDataRef("sim/cockpit/electrical/avionics_on");
   BatPwrOn = XPLMFindDataRef("sim/cockpit/electrical/battery_on");

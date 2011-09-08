@@ -36,7 +36,7 @@ extern XPLMDataRef XpdrCode, AdfFreq;
 extern XPLMDataRef DmeMode, DmeSlvSource;
 extern XPLMDataRef Nav1DmeNmDist, Nav1DmeSpeed;
 extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed;
-extern XPLMDataRef DmeFreq, DmeTime;
+extern XPLMDataRef DmeFreq, DmeTime, DmeSpeed;
 
 extern XPLMDataRef AvPwrOn, BatPwrOn;
 

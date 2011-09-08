@@ -21,7 +21,10 @@ static int radnum = 0, radionowrite[4] = {0, 0, 0, 0};
 static int radiores = 0;
 
 static int upactcomnavfreq[4], upstbycomnavfreq[4], loactcomnavfreq[4], lostbycomnavfreq[4];
-static int upadffreq[4], loadffreq[4], updmedist[4], updmespeed[4], lodmedist[4], lodmespeed[4]; 
+static int upadffreq[4], loadffreq[4], updmedist[4], lodmedist[4];
+static int updmenavspeed[4], lodmenavspeed[4];
+static int updmespeed[4], lodmespeed[4];
+
 static int upxpdrcode[4], loxpdrcode[4];
 static int updmemode[4], lodmemode[4];
 static int updmesource[4], lodmesource[4];
@@ -58,7 +61,10 @@ static int loadfdbnccorinc[4] = {0, 0, 0, 0}, loadfdbnccordec[4] = {0, 0, 0, 0};
 static int loxpdrdbncfninc[4] = {0, 0, 0, 0}, loxpdrdbncfndec[4] = {0, 0, 0, 0};
 static int loxpdrdbnccorinc[4] = {0, 0, 0, 0}, loxpdrdbnccordec[4] = {0, 0, 0, 0};
 
-static float updmedistf[4], updmespeedf[4], lodmedistf[4], lodmespeedf[4];
+static float updmedistf[4], lodmedistf[4];
+static float updmenav1speedf[4], updmenav2speedf[4], lodmenav1speedf[4], lodmenav2speedf[4];
+static float updmespeedf[4], lodmespeedf[4];
+
 static float updmetime[4], lodmetime[4];
 
 static int radioaactv, radioadig1, radioarem1, radioadig2, radioarem2, radioadig3, radioarem3;
@@ -129,7 +135,7 @@ void process_radio_panel()
   }
 
   else if (upseldis[radnum] == 6) {
-    radioaactv = updmespeed[radnum];
+    radioaactv = updmenavspeed[radnum];
     radioadig1 = 11, radioadig2 = 11;
     radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
     radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
@@ -162,7 +168,7 @@ void process_radio_panel()
   }
 
   else if (upseldis[radnum] == 8) {
-    radioaactv = updmespeed[radnum];
+    radioaactv = updmenavspeed[radnum];
     radioadig1 = 11, radioadig2 = 11;
     radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
     radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
@@ -224,7 +230,8 @@ void process_radio_panel()
 
 
   else if (loseldis[radnum] == 6) {
-    radiocactv = lodmespeed[radnum];
+
+    radiocactv = lodmenavspeed[radnum];
     radiocdig1 = 11, radiocdig2 = 11;
     radiocdig3 = radiocactv/100, radiocrem3 =radiocactv%100;
     radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
@@ -612,15 +619,15 @@ void process_radio_panel()
       if (updmemode[radnum] == 0) {
           upseldis[radnum] = 6;
           if (updmesource[radnum] == 0){
-            updmespeedf[radnum] = XPLMGetDataf(Nav1DmeSpeed);
-            updmespeed[radnum] = (int)(updmespeedf[radnum]);
+            updmenav1speedf[radnum] = XPLMGetDataf(Nav1DmeSpeed);
+            updmenavspeed[radnum] = (int)(updmenav1speedf[radnum]);
             updmedistf[radnum] = XPLMGetDataf(Nav1DmeNmDist);
             updmedist[radnum] = (int)(updmedistf[radnum] * 10.0f);
 
           }
           else if (updmesource[radnum] == 1){
-            updmespeedf[radnum] = XPLMGetDataf(Nav2DmeSpeed);
-            updmespeed[radnum] = (int)(updmespeedf[radnum]);
+            updmenav2speedf[radnum] = XPLMGetDataf(Nav2DmeSpeed);
+            updmenavspeed[radnum] = (int)(updmenav2speedf[radnum]);
             updmedistf[radnum] = XPLMGetDataf(Nav2DmeNmDist);
             updmedist[radnum] = (int)(updmedistf[radnum] * 10.0f);
 
@@ -636,7 +643,7 @@ void process_radio_panel()
 
       if (updmemode[radnum] == 2) {
           upseldis[radnum] = 8;
-          updmespeedf[radnum] = XPLMGetDataf(Nav2DmeSpeed);
+          updmespeedf[radnum] = XPLMGetDataf(DmeSpeed);
           updmespeed[radnum] = (int)(updmespeedf[radnum]);
           updmetime[radnum] = XPLMGetDataf(DmeTime);
       }
@@ -974,15 +981,15 @@ void process_radio_panel()
         if (lodmemode[radnum] == 0) {
             loseldis[radnum] = 6;
             if (lodmesource[radnum] == 0){
-              lodmespeedf[radnum] = XPLMGetDataf(Nav1DmeSpeed);
-              lodmespeed[radnum] = (int)(lodmespeedf[radnum]);
+              lodmenav1speedf[radnum] = XPLMGetDataf(Nav1DmeSpeed);
+              lodmenavspeed[radnum] = (int)(lodmenav1speedf[radnum]);
               lodmedistf[radnum] = XPLMGetDataf(Nav1DmeNmDist);
               lodmedist[radnum] = (int)(lodmedistf[radnum] * 10.0f);
 
             }
             else if (lodmesource[radnum] == 1){
-              lodmespeedf[radnum] = XPLMGetDataf(Nav2DmeSpeed);
-              lodmespeed[radnum] = (int)(lodmespeedf[radnum]);
+              lodmenav2speedf[radnum] = XPLMGetDataf(Nav2DmeSpeed);
+              lodmenavspeed[radnum] = (int)(lodmenav2speedf[radnum]);
               lodmedistf[radnum] = XPLMGetDataf(Nav2DmeNmDist);
               lodmedist[radnum] = (int)(lodmedistf[radnum] * 10.0f);
 
@@ -998,7 +1005,8 @@ void process_radio_panel()
 
         if (lodmemode[radnum] == 2) {
             loseldis[radnum] = 8;
-
+            lodmespeedf[radnum] = XPLMGetDataf(DmeSpeed);
+            lodmespeed[radnum] = (int)(lodmespeedf[radnum]);
             lodmetime[radnum] = XPLMGetDataf(DmeTime);
 
         }

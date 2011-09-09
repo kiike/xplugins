@@ -17,8 +17,13 @@
 
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
+// ********************** Radio Panel variables ***********************
 static int radnum = 0, radionowrite[4] = {0, 0, 0, 0};
 static int radiores = 0;
+
+static int updmepushed = 0, lodmepushed = 0;
+static int updmeloop = 0, lodmeloop = 0;
+static int uplastdmepos = 0, lolastdmepos = 0;
 
 static int upactcomnavfreq[4], upstbycomnavfreq[4], loactcomnavfreq[4], lostbycomnavfreq[4];
 static int upadffreq[4], loadffreq[4], updmedist[4], lodmedist[4];
@@ -614,6 +619,54 @@ void process_radio_panel()
 // ***************** Upper DME Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_DME)) {
+
+        if (updmepushed == 0) {
+          if (XPLMGetDatai(DmeMode) == 0) {
+             if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                XPLMSetDatai(DmeMode, 1);
+                updmepushed = 1;
+                uplastdmepos = 1;
+              }
+          }
+        }
+
+        if (updmepushed == 0) {
+          if (XPLMGetDatai(DmeMode) == 1) {
+             if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                 if (uplastdmepos == 1){
+                   XPLMSetDatai(DmeMode, 2);
+                   updmepushed = 1;
+                 }
+                 if (uplastdmepos == 2){
+                     XPLMSetDatai(DmeMode, 0);
+                     updmepushed = 1;
+                 }
+              }
+          }
+        }
+
+        if (updmepushed == 0) {
+          if (XPLMGetDatai(DmeMode) == 2) {
+              if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                 XPLMSetDatai(DmeMode, 1);
+                 updmepushed = 1;
+                 uplastdmepos = 2;
+              }
+          }
+        }
+
+        if (updmepushed == 1){
+           updmeloop++;
+            if (updmeloop == 50){
+               updmepushed = 0;
+               updmeloop = 0;
+            }
+
+        }
+
+
+
+
       updmemode[radnum] = XPLMGetDatai(DmeMode);
       updmesource[radnum] = XPLMGetDatai(DmeSlvSource);
       if (updmemode[radnum] == 0) {
@@ -636,6 +689,7 @@ void process_radio_panel()
       }
       if (updmemode[radnum] == 1) {
           upseldis[radnum] = 7;
+
           updmefreq[radnum] = XPLMGetDatai(DmeFreq);
           updmetime[radnum] = XPLMGetDataf(DmeTime);
 
@@ -974,6 +1028,51 @@ void process_radio_panel()
 // ***************** Lower DME Switch Position *******************
 
     if(testbit(radiobuf[radnum],LOWER_DME)) {
+
+        if (lodmepushed == 0) {
+          if (XPLMGetDatai(DmeMode) == 0) {
+             if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+                XPLMSetDatai(DmeMode, 1);
+                lodmepushed = 1;
+                lolastdmepos = 1;
+              }
+          }
+        }
+
+        if (lodmepushed == 0) {
+          if (XPLMGetDatai(DmeMode) == 1) {
+             if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+                 if (lolastdmepos == 1){
+                   XPLMSetDatai(DmeMode, 2);
+                   lodmepushed = 1;
+                 }
+                 if (lolastdmepos == 2){
+                     XPLMSetDatai(DmeMode, 0);
+                     lodmepushed = 1;
+                 }
+              }
+          }
+        }
+
+        if (lodmepushed == 0) {
+          if (XPLMGetDatai(DmeMode) == 2) {
+              if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+                 XPLMSetDatai(DmeMode, 1);
+                 lodmepushed = 1;
+                 lolastdmepos = 2;
+              }
+          }
+        }
+
+        if (lodmepushed == 1){
+           lodmeloop++;
+            if (lodmeloop == 50){
+               lodmepushed = 0;
+               lodmeloop = 0;
+            }
+
+        }
+
 
 
         lodmemode[radnum] = XPLMGetDatai(DmeMode);

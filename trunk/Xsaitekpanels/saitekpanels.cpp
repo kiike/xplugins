@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.21   ***************
-// ****** Sep 08 2011   **************
+// ******** ver 1.22   ***************
+// ****** Sep 10 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -103,6 +103,9 @@ XPLMDataRef ApAltStat = NULL, ApVsStat = NULL, ApAprStat = NULL, ApRevStat = NUL
 XPLMDataRef x737athr_armed = NULL, x737swBatBus = NULL, x737stbyPwr = NULL;
 XPLMDataRef ApState = NULL;
 
+XPLMMenuID      MultiMenu;
+XPLMMenuID      MultiMenuId;
+
 
 // *************** Switch Panel Command Ref *******************
 XPLMCommandRef ClFlOpn = NULL, ClFlCls = NULL, PtHtOn = NULL, PtHtOff = NULL;
@@ -177,6 +180,7 @@ hid_device *radhandle[4];
 int multicnt = 0, multires, stopmulticnt;
 static unsigned char blankmultiwbuf[13];
 unsigned char multibuf[4], multiwbuf[13];
+int trimspeed = 1;
 int loaded737 = 0;
 
 hid_device *multihandle;
@@ -232,10 +236,10 @@ PLUGIN_API int XPluginStart(char *		outName,
 			    char *		outDesc)
 {
 
-  int BipSubMenuItem;
+  int BipSubMenuItem, MultiSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.21");
+  strcpy(outName, "Xsaitekpanels v1.22");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -625,6 +629,24 @@ PLUGIN_API int XPluginStart(char *		outName,
 
    }
 
+   if (multicnt > 0) {
+
+       MultiSubMenuItem = XPLMAppendMenuItem(
+               XsaitekpanelsMenu,
+               "Multi",
+               NULL,
+               2);
+
+
+       MultiMenuId = XPLMCreateMenu(
+               "Multi",
+               XsaitekpanelsMenu,
+               MultiSubMenuItem,
+               XsaitekpanelsMenuHandler,
+               (void *)2);
+  }
+
+
    return 1;
 }
 
@@ -634,6 +656,7 @@ PLUGIN_API void	XPluginStop(void)
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
   XPDestroyWidget(BipWidgetID, 1);
   XPLMDestroyMenu(BipMenuId);
+  XPLMDestroyMenu(MultiMenuId);
 
   stopradcnt = radcnt - 1;
 
@@ -790,7 +813,18 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          }
 
     }
+    if((long)inMenuRef == 2){
+         if (strcmp((char *) inItemRef, "TRIM X1") == 0) {
+             trimspeed = 1;
+         }
+         if (strcmp((char *) inItemRef, "TRIM X2") == 0) {
+             trimspeed = 2;
+         }
+         if (strcmp((char *) inItemRef, "TRIM X3") == 0) {
+             trimspeed = 3;
+         }
 
+    }
 
 
     return;

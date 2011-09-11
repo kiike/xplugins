@@ -59,6 +59,11 @@ void process_multi_panel()
 
 {
 
+    XPLMClearAllMenuItems(MultiMenuId);
+    XPLMAppendMenuItem(MultiMenuId, "TRIM X1", (void *) "TRIM X1", 2);
+    XPLMAppendMenuItem(MultiMenuId, "TRIM X2", (void *) "TRIM X2", 2);
+    XPLMAppendMenuItem(MultiMenuId, "TRIM X3", (void *) "TRIM X3", 2);
+
 // ***** Setup Display for ALT or VS Switch Position *********
 if (multiseldis == 1) { 
 
@@ -580,13 +585,35 @@ if (multiseldis == 5) {
 
         if (multires > 0) {
 	  if(testbit(multibuf,TRIM_WHEEL_UP)) {
-	    XPLMCommandOnce(PitchTrimUp);		 
+            if(trimspeed == 1){
+              XPLMCommandOnce(PitchTrimUp);
+            }
+            if(trimspeed == 2){
+              XPLMCommandOnce(PitchTrimUp);
+              XPLMCommandOnce(PitchTrimUp);
+            }
+            if(trimspeed == 3){
+              XPLMCommandOnce(PitchTrimUp);
+              XPLMCommandOnce(PitchTrimUp);
+              XPLMCommandOnce(PitchTrimUp);
+            }
 	  }	
 	}
         if (multires > 0) {
 
 	  if(testbit(multibuf,TRIM_WHEEL_DN)) {
-	    XPLMCommandOnce(PitchTrimDn);	 
+            if(trimspeed == 1){
+              XPLMCommandOnce(PitchTrimDn);
+            }
+            if(trimspeed == 2){
+              XPLMCommandOnce(PitchTrimDn);
+              XPLMCommandOnce(PitchTrimDn);
+            }
+            if(trimspeed == 3){
+              XPLMCommandOnce(PitchTrimDn);
+              XPLMCommandOnce(PitchTrimDn);
+              XPLMCommandOnce(PitchTrimDn);
+            }
 	  }
 	}
 

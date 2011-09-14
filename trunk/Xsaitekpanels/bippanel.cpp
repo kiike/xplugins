@@ -1,5 +1,5 @@
-// ****** bippanel.cpp **********/
-// ****  William R. Good  ********/
+ // ****** bippanel.cpp **********
+// ****  William R. Good  ********
 
 
 #if IBM

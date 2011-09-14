@@ -23,6 +23,9 @@ extern XPLMCommandRef Nav2StbyFineDn, Nav2StbyFineUp, Nav2StbyCorseDn, Nav2StbyC
 extern XPLMCommandRef Afd1HunUp, Afd1HunDn, Afd1TensUp, Afd1TensDn;
 extern XPLMCommandRef Afd1OnesUp, Afd1OnesDn;
 
+extern XPLMCommandRef Afd2HunUp, Afd2HunDn, Afd2TensUp, Afd2TensDn;
+extern XPLMCommandRef Afd2OnesUp, Afd2OnesDn;
+
 extern XPLMCommandRef XpdrThUp, XpdrThDn, XpdrHunUp, XpdrHunDn;
 extern XPLMCommandRef XpdrTensUp, XpdrTensDn, XpdrOnesUp, XpdrOnesDn;
 
@@ -43,10 +46,15 @@ extern XPLMDataRef AvPwrOn, BatPwrOn;
 extern XPLMDataRef Nav1PwrOn, Nav2PwrOn, Com1PwrOn, Com2PwrOn;
 extern XPLMDataRef Afd1PwrOn, DmePwrOn;
 
+extern XPLMMenuID      RadioMenu;
+extern XPLMMenuID      RadioMenuId;
+
+
 // ************************ Radio Panel variables **************************
 extern int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
 extern int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
 extern int radiofd[4], radcnt, radres;
+extern int freqspeed;
 extern float interval;
 extern unsigned char radbuf[4], radwbuf[21];
 
@@ -84,7 +92,7 @@ extern XPLMMenuID      MultiMenuId;
 
 // **************** Multi Panel variables *******************
 extern int multifd;
-extern int trimspeed;
+extern int trimspeed, numadf;
 extern int loaded737;
 extern hid_device *multihandle;
 

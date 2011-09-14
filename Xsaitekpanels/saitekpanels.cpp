@@ -1,6 +1,6 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.22   ***************
+// ******** ver 1.23   ***************
 // ****** Sep 10 2011   **************
 
 #include "XPLMDisplay.h"
@@ -8,43 +8,25 @@
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
 #include "XPLMProcessing.h"
-
-#include "hidapi.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
-
-
 #include "XPLMPlugin.h"
-#include "XPLMProcessing.h"
-#include "XPLMDataAccess.h"
-#include "XPLMUtilities.h"
-#include "XPLMDisplay.h"
-#include "XPLMGraphics.h"
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
 
 #include "hidapi.h"
 
-#include <time.h>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
-
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string>
+#include <string.h>
 
+#include <time.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -56,6 +38,9 @@ XPLMCommandRef	Nav2StbyFineDn = NULL, Nav2StbyFineUp = NULL, Nav2StbyCorseDn = N
 
 XPLMCommandRef	Afd1HunUp = NULL, Afd1HunDn = NULL, Afd1TensUp = NULL, Afd1TensDn = NULL;
 XPLMCommandRef	Afd1OnesUp = NULL, Afd1OnesDn = NULL;
+
+XPLMCommandRef	Afd2HunUp = NULL, Afd2HunDn = NULL, Afd2TensUp = NULL, Afd2TensDn = NULL;
+XPLMCommandRef	Afd2OnesUp = NULL, Afd2OnesDn = NULL;
 
 XPLMCommandRef	XpdrThUp = NULL, XpdrThDn = NULL, XpdrHunUp = NULL, XpdrHunDn = NULL;
 XPLMCommandRef	XpdrTensUp = NULL, XpdrTensDn = NULL, XpdrOnesUp = NULL, XpdrOnesDn = NULL;
@@ -74,12 +59,13 @@ XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
 XPLMDataRef Nav2DmeNmDist = NULL, Nav2DmeSpeed = NULL;
 XPLMDataRef DmeFreq = NULL, DmeTime = NULL, DmeSpeed = NULL;
 
-
 XPLMDataRef AvPwrOn = NULL, BatPwrOn = NULL;
 
 XPLMDataRef Nav1PwrOn = NULL, Nav2PwrOn = NULL, Com1PwrOn = NULL, Com2PwrOn = NULL;
 XPLMDataRef Afd1PwrOn = NULL, DmePwrOn = NULL;
 
+XPLMMenuID      RadioMenu;
+XPLMMenuID      RadioMenuId;
 
 // ****************** Multi Panel Command Ref **********************
 XPLMCommandRef ApAltDn = NULL, ApAltUp = NULL, ApVsDn = NULL, ApVsUp = NULL;
@@ -105,7 +91,6 @@ XPLMDataRef ApState = NULL;
 
 XPLMMenuID      MultiMenu;
 XPLMMenuID      MultiMenuId;
-
 
 // *************** Switch Panel Command Ref *******************
 XPLMCommandRef ClFlOpn = NULL, ClFlCls = NULL, PtHtOn = NULL, PtHtOff = NULL;
@@ -174,6 +159,8 @@ static unsigned char radiobuf[4][4], radiowbuf[4][23];
 
 unsigned char radbuf[4], radwbuf[21];
 
+int freqspeed = 3, numadf = 1;
+
 hid_device *radhandle[4];
 
 // ********************** Multi Panel variables ***********************
@@ -236,10 +223,10 @@ PLUGIN_API int XPluginStart(char *		outName,
 			    char *		outDesc)
 {
 
-  int BipSubMenuItem, MultiSubMenuItem;
+  int BipSubMenuItem, MultiSubMenuItem, RadioSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.22");
+  strcpy(outName, "Xsaitekpanels v1.23");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -270,6 +257,13 @@ PLUGIN_API int XPluginStart(char *		outName,
   Afd1TensDn	= XPLMFindCommand("sim/radios/actv_adf1_tens_down");
   Afd1OnesUp	= XPLMFindCommand("sim/radios/actv_adf1_ones_up");
   Afd1OnesDn	= XPLMFindCommand("sim/radios/actv_adf1_ones_down");
+
+  Afd2HunUp	= XPLMFindCommand("sim/radios/actv_adf2_hundreds_up");
+  Afd2HunDn	= XPLMFindCommand("sim/radios/actv_adf2_hundreds_down");
+  Afd2TensUp	= XPLMFindCommand("sim/radios/actv_adf2_tens_up");
+  Afd2TensDn	= XPLMFindCommand("sim/radios/actv_adf2_tens_down");
+  Afd2OnesUp	= XPLMFindCommand("sim/radios/actv_adf2_ones_up");
+  Afd2OnesDn	= XPLMFindCommand("sim/radios/actv_adf2_ones_down");
 
   XpdrThUp	= XPLMFindCommand("sim/transponder/transponder_thousands_up");
   XpdrThDn	= XPLMFindCommand("sim/transponder/transponder_thousands_down");
@@ -646,8 +640,24 @@ PLUGIN_API int XPluginStart(char *		outName,
                (void *)2);
   }
 
+   if (radcnt > 0) {
 
-   return 1;
+       RadioSubMenuItem = XPLMAppendMenuItem(
+               XsaitekpanelsMenu,
+               "Radio",
+               NULL,
+               3);
+
+
+       RadioMenuId = XPLMCreateMenu(
+               "Radio",
+               XsaitekpanelsMenu,
+               RadioSubMenuItem,
+               XsaitekpanelsMenuHandler,
+               (void *)3);
+  }
+
+  return 1;
 }
 
 PLUGIN_API void	XPluginStop(void)
@@ -657,6 +667,7 @@ PLUGIN_API void	XPluginStop(void)
   XPDestroyWidget(BipWidgetID, 1);
   XPLMDestroyMenu(BipMenuId);
   XPLMDestroyMenu(MultiMenuId);
+  XPLMDestroyMenu(RadioMenuId);
 
   stopradcnt = radcnt - 1;
 
@@ -826,6 +837,30 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
+    if((long)inMenuRef == 3){
+         if (strcmp((char *) inItemRef, "1") == 0) {
+             freqspeed = 1;
+         }
+         if (strcmp((char *) inItemRef, "2") == 0) {
+             freqspeed = 2;
+         }
+         if (strcmp((char *) inItemRef, "3") == 0) {
+             freqspeed = 3;
+         }
+         if (strcmp((char *) inItemRef, "4") == 0) {
+             freqspeed = 4;
+         }
+         if (strcmp((char *) inItemRef, "5") == 0) {
+             freqspeed = 5;
+         }
+         if (strcmp((char *) inItemRef, "ADF1") == 0) {
+             numadf = 1;
+         }
+         if (strcmp((char *) inItemRef, "ADF2") == 0) {
+             numadf = 2;
+         }
+
+    }
 
     return;
 }

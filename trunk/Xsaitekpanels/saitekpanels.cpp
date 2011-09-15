@@ -52,7 +52,7 @@ XPLMCommandRef Com1ActStby = NULL, Com2ActStby = NULL, Nav1ActStby = NULL, Nav2A
 XPLMDataRef Com1ActFreq = NULL, Com2ActFreq = NULL, Nav1ActFreq = NULL, Nav2ActFreq = NULL;
 XPLMDataRef Com1StbyFreq = NULL, Com2StbyFreq = NULL, Nav1StbyFreq = NULL, Nav2StbyFreq = NULL;
 
-XPLMDataRef XpdrCode = NULL, AdfFreq = NULL;
+XPLMDataRef XpdrCode = NULL, Adf1Freq = NULL, Adf2Freq = NULL;
 
 XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
 XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
@@ -291,7 +291,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   Nav2StbyFreq = XPLMFindDataRef("sim/cockpit/radios/nav2_stdby_freq_hz");
 
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
-  AdfFreq	= XPLMFindDataRef("sim/cockpit/radios/adf1_freq_hz");
+  Adf1Freq	= XPLMFindDataRef("sim/cockpit/radios/adf1_freq_hz");
+  Adf2Freq	= XPLMFindDataRef("sim/cockpit/radios/adf2_freq_hz");
   DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
   DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");
 
@@ -845,6 +846,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              freqspeed = 2;
          }
          if (strcmp((char *) inItemRef, "3") == 0) {
+             XPLMCheckMenuItem(RadioMenuId, 4, xplm_Menu_Checked);
              freqspeed = 3;
          }
          if (strcmp((char *) inItemRef, "4") == 0) {

@@ -148,12 +148,47 @@ void process_radio_panel()
   } 
 
   else if (upseldis[radnum] == 5) {
-    radiobstby = upadffreq[radnum];
-    radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
-    radiobdig1 = 11, radiobdig2 = 11;
-    radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
-    radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
-    radiobdig5 = radiobrem4;
+    if (upadfsel[radnum] == 1) {
+      radiobstby = upadffreq[radnum];
+      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
+      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+      radiobdig5 = radiobrem4;
+      radiobdig5 = radiobdig5+208;
+    }
+    if (upadfsel[radnum] == 2) {
+      radiobstby = upadffreq[radnum];
+      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
+      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+      radiobdig4 = radiobdig4+208, radiobdig5 = radiobrem4;
+    }
+    if (upadfsel[radnum] == 3) {
+      radiobstby = upadffreq[radnum];
+      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
+      radiobdig3 = radiobdig3+208;
+      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+      radiobdig5 = radiobrem4;
+    }
+
+
+    if (upadfsel[radnum] > 3) {
+      radiobstby = upadffreq[radnum];
+      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
+      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+      radiobdig5 = radiobrem4;
+    }
+
+
+
+
+
   }
 
   else if (upseldis[radnum] == 6) {
@@ -239,12 +274,43 @@ void process_radio_panel()
   } 
   
   else if (loseldis[radnum] == 5) {
-    radiodstby = loadffreq[radnum]; 
-    radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
-    radioddig1 = 11, radioddig2 = 11;
-    radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
-    radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
-    radioddig5 = radiodrem4;
+    if (loadfsel[radnum] == 1) {
+      radiodstby = loadffreq[radnum];
+      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radioddig1 = 11, radioddig2 = 11;
+      radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
+      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+      radioddig5 = radiodrem4;
+      radioddig5 = radioddig5+208;
+    }
+    if (loadfsel[radnum] == 2) {
+      radiodstby = loadffreq[radnum];
+      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radioddig1 = 11, radioddig2 = 11;
+      radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
+      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+      radioddig4 = radioddig4+208;
+      radioddig5 = radiodrem4;
+    }
+    if (loadfsel[radnum] == 3) {
+      radiodstby = loadffreq[radnum];
+      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radioddig1 = 11, radioddig2 = 11;
+      radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
+      radioddig3 = radioddig3+208;
+      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+      radioddig5 = radiodrem4;
+    }
+    if (loadfsel[radnum] > 3) {
+      radiodstby = loadffreq[radnum];
+      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radioddig1 = 11, radioddig2 = 11;
+      radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
+      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+      radioddig5 = radiodrem4;
+    }
+
+
   }
 
 
@@ -574,60 +640,51 @@ void process_radio_panel()
 	      upadfdbncfndec[radnum] = 0;
 	    }
           }
-          if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
-	    upadfdbnccorinc[radnum]++;
-            if (upadfdbnccorinc[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1TensUp);
-	      upadfdbnccorinc[radnum] = 0;
-	    }
-          }  
-          if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
-	    upadfdbnccordec[radnum]++;
-            if (upadfdbnccordec[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1TensDn);
-	      upadfdbncfndec[radnum] = 0;
-	    }
-          }
 	}
           if (upadfsel[radnum] == 2) {
             if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
 	      upadfdbncfninc[radnum]++;
               if (upadfdbncfninc[radnum] > freqspeed) {
-	        XPLMCommandOnce(Afd1HunUp);
+                XPLMCommandOnce(Afd1TensUp);
 	        upadfdbncfninc[radnum] = 0;
 	      }		
             }
             if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
 	      upadfdbncfndec[radnum]++;
               if (upadfdbncfndec[radnum] > freqspeed) {
-		XPLMCommandOnce(Afd1HunDn);
+                XPLMCommandOnce(Afd1TensDn);
 	        upadfdbncfndec[radnum] = 0;
 	      } 
             }
-            if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
-	      upadfdbnccorinc[radnum]++;
-              if (upadfdbnccorinc[radnum] > freqspeed) {
-		XPLMCommandOnce(Afd1HunUp);
-	        upadfdbnccorinc[radnum] = 0;
-	      }
-            }  
-            if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
-	      upadfdbnccordec[radnum]++;
-              if (upadfdbnccordec[radnum] > freqspeed) {
-		XPLMCommandOnce(Afd1HunDn);
-	        upadfdbncfndec[radnum] = 0;
-	      }
-            }	
 	  }
-
-	    if(testbit(radiobuf[radnum],UPPER_ACT_STBY)) {
-	      upadfsel[radnum] ++;
-              if (upadfsel[radnum] > freqspeed) {
-	        upadfsel[radnum] = 1;
-	      }
+          if (upadfsel[radnum] == 3) {
+            if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
+              upadfdbncfninc[radnum]++;
+              if (upadfdbncfninc[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd1HunUp);
+                upadfdbncfninc[radnum] = 0;
+              }
             }
-	  }
-    upadffreq[radnum] = XPLMGetDatai(AdfFreq);
+            if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
+              upadfdbncfndec[radnum]++;
+              if (upadfdbncfndec[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd1HunDn);
+                upadfdbncfndec[radnum] = 0;
+              }
+            }
+          }
+          if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
+            upadfdbnccorinc[radnum] ++;
+            if(upadfdbnccorinc[radnum] == 4) {
+              upadfsel[radnum] ++;
+              upadfdbnccorinc[radnum] = 0;
+            }
+            if (upadfsel[radnum] == 4) {
+              upadfsel[radnum] = 1;
+            }
+          }
+        }
+        upadffreq[radnum] = XPLMGetDatai(Adf1Freq);
     }
 
 // ***************** Upper DME Switch Position *******************
@@ -804,7 +861,7 @@ void process_radio_panel()
 	  if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
 	    upxpdrdbncfninc[radnum]++;
             if (upxpdrdbncfninc[radnum] > freqspeed) {
-              XPLMCommandOnce(XpdrHunUp);          upseldis[radnum] = 7;
+              XPLMCommandOnce(XpdrHunUp);
 	      upxpdrdbncfninc[radnum] = 0;
 	    }
           }
@@ -1013,81 +1070,146 @@ void process_radio_panel()
 
     if(testbit(radiobuf[radnum],LOWER_ADF)) {
       loseldis[radnum] = 5;
-      if (radiores > 0) {
-        if (loadfsel[radnum] == 1) {
-	  if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
-	    loadfdbncfninc[radnum]++;
-            if (loadfdbncfninc[radnum] > freqspeed) {
-              if(numadf == 1) {
+      if (numadf == 1) {
+         if (radiores > 0) {
+          if (loadfsel[radnum] == 1) {
+            if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
+              loadfdbncfninc[radnum]++;
+              if (loadfdbncfninc[radnum] > freqspeed) {
                 XPLMCommandOnce(Afd1OnesUp);
                 loadfdbncfninc[radnum] = 0;
               }
-              if(numadf == 2) {
-                XPLMCommandOnce(Afd2OnesUp);
-                loadfdbncfninc[radnum] = 0;
+            }
+            if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+              loadfdbncfndec[radnum]++;
+              if (loadfdbncfndec[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd1OnesDn);
+                loadfdbncfndec[radnum] = 0;
               }
-	    }	
+            }
+
+
           }
-          if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
-	    loadfdbncfndec[radnum]++;
-            if (loadfdbncfndec[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1OnesDn);
-	      loadfdbncfndec[radnum] = 0;
-	    } 
-          }
-          if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
-	    loadfdbnccorinc[radnum]++;
-            if (loadfdbnccorinc[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1TensUp);
-	      loadfdbnccorinc[radnum] = 0;
-	    }
-          }  
-          if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
-	    loadfdbnccordec[radnum]++;
-            if (loadfdbnccordec[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1TensDn);
-	      loadfdbnccordec[radnum] = 0;
-	    }
-          }
-	}
           if (loadfsel[radnum] == 2) {
 	    if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
 	      loadfdbncfninc[radnum]++;
               if (loadfdbncfninc[radnum] > freqspeed) {
-		XPLMCommandOnce(Afd1HunUp);
+                XPLMCommandOnce(Afd1TensUp);
 	        loadfdbncfninc[radnum] = 0;
 	      }
             }
-          if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
-	    loadfdbncfndec[radnum]++;
-            if (loadfdbncfndec[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1HunDn);
-	      loadfdbncfndec[radnum] = 0;
-	    }
+            if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+              loadfdbncfndec[radnum]++;
+              if (loadfdbncfndec[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd1TensDn);
+                loadfdbncfndec[radnum] = 0;
+              }
+            }
+
+          }
+            if (loadfsel[radnum] == 3) {
+              if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
+                loadfdbncfninc[radnum]++;
+                if (loadfdbncfninc[radnum] > freqspeed) {
+                  XPLMCommandOnce(Afd1HunUp);
+                  loadfdbncfninc[radnum] = 0;
+                }
+              }
+              if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+                loadfdbncfndec[radnum]++;
+                if (loadfdbncfndec[radnum] > freqspeed) {
+                  XPLMCommandOnce(Afd1HunDn);
+                  loadfdbncfndec[radnum] = 0;
+                }
+              }
           }
           if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
-	    loadfdbnccorinc[radnum]++;
-            if (loadfdbnccorinc[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1HunUp);
-	      loadfdbnccorinc[radnum] = 0;
-	    }
-          }  
-          if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
-	    loadfdbnccordec[radnum]++;
-            if (loadfdbnccordec[radnum] > freqspeed) {
-	      XPLMCommandOnce(Afd1HunDn);
-	      loadfdbnccordec[radnum] = 0;
-	    }
-          }	
-	}
-	  if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {
-	    loadfsel[radnum] ++;
-	    if (loadfsel[radnum] == 3) {
+            loadfdbnccorinc[radnum] ++;
+            if(loadfdbnccorinc[radnum] == 4) {
+              loadfsel[radnum] ++;
+              loadfdbnccorinc[radnum] = 0;
+            }
+            if (loadfsel[radnum] == 4) {
               loadfsel[radnum] = 1;
-	    }
-	  }
-	}
-    loadffreq[radnum] = XPLMGetDatai(AdfFreq);
+            }
+          }
+
+
+
+        }
+        loadffreq[radnum] = XPLMGetDatai(Adf1Freq);
+      }
+
+      if (numadf == 2) {
+        if (radiores > 0) {
+          if (loadfsel[radnum] == 1) {
+            if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
+              loadfdbncfninc[radnum]++;
+              if (loadfdbncfninc[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd2OnesUp);
+                loadfdbncfninc[radnum] = 0;
+              }
+            }
+            if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+              loadfdbncfndec[radnum]++;
+              if (loadfdbncfndec[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd2OnesDn);
+                loadfdbncfndec[radnum] = 0;
+              }
+            }
+
+
+          }
+          if (loadfsel[radnum] == 2) {
+            if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
+              loadfdbncfninc[radnum]++;
+              if (loadfdbncfninc[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd2TensUp);
+                loadfdbncfninc[radnum] = 0;
+              }
+            }
+            if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+              loadfdbncfndec[radnum]++;
+              if (loadfdbncfndec[radnum] > freqspeed) {
+                XPLMCommandOnce(Afd2TensDn);
+                loadfdbncfndec[radnum] = 0;
+              }
+            }
+          }
+            if (loadfsel[radnum] == 3) {
+              if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
+                loadfdbncfninc[radnum]++;
+                if (loadfdbncfninc[radnum] > freqspeed) {
+                  XPLMCommandOnce(Afd2HunUp);
+                  loadfdbncfninc[radnum] = 0;
+                }
+              }
+              if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+                loadfdbncfndec[radnum]++;
+                if (loadfdbncfndec[radnum] > freqspeed) {
+                  XPLMCommandOnce(Afd2HunDn);
+                  loadfdbncfndec[radnum] = 0;
+                }
+              }
+
+
+          }
+            if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
+              loadfdbnccorinc[radnum] ++;
+              if(loadfdbnccorinc[radnum] == 4) {
+                loadfsel[radnum] ++;
+                loadfdbnccorinc[radnum] = 0;
+              }
+              if (loadfsel[radnum] == 4) {
+                loadfsel[radnum] = 1;
+              }
+            }
+
+
+        }
+        loadffreq[radnum] = XPLMGetDatai(Adf2Freq);
+      }
+
     }
 
 // ***************** Lower DME Switch Position *******************

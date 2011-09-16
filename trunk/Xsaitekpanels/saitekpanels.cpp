@@ -36,23 +36,26 @@ XPLMCommandRef Com2StbyFineDn = NULL, Com2StbyFineUp = NULL, Com2StbyCorseDn = N
 XPLMCommandRef	Nav1StbyFineDn = NULL, Nav1StbyFineUp = NULL, Nav1StbyCorseDn = NULL, Nav1StbyCorseUp = NULL;
 XPLMCommandRef	Nav2StbyFineDn = NULL, Nav2StbyFineUp = NULL, Nav2StbyCorseDn = NULL, Nav2StbyCorseUp = NULL;
 
-XPLMCommandRef	Afd1HunUp = NULL, Afd1HunDn = NULL, Afd1TensUp = NULL, Afd1TensDn = NULL;
-XPLMCommandRef	Afd1OnesUp = NULL, Afd1OnesDn = NULL;
+XPLMCommandRef	Afd1StbyHunUp = NULL, Afd1StbyHunDn = NULL, Afd1StbyTensUp = NULL, Afd1StbyTensDn = NULL;
+XPLMCommandRef	Afd1StbyOnesUp = NULL, Afd1StbyOnesDn = NULL;
 
-XPLMCommandRef	Afd2HunUp = NULL, Afd2HunDn = NULL, Afd2TensUp = NULL, Afd2TensDn = NULL;
-XPLMCommandRef	Afd2OnesUp = NULL, Afd2OnesDn = NULL;
+XPLMCommandRef	Afd2StbyHunUp = NULL, Afd2StbyHunDn = NULL, Afd2StbyTensUp = NULL, Afd2StbyTensDn = NULL;
+XPLMCommandRef	Afd2StbyOnesUp = NULL, Afd2StbyOnesDn = NULL;
 
 XPLMCommandRef	XpdrThUp = NULL, XpdrThDn = NULL, XpdrHunUp = NULL, XpdrHunDn = NULL;
 XPLMCommandRef	XpdrTensUp = NULL, XpdrTensDn = NULL, XpdrOnesUp = NULL, XpdrOnesDn = NULL;
 
 XPLMCommandRef Com1ActStby = NULL, Com2ActStby = NULL, Nav1ActStby = NULL, Nav2ActStby = NULL;
-
+XPLMCommandRef Adf1ActStby = NULL, Adf2ActStby = NULL;
 
 // ************* Radio Panel Data Ref ****************
 XPLMDataRef Com1ActFreq = NULL, Com2ActFreq = NULL, Nav1ActFreq = NULL, Nav2ActFreq = NULL;
 XPLMDataRef Com1StbyFreq = NULL, Com2StbyFreq = NULL, Nav1StbyFreq = NULL, Nav2StbyFreq = NULL;
 
-XPLMDataRef XpdrCode = NULL, Adf1Freq = NULL, Adf2Freq = NULL;
+XPLMDataRef Adf1StbyFreq = NULL, Adf2StbyFreq = NULL;
+XPLMDataRef Adf1ActFreq = NULL, Adf2ActFreq = NULL;
+
+XPLMDataRef XpdrCode = NULL;
 
 XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
 XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
@@ -251,19 +254,19 @@ PLUGIN_API int XPluginStart(char *		outName,
   Nav2StbyCorseDn = XPLMFindCommand("sim/radios/stby_nav2_coarse_down");
   Nav2StbyCorseUp = XPLMFindCommand("sim/radios/stby_nav2_coarse_up");
 
-  Afd1HunUp	= XPLMFindCommand("sim/radios/actv_adf1_hundreds_up");
-  Afd1HunDn	= XPLMFindCommand("sim/radios/actv_adf1_hundreds_down");
-  Afd1TensUp	= XPLMFindCommand("sim/radios/actv_adf1_tens_up");
-  Afd1TensDn	= XPLMFindCommand("sim/radios/actv_adf1_tens_down");
-  Afd1OnesUp	= XPLMFindCommand("sim/radios/actv_adf1_ones_up");
-  Afd1OnesDn	= XPLMFindCommand("sim/radios/actv_adf1_ones_down");
+  Afd1StbyHunUp         = XPLMFindCommand("sim/radios/stby_adf1_hundreds_up");
+  Afd1StbyHunDn         = XPLMFindCommand("sim/radios/stby_adf1_hundreds_down");
+  Afd1StbyTensUp	= XPLMFindCommand("sim/radios/stby_adf1_tens_up");
+  Afd1StbyTensDn	= XPLMFindCommand("sim/radios/stby_adf1_tens_down");
+  Afd1StbyOnesUp	= XPLMFindCommand("sim/radios/stby_adf1_ones_up");
+  Afd1StbyOnesDn	= XPLMFindCommand("sim/radios/stby_adf1_ones_down");
 
-  Afd2HunUp	= XPLMFindCommand("sim/radios/actv_adf2_hundreds_up");
-  Afd2HunDn	= XPLMFindCommand("sim/radios/actv_adf2_hundreds_down");
-  Afd2TensUp	= XPLMFindCommand("sim/radios/actv_adf2_tens_up");
-  Afd2TensDn	= XPLMFindCommand("sim/radios/actv_adf2_tens_down");
-  Afd2OnesUp	= XPLMFindCommand("sim/radios/actv_adf2_ones_up");
-  Afd2OnesDn	= XPLMFindCommand("sim/radios/actv_adf2_ones_down");
+  Afd2StbyHunUp         = XPLMFindCommand("sim/radios/stby_adf2_hundreds_up");
+  Afd2StbyHunDn         = XPLMFindCommand("sim/radios/stby_adf2_hundreds_down");
+  Afd2StbyTensUp	= XPLMFindCommand("sim/radios/stby_adf2_tens_up");
+  Afd2StbyTensDn	= XPLMFindCommand("sim/radios/stby_adf2_tens_down");
+  Afd2StbyOnesUp	= XPLMFindCommand("sim/radios/stby_adf2_ones_up");
+  Afd2StbyOnesDn	= XPLMFindCommand("sim/radios/stby_adf2_ones_down");
 
   XpdrThUp	= XPLMFindCommand("sim/transponder/transponder_thousands_up");
   XpdrThDn	= XPLMFindCommand("sim/transponder/transponder_thousands_down");
@@ -278,6 +281,9 @@ PLUGIN_API int XPluginStart(char *		outName,
   Com2ActStby = XPLMFindCommand("sim/radios/com2_standy_flip");
   Nav1ActStby = XPLMFindCommand("sim/radios/nav1_standy_flip");
   Nav2ActStby = XPLMFindCommand("sim/radios/nav2_standy_flip");
+  Adf1ActStby = XPLMFindCommand("sim/radios/adf1_standy_flip");
+  Adf2ActStby = XPLMFindCommand("sim/radios/adf2_standy_flip");
+
 
 // ************ Find Radio Panel Data Ref ******************
   Com1ActFreq = XPLMFindDataRef("sim/cockpit/radios/com1_freq_hz");
@@ -290,9 +296,15 @@ PLUGIN_API int XPluginStart(char *		outName,
   Nav1StbyFreq = XPLMFindDataRef("sim/cockpit/radios/nav1_stdby_freq_hz");
   Nav2StbyFreq = XPLMFindDataRef("sim/cockpit/radios/nav2_stdby_freq_hz");
 
+  Adf1StbyFreq	= XPLMFindDataRef("sim/cockpit/radios/adf1_stdby_freq_hz");
+  Adf2StbyFreq	= XPLMFindDataRef("sim/cockpit/radios/adf2_stdby_freq_hz");
+  Adf1ActFreq	= XPLMFindDataRef("sim/cockpit/radios/adf1_freq_hz");
+  Adf2ActFreq	= XPLMFindDataRef("sim/cockpit/radios/adf2_freq_hz");
+
+
+
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
-  Adf1Freq	= XPLMFindDataRef("sim/cockpit/radios/adf1_freq_hz");
-  Adf2Freq	= XPLMFindDataRef("sim/cockpit/radios/adf2_freq_hz");
+
   DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
   DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");
 

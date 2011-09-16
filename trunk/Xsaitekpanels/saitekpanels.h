@@ -20,22 +20,26 @@ extern XPLMCommandRef Com2StbyFineDn, Com2StbyFineUp, Com2StbyCorseDn, Com2StbyC
 extern XPLMCommandRef Nav1StbyFineDn, Nav1StbyFineUp, Nav1StbyCorseDn, Nav1StbyCorseUp;
 extern XPLMCommandRef Nav2StbyFineDn, Nav2StbyFineUp, Nav2StbyCorseDn, Nav2StbyCorseUp;
 
-extern XPLMCommandRef Afd1HunUp, Afd1HunDn, Afd1TensUp, Afd1TensDn;
-extern XPLMCommandRef Afd1OnesUp, Afd1OnesDn;
+extern XPLMCommandRef Afd1StbyHunUp, Afd1StbyHunDn, Afd1StbyTensUp, Afd1StbyTensDn;
+extern XPLMCommandRef Afd1StbyOnesUp, Afd1StbyOnesDn;
 
-extern XPLMCommandRef Afd2HunUp, Afd2HunDn, Afd2TensUp, Afd2TensDn;
-extern XPLMCommandRef Afd2OnesUp, Afd2OnesDn;
+extern XPLMCommandRef Afd2StbyHunUp, Afd2StbyHunDn, Afd2StbyTensUp, Afd2StbyTensDn;
+extern XPLMCommandRef Afd2StbyOnesUp, Afd2StbyOnesDn;
 
 extern XPLMCommandRef XpdrThUp, XpdrThDn, XpdrHunUp, XpdrHunDn;
 extern XPLMCommandRef XpdrTensUp, XpdrTensDn, XpdrOnesUp, XpdrOnesDn;
 
 extern XPLMCommandRef Com1ActStby, Com2ActStby, Nav1ActStby, Nav2ActStby;
+extern XPLMCommandRef Adf1ActStby, Adf2ActStby;
 
 // ************** Radio Panel SDK Data Ref **********************
 extern XPLMDataRef Com1ActFreq, Com2ActFreq, Nav1ActFreq, Nav2ActFreq;
 extern XPLMDataRef Com1StbyFreq, Com2StbyFreq, Nav1StbyFreq, Nav2StbyFreq;
 
-extern XPLMDataRef XpdrCode, Adf1Freq, Adf2Freq;
+extern XPLMDataRef Adf1StbyFreq, Adf2StbyFreq;
+extern XPLMDataRef Adf1ActFreq, Adf2ActFreq;
+
+extern XPLMDataRef XpdrCode;
 extern XPLMDataRef DmeMode, DmeSlvSource;
 extern XPLMDataRef Nav1DmeNmDist, Nav1DmeSpeed;
 extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed;

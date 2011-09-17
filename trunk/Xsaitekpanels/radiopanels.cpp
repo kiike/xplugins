@@ -129,6 +129,53 @@ void process_radio_panel()
     XPLMAppendMenuItem(RadioMenuId, "ONE ADF TUNER", (void *) "ADF1", 1);
     XPLMAppendMenuItem(RadioMenuId, "TWO ADF TUNERS", (void *) "ADF2", 1);
 
+    if (freqspeed == 1) {
+      XPLMCheckMenuItem(RadioMenuId, 2, xplm_Menu_Checked);
+    }
+    if (freqspeed != 1) {
+      XPLMCheckMenuItem(RadioMenuId, 2, xplm_Menu_Unchecked);
+    }
+    if (freqspeed == 2) {
+      XPLMCheckMenuItem(RadioMenuId, 3, xplm_Menu_Checked);
+    }
+    if (freqspeed != 2) {
+      XPLMCheckMenuItem(RadioMenuId, 3, xplm_Menu_Unchecked);
+    }
+    if (freqspeed == 3) {
+      XPLMCheckMenuItem(RadioMenuId, 4, xplm_Menu_Checked);
+    }
+    if (freqspeed != 3) {
+      XPLMCheckMenuItem(RadioMenuId, 4, xplm_Menu_Unchecked);
+    }
+    if (freqspeed == 4) {
+      XPLMCheckMenuItem(RadioMenuId, 5, xplm_Menu_Checked);
+    }
+    if (freqspeed != 4) {
+      XPLMCheckMenuItem(RadioMenuId, 5, xplm_Menu_Unchecked);
+    }
+    if (freqspeed == 5) {
+      XPLMCheckMenuItem(RadioMenuId, 6, xplm_Menu_Checked);
+    }
+    if (freqspeed != 5) {
+      XPLMCheckMenuItem(RadioMenuId, 6, xplm_Menu_Unchecked);
+    }
+
+
+    if (numadf == 1) {
+      XPLMCheckMenuItem(RadioMenuId, 8, xplm_Menu_Checked);
+    }
+    if (numadf != 1) {
+      XPLMCheckMenuItem(RadioMenuId, 8, xplm_Menu_Unchecked);
+    }
+    if (numadf == 2) {
+      XPLMCheckMenuItem(RadioMenuId, 9, xplm_Menu_Checked);
+    }
+    if (numadf != 2) {
+      XPLMCheckMenuItem(RadioMenuId, 9, xplm_Menu_Unchecked);
+    }
+
+
+
 
   // *************** Upper Display info **********************
 

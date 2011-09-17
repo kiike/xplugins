@@ -858,7 +858,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              freqspeed = 2;
          }
          if (strcmp((char *) inItemRef, "3") == 0) {
-             XPLMCheckMenuItem(RadioMenuId, 4, xplm_Menu_Checked);
+             //XPLMCheckMenuItem(RadioMenuId, 0, xplm_Menu_Checked);
              freqspeed = 3;
          }
          if (strcmp((char *) inItemRef, "4") == 0) {

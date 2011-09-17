@@ -64,6 +64,28 @@ void process_multi_panel()
     XPLMAppendMenuItem(MultiMenuId, "TRIM X2", (void *) "TRIM X2", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X3", (void *) "TRIM X3", 2);
 
+    if (trimspeed == 1) {
+       XPLMCheckMenuItem(MultiMenuId, 0, xplm_Menu_Checked);
+    }
+    if (trimspeed != 1) {
+       XPLMCheckMenuItem(MultiMenuId, 0, xplm_Menu_Unchecked);
+    }
+    if (trimspeed == 2) {
+       XPLMCheckMenuItem(MultiMenuId, 1, xplm_Menu_Checked);
+    }
+    if (trimspeed != 2) {
+       XPLMCheckMenuItem(MultiMenuId, 1, xplm_Menu_Unchecked);
+    }
+    if (trimspeed == 3) {
+       XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Checked);
+    }
+    if (trimspeed != 3) {
+       XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Unchecked);
+    }
+
+
+
+
 // ***** Setup Display for ALT or VS Switch Position *********
 if (multiseldis == 1) { 
 

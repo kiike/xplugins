@@ -27,7 +27,7 @@ static float opencowl = 1, closecowl = 0;
 
 static int MAG_OFF = 10, MAG_RIGHT = 9, MAG_LEFT = 8, MAG_BOTH = 23;
 static int ENG_START = 22;
-static int MASTER_BATTERY = 6, MASTER_ALTENATOR = 7;
+static int MASTER_BATTERY = 7, MASTER_ALTENATOR = 6;
 static int AVIONICS_POWER = 5, FUEL_PUMP = 4;
 static int DE_ICE = 3, PITOT_HEAT = 2;
 static int COWL_FLAPS = 1, PANEL_LIGHTS = 0;
@@ -48,8 +48,36 @@ void process_switch_panel()
 
 {
 
+
+    XPLMClearAllMenuItems(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "Bat Alt Normal or Alt Bat Cessna", (void *) "VOID", 4);
+    XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "NORMAL", (void *) "NORMAL", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "CESSNA", (void *) "CESSNA", 4);
+
+
+    if (bataltinverse == 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Checked);
+    }
+    if (bataltinverse != 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Unchecked);
+    }
+    if (bataltinverse == 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 3, xplm_Menu_Checked);
+    }
+    if (bataltinverse != 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 3, xplm_Menu_Unchecked);
+    }
+
+
   switchwbuf[0] = 0;
   switchwbuf[1] = gearled;
+  if (bataltinverse == 0) {
+    MASTER_BATTERY = 7, MASTER_ALTENATOR = 6;
+  }
+  if (bataltinverse == 1) {
+    MASTER_BATTERY = 6, MASTER_ALTENATOR = 7;
+  }
 
 // ******* Only do a read if something new to be read ********
 

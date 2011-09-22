@@ -150,8 +150,12 @@ extern XPLMDataRef CowlFlaps, CockpitLights, AntiIce;
 extern XPLMDataRef GearRetract, OnGround, LandingGearStatus;
 extern XPLMDataRef Gear1Fail, Gear2Fail, Gear3Fail;
 
+extern XPLMMenuID      SwitchMenu;
+extern XPLMMenuID      SwitchMenuId;
+
 // ***************** Switch Panel variables ********************
 extern int switchfd;
+extern int bataltinverse;
 extern float LandingGearDeployRatio[10];
 extern hid_device *switchhandle;
 

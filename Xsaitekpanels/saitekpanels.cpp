@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.24   ***************
-// ****** Sep 17 2011   **************
+// ******** ver 1.25   ***************
+// ****** Sep 22 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -135,10 +135,12 @@ XPLMCommandRef FuelPumpOff5 = NULL, FuelPumpOff6 = NULL, FuelPumpOff7 = NULL, Fu
 XPLMDataRef BatNum = NULL, GenNum = NULL, EngNum = NULL;
 XPLMDataRef BatArrayOnDR = NULL;
 
-
 XPLMDataRef CowlFlaps = NULL, CockpitLights = NULL, AntiIce = NULL;
 XPLMDataRef GearRetract = NULL, OnGround = NULL, LandingGearStatus = {NULL};
 XPLMDataRef Gear1Fail = NULL, Gear2Fail = NULL, Gear3Fail = NULL;
+
+XPLMMenuID      SwitchMenu;
+XPLMMenuID      SwitchMenuId;
 
 // ****************** BIP Panel Command Ref **********************
 
@@ -182,6 +184,7 @@ static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
 float LandingGearDeployRatio[10];
 
+int bataltinverse = 0;
 
 hid_device *switchhandle;
 
@@ -227,9 +230,10 @@ PLUGIN_API int XPluginStart(char *		outName,
 {
 
   int BipSubMenuItem, MultiSubMenuItem, RadioSubMenuItem;
+  int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.24");
+  strcpy(outName, "Xsaitekpanels v1.25");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -670,6 +674,23 @@ PLUGIN_API int XPluginStart(char *		outName,
                (void *)3);
   }
 
+   if (switchcnt > 0) {
+
+       SwitchSubMenuItem = XPLMAppendMenuItem(
+               XsaitekpanelsMenu,
+               "Switch",
+               NULL,
+               4);
+
+
+       SwitchMenuId = XPLMCreateMenu(
+               "Switch",
+               XsaitekpanelsMenu,
+               SwitchSubMenuItem,
+               XsaitekpanelsMenuHandler,
+               (void *)4);
+  }
+
   return 1;
 }
 
@@ -681,6 +702,7 @@ PLUGIN_API void	XPluginStop(void)
   XPLMDestroyMenu(BipMenuId);
   XPLMDestroyMenu(MultiMenuId);
   XPLMDestroyMenu(RadioMenuId);
+  XPLMDestroyMenu(SwitchMenuId);
 
   stopradcnt = radcnt - 1;
 
@@ -873,6 +895,17 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "ADF2") == 0) {
              numadf = 2;
          }
+
+    }
+
+    if((long)inMenuRef == 4){
+         if (strcmp((char *) inItemRef, "NORMAL") == 0) {
+             bataltinverse = 0;
+         }
+         if (strcmp((char *) inItemRef, "CESSNA") == 0) {
+             bataltinverse = 1;
+         }
+
 
     }
 

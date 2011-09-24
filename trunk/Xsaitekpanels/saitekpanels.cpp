@@ -710,13 +710,13 @@ PLUGIN_API void	XPluginStop(void)
 
     if (stopradcnt == 3) {
 
-      blankradiowbuf[3][0] = 0, blankradiowbuf[3][1] = 11, blankradiowbuf[3][2] = 11;
-      blankradiowbuf[3][3] = 11, blankradiowbuf[3][4] = 11, blankradiowbuf[3][5] = 11;
-      blankradiowbuf[3][6] = 11, blankradiowbuf[3][7] = 11, blankradiowbuf[3][8] = 11;
-      blankradiowbuf[3][9] = 11, blankradiowbuf[3][10] = 11, blankradiowbuf[3][11] = 11;
-      blankradiowbuf[3][12] = 11, blankradiowbuf[3][13] = 11, blankradiowbuf[3][14] = 11;
-      blankradiowbuf[3][15] = 11, blankradiowbuf[3][16] = 11, blankradiowbuf[3][17] = 11;
-      blankradiowbuf[3][18] = 11, blankradiowbuf[3][19] = 11, blankradiowbuf[3][20] = 11;
+      blankradiowbuf[3][0] = 0, blankradiowbuf[3][1] = 15, blankradiowbuf[3][2] = 15;
+      blankradiowbuf[3][3] = 15, blankradiowbuf[3][4] = 15, blankradiowbuf[3][5] = 15;
+      blankradiowbuf[3][6] = 15, blankradiowbuf[3][7] = 15, blankradiowbuf[3][8] = 15;
+      blankradiowbuf[3][9] = 15, blankradiowbuf[3][10] = 15, blankradiowbuf[3][11] = 15;
+      blankradiowbuf[3][12] = 15, blankradiowbuf[3][13] = 15, blankradiowbuf[3][14] = 15;
+      blankradiowbuf[3][15] = 15, blankradiowbuf[3][16] = 15, blankradiowbuf[3][17] = 15;
+      blankradiowbuf[3][18] = 15, blankradiowbuf[3][19] = 15, blankradiowbuf[3][20] = 15;
 
       radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
@@ -725,13 +725,13 @@ PLUGIN_API void	XPluginStop(void)
 
     if (stopradcnt == 2) {
 
-      blankradiowbuf[2][0] = 0, blankradiowbuf[2][1] = 11, blankradiowbuf[2][2] = 11;
-      blankradiowbuf[2][3] = 11, blankradiowbuf[2][4] = 11, blankradiowbuf[2][5] = 11;
-      blankradiowbuf[2][6] = 11, blankradiowbuf[2][7] = 11, blankradiowbuf[2][8] = 11;
-      blankradiowbuf[2][9] = 11, blankradiowbuf[2][10] = 11, blankradiowbuf[2][11] = 11;
-      blankradiowbuf[2][12] = 11, blankradiowbuf[2][13] = 11, blankradiowbuf[2][14] = 11;
-      blankradiowbuf[2][15] = 11, blankradiowbuf[2][16] = 11, blankradiowbuf[2][17] = 11;
-      blankradiowbuf[2][18] = 11, blankradiowbuf[2][19] = 11, blankradiowbuf[2][20] = 11;
+      blankradiowbuf[2][0] = 0, blankradiowbuf[2][1] = 15, blankradiowbuf[2][2] = 15;
+      blankradiowbuf[2][3] = 15, blankradiowbuf[2][4] = 15, blankradiowbuf[2][5] = 15;
+      blankradiowbuf[2][6] = 15, blankradiowbuf[2][7] = 15, blankradiowbuf[2][8] = 15;
+      blankradiowbuf[2][9] = 15, blankradiowbuf[2][10] = 15, blankradiowbuf[2][11] = 15;
+      blankradiowbuf[2][12] = 15, blankradiowbuf[2][13] = 15, blankradiowbuf[2][14] = 15;
+      blankradiowbuf[2][15] = 15, blankradiowbuf[2][16] = 15, blankradiowbuf[2][17] = 15;
+      blankradiowbuf[2][18] = 15, blankradiowbuf[2][19] = 15, blankradiowbuf[2][20] = 15;
 
       radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
@@ -740,13 +740,13 @@ PLUGIN_API void	XPluginStop(void)
 
     if (stopradcnt == 1) {
 
-      blankradiowbuf[1][0] = 0, blankradiowbuf[1][1] = 11, blankradiowbuf[1][2] = 11;
-      blankradiowbuf[1][3] = 11, blankradiowbuf[1][4] = 11, blankradiowbuf[1][5] = 11;
-      blankradiowbuf[1][6] = 11, blankradiowbuf[1][7] = 11, blankradiowbuf[1][8] = 11;
-      blankradiowbuf[1][9] = 11, blankradiowbuf[1][10] = 11, blankradiowbuf[1][11] = 11;
-      blankradiowbuf[1][12] = 11, blankradiowbuf[1][13] = 11, blankradiowbuf[1][14] = 11;
-      blankradiowbuf[1][15] = 11, blankradiowbuf[1][16] = 11, blankradiowbuf[1][17] = 11;
-      blankradiowbuf[1][18] = 11, blankradiowbuf[1][19] = 11, blankradiowbuf[1][20] = 11;
+      blankradiowbuf[1][0] = 0, blankradiowbuf[1][1] = 15, blankradiowbuf[1][2] = 15;
+      blankradiowbuf[1][3] = 15, blankradiowbuf[1][4] = 15, blankradiowbuf[1][5] = 15;
+      blankradiowbuf[1][6] = 15, blankradiowbuf[1][7] = 15, blankradiowbuf[1][8] = 15;
+      blankradiowbuf[1][9] = 15, blankradiowbuf[1][10] = 15, blankradiowbuf[1][11] = 15;
+      blankradiowbuf[1][12] = 15, blankradiowbuf[1][13] = 15, blankradiowbuf[1][14] = 15;
+      blankradiowbuf[1][15] = 15, blankradiowbuf[1][16] = 15, blankradiowbuf[1][17] = 15;
+      blankradiowbuf[1][18] = 15, blankradiowbuf[1][19] = 15, blankradiowbuf[1][20] = 15;
 
       radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
@@ -755,13 +755,13 @@ PLUGIN_API void	XPluginStop(void)
 
     if (stopradcnt == 0) {
 
-      blankradiowbuf[0][0] = 0, blankradiowbuf[0][1] = 11, blankradiowbuf[0][2] = 11;
-      blankradiowbuf[0][3] = 11, blankradiowbuf[0][4] = 11, blankradiowbuf[0][5] = 11;
-      blankradiowbuf[0][6] = 11, blankradiowbuf[0][7] = 11, blankradiowbuf[0][8] = 11;
-      blankradiowbuf[0][9] = 11, blankradiowbuf[0][10] = 11, blankradiowbuf[0][11] = 11;
-      blankradiowbuf[0][12] = 11, blankradiowbuf[0][13] = 11, blankradiowbuf[0][14] = 11;
-      blankradiowbuf[0][15] = 11, blankradiowbuf[0][16] = 11, blankradiowbuf[0][17] = 11;
-      blankradiowbuf[0][18] = 11, blankradiowbuf[0][19] = 11, blankradiowbuf[0][20] = 11;
+      blankradiowbuf[0][0] = 0, blankradiowbuf[0][1] = 15, blankradiowbuf[0][2] = 15;
+      blankradiowbuf[0][3] = 15, blankradiowbuf[0][4] = 15, blankradiowbuf[0][5] = 15;
+      blankradiowbuf[0][6] = 15, blankradiowbuf[0][7] = 15, blankradiowbuf[0][8] = 15;
+      blankradiowbuf[0][9] = 15, blankradiowbuf[0][10] = 15, blankradiowbuf[0][11] = 15;
+      blankradiowbuf[0][12] = 15, blankradiowbuf[0][13] = 15, blankradiowbuf[0][14] = 15;
+      blankradiowbuf[0][15] = 15, blankradiowbuf[0][16] = 15, blankradiowbuf[0][17] = 15;
+      blankradiowbuf[0][18] = 15, blankradiowbuf[0][19] = 15, blankradiowbuf[0][20] = 15;
 
       radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radhandle[stopradcnt]);
@@ -771,10 +771,10 @@ PLUGIN_API void	XPluginStop(void)
 
   // *** if open blank display and then close that multi panel ***
     if (multicnt > 0) {
-        blankmultiwbuf[0] = 0, blankmultiwbuf[1] = 11, blankmultiwbuf[2] = 11;
-        blankmultiwbuf[3] = 11, blankmultiwbuf[4] = 11, blankmultiwbuf[5] = 11;
-        blankmultiwbuf[6] = 11, blankmultiwbuf[7] = 11, blankmultiwbuf[8] = 11;
-        blankmultiwbuf[9] = 11, blankmultiwbuf[10] = 11, blankmultiwbuf[11] = 0;
+        blankmultiwbuf[0] = 0, blankmultiwbuf[1] = 15, blankmultiwbuf[2] = 15;
+        blankmultiwbuf[3] = 15, blankmultiwbuf[4] = 15, blankmultiwbuf[5] = 15;
+        blankmultiwbuf[6] = 15, blankmultiwbuf[7] = 15, blankmultiwbuf[8] = 15;
+        blankmultiwbuf[9] = 15, blankmultiwbuf[10] = 15, blankmultiwbuf[11] = 0;
         multires = hid_send_feature_report(multihandle, blankmultiwbuf, 13);
         hid_close(multihandle);
 

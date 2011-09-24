@@ -101,7 +101,7 @@ if (multiseldis == 1) {
     multibdig1 = 254;
   }
   else {
-    multibdig1 = 11;
+    multibdig1 = 15;
   }
 
   multibdig2 = multibstby /1000, multibrem2 = multibstby%1000;
@@ -114,7 +114,7 @@ if (multiseldis == 1) {
 // ***** Setup Display for IAS Switch Position *********
 if (multiseldis == 2) { 
   multiaactv = upapas;
-  multiadig1 = 11, multiadig2 = 11 ;
+  multiadig1 = 15, multiadig2 = 15 ;
   multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
   multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
   multiadig5 = multiarem4;
@@ -124,7 +124,7 @@ if (multiseldis == 2) {
 // ***** Setup Display for HDG Switch Position *********
 if (multiseldis == 3) { 
   multiaactv = upaphdg;
-  multiadig1 = 11, multiadig2 = 11 ;
+  multiadig1 = 15, multiadig2 = 15 ;
   multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
   multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
   multiadig5 = multiarem4;
@@ -134,7 +134,7 @@ if (multiseldis == 3) {
 // ***** Setup Display for CRS Switch Position *********
 if (multiseldis == 4) { 
   multiaactv = upapcrs;
-  multiadig1 = 11, multiadig2 = 11 ;
+  multiadig1 = 15, multiadig2 = 15 ;
   multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
   multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
   multiadig5 = multiarem4;
@@ -144,8 +144,8 @@ if (multiseldis == 4) {
 // ********** Setup the Display to be Blank *******************
 if (multiseldis == 5) { 
   
-  multiadig1 = 11, multiadig2 = 11, multiadig3 = 11, multiadig4 = 11, multiadig5 = 11;
-  multibdig1 = 11, multibdig2 = 11, multibdig3 = 11, multibdig4 = 11, multibdig5 = 11;
+  multiadig1 = 15, multiadig2 = 15, multiadig3 = 15, multiadig4 = 15, multiadig5 = 15;
+  multibdig1 = 15, multibdig2 = 15, multibdig3 = 15, multibdig4 = 15, multibdig5 = 15;
   btnleds = 0;
 
   }

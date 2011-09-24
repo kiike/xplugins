@@ -198,13 +198,13 @@ void process_radio_panel()
   else if (upseldis[radnum] == 5) {
     if (upadfsel[radnum] == 1) {
       radioaactv = upactadffreq[radnum];
-      radioadig1 = 11, radioadig2 = 11;
+      radioadig1 = 15, radioadig2 = 15;
       radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
       radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
       radioadig5 = radioarem4;
 
       radiobstby = upstbyadffreq[radnum];
-      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig1 = 15, radiobdig2 = 15;
       radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
       radiobdig5 = radiobrem4;
@@ -213,13 +213,13 @@ void process_radio_panel()
 
     if (upadfsel[radnum] == 2) {
       radioaactv = upactadffreq[radnum];
-      radioadig1 = 11, radioadig2 = 11;
+      radioadig1 = 15, radioadig2 = 15;
       radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
       radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
       radioadig5 = radioarem4;
 
       radiobstby = upstbyadffreq[radnum];
-      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig1 = 15, radiobdig2 = 15;
       radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
       radiobdig4 = radiobdig4+208, radiobdig5 = radiobrem4;
@@ -227,13 +227,13 @@ void process_radio_panel()
 
     if (upadfsel[radnum] == 3) {
       radioaactv = upactadffreq[radnum];
-      radioadig1 = 11, radioadig2 = 11;
+      radioadig1 = 15, radioadig2 = 15;
       radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
       radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
       radioadig5 = radioarem4;
 
       radiobstby = upstbyadffreq[radnum];
-      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig1 = 15, radiobdig2 = 15;
       radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
       radiobdig3 = radiobdig3+208;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
@@ -242,13 +242,13 @@ void process_radio_panel()
 
     if (upadfsel[radnum] > 3) {
       radioaactv = upactadffreq[radnum];
-      radioadig1 = 11, radioadig2 = 11;
+      radioadig1 = 15, radioadig2 = 15;
       radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
       radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
       radioadig5 = radioarem4;
 
       radiobstby = upstbyadffreq[radnum];
-      radiobdig1 = 11, radiobdig2 = 11;
+      radiobdig1 = 15, radiobdig2 = 15;
       radiobdig3 = radiobstby/100, radiobrem3 =radiobstby%100;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
       radiobdig5 = radiobrem4;
@@ -258,7 +258,7 @@ void process_radio_panel()
 
   else if (upseldis[radnum] == 6) {
     radioaactv = updmenavspeed[radnum];
-    radioadig1 = 11, radioadig2 = 11;
+    radioadig1 = 15, radioadig2 = 15;
     radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
     radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
     radioadig5 = radioarem4;
@@ -281,7 +281,7 @@ void process_radio_panel()
     radioadig3 = radioadig3+208, radioadig5 = radioarem4;
 
     radiobstby = updmetime[radnum];
-    radiobdig1 = 11,radiobdig2 = 11;
+    radiobdig1 = 15,radiobdig2 = 15;
     radiobdig3 = radiobstby/100, radiobrem3 = radiobstby%100;
     radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
     radiobdig4 = radiobdig4, radiobdig5 = radiobrem4;
@@ -290,13 +290,13 @@ void process_radio_panel()
 
   else if (upseldis[radnum] == 8) {
     radioaactv = updmenavspeed[radnum];
-    radioadig1 = 11, radioadig2 = 11;
+    radioadig1 = 15, radioadig2 = 15;
     radioadig3 = radioaactv/100, radioarem3 =radioaactv%100;
     radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
     radioadig5 = radioarem4;
 
     radiobstby = updmetime[radnum];
-    radiobdig1 = 11,radiobdig2 = 11;
+    radiobdig1 = 15,radiobdig2 = 15;
     radiobdig3 = radiobstby/100, radiobrem3 = radiobstby%100;
     radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
     radiobdig4 = radiobdig4, radiobdig5 = radiobrem4;
@@ -306,27 +306,27 @@ void process_radio_panel()
   else if (upseldis[radnum] == 9) {
 
     if (upxpdrsel[radnum] == 1) {
-      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
       radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 11, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
       radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
       radiobdig5 = radiobrem4,  radiobdig5 = radiobdig5+208;
     }
 
     if (upxpdrsel[radnum] == 2) {
-      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
       radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 11, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
       radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
       radiobdig4 = radiobdig4+208, radiobdig5 = radiobrem4;
     }
 
     if (upxpdrsel[radnum] == 3) {
-      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
       radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 11, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
       radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
       radiobdig3 = radiobdig3+208;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
@@ -334,9 +334,9 @@ void process_radio_panel()
     }
 
     if (upxpdrsel[radnum] == 4) {
-      radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
+      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
       radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 11, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
       radiobdig2 = radiobdig2+208;
       radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
@@ -349,8 +349,8 @@ void process_radio_panel()
   }
 
   else if (upseldis[radnum] == 10) {
-    radioadig1 = 11, radioadig2 = 11, radioadig3 = 11, radioadig4 = 11, radioadig5 = 11;
-    radiobdig1 = 11, radiobdig2 = 11, radiobdig3 = 11, radiobdig4 = 11, radiobdig5 = 11; 
+    radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
+    radiobdig1 = 15, radiobdig2 = 15, radiobdig3 = 15, radiobdig4 = 15, radiobdig5 = 15;
   }
 
   // ************************ Lower Display info ********************
@@ -374,13 +374,13 @@ void process_radio_panel()
   else if (loseldis[radnum] == 5) {
     if (loadfsel[radnum] == 1) {
       radiocactv = loactadffreq[radnum];
-      radiocdig1 = 11, radiocdig2 = 11;
+      radiocdig1 = 15, radiocdig2 = 15;
       radiocdig3 = radiocactv/100, radiocrem3 =radiocactv%100;
       radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
       radiocdig5 = radiocrem4;
 
       radiodstby = lostbyadffreq[radnum];
-      radioddig1 = 11, radioddig2 = 11;
+      radioddig1 = 15, radioddig2 = 15;
       radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
       radioddig5 = radiodrem4;
@@ -389,13 +389,13 @@ void process_radio_panel()
 
     if (loadfsel[radnum] == 2) {
       radiocactv = loactadffreq[radnum];
-      radiocdig1 = 11, radiocdig2 = 11;
+      radiocdig1 = 15, radiocdig2 = 15;
       radiocdig3 = radiocactv/100, radiocrem3 =radiocactv%100;
       radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
       radiocdig5 = radiocrem4;
 
       radiodstby = lostbyadffreq[radnum];
-      radioddig1 = 11, radioddig2 = 11;
+      radioddig1 = 15, radioddig2 = 15;
       radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
       radioddig4 = radioddig4+208;
@@ -404,13 +404,13 @@ void process_radio_panel()
 
     if (loadfsel[radnum] == 3) {
       radiocactv = loactadffreq[radnum];
-      radiocdig1 = 11, radiocdig2 = 11;
+      radiocdig1 = 15, radiocdig2 = 15;
       radiocdig3 = radiocactv/100, radiocrem3 =radiocactv%100;
       radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
       radiocdig5 = radiocrem4;
 
       radiodstby = lostbyadffreq[radnum];
-      radioddig1 = 11, radioddig2 = 11;
+      radioddig1 = 15, radioddig2 = 15;
       radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
       radioddig3 = radioddig3+208;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
@@ -419,13 +419,13 @@ void process_radio_panel()
 
     if (loadfsel[radnum] > 3) {
       radiocactv = loactadffreq[radnum];
-      radiocdig1 = 11, radiocdig2 = 11;
+      radiocdig1 = 15, radiocdig2 = 15;
       radiocdig3 = radiocactv/100, radiocrem3 =radiocactv%100;
       radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
       radiocdig5 = radiocrem4;
 
       radiodstby = lostbyadffreq[radnum];
-      radioddig1 = 11, radioddig2 = 11;
+      radioddig1 = 15, radioddig2 = 15;
       radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
       radioddig5 = radiodrem4;
@@ -436,7 +436,7 @@ void process_radio_panel()
 
   else if (loseldis[radnum] == 6) {
     radiocactv = lodmenavspeed[radnum];
-    radiocdig1 = 11, radiocdig2 = 11;
+    radiocdig1 = 15, radiocdig2 = 15;
     radiocdig3 = radiocactv/100, radiocrem3 =radiocactv%100;
     radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
     radiocdig5 = radiocrem4;
@@ -460,7 +460,7 @@ void process_radio_panel()
     radiocdig5 = radiocrem4;
 
     radiodstby = lodmetime[radnum];
-    radioddig1 = 11, radioddig2 = 11;
+    radioddig1 = 15, radioddig2 = 15;
     radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
     radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
     radioddig4 = radioddig4, radioddig5 = radiodrem4;
@@ -469,13 +469,13 @@ void process_radio_panel()
 
   else if (loseldis[radnum] == 8) {
     radiocactv = lodmespeed[radnum];
-    radiocdig1 = 11, radiocdig2 = 11;
+    radiocdig1 = 15, radiocdig2 = 15;
     radiocdig3 = radiocactv/100, radiocrem3 =radiocactv%100;
     radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
     radiocdig5 = radiocrem4;
 
     radiodstby = lodmetime[radnum];
-    radioddig1 = 11, radioddig2 = 11;
+    radioddig1 = 15, radioddig2 = 15;
     radioddig3 = radiodstby/100, radiodrem3 = radiodstby%100;
     radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
     radioddig4 = radioddig4, radioddig5 = radiodrem4;
@@ -486,18 +486,18 @@ void process_radio_panel()
   else if (loseldis[radnum] == 9) {
 
     if (loxpdrsel[radnum] == 1) {
-      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
       radiodstby = loxpdrcode[radnum];
-      radioddig1 = 11, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
       radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
       radioddig5 = radiodrem4, radioddig5 = radioddig5+208;
     }
 
     if (loxpdrsel[radnum] == 2) {
-      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
       radiodstby = loxpdrcode[radnum];
-      radioddig1 = 11, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
       radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
       radioddig4 = radioddig4+208;
@@ -505,9 +505,9 @@ void process_radio_panel()
     }
 
     if (loxpdrsel[radnum] == 3) {
-      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
       radiodstby = loxpdrcode[radnum];
-      radioddig1 = 11, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
       radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
       radioddig3 = radioddig3+208;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
@@ -515,9 +515,9 @@ void process_radio_panel()
     }
 
     if (loxpdrsel[radnum] == 4) {
-      radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
+      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
       radiodstby = loxpdrcode[radnum];
-      radioddig1 = 11, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
       radioddig2 = radioddig2+208;
       radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
@@ -528,8 +528,8 @@ void process_radio_panel()
   }
 
   else if (loseldis[radnum] == 10) {
-    radiocdig1 = 11, radiocdig2 = 11, radiocdig3 = 11, radiocdig4 = 11, radiocdig5 = 11;
-    radioddig1 = 11, radioddig2 = 11, radioddig3 = 11, radioddig4 = 11, radioddig5 = 11;
+    radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
+    radioddig1 = 15, radioddig2 = 15, radioddig3 = 15, radioddig4 = 15, radioddig5 = 15;
   } 
 
 // ****************** Make Message One Digit at A Time ************************

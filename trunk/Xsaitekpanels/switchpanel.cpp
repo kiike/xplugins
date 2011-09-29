@@ -23,7 +23,7 @@ static int switchres;
 
 static int batnum = 0, gennum = 0, engnum = 0;
 
-static float opencowl = 1, closecowl = 0;
+static float opencowl[8], closecowl[8];
 
 static int MAG_OFF = 10, MAG_RIGHT = 9, MAG_LEFT = 8, MAG_BOTH = 23;
 static int ENG_START = 22;
@@ -440,47 +440,56 @@ void process_switch_panel()
 
 // ***************** Cowl Flaps *******************
 
-	if(testbit(switchbuf,COWL_FLAPS)) {
+        if(!testbit(switchbuf,COWL_FLAPS)) {
 	  if(engnum == 1){
-            XPLMSetDatavf(CowlFlaps, &opencowl, 0, 1);
-	  }
+            opencowl[0] = 1;
+          }
 
 	  if(engnum == 2){
-            XPLMSetDatavf(CowlFlaps, &opencowl, 0, 1);
-            XPLMSetDatavf(CowlFlaps, &opencowl, 1, 1);
+            opencowl[0] = 1;
+            opencowl[1] = 1;
+
 	  }
 	  if(engnum == 3){
-            XPLMSetDatavf(CowlFlaps, &opencowl, 0, 1);
-            XPLMSetDatavf(CowlFlaps, &opencowl, 1, 1);
-            XPLMSetDatavf(CowlFlaps, &opencowl, 2, 1);
+            opencowl[0] = 1;
+            opencowl[1] = 1;
+            opencowl[2] = 1;
+
 	  }
 	  if(engnum == 4){
-            XPLMSetDatavf(CowlFlaps, &opencowl, 0, 1);
-            XPLMSetDatavf(CowlFlaps, &opencowl, 1, 1);
-            XPLMSetDatavf(CowlFlaps, &opencowl, 2, 1);
-            XPLMSetDatavf(CowlFlaps, &opencowl, 3, 1);
+            opencowl[0] = 1;
+            opencowl[1] = 1;
+            opencowl[2] = 1;
+            opencowl[3] = 1;
+
 	  }
+          XPLMSetDatavf(CowlFlaps, opencowl, 0, 8);
  	}
 
-	if(!testbit(switchbuf,COWL_FLAPS)) {
+        if(testbit(switchbuf,COWL_FLAPS)) {
 	  if(engnum == 1){
-            XPLMSetDatavf(CowlFlaps, &closecowl, 0, 1);
+            closecowl[0] = 0;
+
 	  }
 	  if(engnum == 2){
-            XPLMSetDatavf(CowlFlaps, &closecowl, 0, 1);
-            XPLMSetDatavf(CowlFlaps, &opencowl, 1, 1);
+            closecowl[0] = 0;
+            closecowl[1] = 0;
+
 	  }
 	  if(engnum == 3){
-            XPLMSetDatavf(CowlFlaps, &closecowl, 0, 1);
-            XPLMSetDatavf(CowlFlaps, &closecowl, 1, 1);
-            XPLMSetDatavf(CowlFlaps, &closecowl, 2, 1);
+            closecowl[0] = 0;
+            closecowl[1] = 0;
+            closecowl[2] = 0;
+
 	  }
 	  if(engnum == 4){
-            XPLMSetDatavf(CowlFlaps, &closecowl, 0, 1);
-            XPLMSetDatavf(CowlFlaps, &closecowl, 1, 1);
-            XPLMSetDatavf(CowlFlaps, &closecowl, 2, 1);
-            XPLMSetDatavf(CowlFlaps, &closecowl, 3, 1);
+            closecowl[0] = 0;
+            closecowl[1] = 0;
+            closecowl[2] = 0;
+            closecowl[3] = 0;
+
 	  }
+          XPLMSetDatavf(CowlFlaps, closecowl, 0, 8);
  	}
 
 // ***************** Panel Lights *******************

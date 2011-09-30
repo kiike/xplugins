@@ -60,27 +60,66 @@ void process_multi_panel()
 {
 
     XPLMClearAllMenuItems(MultiMenuId);
+    XPLMAppendMenuItem(MultiMenuId, "# OF SWITCH PULSES PER COMMAND", (void *) "VOID", 2);
+    XPLMAppendMenuSeparator(MultiMenuId);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  1 PULSE PER COMMAND", (void *) "1", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  2 PULSES PER COMMAND", (void *) "2", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  3 PULSES PER COMMAND", (void *) "3", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  4 PULSES PER COMMAND", (void *) "4", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  5 PULSES PER COMMAND", (void *) "5", 2);
+    XPLMAppendMenuSeparator(MultiMenuId);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X1", (void *) "TRIM X1", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X2", (void *) "TRIM X2", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X3", (void *) "TRIM X3", 2);
 
+    if (multispeed == 1) {
+      XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Checked);
+    }
+    if (multispeed != 1) {
+      XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Unchecked);
+    }
+    if (multispeed == 2) {
+      XPLMCheckMenuItem(MultiMenuId, 3, xplm_Menu_Checked);
+    }
+    if (multispeed != 2) {
+      XPLMCheckMenuItem(MultiMenuId, 3, xplm_Menu_Unchecked);
+    }
+    if (multispeed == 3) {
+      XPLMCheckMenuItem(MultiMenuId, 4, xplm_Menu_Checked);
+    }
+    if (multispeed != 3) {
+      XPLMCheckMenuItem(MultiMenuId, 4, xplm_Menu_Unchecked);
+    }
+    if (multispeed == 4) {
+      XPLMCheckMenuItem(MultiMenuId, 5, xplm_Menu_Checked);
+    }
+    if (multispeed != 4) {
+      XPLMCheckMenuItem(MultiMenuId, 5, xplm_Menu_Unchecked);
+    }
+    if (multispeed == 5) {
+      XPLMCheckMenuItem(MultiMenuId, 6, xplm_Menu_Checked);
+    }
+    if (multispeed != 5) {
+      XPLMCheckMenuItem(MultiMenuId, 6, xplm_Menu_Unchecked);
+    }
+
     if (trimspeed == 1) {
-       XPLMCheckMenuItem(MultiMenuId, 0, xplm_Menu_Checked);
+       XPLMCheckMenuItem(MultiMenuId, 8, xplm_Menu_Checked);
     }
     if (trimspeed != 1) {
-       XPLMCheckMenuItem(MultiMenuId, 0, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(MultiMenuId, 8, xplm_Menu_Unchecked);
     }
     if (trimspeed == 2) {
-       XPLMCheckMenuItem(MultiMenuId, 1, xplm_Menu_Checked);
+       XPLMCheckMenuItem(MultiMenuId, 9, xplm_Menu_Checked);
     }
     if (trimspeed != 2) {
-       XPLMCheckMenuItem(MultiMenuId, 1, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(MultiMenuId, 9, xplm_Menu_Unchecked);
     }
     if (trimspeed == 3) {
-       XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Checked);
+       XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Checked);
     }
     if (trimspeed != 3) {
-       XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Unchecked);
     }
 
 
@@ -216,14 +255,14 @@ if (multiseldis == 5) {
           multiseldis = 1;
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    altdbncinc++;
-	    if (altdbncinc == 3) {
+            if (altdbncinc > multispeed) {
 	      XPLMCommandOnce(ApAltUp);
 	      altdbncinc = 0;
 	    }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    altdbncdec++;
-	    if (altdbncdec == 3) {	    
+            if (altdbncdec > multispeed) {
 	      XPLMCommandOnce(ApAltDn);
 	      altdbncdec = 0;
 	    }
@@ -247,14 +286,14 @@ if (multiseldis == 5) {
           multiseldis = 1;
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    vsdbncinc++;
-	    if (vsdbncinc == 3) {
+            if (vsdbncinc > multispeed) {
 	      XPLMCommandOnce(ApVsUp); 
 	      vsdbncinc = 0;
 	    }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    vsdbncdec++;
-	    if (vsdbncdec == 3) {
+            if (vsdbncdec > multispeed) {
 	      XPLMCommandOnce(ApVsDn); 
 	      vsdbncdec = 0;
 	    }
@@ -279,14 +318,14 @@ if (multiseldis == 5) {
           multiseldis = 2;
           if(testbit(multibuf,ADJUSTMENT_UP)) {
             iasdbncinc++;
-            if (iasdbncinc == 3) {
+            if (iasdbncinc > multispeed) {
               XPLMCommandOnce(ApAsUp);
               iasdbncinc = 0;
             }
           }
           if(testbit(multibuf,ADJUSTMENT_DN)) {
             iasdbncdec++;
-            if (iasdbncdec == 3) {
+            if (iasdbncdec > multispeed) {
               XPLMCommandOnce(ApAsDn);
               iasdbncdec = 0;
             }
@@ -302,14 +341,14 @@ if (multiseldis == 5) {
           multiseldis = 3;
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    hdgdbncinc++;
-	    if (hdgdbncinc == 3) {
+            if (hdgdbncinc > multispeed) {
 	      XPLMCommandOnce(ApHdgUp); 
 	      hdgdbncinc = 0;
 	    }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    hdgdbncdec++;
-	    if (hdgdbncdec == 3) {
+            if (hdgdbncdec > multispeed) {
 	      XPLMCommandOnce(ApHdgDn); 
 	      hdgdbncdec = 0;
 	    }
@@ -324,14 +363,14 @@ if (multiseldis == 5) {
           multiseldis = 4;
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
-	    if (crsdbncinc == 1) {
+            if (crsdbncinc == 1) {
 	      XPLMCommandOnce(ApCrsUp); 
 	      crsdbncinc = 0;
 	    }	 
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
-	    if (crsdbncdec == 1) {
+            if (crsdbncdec == 1) {
 	      XPLMCommandOnce(ApCrsDn); 
 	      crsdbncdec = 0;
 	    }	 

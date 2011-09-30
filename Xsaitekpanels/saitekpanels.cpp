@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.25   ***************
-// ****** Sep 22 2011   **************
+// ******** ver 1.26   ***************
+// ****** Sep 30 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -164,7 +164,7 @@ static unsigned char radiobuf[4][4], radiowbuf[4][23];
 
 unsigned char radbuf[4], radwbuf[21];
 
-int freqspeed = 3, numadf = 1;
+int radspeed = 3, numadf = 1;
 
 hid_device *radhandle[4];
 
@@ -172,8 +172,10 @@ hid_device *radhandle[4];
 int multicnt = 0, multires, stopmulticnt;
 static unsigned char blankmultiwbuf[13];
 unsigned char multibuf[4], multiwbuf[13];
-int trimspeed = 1;
+
 int loaded737 = 0;
+
+int trimspeed = 1, multispeed = 3;
 
 hid_device *multihandle;
 
@@ -233,7 +235,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.25");
+  strcpy(outName, "Xsaitekpanels v1.26");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -304,8 +306,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   Adf2StbyFreq	= XPLMFindDataRef("sim/cockpit/radios/adf2_stdby_freq_hz");
   Adf1ActFreq	= XPLMFindDataRef("sim/cockpit/radios/adf1_freq_hz");
   Adf2ActFreq	= XPLMFindDataRef("sim/cockpit/radios/adf2_freq_hz");
-
-
 
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
 
@@ -860,6 +860,21 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
     if((long)inMenuRef == 2){
+         if (strcmp((char *) inItemRef, "1") == 0) {
+             multispeed = 1;
+         }
+         if (strcmp((char *) inItemRef, "2") == 0) {
+             multispeed = 2;
+         }
+         if (strcmp((char *) inItemRef, "3") == 0) {
+             multispeed = 3;
+         }
+         if (strcmp((char *) inItemRef, "4") == 0) {
+             multispeed = 4;
+         }
+         if (strcmp((char *) inItemRef, "5") == 0) {
+             multispeed = 5;
+         }
          if (strcmp((char *) inItemRef, "TRIM X1") == 0) {
              trimspeed = 1;
          }
@@ -874,20 +889,20 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     if((long)inMenuRef == 3){
          if (strcmp((char *) inItemRef, "1") == 0) {
-             freqspeed = 1;
+             radspeed = 1;
          }
          if (strcmp((char *) inItemRef, "2") == 0) {
-             freqspeed = 2;
+             radspeed = 2;
          }
          if (strcmp((char *) inItemRef, "3") == 0) {
              //XPLMCheckMenuItem(RadioMenuId, 0, xplm_Menu_Checked);
-             freqspeed = 3;
+             radspeed = 3;
          }
          if (strcmp((char *) inItemRef, "4") == 0) {
-             freqspeed = 4;
+             radspeed = 4;
          }
          if (strcmp((char *) inItemRef, "5") == 0) {
-             freqspeed = 5;
+             radspeed = 5;
          }
          if (strcmp((char *) inItemRef, "ADF1") == 0) {
              numadf = 1;

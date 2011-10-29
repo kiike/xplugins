@@ -17,8 +17,10 @@
 #define testbit(x, y)  ( ( ((const char*)&(x))[(y)>>3] & 0x80 >> ((y)&0x07)) >> (7-((y)&0x07) ) )
 
 // ********************** Multi Panel variables ***********************
-static int multinowrite = 0, lastmultiseldis = 0;
+static int multinowrite = 0;
 static int mulres, multires;
+
+static int multichange, multiloop;
 
 static int appushed = 0;
 static int lastappos = 0;
@@ -37,7 +39,7 @@ static int multiaactv, multiadig1, multiarem1, multiadig2, multiarem2;
 static int multiadig3, multiarem3, multiadig4, multiarem4, multiadig5;
 static int multibstby, multibdig1, multibdig2, multibrem2;
 static int multibdig3, multibrem3, multibdig4, multibrem4, multibdig5;  
-static int btnleds = 0, lastbtnleds = 0, multiseldis = 1;
+static int btnleds = 0, multiseldis = 1;
 
 static int ALT_SWITCH = 7, VS_SWITCH = 6;
 static int IAS_SWITCH = 5, HDG_SWITCH = 4;
@@ -52,6 +54,7 @@ static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
 
 static unsigned char multibuf[4];
 static unsigned char multiwbuf[13];
+static unsigned char lastmultiwbuf[13];
 
 
 // ***** Multi Panel Process ******
@@ -213,40 +216,31 @@ if (multiseldis == 5) {
       multinowrite = 1;
   }
 
-
  // **** Trying to only write on changes ****
-  if (lastmultiseldis == multiseldis) {
+
+  if (multiloop < 2) {
+    // Clear Display on first loop
+    multiwbuf[0] = 0;
+    multiwbuf[1] = 0, multiwbuf[2] = 0, multiwbuf[3] = 0, multiwbuf[4] = 0;
+    multiwbuf[5] = 0, multiwbuf[6] = 0, multiwbuf[7] = 0, multiwbuf[8] = 0;
+    multiwbuf[9] = 0, multiwbuf[10] = 0, multiwbuf[11] = 0;
+
+
+    multires = hid_send_feature_report(multihandle, multiwbuf, 13);
+    multiloop++;
   }
-  else {
-    if (multinowrite == 1) {
+
+  // Trying to only write on changes to improve FPS impact
+  if(multiloop == 2) {
+    multichange = memcmp(multiwbuf, lastmultiwbuf, 13);
+    if (multichange == 0) {
     }
-    else {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
-      multinowrite = 1;
-      lastmultiseldis = multiseldis;
+    if (multichange != 0) {
+      multires = hid_send_feature_report(multihandle, multiwbuf, 13);
+      memcpy(lastmultiwbuf, multiwbuf, 13);
     }
   }
 
-  if (lastbtnleds == btnleds) {
-  }
-  else {
-    if (multinowrite == 1) {
-    }
-    else {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
-      multinowrite = 1;
-      lastbtnleds = btnleds;
-    }
-  }
-
-
-  if (multinowrite == 50) {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
-      multinowrite = 0;
-  }
-  else {
-    multinowrite++;
-  }
 
 
 // ***************** ALT Switch Position *******************

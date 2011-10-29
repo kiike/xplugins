@@ -83,17 +83,22 @@ void process_switch_panel()
 
   hid_set_nonblocking(switchhandle, 1);
   hid_read(switchhandle, switchbuf, sizeof(switchbuf));
-  switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
+  //switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
   switchnowrite = 1;
 
 // * if no gear do not write *
 
   if(XPLMGetDatai(GearRetract) > 0){
-    switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
+    if (XPLMGetDatai(BatPwrOn) == 0) {
+          switchwbuf[0] = 0, switchwbuf[1] = 0;
+          switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
+    }
+    if (XPLMGetDatai(BatPwrOn) == 1) {
+          switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
+    }
   }
   else {
   }
-
 
   batnum = XPLMGetDatai(BatNum), gennum = XPLMGetDatai(GenNum), engnum = XPLMGetDatai(EngNum);
 

@@ -60,7 +60,7 @@ int     LookAtThisIntValue;
 static unsigned char bipwbuf[10];
 static unsigned char lastbipwbuf[10];
 
-static int change, biploop, res, i;
+static int bipchange, biploop, res, i;
 
 struct  BipTableStructure
 {
@@ -458,14 +458,24 @@ void process_bip_panel()
 
     // Trying to only write on changes to improve FPS impact
     if(biploop == 2) {
-      change = memcmp(bipwbuf, lastbipwbuf, 10);
-      if (change == 0) {
+      bipchange = memcmp(bipwbuf, lastbipwbuf, 10);
+      if (bipchange == 0) {
       }
-      if (change != 0) {
-        res = hid_send_feature_report(biphandle, bipwbuf, 10);
-        memcpy(lastbipwbuf, bipwbuf, 10);
-      }
+      if (bipchange != 0) {
+        if (XPLMGetDatai(BatPwrOn) == 0) {
+              bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
+              bipwbuf[1] = 0, bipwbuf[2] = 0, bipwbuf[3] = 0;
+              bipwbuf[4] = 0, bipwbuf[5] = 0, bipwbuf[6] = 0;
+              res = hid_send_feature_report(biphandle, bipwbuf, 10);
+              memcpy(lastbipwbuf, bipwbuf, 10);
+        }
+        if (XPLMGetDatai(BatPwrOn) == 1) {
+              res = hid_send_feature_report(biphandle, bipwbuf, 10);
+              memcpy(lastbipwbuf, bipwbuf, 10);
+        }
     }
+
+  }
 
     return;
 }

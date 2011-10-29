@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.26   ***************
-// ****** Sep 30 2011   **************
+// ******** ver 1.27   ***************
+// ****** Oct 28 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -166,7 +166,7 @@ unsigned char radbuf[4], radwbuf[21];
 
 int radspeed = 3, numadf = 1;
 
-hid_device *radhandle[4];
+hid_device *radiohandle[4];
 
 // ********************** Multi Panel variables ***********************
 int multicnt = 0, multires, stopmulticnt;
@@ -235,7 +235,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.26");
+  strcpy(outName, "Xsaitekpanels v1.27");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -517,10 +517,10 @@ PLUGIN_API int XPluginStart(char *		outName,
   rad_devs = hid_enumerate(0x6a3, 0x0d05);
   rad_cur_dev = rad_devs;
   while (rad_cur_dev) {
-        radhandle[radcnt] = hid_open_path(rad_cur_dev->path);
-        hid_set_nonblocking(radhandle[radcnt], 1);
-        radiores = hid_read(radhandle[radcnt], radiobuf[radcnt], sizeof(radiobuf[radcnt]));
-        hid_send_feature_report(radhandle[radcnt], radiowbuf[radcnt], 23);
+        radiohandle[radcnt] = hid_open_path(rad_cur_dev->path);
+        hid_set_nonblocking(radiohandle[radcnt], 1);
+        radiores = hid_read(radiohandle[radcnt], radiobuf[radcnt], sizeof(radiobuf[radcnt]));
+        hid_send_feature_report(radiohandle[radcnt], radiowbuf[radcnt], 23);
         radcnt++;
         rad_cur_dev = rad_cur_dev->next;
   }
@@ -718,8 +718,8 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[3][15] = 15, blankradiowbuf[3][16] = 15, blankradiowbuf[3][17] = 15;
       blankradiowbuf[3][18] = 15, blankradiowbuf[3][19] = 15, blankradiowbuf[3][20] = 15;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
-      hid_close(radhandle[stopradcnt]);
+      radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
+      hid_close(radiohandle[stopradcnt]);
       stopradcnt--;
     }
 
@@ -733,8 +733,8 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[2][15] = 15, blankradiowbuf[2][16] = 15, blankradiowbuf[2][17] = 15;
       blankradiowbuf[2][18] = 15, blankradiowbuf[2][19] = 15, blankradiowbuf[2][20] = 15;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
-      hid_close(radhandle[stopradcnt]);
+      radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
+      hid_close(radiohandle[stopradcnt]);
       stopradcnt--;
     }
 
@@ -748,8 +748,8 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[1][15] = 15, blankradiowbuf[1][16] = 15, blankradiowbuf[1][17] = 15;
       blankradiowbuf[1][18] = 15, blankradiowbuf[1][19] = 15, blankradiowbuf[1][20] = 15;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
-      hid_close(radhandle[stopradcnt]);
+      radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
+      hid_close(radiohandle[stopradcnt]);
       stopradcnt--;
     }
 
@@ -763,8 +763,8 @@ PLUGIN_API void	XPluginStop(void)
       blankradiowbuf[0][15] = 15, blankradiowbuf[0][16] = 15, blankradiowbuf[0][17] = 15;
       blankradiowbuf[0][18] = 15, blankradiowbuf[0][19] = 15, blankradiowbuf[0][20] = 15;
 
-      radres = hid_send_feature_report(radhandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
-      hid_close(radhandle[stopradcnt]);
+      radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
+      hid_close(radiohandle[stopradcnt]);
     }
 
 

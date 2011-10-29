@@ -62,7 +62,7 @@ extern int radspeed;
 extern float interval;
 extern unsigned char radbuf[4], radwbuf[21];
 
-extern hid_device *radhandle[4];
+extern hid_device *radiohandle[4];
 
 // ****************  End Radio Panel Section  ***************************
 

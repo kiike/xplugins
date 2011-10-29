@@ -18,7 +18,9 @@
 
 // ********************** Radio Panel variables ***********************
 static int radnum = 0, radionowrite[4] = {0, 0, 0, 0};
-static int radiores = 0;
+static int radiores[4] = {0, 0, 0, 0};
+
+static int radiochange[4], radioloop[4];
 
 static int updmepushed = 0, lodmepushed = 0;
 static int updmeloop = 0, lodmeloop = 0;
@@ -90,7 +92,6 @@ static int upxpdrsel[4] = {1, 1, 1, 1}, loxpdrsel[4] = {1, 1, 1, 1};
 static int upadfsel[4] = {1, 1, 1, 1}, loadfsel[4] = {1, 1, 1, 1};
 
 static int upseldis[4] = {1, 1, 1, 1}, loseldis[4] = {1, 1, 1, 1};
-static int lastupseldis[4] = {1, 1, 1, 1}, lastloseldis[4] = {1, 1, 1, 1};
 
 static int UPPER_FINE_UP = 23, UPPER_FINE_DN = 22; 
 static int UPPER_COARSE_UP = 21, UPPER_COARSE_DN = 20;
@@ -108,6 +109,7 @@ static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8;
 
 static unsigned char radiobuf[4][4];
 static unsigned char radiowbuf[4][23];
+static unsigned char lastradiowbuf[4][23];
 
 void process_upper_nav_com_freq();
 void process_lower_nav_com_freq();
@@ -344,8 +346,6 @@ void process_radio_panel()
     }
 
 
-
-
   }
 
   else if (upseldis[radnum] == 10) {
@@ -555,46 +555,40 @@ void process_radio_panel()
 
 // ******* Only do a read if something new to be read ********
 
-  hid_set_nonblocking(radhandle[radnum], 1);
-  radiores = hid_read(radhandle[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
-  if (radiores > 0) {
-    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
+  hid_set_nonblocking(radiohandle[radnum], 1);
+  radiores[radnum] = hid_read(radiohandle[radnum], radiobuf[radnum], sizeof(radiobuf[radnum]));
+  if (radiores[radnum] > 0) {
+    radiores[radnum] = hid_send_feature_report(radiohandle[radnum], radiowbuf[radnum], 23);
     radionowrite[radnum] = 1;
   }
 
   // ***** Trying to only write on changes ********
 
-  if (lastupseldis[radnum] == upseldis[radnum]) {
+  if (radioloop[radnum] < 2) {
+    // Clear Display on first loop
+      radiowbuf[radnum][0] = 0;
+    radiowbuf[radnum][1] = 0, radiowbuf[radnum][2] = 0, radiowbuf[radnum][3] = 0, radiowbuf[radnum][4] = 0;
+    radiowbuf[radnum][5] = 0,radiowbuf[radnum][6] = 0, radiowbuf[radnum][7] = 0, radiowbuf[radnum][8] = 0;
+    radiowbuf[radnum][9] = 0, radiowbuf[radnum][10] = 0, radiowbuf[radnum][11] = 0, radiowbuf[radnum][12] = 0;
+    radiowbuf[radnum][13] = 0,radiowbuf[radnum][14] = 0, radiowbuf[radnum][15] = 0, radiowbuf[radnum][16] = 0;
+    radiowbuf[radnum][17] = 0, radiowbuf[radnum][18] = 0, radiowbuf[radnum][19] = 0, radiowbuf[radnum][20] = 0;
+
+    radiores[radnum] = hid_send_feature_report(radiohandle[radnum], radiowbuf[radnum], 23);
+    radioloop[radnum]++;
   }
-  else {
-    if (radionowrite[radnum] == 1) {
+
+  // Trying to only write on changes to improve FPS impact
+  if(radioloop[radnum] == 2) {
+    radiochange[radnum] = memcmp(radiowbuf[radnum], lastradiowbuf[radnum], 23);
+    if (radiochange[radnum] == 0) {
     }
-    else {
-      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
-      radionowrite[radnum] = 1;
-      lastupseldis[radnum] = upseldis[radnum];
+    if (radiochange[radnum] != 0) {
+      radiores[radnum] = hid_send_feature_report(radiohandle[radnum], radiowbuf[radnum], 23);
+      memcpy(lastradiowbuf[radnum], radiowbuf[radnum], 23);
     }
   }
 
-  if (lastloseldis[radnum] == loseldis[radnum]) {
-  }
-  else {
-    if (radionowrite[radnum] == 1) {
-    }
-    else {
-      radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
-      radionowrite[radnum] = 1;
-      lastloseldis[radnum] = loseldis[radnum];
-    }
-  }
 
-  if (radionowrite[radnum] == 50) {
-    radres = hid_send_feature_report(radhandle[radnum], radiowbuf[radnum], 23);
-    radionowrite[radnum] = 0;
-  }
-  else {
-    radionowrite[radnum]++;
-  }
 
 // ***************** Upper COM1 Switch Position *******************
 

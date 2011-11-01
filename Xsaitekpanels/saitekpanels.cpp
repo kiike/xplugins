@@ -164,7 +164,7 @@ static unsigned char radiobuf[4][4], radiowbuf[4][23];
 
 unsigned char radbuf[4], radwbuf[21];
 
-int radspeed = 3, numadf = 1;
+int radspeed, numadf;
 
 hid_device *radiohandle[4];
 
@@ -175,7 +175,7 @@ unsigned char multibuf[4], multiwbuf[13];
 
 int loaded737 = 0;
 
-int trimspeed = 1, multispeed = 3;
+int trimspeed, multispeed;
 
 hid_device *multihandle;
 
@@ -186,7 +186,7 @@ static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
 float LandingGearDeployRatio[10];
 
-int bataltinverse = 0;
+int bataltinverse;
 
 hid_device *switchhandle;
 
@@ -209,6 +209,7 @@ void process_radio_panel();
 void process_multi_panel();
 void process_switch_panel();
 void process_bip_panel();
+void process_pref_file();
 
 // ********************* MyPanelsFlightLoopCallback **************************
 float	MyPanelsFlightLoopCallback(
@@ -508,6 +509,9 @@ PLUGIN_API int XPluginStart(char *		outName,
   GenNum            = XPLMFindDataRef("sim/aircraft/electrical/num_generators");
   EngNum            = XPLMFindDataRef("sim/aircraft/engine/acf_num_engines");
   BatArrayOnDR      = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
+
+
+  process_pref_file();
 
 
 // ************* Open any Radio that is connected *****************

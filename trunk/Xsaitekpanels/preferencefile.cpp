@@ -22,6 +22,7 @@ void process_pref_file()
     int line = 1;
     if(!myfile) //Always test the file open.
     {
+                // Cannot find preference file load defaults
                 cout<<"Error opening output file"<<endl;
                 bataltinverse = 0;
                 radspeed = 3, numadf = 1;

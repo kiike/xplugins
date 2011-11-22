@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.28   ***************
-// ****** Nov 07 2011   **************
+// ******** ver 1.29   ***************
+// ****** Nov 18 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -84,6 +84,8 @@ XPLMCommandRef ApVsBtn = NULL, ApAprBtn = NULL, ApRevBtn = NULL;
 XPLMCommandRef ApAutThrOn = NULL, ApAutThrOff = NULL, FlapsDn = NULL, FlapsUp = NULL;
 XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
+XPLMCommandRef MulButtonCommand = NULL;
+
 // ***************** Multi Panel Data Ref *********************
 XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL;
 
@@ -91,6 +93,7 @@ XPLMDataRef ApMstrStat = NULL, ApHdgStat = NULL, ApNavStat = NULL, ApIasStat = N
 XPLMDataRef ApAltStat = NULL, ApVsStat = NULL, ApAprStat = NULL, ApRevStat = NULL;
 XPLMDataRef x737athr_armed = NULL, x737swBatBus = NULL, x737stbyPwr = NULL;
 XPLMDataRef ApState = NULL;
+XPLMDataRef Frp = NULL;
 
 XPLMMenuID      MultiMenu;
 XPLMMenuID      MultiMenuId;
@@ -177,6 +180,8 @@ int loaded737 = 0;
 
 int trimspeed, multispeed;
 
+int mulbutton = 0;
+
 hid_device *multihandle;
 
 // ****************** Switch Panel variables *******************************
@@ -218,6 +223,12 @@ float	MyPanelsFlightLoopCallback(
                                    int                  inCounter,    
                                    void *               inRefcon);
 
+int    MulButtonCommandHandler(XPLMCommandRef       inCommand,          //  custom command handler
+                               XPLMCommandPhase     inPhase,
+                               void *               inRefcon);
+
+
+
 
 
 void WriteCSVTableToDisk(void);
@@ -236,7 +247,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.28");
+  strcpy(outName, "Xsaitekpanels v1.29");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -362,13 +373,18 @@ PLUGIN_API int XPluginStart(char *		outName,
   FlapsDn = XPLMFindCommand("sim/flight_controls/flaps_down");
   FlapsUp = XPLMFindCommand("sim/flight_controls/flaps_up");
 
+  MulButtonCommand = XPLMCreateCommand("xplugins/xsaitekpanels/mul_button","Mul Button");
+
+
+// **************** Find Multi Panel Data Ref ********************
+
   ApAlt = XPLMFindDataRef("sim/cockpit/autopilot/altitude");
   ApVs = XPLMFindDataRef("sim/cockpit/autopilot/vertical_velocity");
   ApAs = XPLMFindDataRef("sim/cockpit/autopilot/airspeed");
   ApHdg = XPLMFindDataRef("sim/cockpit/autopilot/heading_mag");
   ApCrs = XPLMFindDataRef("sim/cockpit2/radios/actuators/hsi_obs_deg_mag_pilot");
 
-// **************** Find Multi Panel Data Ref ********************
+
   ApMstrStat = XPLMFindDataRef("sim/cockpit2/autopilot/flight_director_mode");
   ApState = XPLMFindDataRef("sim/cockpit/autopilot/autopilot_state");
   ApHdgStat = XPLMFindDataRef("sim/cockpit2/autopilot/heading_status");
@@ -380,6 +396,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApRevStat = XPLMFindDataRef("sim/cockpit2/autopilot/backcourse_status");
   AvPwrOn = XPLMFindDataRef("sim/cockpit/electrical/avionics_on");
   BatPwrOn = XPLMFindDataRef("sim/cockpit/electrical/battery_on");
+  Frp = XPLMFindDataRef("sim/operation/misc/frame_rate_period");
+
 
 
 // **************** Find Switch Panel Commands Ref *******************
@@ -596,6 +614,13 @@ PLUGIN_API int XPluginStart(char *		outName,
                         MyPanelsFlightLoopCallback,	// * Callback *
                         interval,			// * Interval -1 every loop*
                         NULL);				// * refcon not used. *
+
+  // Register our custom commands
+  XPLMRegisterCommandHandler(MulButtonCommand,           // in Command name
+                             MulButtonCommandHandler,    // in Handler
+                             1,                          // Receive input before plugin windows.
+                             (void *) 0);                // inRefcon.
+
 
 
 
@@ -899,7 +924,6 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              radspeed = 2;
          }
          if (strcmp((char *) inItemRef, "3") == 0) {
-             //XPLMCheckMenuItem(RadioMenuId, 0, xplm_Menu_Checked);
              radspeed = 3;
          }
          if (strcmp((char *) inItemRef, "4") == 0) {
@@ -930,6 +954,25 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     return;
 }
+
+int    MulButtonCommandHandler(XPLMCommandRef       inCommand,
+                        XPLMCommandPhase     inPhase,
+                        void *               inRefcon)
+{
+//  If inPhase == 1 the command is executed continuously.
+     if (inPhase == 1)
+   {
+          mulbutton = 1;
+    }
+     if (inPhase == 2)
+   {
+          mulbutton = 0;
+    }
+
+return 0;
+}
+
+
 
 
 

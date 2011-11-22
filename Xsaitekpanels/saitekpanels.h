@@ -93,12 +93,14 @@ extern XPLMDataRef x737athr_armed ,x737swBatBus ,x737stbyPwr ;
 extern XPLMDataRef ApState;
 extern XPLMMenuID      MultiMenu;
 extern XPLMMenuID      MultiMenuId;
+extern XPLMMenuID      Frp;
 
 // **************** Multi Panel variables *******************
 extern int multifd;
 extern int trimspeed, numadf;
 extern int loaded737;
 extern int multispeed;
+extern int mulbutton;
 extern hid_device *multihandle;
 
 // ****************  End Multi Panel Section  ***************************

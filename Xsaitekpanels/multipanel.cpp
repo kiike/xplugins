@@ -20,7 +20,9 @@
 static int multinowrite = 0, lastmultiseldis = 0;
 static int mulres, multires;
 
-static int multichange, multiloop;
+static int multiloopcnt = 0, multiknobcnt = 0;
+static int n = 5;
+static float Fps;
 
 static int appushed = 0;
 static int lastappos = 0;
@@ -125,7 +127,7 @@ void process_multi_panel()
        XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Unchecked);
     }
 
-
+    multiloopcnt++;
 
 
 // ***** Setup Display for ALT or VS Switch Position *********
@@ -255,17 +257,46 @@ if (multiseldis == 5) {
 	if(testbit(multibuf,ALT_SWITCH)) {
           multiseldis = 1;
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
-	    altdbncinc++;
+            altdbncinc++;
             if (altdbncinc > multispeed) {
-	      XPLMCommandOnce(ApAltUp);
-	      altdbncinc = 0;
-	    }
-	  }
+                //if (multiknobcnt > 3) {
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                        XPLMCommandOnce(ApAltUp);
+                        --n;
+                    }
+                    altdbncinc = 0;
+                }
+                //if (multiknobcnt < 3) {
+                if (mulbutton == 0) {
+                    XPLMCommandOnce(ApAltUp);
+
+                    altdbncinc = 0;
+               }
+            }
+
+          }
+
+
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    altdbncdec++;
             if (altdbncdec > multispeed) {
-	      XPLMCommandOnce(ApAltDn);
-	      altdbncdec = 0;
+                //if (multiknobcnt > 3) {
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                        XPLMCommandOnce(ApAltDn);
+                        --n;
+                    }
+                    altdbncdec = 0;
+                }
+                 //if (multiknobcnt < 3) {
+                if (mulbutton == 0) {
+                     XPLMCommandOnce(ApAltDn);
+                     altdbncdec = 0;
+                 }
+
 	    }
 	  }
           upapaltf = XPLMGetDataf(ApAlt);
@@ -279,6 +310,22 @@ if (multiseldis == 5) {
 	  else {
 	    neg = 0;
 	  }
+
+          //if(testbit(multibuf,ADJUSTMENT_UP)) {
+          //  multiknobcnt++;
+          //}
+          if(multiloopcnt > 50){
+              multiloopcnt = 0;
+              multiknobcnt = 0;
+          }
+          printf("multiloopcnt = %i\n", multiloopcnt);
+          printf("multiknobcnt = %i\n", multiknobcnt);
+
+          Fps = 1/XPLMGetDataf(Frp);
+
+          printf("Frames per Second = %f\n", Fps);
+
+
 	}
 
 // ***************** VS Switch Position *******************
@@ -365,15 +412,15 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
             if (crsdbncinc == 1) {
-	      XPLMCommandOnce(ApCrsUp); 
-	      crsdbncinc = 0;
+                XPLMCommandOnce(ApCrsUp);
+                crsdbncinc = 0;
 	    }	 
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
             if (crsdbncdec == 1) {
-	      XPLMCommandOnce(ApCrsDn); 
-	      crsdbncdec = 0;
+                XPLMCommandOnce(ApCrsDn);
+                crsdbncdec = 0;
 	    }	 
 	  }
 	  upapcrsf = XPLMGetDataf(ApCrs);

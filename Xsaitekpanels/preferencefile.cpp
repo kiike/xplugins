@@ -16,7 +16,7 @@ void process_pref_file()
 
 {
     string prefline;
-    string prefitems[16];
+    string prefitems[17];
     ifstream myfile;
     myfile.open("Resources/plugins/Xsaitekpanels/xsaitekpanels.prf");
     int line = 1;
@@ -27,6 +27,7 @@ void process_pref_file()
                 bataltinverse = 0;
                 radspeed = 3, numadf = 1;
                 trimspeed = 1, multispeed = 3;
+                multimul =3;
                 return;
     }
     while(!myfile.eof())
@@ -103,6 +104,21 @@ void process_pref_file()
         multispeed = 5;
     }
 
+    if (prefitems[16] == "2") {
+        multimul = 2;
+    }
+    if (prefitems[16] == "3") {
+        multimul = 3;
+    }
+    if (prefitems[16] == "4") {
+        multimul = 4;
+    }
+    if (prefitems[16] == "5") {
+        multimul = 5;
+    }
+    if (prefitems[16] == "6") {
+        multimul = 6;
+    }
 
   return;
 }

@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.29   ***************
-// ****** Nov 18 2011   **************
+// ****** Nov 22 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -178,7 +178,7 @@ unsigned char multibuf[4], multiwbuf[13];
 
 int loaded737 = 0;
 
-int trimspeed, multispeed;
+int trimspeed, multispeed, multimul;
 
 int mulbutton = 0;
 
@@ -727,6 +727,7 @@ PLUGIN_API void	XPluginStop(void)
 {
   // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
+
   XPDestroyWidget(BipWidgetID, 1);
   XPLMDestroyMenu(BipMenuId);
   XPLMDestroyMenu(MultiMenuId);
@@ -904,6 +905,23 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "5") == 0) {
              multispeed = 5;
          }
+
+         if (strcmp((char *) inItemRef, "X2") == 0) {
+             multimul = 2;
+         }
+         if (strcmp((char *) inItemRef, "X3") == 0) {
+             multimul = 3;
+         }
+         if (strcmp((char *) inItemRef, "X4") == 0) {
+             multimul = 4;
+         }
+         if (strcmp((char *) inItemRef, "X5") == 0) {
+             multimul = 5;
+         }
+         if (strcmp((char *) inItemRef, "X6") == 0) {
+             multimul = 6;
+         }
+
          if (strcmp((char *) inItemRef, "TRIM X1") == 0) {
              trimspeed = 1;
          }

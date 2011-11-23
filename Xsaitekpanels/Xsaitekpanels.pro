@@ -10,8 +10,7 @@ VERSION = 1.0.0
 INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Wrappers
 INCLUDEPATH += ../SDK/CHeaders/Widgets
-INCLUDEPATH += ../hidapi-0.6.0/hidapi
-INCLUDEPATH += /usr/src/linux-headers-2.6.39-020639rc4/include
+INCLUDEPATH += ../hidapi-0.7.0/hidapi
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200
@@ -22,7 +21,7 @@ win32 {
     LIBS += -lXPLM -lXPWidgets
     LIBS += $$quote(C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\SetupAPI.Lib)
     SOURCES += \
-          ../hidapi-0.6.0/windows/hid.cpp
+          ../hidapi-0.7.0/windows/hid.c
     TARGET = win.xpl
 }
 
@@ -32,7 +31,7 @@ unix:!macx {
     # WARNING! This requires the latest version of the X-SDK !!!!
     QMAKE_CXXFLAGS += -fvisibility=hidden
     SOURCES += \
-          ../hidapi-0.6.0/linux/hid.c
+          ../hidapi-0.7.0/linux/hid.c
     LIBS += `pkg-config libudev --libs`
 }
 
@@ -41,7 +40,7 @@ macx {
     TARGET = mac.xpl
     QMAKE_LFLAGS += -flat_namespace -undefined suppress
     SOURCES += \
-          ../hidapi-0.6.0/mac/hid.c
+          ../hidapi-0.7.0/mac/hid.c
     LIBS += -framework IOKit -framework CoreFoundation
 
     # Build for multiple architectures.
@@ -58,4 +57,5 @@ SOURCES += saitekpanels.cpp\
     radiopanels.cpp \
     multipanel.cpp \
     switchpanel.cpp \
-    bippanel.cpp
+    bippanel.cpp \
+    preferencefile.cpp

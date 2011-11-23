@@ -67,6 +67,13 @@ The multi panel is fully supported:
 - Mode indicator lights flash for armed and solid for active.
 - Multi Panel display follow avionics on and battery on.
 
+- Silver knob now has a hi speed multipiler function.
+- The multiplier is selected from the xsaitekpanels > multi menu selection.
+- The multiplier button is mapped using Joystick,keys&equipment.
+- It can be mapped for a joystick button or a keyboard key combo.
+- The path is xplugins/xsaitekpanels/mul_button 
+  
+
 *******************************************************************************************************
 Backlight Information Panel
 
@@ -171,7 +178,10 @@ Ver 1.26 Added menu option for multiple speeds on multi panel knob. Fixed bug wi
 
 Ver 1.27 Added preference file to allow user adjustable defaults. Changed master switch to completly turn off all panels like in a real plane.
 
-Ver 1.28 Found a bug introduced in the last update with the ACT/STBY on the radio panels. Thanks Pasquale Faraco. 
+Ver 1.28 Found a bug introduced in the last update with the ACT/STBY on the radio panels. Thanks Pasquale Faraco.
+
+Ver 1.28 Added hi speed multipiler for the multi panel silver knob. The multiplier is selected from the xsaitekpanels > multi menu selection. The hi speed command can be mapped under Joystick,keys&equipment.
+
 
 Bill
 

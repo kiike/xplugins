@@ -101,6 +101,7 @@ extern int trimspeed, numadf;
 extern int loaded737;
 extern int multispeed;
 extern int mulbutton;
+extern int multimul;
 extern hid_device *multihandle;
 
 // ****************  End Multi Panel Section  ***************************

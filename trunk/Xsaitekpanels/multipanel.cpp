@@ -71,6 +71,14 @@ void process_multi_panel()
     XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  4 PULSES PER COMMAND", (void *) "4", 2);
     XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  5 PULSES PER COMMAND", (void *) "5", 2);
     XPLMAppendMenuSeparator(MultiMenuId);
+    XPLMAppendMenuItem(MultiMenuId, "HI SPEED MULTIPLIER COMMANDS PER PULSE", (void *) "VOID", 2);
+    XPLMAppendMenuSeparator(MultiMenuId);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  2 COMMANDS PER PULSE", (void *) "X2", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  3 COMMANDS PER PULSE", (void *) "X3", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  4 COMMANDS PER PULSE", (void *) "X4", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  5 COMMANDS PER PULSE", (void *) "X5", 2);
+    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  6 COMMANDS PER PULSE", (void *) "X6", 2);
+    XPLMAppendMenuSeparator(MultiMenuId);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X1", (void *) "TRIM X1", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X2", (void *) "TRIM X2", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X3", (void *) "TRIM X3", 2);
@@ -106,23 +114,54 @@ void process_multi_panel()
       XPLMCheckMenuItem(MultiMenuId, 6, xplm_Menu_Unchecked);
     }
 
+    if (multimul == 2) {
+      XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Checked);
+    }
+    if (multimul != 2) {
+      XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Unchecked);
+    }
+    if (multimul == 3) {
+      XPLMCheckMenuItem(MultiMenuId, 11, xplm_Menu_Checked);
+    }
+    if (multimul != 3) {
+      XPLMCheckMenuItem(MultiMenuId, 11, xplm_Menu_Unchecked);
+    }
+    if (multimul == 4) {
+      XPLMCheckMenuItem(MultiMenuId, 12, xplm_Menu_Checked);
+    }
+    if (multimul != 4) {
+      XPLMCheckMenuItem(MultiMenuId, 12, xplm_Menu_Unchecked);
+    }
+    if (multimul == 5) {
+      XPLMCheckMenuItem(MultiMenuId, 13, xplm_Menu_Checked);
+    }
+    if (multimul != 5) {
+      XPLMCheckMenuItem(MultiMenuId, 13, xplm_Menu_Unchecked);
+    }
+    if (multimul == 6) {
+      XPLMCheckMenuItem(MultiMenuId, 14, xplm_Menu_Checked);
+    }
+    if (multimul != 6) {
+      XPLMCheckMenuItem(MultiMenuId, 14, xplm_Menu_Unchecked);
+    }
+
     if (trimspeed == 1) {
-       XPLMCheckMenuItem(MultiMenuId, 8, xplm_Menu_Checked);
+       XPLMCheckMenuItem(MultiMenuId, 16, xplm_Menu_Checked);
     }
     if (trimspeed != 1) {
-       XPLMCheckMenuItem(MultiMenuId, 8, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(MultiMenuId, 16, xplm_Menu_Unchecked);
     }
     if (trimspeed == 2) {
-       XPLMCheckMenuItem(MultiMenuId, 9, xplm_Menu_Checked);
+       XPLMCheckMenuItem(MultiMenuId, 17, xplm_Menu_Checked);
     }
     if (trimspeed != 2) {
-       XPLMCheckMenuItem(MultiMenuId, 9, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(MultiMenuId, 17, xplm_Menu_Unchecked);
     }
     if (trimspeed == 3) {
-       XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Checked);
+       XPLMCheckMenuItem(MultiMenuId, 18, xplm_Menu_Checked);
     }
     if (trimspeed != 3) {
-       XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(MultiMenuId, 18, xplm_Menu_Unchecked);
     }
 
 
@@ -312,7 +351,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    vsdbncinc++;
             if (vsdbncinc > multispeed) {
-                n = 5;
+                n = multimul;
                 if(mulbutton == 1) {
                     while (n>0) {
                         XPLMCommandOnce(ApVsUp);
@@ -330,7 +369,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    vsdbncdec++;
             if (vsdbncdec > multispeed) {
-                n = 5;
+                n = multimul;
                 if(mulbutton == 1) {
                     while (n>0) {
                         XPLMCommandOnce(ApVsDn);
@@ -365,7 +404,7 @@ if (multiseldis == 5) {
           if(testbit(multibuf,ADJUSTMENT_UP)) {
             iasdbncinc++;
             if (iasdbncinc > multispeed) {
-                n = 5;
+                n = multimul;
                 if(mulbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApAsUp);
@@ -410,7 +449,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    hdgdbncinc++;
             if (hdgdbncinc > multispeed) {
-                n = 5;
+                n = multimul;
                 if(mulbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApHdgUp);
@@ -452,7 +491,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
             if (crsdbncinc > multispeed) {
-                n = (5 * 5);
+                n = (multimul * 5);
                 if (mulbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApCrsUp);
@@ -461,7 +500,7 @@ if (multiseldis == 5) {
                     crsdbncinc = 0;
                 }
                 if(mulbutton == 0) {
-                    n = (5 * 1);
+                    n = (multimul * 1);
                     while (n>0) {
                       XPLMCommandOnce(ApCrsUp);
                       --n;
@@ -473,7 +512,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
             if (crsdbncdec > multispeed) {
-                n = 5;
+                n = (multimul * 5);
                 if (mulbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApCrsDn);
@@ -483,7 +522,11 @@ if (multiseldis == 5) {
 
                 }
                 if(mulbutton == 0) {
-                     XPLMCommandOnce(ApCrsDn);
+                    n = (multimul * 1);
+                    while (n>0) {
+                       XPLMCommandOnce(ApCrsDn);
+                       --n;
+                     }
                      crsdbncdec = 0;
                 }
             }

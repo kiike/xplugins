@@ -20,9 +20,7 @@
 static int multinowrite = 0, lastmultiseldis = 0;
 static int mulres, multires;
 
-static int multiloopcnt = 0, multiknobcnt = 0;
 static int n = 5;
-static float Fps;
 
 static int appushed = 0;
 static int lastappos = 0;
@@ -126,8 +124,6 @@ void process_multi_panel()
     if (trimspeed != 3) {
        XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Unchecked);
     }
-
-    multiloopcnt++;
 
 
 // ***** Setup Display for ALT or VS Switch Position *********
@@ -259,7 +255,6 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
             altdbncinc++;
             if (altdbncinc > multispeed) {
-                //if (multiknobcnt > 3) {
                 n = 5;
                 if(mulbutton == 1) {
                     while (n>0) {
@@ -268,7 +263,6 @@ if (multiseldis == 5) {
                     }
                     altdbncinc = 0;
                 }
-                //if (multiknobcnt < 3) {
                 if (mulbutton == 0) {
                     XPLMCommandOnce(ApAltUp);
 
@@ -278,53 +272,36 @@ if (multiseldis == 5) {
 
           }
 
+          if(testbit(multibuf,ADJUSTMENT_DN)) {
+             altdbncdec++;
+             if (altdbncdec > multispeed) {
+                 n = 5;
+                 if(mulbutton == 1) {
+                     while (n>0) {
+                         XPLMCommandOnce(ApAltDn);
+                         --n;
+                     }
+                     altdbncdec = 0;
+                 }
 
-	  if(testbit(multibuf,ADJUSTMENT_DN)) {
-	    altdbncdec++;
-            if (altdbncdec > multispeed) {
-                //if (multiknobcnt > 3) {
-                n = 5;
-                if(mulbutton == 1) {
-                    while (n>0) {
-                        XPLMCommandOnce(ApAltDn);
-                        --n;
-                    }
-                    altdbncdec = 0;
-                }
-                 //if (multiknobcnt < 3) {
-                if (mulbutton == 0) {
+                 if (mulbutton == 0) {
                      XPLMCommandOnce(ApAltDn);
                      altdbncdec = 0;
                  }
 
-	    }
-	  }
-          upapaltf = XPLMGetDataf(ApAlt);
-	  upapvsf = XPLMGetDataf(ApVs);
-	  upapalt = (int)(upapaltf);
-	  upapvs = (int)(upapvsf);
-	  if (upapvs < 0){
-	    upapvs = (upapvs * -1);
-	    neg = 1;
-	  }
-	  else {
-	    neg = 0;
-	  }
-
-          //if(testbit(multibuf,ADJUSTMENT_UP)) {
-          //  multiknobcnt++;
-          //}
-          if(multiloopcnt > 50){
-              multiloopcnt = 0;
-              multiknobcnt = 0;
+             }
           }
-          printf("multiloopcnt = %i\n", multiloopcnt);
-          printf("multiknobcnt = %i\n", multiknobcnt);
-
-          Fps = 1/XPLMGetDataf(Frp);
-
-          printf("Frames per Second = %f\n", Fps);
-
+          upapaltf = XPLMGetDataf(ApAlt);
+          upapvsf = XPLMGetDataf(ApVs);
+          upapalt = (int)(upapaltf);
+          upapvs = (int)(upapvsf);
+          if (upapvs < 0){
+              upapvs = (upapvs * -1);
+              neg = 1;
+          }
+          else {
+              neg = 0;
+          }
 
 	}
 
@@ -335,15 +312,37 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    vsdbncinc++;
             if (vsdbncinc > multispeed) {
-	      XPLMCommandOnce(ApVsUp); 
-	      vsdbncinc = 0;
-	    }
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                        XPLMCommandOnce(ApVsUp);
+                        --n;
+                    }
+                    vsdbncinc = 0;
+                }
+
+                if(mulbutton == 0) {
+                    XPLMCommandOnce(ApVsUp);
+                    vsdbncinc = 0;
+                }
+            }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    vsdbncdec++;
             if (vsdbncdec > multispeed) {
-	      XPLMCommandOnce(ApVsDn); 
-	      vsdbncdec = 0;
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                        XPLMCommandOnce(ApVsDn);
+                        --n;
+                    }
+                }
+                vsdbncdec = 0;
+                if(mulbutton == 0) {
+                    XPLMCommandOnce(ApVsDn);
+                    vsdbncdec = 0;
+                }
+
 	    }
 	  }
           upapaltf = XPLMGetDataf(ApAlt);
@@ -361,21 +360,42 @@ if (multiseldis == 5) {
 
 // ***************** IAS Switch Position *******************
 
-
         if(testbit(multibuf,IAS_SWITCH)) {
           multiseldis = 2;
           if(testbit(multibuf,ADJUSTMENT_UP)) {
             iasdbncinc++;
             if (iasdbncinc > multispeed) {
-              XPLMCommandOnce(ApAsUp);
-              iasdbncinc = 0;
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                       XPLMCommandOnce(ApAsUp);
+                       --n;
+                    }
+                    iasdbncinc = 0;
+                }
+                if(mulbutton == 0) {
+                    XPLMCommandOnce(ApAsUp);
+                    iasdbncinc = 0;
+                }
             }
           }
           if(testbit(multibuf,ADJUSTMENT_DN)) {
             iasdbncdec++;
             if (iasdbncdec > multispeed) {
-              XPLMCommandOnce(ApAsDn);
-              iasdbncdec = 0;
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                       XPLMCommandOnce(ApAsDn);
+                       --n;
+                    }
+                    iasdbncdec = 0;
+                 }
+                 if(mulbutton == 0) {
+                     XPLMCommandOnce(ApAsDn);
+                     iasdbncdec = 0;
+                 }
+
+
             }
           }
           upapasf = XPLMGetDataf(ApAs);
@@ -390,15 +410,35 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    hdgdbncinc++;
             if (hdgdbncinc > multispeed) {
-	      XPLMCommandOnce(ApHdgUp); 
-	      hdgdbncinc = 0;
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                       XPLMCommandOnce(ApHdgUp);
+                       --n;
+                    }
+                    hdgdbncinc = 0;
+                 }
+                 if(mulbutton == 0) {
+                     XPLMCommandOnce(ApHdgUp);
+                     hdgdbncinc = 0;
+                 }
 	    }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    hdgdbncdec++;
             if (hdgdbncdec > multispeed) {
-	      XPLMCommandOnce(ApHdgDn); 
-	      hdgdbncdec = 0;
+                n = 5;
+                if(mulbutton == 1) {
+                    while (n>0) {
+                      XPLMCommandOnce(ApHdgDn);
+                      --n;
+                    }
+                    hdgdbncdec = 0;
+                }
+                if(mulbutton == 0) {
+                    XPLMCommandOnce(ApHdgDn);
+                    hdgdbncdec = 0;
+                }
 	    }
 	  }
 	  upaphdgf = XPLMGetDataf(ApHdg);
@@ -411,20 +451,45 @@ if (multiseldis == 5) {
           multiseldis = 4;
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
-            if (crsdbncinc == 1) {
-                XPLMCommandOnce(ApCrsUp);
-                crsdbncinc = 0;
-	    }	 
+            if (crsdbncinc > multispeed) {
+                n = (5 * 5);
+                if (mulbutton == 1) {
+                    while (n>0) {
+                       XPLMCommandOnce(ApCrsUp);
+                       --n;
+                    }
+                    crsdbncinc = 0;
+                }
+                if(mulbutton == 0) {
+                    n = (5 * 1);
+                    while (n>0) {
+                      XPLMCommandOnce(ApCrsUp);
+                      --n;
+                    }
+                    crsdbncinc = 0;
+                }
+             }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
-            if (crsdbncdec == 1) {
-                XPLMCommandOnce(ApCrsDn);
-                crsdbncdec = 0;
-	    }	 
-	  }
-	  upapcrsf = XPLMGetDataf(ApCrs);
-	  upapcrs = (int)(upapcrsf);
+            if (crsdbncdec > multispeed) {
+                n = 5;
+                if (mulbutton == 1) {
+                    while (n>0) {
+                       XPLMCommandOnce(ApCrsDn);
+                       --n;
+                    }
+                    crsdbncdec = 0;
+
+                }
+                if(mulbutton == 0) {
+                     XPLMCommandOnce(ApCrsDn);
+                     crsdbncdec = 0;
+                }
+            }
+          }
+          upapcrsf = XPLMGetDataf(ApCrs);
+          upapcrs = (int)(upapcrsf);
 	}
 
 // ***************** Auto Throttle Switch Position *******************
@@ -543,7 +608,6 @@ if (multiseldis == 5) {
             lastappos = 1;
           }
         }
-
 
 	if (XPLMGetDatai(ApNavStat) == 2) {
           btnleds |= (1<<2);   // * set bit 2 in btnleds to 1 *

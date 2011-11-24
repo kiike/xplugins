@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.29   ***************
-// ****** Nov 22 2011   **************
+// ****** Nov 23 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -727,7 +727,7 @@ PLUGIN_API void	XPluginStop(void)
 {
   // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
-
+  XPLMUnregisterCommandHandler(MulButtonCommand, MulButtonCommandHandler, 1, NULL);
   XPDestroyWidget(BipWidgetID, 1);
   XPLMDestroyMenu(BipMenuId);
   XPLMDestroyMenu(MultiMenuId);
@@ -977,6 +977,8 @@ int    MulButtonCommandHandler(XPLMCommandRef       inCommand,
                         XPLMCommandPhase     inPhase,
                         void *               inRefcon)
 {
+    (void) inCommand;
+    (void) inRefcon;
 //  If inPhase == 1 the command is executed continuously.
      if (inPhase == 1)
    {
@@ -989,10 +991,6 @@ int    MulButtonCommandHandler(XPLMCommandRef       inCommand,
 
 return 0;
 }
-
-
-
-
 
 // ************************* Panels Callback  *************************
 float	MyPanelsFlightLoopCallback(
@@ -1041,4 +1039,3 @@ float	MyPanelsFlightLoopCallback(
 
   return interval;
 }
-

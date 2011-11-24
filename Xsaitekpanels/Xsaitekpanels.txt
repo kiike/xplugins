@@ -180,7 +180,7 @@ Ver 1.27 Added preference file to allow user adjustable defaults. Changed master
 
 Ver 1.28 Found a bug introduced in the last update with the ACT/STBY on the radio panels. Thanks Pasquale Faraco.
 
-Ver 1.28 Added hi speed multipiler for the multi panel silver knob. The multiplier is selected from the xsaitekpanels > multi menu selection. The hi speed command can be mapped under Joystick,keys&equipment.
+Ver 1.29 Added hi speed multipiler for the multi panel silver knob. The multiplier is selected from the xsaitekpanels > multi menu selection. The hi speed command can be mapped under Joystick,keys&equipment.
 
 
 Bill

@@ -54,8 +54,6 @@ static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
 
 static unsigned char multibuf[4];
 static unsigned char multiwbuf[13];
-static unsigned char lastmultiwbuf[13];
-
 
 // ***** Multi Panel Process ******
 void process_multi_panel()
@@ -491,7 +489,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
             if (crsdbncinc > multispeed) {
-                n = (multimul * 5);
+                n = (multimul * 10);
                 if (mulbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApCrsUp);
@@ -500,7 +498,7 @@ if (multiseldis == 5) {
                     crsdbncinc = 0;
                 }
                 if(mulbutton == 0) {
-                    n = (multimul * 1);
+                    n = (multimul * 2);
                     while (n>0) {
                       XPLMCommandOnce(ApCrsUp);
                       --n;
@@ -512,7 +510,7 @@ if (multiseldis == 5) {
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
             if (crsdbncdec > multispeed) {
-                n = (multimul * 5);
+                n = (multimul * 10);
                 if (mulbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApCrsDn);
@@ -522,7 +520,7 @@ if (multiseldis == 5) {
 
                 }
                 if(mulbutton == 0) {
-                    n = (multimul * 1);
+                    n = (multimul * 2);
                     while (n>0) {
                        XPLMCommandOnce(ApCrsDn);
                        --n;

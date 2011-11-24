@@ -20,8 +20,6 @@
 static int radnum = 0, radionowrite[4] = {0, 0, 0, 0};
 static int radiores = 0;
 
-static int radiochange[4], radioloop[4];
-
 static int updmepushed = 0, lodmepushed = 0;
 static int updmeloop = 0, lodmeloop = 0;
 static int uplastdmepos = 0, lolastdmepos = 0;
@@ -110,7 +108,6 @@ static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8;
 
 static unsigned char radiobuf[4][4];
 static unsigned char radiowbuf[4][23];
-static unsigned char lastradiowbuf[4][23];
 
 void process_upper_nav_com_freq();
 void process_lower_nav_com_freq();
@@ -162,8 +159,6 @@ void process_radio_panel()
     if (radspeed != 5) {
       XPLMCheckMenuItem(RadioMenuId, 6, xplm_Menu_Unchecked);
     }
-
-
     if (numadf == 1) {
       XPLMCheckMenuItem(RadioMenuId, 8, xplm_Menu_Checked);
     }
@@ -176,9 +171,6 @@ void process_radio_panel()
     if (numadf != 2) {
       XPLMCheckMenuItem(RadioMenuId, 9, xplm_Menu_Unchecked);
     }
-
-
-
 
   // *************** Upper Display info **********************
 
@@ -345,7 +337,6 @@ void process_radio_panel()
       radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
       radiobdig5 = radiobrem4;
     }
-
 
   }
 
@@ -524,7 +515,6 @@ void process_radio_panel()
       radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
       radioddig5 = radiodrem4;
     }
-
   
   }
 

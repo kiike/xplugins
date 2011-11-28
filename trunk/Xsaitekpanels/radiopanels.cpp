@@ -54,9 +54,9 @@ static int upnav1dbnccorinc[4] = {0, 0, 0, 0}, upnav1dbnccordec[4] = {0, 0, 0, 0
 static int upnav2dbncfninc[4] = {0, 0, 0, 0}, upnav2dbncfndec[4] = {0, 0, 0, 0};
 static int upnav2dbnccorinc[4] = {0, 0, 0, 0}, upnav2dbnccordec[4] = {0, 0, 0, 0};
 static int upadfdbncfninc[4] = {0, 0, 0, 0}, upadfdbncfndec[4] = {0, 0, 0, 0};
-static int upadfdbnccorinc[4] = {0, 0, 0, 0};
+static int upadfdbnccorinc[4] = {0, 0, 0, 0}, upadfdbnccordec[4] = {0, 0, 0, 0};
 static int upxpdrdbncfninc[4] = {0, 0, 0, 0}, upxpdrdbncfndec[4] = {0, 0, 0, 0};
-static int upxpdrdbnccorinc[4] = {0, 0, 0, 0};
+static int upxpdrdbnccorinc[4] = {0, 0, 0, 0}, upxpdrdbnccordec[4] = {0, 0, 0, 0};
 
 static int locom1dbncfninc[4] = {0, 0, 0, 0}, locom1dbncfndec[4] = {0, 0, 0, 0};
 static int locom1dbnccorinc[4] = {0, 0, 0, 0}, locom1dbnccordec[4] = {0, 0, 0, 0};
@@ -67,9 +67,9 @@ static int lonav1dbnccorinc[4] = {0, 0, 0, 0}, lonav1dbnccordec[4] = {0, 0, 0, 0
 static int lonav2dbncfninc[4] = {0, 0, 0, 0}, lonav2dbncfndec[4] = {0, 0, 0, 0};
 static int lonav2dbnccorinc[4] = {0, 0, 0, 0}, lonav2dbnccordec[4] = {0, 0, 0, 0};
 static int loadfdbncfninc[4] = {0, 0, 0, 0}, loadfdbncfndec[4] = {0, 0, 0, 0};
-static int loadfdbnccorinc[4] = {0, 0, 0, 0};
+static int loadfdbnccorinc[4] = {0, 0, 0, 0}, loadfdbnccordec[4] = {0, 0, 0, 0};
 static int loxpdrdbncfninc[4] = {0, 0, 0, 0}, loxpdrdbncfndec[4] = {0, 0, 0, 0};
-static int loxpdrdbnccorinc[4] = {0, 0, 0, 0};
+static int loxpdrdbnccorinc[4] = {0, 0, 0, 0}, loxpdrdbnccordec[4] = {0, 0, 0, 0};
 
 static float updmedistf[4], lodmedistf[4];
 static float updmenav1speedf[4], updmenav2speedf[4], lodmenav1speedf[4], lodmenav2speedf[4];
@@ -814,9 +814,11 @@ void process_radio_panel()
               }
             }
           }
+
+  // Use the Coarse knob to select digit in the up direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
             upadfdbnccorinc[radnum] ++;
-            if(upadfdbnccorinc[radnum] == 4) {
+            if(upadfdbnccorinc[radnum] == 3) {
               upadfsel[radnum] ++;
               upadfdbnccorinc[radnum] = 0;
             }
@@ -824,6 +826,19 @@ void process_radio_panel()
               upadfsel[radnum] = 1;
             }
           }
+
+  // Use the Coarse knob to select digit in the down direction
+          if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
+            upadfdbnccordec[radnum] ++;
+            if(upadfdbnccordec[radnum] == 3) {
+              upadfsel[radnum] --;
+              upadfdbnccordec[radnum] = 0;
+            }
+            if (upadfsel[radnum] == 0) {
+              upadfsel[radnum] = 3;
+            }
+          }
+
           if(testbit(radiobuf[radnum],UPPER_ACT_STBY)) {
             XPLMCommandOnce(Adf1ActStby);
           }
@@ -989,8 +1004,6 @@ void process_radio_panel()
 
 	}
 
-
-
         else if (upxpdrsel[radnum] == 2) { 
 	  if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
 	    upxpdrdbncfninc[radnum]++;
@@ -1045,21 +1058,30 @@ void process_radio_panel()
 
         }
 
-
+  // Use the Coarse knob to select digit in the up direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
             upxpdrdbnccorinc[radnum]++;
             if(upxpdrdbnccorinc[radnum] == 3) {
                upxpdrsel[radnum] ++;
                upxpdrdbnccorinc[radnum] = 0;
             }
-
             if (upxpdrsel[radnum] == 5) {
 	      upxpdrsel[radnum] = 1;
 	    }
 	  }
+  // Use the Coarse knob to select digit in the down direction
+          if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
+            upxpdrdbnccordec[radnum]++;
+            if(upxpdrdbnccordec[radnum] == 3) {
+               upxpdrsel[radnum] --;
+               upxpdrdbnccordec[radnum] = 0;
+            }
+            if (upxpdrsel[radnum] == 0) {
+              upxpdrsel[radnum] = 4;
+            }
+          }
 
-
-        }
+      }
     upxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
     }
 
@@ -1289,9 +1311,11 @@ void process_radio_panel()
                 }
               }
           }
+
+  // Use the Coarse knob to select digit in the up direction
           if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
             loadfdbnccorinc[radnum] ++;
-            if(loadfdbnccorinc[radnum] == 4) {
+            if(loadfdbnccorinc[radnum] == 3) {
               loadfsel[radnum] ++;
               loadfdbnccorinc[radnum] = 0;
             }
@@ -1299,17 +1323,28 @@ void process_radio_panel()
               loadfsel[radnum] = 1;
             }
           }
+  // Use the Coarse knob to select digit in the down direction
+          if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+            loadfdbnccordec[radnum] ++;
+            if(loadfdbnccordec[radnum] == 3) {
+              loadfsel[radnum] --;
+              loadfdbnccordec[radnum] = 0;
+            }
+            if (loadfsel[radnum] == 0) {
+              loadfsel[radnum] = 3;
+            }
+          }
+
           if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {
             XPLMCommandOnce(Adf1ActStby);
           }
-
-
-        }
+         }
         loactadffreq[radnum] = XPLMGetDatai(Adf1ActFreq);
         lostbyadffreq[radnum] = XPLMGetDatai(Adf1StbyFreq);
 
       }
 
+// Second ADF on the lower position
       if (numadf == 2) {
         if (radiores > 0) {
           if (loadfsel[radnum] == 1) {
@@ -1362,11 +1397,12 @@ void process_radio_panel()
                 }
               }
 
-
           }
+
+  // Use the Coarse knob to select digit in the up direction
             if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
               loadfdbnccorinc[radnum] ++;
-              if(loadfdbnccorinc[radnum] == 4) {
+              if(loadfdbnccorinc[radnum] == 3) {
                 loadfsel[radnum] ++;
                 loadfdbnccorinc[radnum] = 0;
               }
@@ -1374,6 +1410,19 @@ void process_radio_panel()
                 loadfsel[radnum] = 1;
               }
             }
+
+   // Use the Coarse knob to select digit in the down direction
+            if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+              loadfdbnccordec[radnum] ++;
+              if(loadfdbnccordec[radnum] == 3) {
+                loadfsel[radnum] --;
+                loadfdbnccordec[radnum] = 0;
+              }
+              if (loadfsel[radnum] == 0) {
+                loadfsel[radnum] = 3;
+              }
+            }
+
             if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {
               XPLMCommandOnce(Adf2ActStby);
             }
@@ -1592,7 +1641,7 @@ void process_radio_panel()
 
          }
 
-
+// Use the Coarse knob to select digit in the up direction
            if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
              loxpdrdbnccorinc[radnum]++;
              if(loxpdrdbnccorinc[radnum] == 3) {
@@ -1604,8 +1653,18 @@ void process_radio_panel()
                loxpdrsel[radnum] = 1;
              }
            }
+// Use the Coarse knob to select digit in the up direction
+           if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+             loxpdrdbnccordec[radnum]++;
+             if(loxpdrdbnccordec[radnum] == 3) {
+                loxpdrsel[radnum] --;
+                loxpdrdbnccordec[radnum] = 0;
+             }
 
-
+             if (loxpdrsel[radnum] == 0) {
+               loxpdrsel[radnum] = 4;
+             }
+           }
 
 
 

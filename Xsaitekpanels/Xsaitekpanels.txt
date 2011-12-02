@@ -1,3 +1,5 @@
+Xsaitekpanels Ver 1.30
+
 Thanks to Alan Ott's HIDAPI (https://github.com/signal11/hidapi) I am able to now support Linux, Windows and Mac with my plugin Xsaitekpanels. 
 
 Many thanks go to the following people who throughout this long process allowed me to get my plugin to this point. Sandy Barbour, Tom Sedge, Michal (uglyDwarf), Philipp, Stefan Oberender, Andy Goldstein, Bernhard (JaXXoN), Fabio, Marcos Lemos and Steven King.
@@ -136,19 +138,21 @@ Supported platforms at this release are Patched Ubuntu 10.10, Patched 11.04, and
 
 Windows
 
-Supported and tested platforms at this release is Windows XP, Windows 7 and X-Plane 9.69 & 9.70. I would like to add more but I will have to get feedback as to what versions of Windows this is running on.
+Supported and tested platforms at this release is Windows XP, Windows 7 and X-Plane 9.69 & 9.70. I would like to add more but I will have to get feedback as to what versions of Windows this is running on. When X-Plane initialy loads the radio and the multi panel may be dark. This is because initialy the switches are not read so do not know what to display. Move any switch on the radio or multi panel and if the battery and avionics switch are on they should display the appropriate. 
 
 *******************************************************************************************************************
 
 Mac
 
-Thanks to Marcos Lemos and Steven King I now have support for the Mac.I am sure that OSX 10.7 Lion Intel Only is working at this point in time and now have a successful user with a switch and radio panel on a MacBook Pro that has OSX 10.6.8 on it (Thanks Sandy). Looking forward to feedback from other Mac users.
+Thanks to Marcos Lemos and Steven King I now have support for the Mac.I am sure that OSX 10.7 Lion Intel Only is working at this point in time and now have a successful user with a switch and radio panel on a MacBook Pro that has OSX 10.6.8 on it (Thanks Sandy). Looking forward to feedback from other Mac users.  When X-Plane initialy loads the radio and the multi panel may be dark. This is because initialy the switches are not read so do not know what to display. Move any switch on the radio or multi panel and if the battery and avionics switch are on they should display the appropriate.
 
 ********************************************************************************************************************
 
 This project and my projects going forward will be open source and reside at http://code.google.com/p/xplugins/source/checkout for anyone interested in how A HID plugin is created for all platforms.
 
 **********************************************************************************************************************
+
+How to install.
 
 This is a fat plugin so the folder named Xsaitekpanels which have a lin.xpl, win.xpl, mac.xpl, xsaitekpanels.prf and D2B_config.txt in it and needs to reside in /Resources/plugins/ folder. 
 
@@ -180,9 +184,8 @@ Ver 1.27 Added preference file to allow user adjustable defaults. Changed master
 
 Ver 1.28 Found a bug introduced in the last update with the ACT/STBY on the radio panels. Thanks Pasquale Faraco.
 
-Ver 1.29 Added hi speed multipiler for the multi panel silver knob. The multiplier is selected from the xsaitekpanels > multi menu selection. The hi speed command can be mapped under Joystick,keys&equipment.
+Ver 1.29 Added high speed multiplier for the multi panel silver knob. The multiplier is selected from the xsaitekpanels > multi menu selection. The high speed command can be mapped under Joystick,keys&equipment.
 
+Ver 1.30 Corrected the AFD and XPDR digit selection to work in both directions. Before it only worked in the increase direction. 
 
 Bill
-
-

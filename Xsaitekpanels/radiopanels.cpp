@@ -816,7 +816,7 @@ void process_radio_panel()
           }
 
   // Use the Coarse knob to select digit in the up direction
-          if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
+          if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
             upadfdbnccorinc[radnum] ++;
             if(upadfdbnccorinc[radnum] == 3) {
               upadfsel[radnum] ++;
@@ -828,7 +828,7 @@ void process_radio_panel()
           }
 
   // Use the Coarse knob to select digit in the down direction
-          if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
+          if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
             upadfdbnccordec[radnum] ++;
             if(upadfdbnccordec[radnum] == 3) {
               upadfsel[radnum] --;
@@ -1059,7 +1059,7 @@ void process_radio_panel()
         }
 
   // Use the Coarse knob to select digit in the up direction
-          if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
+          if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
             upxpdrdbnccorinc[radnum]++;
             if(upxpdrdbnccorinc[radnum] == 3) {
                upxpdrsel[radnum] ++;
@@ -1070,7 +1070,7 @@ void process_radio_panel()
 	    }
 	  }
   // Use the Coarse knob to select digit in the down direction
-          if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
+          if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
             upxpdrdbnccordec[radnum]++;
             if(upxpdrdbnccordec[radnum] == 3) {
                upxpdrsel[radnum] --;
@@ -1313,7 +1313,7 @@ void process_radio_panel()
           }
 
   // Use the Coarse knob to select digit in the up direction
-          if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
+          if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
             loadfdbnccorinc[radnum] ++;
             if(loadfdbnccorinc[radnum] == 3) {
               loadfsel[radnum] ++;
@@ -1324,7 +1324,7 @@ void process_radio_panel()
             }
           }
   // Use the Coarse knob to select digit in the down direction
-          if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+          if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
             loadfdbnccordec[radnum] ++;
             if(loadfdbnccordec[radnum] == 3) {
               loadfsel[radnum] --;
@@ -1400,7 +1400,7 @@ void process_radio_panel()
           }
 
   // Use the Coarse knob to select digit in the up direction
-            if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
+            if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
               loadfdbnccorinc[radnum] ++;
               if(loadfdbnccorinc[radnum] == 3) {
                 loadfsel[radnum] ++;
@@ -1412,7 +1412,7 @@ void process_radio_panel()
             }
 
    // Use the Coarse knob to select digit in the down direction
-            if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+            if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
               loadfdbnccordec[radnum] ++;
               if(loadfdbnccordec[radnum] == 3) {
                 loadfsel[radnum] --;
@@ -1642,7 +1642,7 @@ void process_radio_panel()
          }
 
 // Use the Coarse knob to select digit in the up direction
-           if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
+           if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
              loxpdrdbnccorinc[radnum]++;
              if(loxpdrdbnccorinc[radnum] == 3) {
                 loxpdrsel[radnum] ++;
@@ -1654,7 +1654,7 @@ void process_radio_panel()
              }
            }
 // Use the Coarse knob to select digit in the up direction
-           if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+           if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
              loxpdrdbnccordec[radnum]++;
              if(loxpdrdbnccordec[radnum] == 3) {
                 loxpdrsel[radnum] --;

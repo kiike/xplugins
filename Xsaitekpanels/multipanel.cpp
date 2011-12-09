@@ -444,93 +444,74 @@ if (multiseldis == 5) {
 
 	if(testbit(multibuf,HDG_SWITCH)) {
           multiseldis = 3;
+          upaphdgf = XPLMGetDataf(ApHdg);
+          upaphdg = (int)(upaphdgf);
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    hdgdbncinc++;
-            if (hdgdbncinc > multispeed) {
-                n = multimul;
-                if(mulbutton == 1) {
-                    while (n>0) {
-                       XPLMCommandOnce(ApHdgUp);
-                       --n;
-                    }
+            if (hdgdbncinc > multispeed + 1) {
+                 if(mulbutton == 1) {
+                    upaphdg = upaphdg + multimul;
                     hdgdbncinc = 0;
                  }
                  if(mulbutton == 0) {
-                     XPLMCommandOnce(ApHdgUp);
+                    upaphdg = upaphdg + 1;
                      hdgdbncinc = 0;
                  }
 	    }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    hdgdbncdec++;
-            if (hdgdbncdec > multispeed) {
-                n = 5;
+            if (hdgdbncdec > multispeed + 1) {
                 if(mulbutton == 1) {
-                    while (n>0) {
-                      XPLMCommandOnce(ApHdgDn);
-                      --n;
-                    }
+                    upaphdg = upaphdg - multimul;
                     hdgdbncdec = 0;
                 }
                 if(mulbutton == 0) {
-                    XPLMCommandOnce(ApHdgDn);
+                    upaphdg = upaphdg - 1;
                     hdgdbncdec = 0;
                 }
 	    }
 	  }
-	  upaphdgf = XPLMGetDataf(ApHdg);
-	  upaphdg = (int)(upaphdgf);
+          upaphdgf = upaphdg;
+          XPLMSetDataf(ApHdg, upaphdgf);
+
 	}
 
 // ***************** CRS Switch Position *******************
 
 	if(testbit(multibuf,CRS_SWITCH)) {
           multiseldis = 4;
+          upapcrsf = XPLMGetDataf(ApCrs);
+          upapcrs = (int)(upapcrsf);
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
-            if (crsdbncinc > multispeed) {
-                n = (multimul * 10);
-                if (mulbutton == 1) {
-                    while (n>0) {
-                       XPLMCommandOnce(ApCrsUp);
-                       --n;
-                    }
+            if (crsdbncinc > multispeed + 1) {
+                 if (mulbutton == 1) {
+                    upapcrs = upapcrs + multimul;
                     crsdbncinc = 0;
                 }
                 if(mulbutton == 0) {
-                    n = (multimul * 2);
-                    while (n>0) {
-                      XPLMCommandOnce(ApCrsUp);
-                      --n;
-                    }
+                    upapcrs = upapcrs + 1;
                     crsdbncinc = 0;
                 }
              }
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
-            if (crsdbncdec > multispeed) {
-                n = (multimul * 10);
+            if (crsdbncdec > multispeed + 1) {
                 if (mulbutton == 1) {
-                    while (n>0) {
-                       XPLMCommandOnce(ApCrsDn);
-                       --n;
-                    }
+                    upapcrs = upapcrs - multimul;
                     crsdbncdec = 0;
-
                 }
                 if(mulbutton == 0) {
-                    n = (multimul * 2);
-                    while (n>0) {
-                       XPLMCommandOnce(ApCrsDn);
-                       --n;
-                     }
-                     crsdbncdec = 0;
+                    upapcrs = upapcrs - 1;
+                    crsdbncdec = 0;
                 }
             }
           }
-          upapcrsf = XPLMGetDataf(ApCrs);
-          upapcrs = (int)(upapcrsf);
+          upapcrsf = upapcrs;
+          XPLMSetDataf(ApCrs, upapcrsf);
+
 	}
 
 // ***************** Auto Throttle Switch Position *******************

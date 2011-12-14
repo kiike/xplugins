@@ -1,4 +1,4 @@
-Xsaitekpanels Ver 1.30
+Xsaitekpanels Ver 1.31
 
 Thanks to Alan Ott's HIDAPI (https://github.com/signal11/hidapi) I am able to now support Linux, Windows and Mac with my plugin Xsaitekpanels. 
 
@@ -186,6 +186,8 @@ Ver 1.28 Found a bug introduced in the last update with the ACT/STBY on the radi
 
 Ver 1.29 Added high speed multiplier for the multi panel silver knob. The multiplier is selected from the xsaitekpanels > multi menu selection. The high speed command can be mapped under Joystick,keys&equipment.
 
-Ver 1.30 Corrected the AFD and XPDR digit selection to work in both directions. Before it only worked in the increase direction. 
+Ver 1.30 Corrected the AFD and XPDR digit selection to work in both directions. Before it only worked in the increase direction.
+
+Ver 1.31 Corrected the AFD and XPDR digit selection so clockwise is right and counter is left. Improved the CRS and HDG adjustments. Removed adjustable multiplier from multi panel and included a X 10 multiplier. 
 
 Bill

@@ -210,6 +210,8 @@ bool ReadConfigFile(string PlaneICAO);
 int             XsaitekpanelsMenuItem;
 int             BipMenuItem;
 
+int Fps, multi_auto_mul;
+
 void process_radio_panel();
 void process_multi_panel();
 void process_switch_panel();
@@ -988,6 +990,31 @@ float	MyPanelsFlightLoopCallback(
     (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
     (void) inCounter; // To get rid of warnings on unused variables
     (void) inRefcon; // To get rid of warnings on unused variables
+
+
+  Fps = 1 / XPLMGetDataf(Frp);
+  printf("Frame per Second %d\n", Fps);
+
+  if(Fps < 200){
+      multi_auto_mul = 3;
+  }
+
+  if(Fps < 150){
+      multi_auto_mul = 2;
+  }
+
+  if(Fps < 100){
+      multi_auto_mul = 1;
+  }
+
+  if(Fps < 50){
+      multi_auto_mul = 0;
+  }
+
+  printf("muli_auto_mul %d\n", multi_auto_mul);
+
+
+
 
   if(radcnt > 0){
     process_radio_panel();

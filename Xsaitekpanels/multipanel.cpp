@@ -57,11 +57,10 @@ static int ADJUSTMENT_UP = 2, ADJUSTMENT_DN = 1;
 static unsigned char multibuf[4];
 static unsigned char multiwbuf[13];
 
-// ***** Multi Panel Process ******
-void process_multi_panel()
 
+void process_menu()
 {
-
+   //!!! I'm pretty sure this would be much better placed in initialization function of the plugin
     XPLMClearAllMenuItems(MultiMenuId);
     XPLMAppendMenuItem(MultiMenuId, "# OF SWITCH PULSES PER COMMAND", (void *) "VOID", 2);
     XPLMAppendMenuSeparator(MultiMenuId);
@@ -75,121 +74,99 @@ void process_multi_panel()
     XPLMAppendMenuItem(MultiMenuId, "TRIM X2", (void *) "TRIM X2", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X3", (void *) "TRIM X3", 2);
 
-    if (multispeed == 1) {
-      XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Checked);
-    }
-    if (multispeed != 1) {
-      XPLMCheckMenuItem(MultiMenuId, 2, xplm_Menu_Unchecked);
-    }
-    if (multispeed == 2) {
-      XPLMCheckMenuItem(MultiMenuId, 3, xplm_Menu_Checked);
-    }
-    if (multispeed != 2) {
-      XPLMCheckMenuItem(MultiMenuId, 3, xplm_Menu_Unchecked);
-    }
-    if (multispeed == 3) {
-      XPLMCheckMenuItem(MultiMenuId, 4, xplm_Menu_Checked);
-    }
-    if (multispeed != 3) {
-      XPLMCheckMenuItem(MultiMenuId, 4, xplm_Menu_Unchecked);
-    }
-    if (multispeed == 4) {
-      XPLMCheckMenuItem(MultiMenuId, 5, xplm_Menu_Checked);
-    }
-    if (multispeed != 4) {
-      XPLMCheckMenuItem(MultiMenuId, 5, xplm_Menu_Unchecked);
-    }
-    if (multispeed == 5) {
-      XPLMCheckMenuItem(MultiMenuId, 6, xplm_Menu_Checked);
-    }
-    if (multispeed != 5) {
-      XPLMCheckMenuItem(MultiMenuId, 6, xplm_Menu_Unchecked);
-    }
-
-    if (trimspeed == 1) {
-       XPLMCheckMenuItem(MultiMenuId, 8, xplm_Menu_Checked);
-    }
-    if (trimspeed != 1) {
-       XPLMCheckMenuItem(MultiMenuId, 8, xplm_Menu_Unchecked);
-    }
-    if (trimspeed == 2) {
-       XPLMCheckMenuItem(MultiMenuId, 9, xplm_Menu_Checked);
-    }
-    if (trimspeed != 2) {
-       XPLMCheckMenuItem(MultiMenuId, 9, xplm_Menu_Unchecked);
-    }
-    if (trimspeed == 3) {
-       XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Checked);
-    }
-    if (trimspeed != 3) {
-       XPLMCheckMenuItem(MultiMenuId, 10, xplm_Menu_Unchecked);
-    }
-
-
-// ***** Setup Display for ALT or VS Switch Position *********
-if (multiseldis == 1) { 
-
-  multiaactv = upapalt;
-  multiadig1 = multiaactv/10000, multiarem1 = multiaactv%10000;
-  multiadig2 = multiarem1 /1000, multiarem2 = multiarem1%1000;
-  multiadig3 = multiarem2/100, multiarem3 = multiarem2%100;
-  multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
-  multiadig5 = multiarem4;
-  multibstby = upapvs;
-
-  if (neg == 1) {
-    multibdig1 = 254;
-  }
-  else {
-    multibdig1 = 15;
-  }
-
-  multibdig2 = multibstby /1000, multibrem2 = multibstby%1000;
-  multibdig3 = multibrem2/100, multibrem3 = multibrem2%100;
-  multibdig4 = multibrem3/10, multibrem4 = multibrem3%10;
-  multibdig5 = multibrem4;
-
-  }
-
-// ***** Setup Display for IAS Switch Position *********
-if (multiseldis == 2) { 
-  multiaactv = upapas;
-  multiadig1 = 15, multiadig2 = 15 ;
-  multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
-  multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
-  multiadig5 = multiarem4;
-
-  }
-
-// ***** Setup Display for HDG Switch Position *********
-if (multiseldis == 3) { 
-  multiaactv = upaphdg;
-  multiadig1 = 15, multiadig2 = 15 ;
-  multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
-  multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
-  multiadig5 = multiarem4;
-
-  }
-
-// ***** Setup Display for CRS Switch Position *********
-if (multiseldis == 4) { 
-  multiaactv = upapcrs;
-  multiadig1 = 15, multiadig2 = 15 ;
-  multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
-  multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
-  multiadig5 = multiarem4;
-
-  }
-
-// ********** Setup the Display to be Blank *******************
-if (multiseldis == 5) { 
+  //!!! I'm adding memory of old setup, so the change is easily detected...
+  //!!! Although I'm pretty sure it would be much better to handle this in the menu callback
+  static int last_multispeed = -1;
+  static int last_trimspeed = -1;
+  int i;
   
-  multiadig1 = 15, multiadig2 = 15, multiadig3 = 15, multiadig4 = 15, multiadig5 = 15;
-  multibdig1 = 15, multibdig2 = 15, multibdig3 = 15, multibdig4 = 15, multibdig5 = 15;
-  btnleds = 0;
+  const int MMENU_BASE = 1;
+  const int TMENU_BASE = 7;
+  
+  //if(multispeed != last_multispeed){
+    //last_multispeed = multispeed;
+   // XPLMCheckMenuItem(MultiMenuId, multispeed + MMENU_BASE, xplm_Menu_Checked);
+    for(i = 1; i <= 5; ++i){
+      if(i != multispeed){
+        XPLMCheckMenuItem(MultiMenuId, i + MMENU_BASE, xplm_Menu_Unchecked);
+      }
+      if(i == multispeed){
+        XPLMCheckMenuItem(MultiMenuId, i + MMENU_BASE, xplm_Menu_Checked);
+      }
+    }
+  //}
+  
+  //if(trimspeed != last_trimspeed){
+    //last_trimspeed = trimspeed;
+    //XPLMCheckMenuItem(MultiMenuId, trimspeed + TMENU_BASE, xplm_Menu_Checked);
+    for(i = 1; i <= 3; ++i){
+      if(i != trimspeed){
+        XPLMCheckMenuItem(MultiMenuId, i + TMENU_BASE, xplm_Menu_Unchecked);
+      }
+      if(i == trimspeed){
+        XPLMCheckMenuItem(MultiMenuId, i + TMENU_BASE, xplm_Menu_Checked);
+      }
+    }
+  //}
+}
 
+
+void process_display()
+{
+  switch(multiseldis){
+    case 1:
+    // ***** Setup Display for ALT or VS Switch Position *********
+      multiaactv = upapalt;
+      multiadig1 = multiaactv/10000, multiarem1 = multiaactv%10000;
+      multiadig2 = multiarem1 /1000, multiarem2 = multiarem1%1000;
+      multiadig3 = multiarem2/100, multiarem3 = multiarem2%100;
+      multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
+      multiadig5 = multiarem4;
+      multibstby = upapvs;
+      
+      if (neg == 1) {
+        multibdig1 = 254;
+      } else {
+        multibdig1 = 15;
+      }
+      
+      multibdig2 = multibstby /1000, multibrem2 = multibstby%1000;
+      multibdig3 = multibrem2/100, multibrem3 = multibrem2%100;
+      multibdig4 = multibrem3/10, multibrem4 = multibrem3%10;
+      multibdig5 = multibrem4;
+      break;
+    case 2:
+    // ***** Setup Display for IAS Switch Position *********
+      multiaactv = upapas;
+      multiadig1 = 15, multiadig2 = 15 ;
+      multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
+      multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
+      multiadig5 = multiarem4;
+      break;
+    case 3:
+    // ***** Setup Display for HDG Switch Position *********
+      multiaactv = upaphdg;
+      multiadig1 = 15, multiadig2 = 15 ;
+      multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
+      multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
+      multiadig5 = multiarem4;
+      break;
+    case 4:
+    // ***** Setup Display for CRS Switch Position *********
+      multiaactv = upapcrs;
+      multiadig1 = 15, multiadig2 = 15 ;
+      multiadig3 = multiaactv/100, multiarem3 = multiaactv%100;
+      multiadig4 = multiarem3/10, multiarem4 = multiarem3%10;
+      multiadig5 = multiarem4;
+      break;
+    case 5:
+    default:
+    // ********** Setup the Display to be Blank *******************
+      multiadig1 = 15, multiadig2 = 15, multiadig3 = 15, multiadig4 = 15, multiadig5 = 15;
+      multibdig1 = 15, multibdig2 = 15, multibdig3 = 15, multibdig4 = 15, multibdig5 = 15;
+      btnleds = 0;
+      break;
   }
-
 // ****** Make Message One Digit at A Time and Turn on Button LEDS  *******
   char multiadigit1 = multiadig1, multiadigit2 = multiadig2, multiadigit3 = multiadig3;
   char multiadigit4 = multiadig4, multiadigit5 = multiadig5;
@@ -204,50 +181,10 @@ if (multiseldis == 5) {
   multiwbuf[6] = multibdigit1, multiwbuf[7] = multibdigit2, multiwbuf[8] = multibdigit3;
   multiwbuf[9] = multibdigit4, multiwbuf[10] = multibdigit5, multiwbuf[11] = cdigit1;
 
+}
 
-// ******* Only do a read if something new to be read ********
-
-  hid_set_nonblocking(multihandle, 1);
-  multires = hid_read(multihandle, multibuf, sizeof(multibuf));
-  if (multires > 0) {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
-      multinowrite = 1;
-  }
-
- // **** Trying to only write on changes ****
-  if (lastmultiseldis == multiseldis) {
-  }
-  else {
-      if (multinowrite == 1) {
-      }
-      else {
-          mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
-          multinowrite = 1;
-          lastmultiseldis = multiseldis;
-      }
-  }
-
-  if (lastbtnleds == btnleds) {
-  }
-  else {
-      if (multinowrite == 1) {
-      }
-      else {
-          mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
-          multinowrite = 1;
-          lastbtnleds = btnleds;
-      }
-  }
-
-  if (multinowrite == 50) {
-      mulres = hid_send_feature_report(multihandle, multiwbuf, 13);
-      multinowrite = 0;
-  }
-  else {
-      multinowrite++;
-  }
-
-
+void process_alt_switch()
+{
 // ***************** ALT Switch Position *******************
 
 	if(testbit(multibuf,ALT_SWITCH)) {
@@ -304,7 +241,10 @@ if (multiseldis == 5) {
           }
 
 	}
+}
 
+void process_vs_switch()
+{
 // ***************** VS Switch Position *******************
 
 	if(testbit(multibuf,VS_SWITCH)) {
@@ -357,7 +297,10 @@ if (multiseldis == 5) {
 	    neg = 0;
 	  }
 	}
+}
 
+void process_ias_switch()
+{
 // ***************** IAS Switch Position *******************
 
         if(testbit(multibuf,IAS_SWITCH)) {
@@ -401,8 +344,10 @@ if (multiseldis == 5) {
           upapasf = XPLMGetDataf(ApAs);
           upapas = (int)(upapasf);
         }
+}
 
-
+void process_hdg_switch()
+{
 // ***************** HDG Switch Position *******************
 
 	if(testbit(multibuf,HDG_SWITCH)) {
@@ -439,7 +384,10 @@ if (multiseldis == 5) {
           XPLMSetDataf(ApHdg, upaphdgf);
 
 	}
+}
 
+void process_crs_switch()
+{
 // ***************** CRS Switch Position *******************
 
 	if(testbit(multibuf,CRS_SWITCH)) {
@@ -476,40 +424,42 @@ if (multiseldis == 5) {
           XPLMSetDataf(ApCrs, upapcrsf);
 
 	}
+}
 
+void process_autothrottle_switch()
+{
 // ***************** Auto Throttle Switch Position *******************
 
         if(testbit(multibuf,AUTO_THROTTLE_SWITCH)) {
-          if (loaded737 == 0){
-             XPLMCommandOnce(ApAutThrOn);
-          }
           if (loaded737 == 1){
              XPLMSetDatai(x737athr_armed, 1);
+          }else{
+             XPLMCommandOnce(ApAutThrOn);
           }
         }
         else {
-           if (loaded737 == 0){
-             XPLMCommandOnce(ApAutThrOff);
-           }
            if (loaded737 == 1){
              XPLMSetDatai(x737athr_armed, 0);
+           }else{
+             XPLMCommandOnce(ApAutThrOff);
            }
          }
+}
 
+void process_ap_master_switch()
+{
 // ***************** AP Master Button and light *******************
 
         if (appushed == 0) {
-          if (XPLMGetDatai(ApMstrStat) == 0) {
+          switch(XPLMGetDatai(ApMstrStat)){
+            case 0:
              if(testbit(multibuf, AP_MASTER_BUTTON)) {
                 XPLMSetDatai(ApMstrStat, 1);
                 appushed = 1;
                 lastappos = 1;
               }
-          }
-        }
-
-        if (appushed == 0) {
-          if (XPLMGetDatai(ApMstrStat) == 1) {
+              break;
+            case 1:
              if(testbit(multibuf, AP_MASTER_BUTTON)) {
                  if (lastappos == 1){
                    XPLMSetDatai(ApMstrStat, 2);
@@ -520,16 +470,14 @@ if (multiseldis == 5) {
                      appushed = 1;
                  }
               }
-          }
-        }
-
-        if (appushed == 0) {
-          if (XPLMGetDatai(ApMstrStat) == 2) {
+              break;
+            case 2:
               if(testbit(multibuf, AP_MASTER_BUTTON)) {
                  XPLMSetDatai(ApMstrStat, 1);
                  appushed = 1;
                  lastappos = 2;
               }
+              break;
           }
         }
 
@@ -541,23 +489,26 @@ if (multiseldis == 5) {
             }
 
         }
-
-
-	if (XPLMGetDatai(ApMstrStat) == 0) {
-          btnleds &= ~(1<<0);   // * clear bit 0 in btnleds to 0 *
-	}
-	if (XPLMGetDatai(ApMstrStat) == 1) {
-	  if (flashon == 1) {
-            btnleds |= (1<<0);   // * set bit 0 in btnleds to 1 *
-	  }
-	  if (flashon == 0) {   
+        
+        switch(XPLMGetDatai(ApMstrStat)){
+          case 0:
             btnleds &= ~(1<<0);   // * clear bit 0 in btnleds to 0 *
-	  }
-	}
-	if (XPLMGetDatai(ApMstrStat) == 2) {
-          btnleds |= (1<<0);   // * set bit 0 in btnleds to 1 *
-	}
+            break;
+          case 1:
+	    if (flashon == 1) {
+              btnleds |= (1<<0);   // * set bit 0 in btnleds to 1 *
+	    }else{   
+              btnleds &= ~(1<<0);   // * clear bit 0 in btnleds to 0 *
+	    }
+            break;
+          case 2:
+            btnleds |= (1<<0);   // * set bit 0 in btnleds to 1 *
+            break;
+        }
+}
 
+void process_hdg_button()
+{
 // ***************** HDG Button and light *******************
 
         if (multires > 0) {
@@ -566,25 +517,29 @@ if (multiseldis == 5) {
             lastappos = 1;
           }
         }
-
-	if (XPLMGetDatai(ApHdgStat) == 2) {
-          btnleds |= (1<<1);   // * set bit 1 in btnleds to 1 *
-	}
-	if (XPLMGetDatai(ApHdgStat) == 1) {
-	  if (flashon == 1) {
+        
+        switch(XPLMGetDatai(ApHdgStat)){
+          case 2:
             btnleds |= (1<<1);   // * set bit 1 in btnleds to 1 *
-	  }
-	  if (flashon == 0) {   
+            break;
+          case 1:
+            if (flashon == 1) {
+              btnleds |= (1<<1);   // * set bit 1 in btnleds to 1 *
+	    }else{   
+              btnleds &= ~(1<<1);   // * clear bit 1 in btnleds to 0 *
+	    }
+            break;
+          case 0:
             btnleds &= ~(1<<1);   // * clear bit 1 in btnleds to 0 *
-	  }
-	}
-	if (XPLMGetDatai(ApHdgStat) == 0) {
-          btnleds &= ~(1<<1);   // * clear bit 1 in btnleds to 0 *
-	}
+            break;
+        }
 	if (XPLMGetDatai(ApMstrStat) == 0) {
           btnleds &= ~(1<<1);   // * clear bit 1 in btnleds to 0 *
 	}
+}
 
+void process_nav_button()
+{
 // ***************** NAV Button and light *******************
 
         if (multires > 0) {
@@ -594,21 +549,25 @@ if (multiseldis == 5) {
           }
         }
 
-	if (XPLMGetDatai(ApNavStat) == 2) {
-          btnleds |= (1<<2);   // * set bit 2 in btnleds to 1 *
-	}
-	if (XPLMGetDatai(ApNavStat) == 1) {
-	  if (flashon == 1) {
-            btnleds |= (1<<2);   // * set bit 1 in btnleds to 1 *
-	  }
-	  if (flashon == 0) {   
+	switch(XPLMGetDatai(ApNavStat)){
+	  case 2:
+            btnleds |= (1<<2);   // * set bit 2 in btnleds to 1 *
+            break;
+          case 1:
+	    if (flashon == 1) {
+              btnleds |= (1<<2);   // * set bit 1 in btnleds to 1 *
+	    }else{
+              btnleds &= ~(1<<2);   // * clear bit 2 in btnleds to 0 *
+	    }
+	    break;
+	  case 0:
             btnleds &= ~(1<<2);   // * clear bit 2 in btnleds to 0 *
-	  }
+	    break;
 	}
-	if (XPLMGetDatai(ApNavStat) == 0) {
-          btnleds &= ~(1<<2);   // * clear bit 2 in btnleds to 0 *
-	}
+}
 
+void process_ias_button()
+{
 // ***************** IAS Button and light *******************
 
         if (multires > 0) {
@@ -617,21 +576,26 @@ if (multiseldis == 5) {
             lastappos = 1;
           }
         }
-        if (XPLMGetDatai(ApIasStat) == 2) {
-          btnleds |= (1<<3);   // * set bit 3 in btnleds to 1 *
-        }
-        if (XPLMGetDatai(ApIasStat) == 1) {
-          if (flashon == 1) {
+        switch(XPLMGetDatai(ApIasStat)){
+          case 2:
             btnleds |= (1<<3);   // * set bit 3 in btnleds to 1 *
-          }
-          if (flashon == 0) {
+            break;
+          case 1:
+            if (flashon == 1) {
+              btnleds |= (1<<3);   // * set bit 3 in btnleds to 1 *
+            }
+            if (flashon == 0) {
+              btnleds &= ~(1<<3);   // * clear bit 3 in btnleds to 0 *
+            }
+            break;
+          case 0:
             btnleds &= ~(1<<3);   // * clear bit 3 in btnleds to 0 *
-          }
+            break;
         }
-        if (XPLMGetDatai(ApIasStat) == 0) {
-          btnleds &= ~(1<<3);   // * clear bit 3 in btnleds to 0 *
-        }
+}
 
+void process_alt_button()
+{
 // ***************** ALT Button and light *******************
 
         if (multires > 0) {
@@ -640,23 +604,29 @@ if (multiseldis == 5) {
            lastappos = 1;
           }
         }
-	if (XPLMGetDatai(ApAltStat) == 2) {
-          btnleds |= (1<<4);   // * set bit 4 in btnleds to 1 *
-	} 
-	if (XPLMGetDatai(ApAltStat) == 1) {
-	  if (flashon == 1) {
+	switch(XPLMGetDatai(ApAltStat)){
+	  case 2:
             btnleds |= (1<<4);   // * set bit 4 in btnleds to 1 *
-	  }  
-	  if (flashon == 0) {    
+            break;
+          case 1:
+	    if (flashon == 1) {
+              btnleds |= (1<<4);   // * set bit 4 in btnleds to 1 *
+	    }else{    
+              btnleds &= ~(1<<4);   // * clear bit 4 in btnleds to 0 *
+	    }
+            break;
+          case 0:
             btnleds &= ~(1<<4);   // * clear bit 4 in btnleds to 0 *
-	  }
-	}
-	if (XPLMGetDatai(ApAltStat) == 0) {
-          btnleds &= ~(1<<4);   // * clear bit 4 in btnleds to 0 *
-	}
+            break;
+	} 
+	
 	if (XPLMGetDatai(ApMstrStat) == 0) {
           btnleds &= ~(1<<4);   // * clear bit 4 in btnleds to 0 *
 	}
+}
+
+void process_vs_button()
+{
 // ***************** VS Button and light *******************
 
         if (multires > 0) {
@@ -665,21 +635,25 @@ if (multiseldis == 5) {
             lastappos = 1;
           }
         }
-	if (XPLMGetDatai(ApVsStat) == 2) {
-          btnleds |= (1<<5);   // * set bit 5 in btnleds to 1 *
-	} 
-	if (XPLMGetDatai(ApVsStat) == 1) {
-	  if (flashon == 0) {
+	switch(XPLMGetDatai(ApVsStat)){
+	  case 2:
             btnleds |= (1<<5);   // * set bit 5 in btnleds to 1 *
-	  } 
-	  if (flashon == 1) {   
+            break;
+          case 1:
+	    if (flashon == 0) {
+              btnleds |= (1<<5);   // * set bit 5 in btnleds to 1 *
+	    }else{   
+              btnleds &= ~(1<<5);   // * clear bit 5 in btnleds to 0 *
+	    }
+            break;
+          case 0:
             btnleds &= ~(1<<5);   // * clear bit 5 in btnleds to 0 *
-	  }
-	}
-	if (XPLMGetDatai(ApVsStat) == 0) {
-          btnleds &= ~(1<<5);   // * clear bit 5 in btnleds to 0 *
-	}
+            break;
+	} 
+}
 
+void process_apr_button()
+{
 // ***************** APR Button and light *******************
 
         if (multires > 0) {
@@ -688,21 +662,25 @@ if (multiseldis == 5) {
             lastappos = 1;
           }
         }
-	if (XPLMGetDatai(ApAprStat) == 2) {
-          btnleds |= (1<<6);   // * set bit 6 in btnleds to 1 *
-	} 
-	if (XPLMGetDatai(ApAprStat) == 1) {
-	  if (flashon == 1) {
+	switch(XPLMGetDatai(ApAprStat)){
+	  case 2:
             btnleds |= (1<<6);   // * set bit 6 in btnleds to 1 *
-	  } 
-	  if (flashon == 0) {   
+            break;
+          case 1:
+	    if (flashon == 1) {
+              btnleds |= (1<<6);   // * set bit 6 in btnleds to 1 *
+	    }else{   
+              btnleds &= ~(1<<6);   // * clear bit 6 in btnleds to 0 *
+	    }
+            break;
+          case 0:
             btnleds &= ~(1<<6);   // * clear bit 6 in btnleds to 0 *
-	  }
-	}
-	if (XPLMGetDatai(ApAprStat) == 0) {
-          btnleds &= ~(1<<6);   // * clear bit 6 in btnleds to 0 *
-	}
+            break;
+	} 
+}
 
+void process_rev_button()
+{
 // ***************** REV Button and light *******************
 
         if (multires > 0) {
@@ -711,91 +689,119 @@ if (multiseldis == 5) {
             lastappos = 1;
           }
         }
-	if (XPLMGetDatai(ApRevStat) == 2) {
-          btnleds |= (1<<7);   // * set bit 7 in btnleds to 1 *
-	} 
-	if (XPLMGetDatai(ApRevStat) == 1) {
-	  if (flashon == 1) {
+	switch(XPLMGetDatai(ApRevStat)){
+	  case 2:
             btnleds |= (1<<7);   // * set bit 7 in btnleds to 1 *
-	  } 
-	  if (flashon == 0) {    
+            break;
+          case 1:
+	    if (flashon == 1) {
+              btnleds |= (1<<7);   // * set bit 7 in btnleds to 1 *
+	    }else{    
+              btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
+	    }
+            break;
+          case 0:
             btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
-	  }
-	}
-	if (XPLMGetDatai(ApRevStat) == 0) {
-          btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
-	}
+            break;
+	} 
+}
 
+void process_flaps_switch()
+{
 // ***************** Flaps Switch *******************
 
         if (multires > 0) {
 	  if(testbit(multibuf,FLAPS_UP_SWITCH)) {
 	    XPLMCommandOnce(FlapsUp);	 
           }
-        }
-        if (multires > 0) {
 	  if(testbit(multibuf,FLAPS_DN_SWITCH)) {
 	    XPLMCommandOnce(FlapsDn);	 
 	  }
         }
+}
 
+void process_trim_wheel()
+{
 // *************** Trim Wheel *********************
-
+  int i;
         if (multires > 0) {
 	  if(testbit(multibuf,TRIM_WHEEL_UP)) {
-            if(trimspeed == 1){
+	    for(i = 0; i < trimspeed; ++i){
               XPLMCommandOnce(PitchTrimUp);
-            }
-            if(trimspeed == 2){
-              XPLMCommandOnce(PitchTrimUp);
-              XPLMCommandOnce(PitchTrimUp);
-            }
-            if(trimspeed == 3){
-              XPLMCommandOnce(PitchTrimUp);
-              XPLMCommandOnce(PitchTrimUp);
-              XPLMCommandOnce(PitchTrimUp);
-            }
+	    }
 	  }	
-	}
-        if (multires > 0) {
-
 	  if(testbit(multibuf,TRIM_WHEEL_DN)) {
-            if(trimspeed == 1){
-              XPLMCommandOnce(PitchTrimDn);
-            }
-            if(trimspeed == 2){
-              XPLMCommandOnce(PitchTrimDn);
-              XPLMCommandOnce(PitchTrimDn);
-            }
-            if(trimspeed == 3){
-              XPLMCommandOnce(PitchTrimDn);
-              XPLMCommandOnce(PitchTrimDn);
+	    for(i = 0; i < trimspeed; ++i){
               XPLMCommandOnce(PitchTrimDn);
             }
 	  }
 	}
+}
 
-// ***************** Flasher for Button LEDS *******************
 
-	flashcnt++;	
-	if (flashcnt < 50) {
-	  flashon = 0;
-	}
-	if (flashcnt > 50) {
-	  flashon = 1;
-	}	
-	if (flashcnt == 100) {
-	  flashcnt = 0;
-	}
 
-// ***************** Blank Display *******************
 
-	if (XPLMGetDatai(AvPwrOn) == 0) {
-          multiseldis = 5;	  
-	}
-	if (XPLMGetDatai(BatPwrOn) == 0) {
-          multiseldis = 5;	  
-	}
+// ***** Multi Panel Process ******
+void process_multi_panel()
 
+{
+  process_menu();
+
+// ******* Only do a read if something new to be read ********
+  hid_set_nonblocking(multihandle, 1);
+  int safety_cntr = 30;
+  do{
+    multires = hid_read(multihandle, multibuf, sizeof(multibuf));
+    
+    process_alt_switch();
+    process_vs_switch();
+    process_ias_switch();
+    process_hdg_switch();
+    process_crs_switch();
+    process_autothrottle_switch();
+    process_ap_master_switch();
+    process_hdg_button();
+    process_nav_button();
+    process_ias_button();
+    process_alt_button();
+    process_vs_button();
+    process_apr_button();
+    process_rev_button();
+    process_flaps_switch();
+    process_trim_wheel();
+    --safety_cntr;
+  }while((multires > 0) && (safety_cntr > 0));
+  // ***************** Flasher for Button LEDS *******************
+
+  flashcnt++;	
+  if (flashcnt < 50) {
+    flashon = 0;
+  }
+  if (flashcnt > 50) {
+    flashon = 1;
+  }	
+  if (flashcnt == 100) {
+    flashcnt = 0;
+  }
+  // ***************** Blank Display *******************
+
+  if (XPLMGetDatai(AvPwrOn) == 0) {
+    multiseldis = 5;	  
+  }
+  if (XPLMGetDatai(BatPwrOn) == 0) {
+    multiseldis = 5;	  
+  }
+
+  process_display();
+  
+// ******* Write on changes or timeout ********
+  if ((lastmultiseldis != multiseldis) || (lastbtnleds != btnleds) || (multinowrite > 50)) {
+      mulres = hid_send_feature_report(multihandle, multiwbuf, sizeof(multiwbuf));
+      multinowrite = 1;
+      lastmultiseldis = multiseldis;
+      lastbtnleds = btnleds;
+  }else{
+      multinowrite++;
+  }
   return;
 }

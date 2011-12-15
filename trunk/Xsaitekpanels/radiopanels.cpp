@@ -1832,7 +1832,14 @@ void process_radio_panel()
     process_lower_adf_switch();
     process_lower_dme_switch();
     process_lower_xpdr_switch();
+    if(radiores > 0){
+        process_radio_blank_display();
 
+        process_radio_upper_display();
+        process_radio_lower_display();
+        process_radio_make_message();
+        hid_send_feature_report(radiohandle[radnum], radiowbuf[radnum], sizeof(radiowbuf[radnum]));
+    }
     --radio_safety_cntr;
   }while((radiores > 0) && (radio_safety_cntr > 0));
 

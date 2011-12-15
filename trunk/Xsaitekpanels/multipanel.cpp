@@ -58,7 +58,7 @@ static unsigned char multibuf[4];
 static unsigned char multiwbuf[13];
 
 
-void process_menu()
+void process_multi_menu()
 {
    //!!! I'm pretty sure this would be much better placed in initialization function of the plugin
     XPLMClearAllMenuItems(MultiMenuId);
@@ -111,7 +111,7 @@ void process_menu()
 }
 
 
-void process_display()
+void process_multi_display()
 {
   switch(multiseldis){
     case 1:
@@ -356,7 +356,7 @@ void process_hdg_switch()
           upaphdg = (int)(upaphdgf);
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    hdgdbncinc++;
-            if (hdgdbncinc > multispeed + 1) {
+            if (hdgdbncinc > multispeed) {
                  if(mulbutton == 1) {
                     upaphdg = upaphdg + multimul;
                     hdgdbncinc = 0;
@@ -369,7 +369,7 @@ void process_hdg_switch()
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    hdgdbncdec++;
-            if (hdgdbncdec > multispeed + 1) {
+            if (hdgdbncdec > multispeed) {
                 if(mulbutton == 1) {
                     upaphdg = upaphdg - multimul;
                     hdgdbncdec = 0;
@@ -396,7 +396,7 @@ void process_crs_switch()
           upapcrs = (int)(upapcrsf);
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
-            if (crsdbncinc > multispeed + 1) {
+            if (crsdbncinc > multispeed) {
                  if (mulbutton == 1) {
                     upapcrs = upapcrs + multimul;
                     crsdbncinc = 0;
@@ -409,7 +409,7 @@ void process_crs_switch()
 	  }
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
-            if (crsdbncdec > multispeed + 1) {
+            if (crsdbncdec > multispeed) {
                 if (mulbutton == 1) {
                     upapcrs = upapcrs - multimul;
                     crsdbncdec = 0;
@@ -745,11 +745,11 @@ void process_trim_wheel()
 void process_multi_panel()
 
 {
-  process_menu();
+  process_multi_menu();
 
 // ******* Only do a read if something new to be read ********
   hid_set_nonblocking(multihandle, 1);
-  int safety_cntr = 30;
+  int multi_safety_cntr = 30;
   do{
     multires = hid_read(multihandle, multibuf, sizeof(multibuf));
     
@@ -769,8 +769,8 @@ void process_multi_panel()
     process_rev_button();
     process_flaps_switch();
     process_trim_wheel();
-    --safety_cntr;
-  }while((multires > 0) && (safety_cntr > 0));
+    --multi_safety_cntr;
+  }while((multires > 0) && (multi_safety_cntr > 0));
   // ***************** Flasher for Button LEDS *******************
 
   flashcnt++;	
@@ -792,7 +792,7 @@ void process_multi_panel()
     multiseldis = 5;	  
   }
 
-  process_display();
+  process_multi_display();
   
 // ******* Write on changes or timeout ********
   if ((lastmultiseldis != multiseldis) || (lastbtnleds != btnleds) || (multinowrite > 50)) {

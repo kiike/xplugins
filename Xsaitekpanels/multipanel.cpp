@@ -76,8 +76,8 @@ void process_multi_menu()
 
   //!!! I'm adding memory of old setup, so the change is easily detected...
   //!!! Although I'm pretty sure it would be much better to handle this in the menu callback
-  static int last_multispeed = -1;
-  static int last_trimspeed = -1;
+  //static int last_multispeed = -1;
+  //static int last_trimspeed = -1;
   int i;
   
   const int MMENU_BASE = 1;
@@ -738,7 +738,34 @@ void process_trim_wheel()
 	}
 }
 
+void process_multi_flash()
+{
+// ***************** Flasher for Button LEDS *******************
 
+flashcnt++;
+if (flashcnt < 50) {
+  flashon = 0;
+}
+if (flashcnt > 50) {
+  flashon = 1;
+}
+if (flashcnt == 100) {
+  flashcnt = 0;
+}
+}
+
+void process_multi_blank_display()
+{
+// ***************** Blank Display *******************
+
+if (XPLMGetDatai(AvPwrOn) == 0) {
+  multiseldis = 5;
+}
+if (XPLMGetDatai(BatPwrOn) == 0) {
+  multiseldis = 5;
+}
+
+}
 
 
 // ***** Multi Panel Process ******
@@ -769,29 +796,17 @@ void process_multi_panel()
     process_rev_button();
     process_flaps_switch();
     process_trim_wheel();
+    if(multires > 0){
+       process_multi_flash();
+       process_multi_blank_display();
+       process_multi_display();
+       hid_send_feature_report(multihandle, multiwbuf, sizeof(multiwbuf));
+    }
     --multi_safety_cntr;
   }while((multires > 0) && (multi_safety_cntr > 0));
-  // ***************** Flasher for Button LEDS *******************
 
-  flashcnt++;	
-  if (flashcnt < 50) {
-    flashon = 0;
-  }
-  if (flashcnt > 50) {
-    flashon = 1;
-  }	
-  if (flashcnt == 100) {
-    flashcnt = 0;
-  }
-  // ***************** Blank Display *******************
-
-  if (XPLMGetDatai(AvPwrOn) == 0) {
-    multiseldis = 5;	  
-  }
-  if (XPLMGetDatai(BatPwrOn) == 0) {
-    multiseldis = 5;	  
-  }
-
+  process_multi_flash();
+  process_multi_blank_display();
   process_multi_display();
   
 // ******* Write on changes or timeout ********

@@ -992,26 +992,26 @@ float	MyPanelsFlightLoopCallback(
     (void) inRefcon; // To get rid of warnings on unused variables
 
 
-  Fps = 1 / XPLMGetDataf(Frp);
-  printf("Frame per Second %d\n", Fps);
+  //Fps = 1 / XPLMGetDataf(Frp);
+  //printf("Frame per Second %d\n", Fps);
 
-  if(Fps < 200){
-      multi_auto_mul = 3;
-  }
+  //if(Fps < 200){
+  //    multi_auto_mul = 3;
+  //}
 
-  if(Fps < 150){
-      multi_auto_mul = 2;
-  }
+  //if(Fps < 150){
+  //    multi_auto_mul = 2;
+  //}
 
-  if(Fps < 100){
-      multi_auto_mul = 1;
-  }
+  //if(Fps < 100){
+  //    multi_auto_mul = 1;
+  //}
 
-  if(Fps < 50){
-      multi_auto_mul = 0;
-  }
+  //if(Fps < 50){
+ //     multi_auto_mul = 0;
+ // }
 
-  printf("muli_auto_mul %d\n", multi_auto_mul);
+ // printf("muli_auto_mul %d\n", multi_auto_mul);
 
 
 

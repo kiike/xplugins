@@ -363,7 +363,7 @@ void process_hdg_switch()
                  }
                  if(mulbutton == 0) {
                     upaphdg = upaphdg + 1;
-                     hdgdbncinc = 0;
+                    hdgdbncinc = 0;
                  }
 	    }
 	  }

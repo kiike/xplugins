@@ -129,48 +129,30 @@ void process_radio_menu()
     XPLMAppendMenuItem(RadioMenuId, "ONE ADF TUNER", (void *) "ADF1", 1);
     XPLMAppendMenuItem(RadioMenuId, "TWO ADF TUNERS", (void *) "ADF2", 1);
 
-    if (radspeed == 1) {
-      XPLMCheckMenuItem(RadioMenuId, 2, xplm_Menu_Checked);
+    int i;
+
+    const int RMENU_BASE = 1;
+    const int AMENU_BASE = 7;
+
+
+    for(i = 1; i <= 5; ++i){
+      if(i != radspeed){
+        XPLMCheckMenuItem(RadioMenuId, i + RMENU_BASE, xplm_Menu_Unchecked);
+      }
+      if(i == radspeed){
+        XPLMCheckMenuItem(RadioMenuId, i + RMENU_BASE, xplm_Menu_Checked);
+      }
     }
-    if (radspeed != 1) {
-      XPLMCheckMenuItem(RadioMenuId, 2, xplm_Menu_Unchecked);
+
+    for(i = 1; i <= 2; ++i){
+      if(i != numadf){
+        XPLMCheckMenuItem(RadioMenuId, i + AMENU_BASE, xplm_Menu_Unchecked);
+      }
+      if(i == numadf){
+        XPLMCheckMenuItem(RadioMenuId, i + AMENU_BASE, xplm_Menu_Checked);
+      }
     }
-    if (radspeed == 2) {
-      XPLMCheckMenuItem(RadioMenuId, 3, xplm_Menu_Checked);
-    }
-    if (radspeed != 2) {
-      XPLMCheckMenuItem(RadioMenuId, 3, xplm_Menu_Unchecked);
-    }
-    if (radspeed == 3) {
-      XPLMCheckMenuItem(RadioMenuId, 4, xplm_Menu_Checked);
-    }
-    if (radspeed != 3) {
-      XPLMCheckMenuItem(RadioMenuId, 4, xplm_Menu_Unchecked);
-    }
-    if (radspeed == 4) {
-      XPLMCheckMenuItem(RadioMenuId, 5, xplm_Menu_Checked);
-    }
-    if (radspeed != 4) {
-      XPLMCheckMenuItem(RadioMenuId, 5, xplm_Menu_Unchecked);
-    }
-    if (radspeed == 5) {
-      XPLMCheckMenuItem(RadioMenuId, 6, xplm_Menu_Checked);
-    }
-    if (radspeed != 5) {
-      XPLMCheckMenuItem(RadioMenuId, 6, xplm_Menu_Unchecked);
-    }
-    if (numadf == 1) {
-      XPLMCheckMenuItem(RadioMenuId, 8, xplm_Menu_Checked);
-    }
-    if (numadf != 1) {
-      XPLMCheckMenuItem(RadioMenuId, 8, xplm_Menu_Unchecked);
-    }
-    if (numadf == 2) {
-      XPLMCheckMenuItem(RadioMenuId, 9, xplm_Menu_Checked);
-    }
-    if (numadf != 2) {
-      XPLMCheckMenuItem(RadioMenuId, 9, xplm_Menu_Unchecked);
-    }
+
 
 }
 

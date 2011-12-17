@@ -189,20 +189,21 @@ void process_alt_switch()
 
 	if(testbit(multibuf,ALT_SWITCH)) {
           multiseldis = 1;
+          upapaltf = XPLMGetDataf(ApAlt);
+          upapalt = (int)(upapaltf);
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
             altdbncinc++;
             if (altdbncinc > multispeed) {
-                n = 5;
-                if(mulbutton == 1) {
-                    while (n>0) {
-                        XPLMCommandOnce(ApAltUp);
-                        --n;
-                    }
+                 if(mulbutton == 1) {
+                    upapalt = upapalt + 1000;
+                    upapalt = (upapalt / 1000);
+                    upapalt = (upapalt * 1000);
                     altdbncinc = 0;
                 }
                 if (mulbutton == 0) {
-                    XPLMCommandOnce(ApAltUp);
-
+                    upapalt = upapalt + 100;
+                    upapalt = (upapalt / 100);
+                    upapalt = (upapalt * 100);
                     altdbncinc = 0;
                }
             }
@@ -212,25 +213,35 @@ void process_alt_switch()
           if(testbit(multibuf,ADJUSTMENT_DN)) {
              altdbncdec++;
              if (altdbncdec > multispeed) {
-                 n = 5;
                  if(mulbutton == 1) {
-                     while (n>0) {
-                         XPLMCommandOnce(ApAltDn);
-                         --n;
+                     if (upapalt > 1000){
+                         upapalt = upapalt - 1000;
+                     }
+                     if(upapalt > 100){
+                        upapalt = (upapalt / 100);
+                        upapalt = (upapalt * 100);
                      }
                      altdbncdec = 0;
                  }
 
                  if (mulbutton == 0) {
-                     XPLMCommandOnce(ApAltDn);
+                     if (upapalt > 100){
+                         upapalt = upapalt - 100;
+                     }
+                     if(upapalt > 100){
+                        upapalt = (upapalt / 100);
+                        upapalt = (upapalt * 100);
+                     }
                      altdbncdec = 0;
                  }
 
              }
           }
-          upapaltf = XPLMGetDataf(ApAlt);
+
+          upapaltf = upapalt;
+          XPLMSetDataf(ApAlt, upapaltf);
+
           upapvsf = XPLMGetDataf(ApVs);
-          upapalt = (int)(upapaltf);
           upapvs = (int)(upapvsf);
           if (upapvs < 0){
               upapvs = (upapvs * -1);

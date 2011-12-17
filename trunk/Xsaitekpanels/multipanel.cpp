@@ -214,7 +214,7 @@ void process_alt_switch()
              altdbncdec++;
              if (altdbncdec > multispeed) {
                  if(mulbutton == 1) {
-                     if (upapalt > 1000){
+                     if (upapalt >= 1000){
                          upapalt = upapalt - 1000;
                      }
                      if(upapalt > 100){
@@ -225,7 +225,7 @@ void process_alt_switch()
                  }
 
                  if (mulbutton == 0) {
-                     if (upapalt > 100){
+                     if (upapalt >= 100){
                          upapalt = upapalt - 100;
                      }
                      if(upapalt > 100){
@@ -430,6 +430,12 @@ void process_crs_switch()
                     crsdbncdec = 0;
                 }
             }
+          }
+          if(upapcrs > 360){
+              upapcrs = 1;
+          }
+          if(upapcrs < 0){
+              upapcrs = 359;
           }
           upapcrsf = upapcrs;
           XPLMSetDataf(ApCrs, upapcrsf);

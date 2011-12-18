@@ -391,6 +391,12 @@ void process_hdg_switch()
                 }
 	    }
 	  }
+          if(upaphdg > 360){
+              upaphdg = 1;
+          }
+          if(upaphdg < 0){
+              upaphdg = 359;
+          }
           upaphdgf = upaphdg;
           XPLMSetDataf(ApHdg, upaphdgf);
 

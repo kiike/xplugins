@@ -94,13 +94,14 @@ extern XPLMDataRef ApState;
 extern XPLMMenuID      MultiMenu;
 extern XPLMMenuID      MultiMenuId;
 extern XPLMMenuID      Frp;
+extern XPLMMenuID      MHdg;
 
 // **************** Multi Panel variables *******************
 extern int multifd;
 extern int trimspeed, numadf;
 extern int loaded737;
 extern int multispeed;
-extern int mulbutton;
+extern int xpanelsfnbutton;
 extern int multi_auto_mul;
 extern hid_device *multihandle;
 

@@ -35,7 +35,7 @@ static int altdbncinc = 0, altdbncdec = 0, vsdbncinc = 0, vsdbncdec = 0;
 static int iasdbncinc = 0, iasdbncdec = 0, hdgdbncinc = 0, hdgdbncdec = 0;
 static int crsdbncinc = 0, crsdbncdec = 0; 
 
-static float upapaltf, upapvsf, upapasf, upaphdgf, upapcrsf;  
+static float upapaltf, upapvsf, upapasf, upaphdgf, upapcrsf, rhdgf;
 
 static int multiaactv, multiadig1, multiarem1, multiadig2, multiarem2;
 static int multiadig3, multiarem3, multiadig4, multiarem4, multiadig5;
@@ -194,13 +194,13 @@ void process_alt_switch()
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
             altdbncinc++;
             if (altdbncinc > multispeed) {
-                 if(mulbutton == 1) {
+                 if(xpanelsfnbutton == 1) {
                     upapalt = upapalt + 1000;
                     upapalt = (upapalt / 1000);
                     upapalt = (upapalt * 1000);
                     altdbncinc = 0;
                 }
-                if (mulbutton == 0) {
+                if (xpanelsfnbutton == 0) {
                     upapalt = upapalt + 100;
                     upapalt = (upapalt / 100);
                     upapalt = (upapalt * 100);
@@ -213,7 +213,7 @@ void process_alt_switch()
           if(testbit(multibuf,ADJUSTMENT_DN)) {
              altdbncdec++;
              if (altdbncdec > multispeed) {
-                 if(mulbutton == 1) {
+                 if(xpanelsfnbutton == 1) {
                      if (upapalt >= 1000){
                          upapalt = upapalt - 1000;
                      }
@@ -224,7 +224,7 @@ void process_alt_switch()
                      altdbncdec = 0;
                  }
 
-                 if (mulbutton == 0) {
+                 if (xpanelsfnbutton == 0) {
                      if (upapalt >= 100){
                          upapalt = upapalt - 100;
                      }
@@ -264,7 +264,7 @@ void process_vs_switch()
 	    vsdbncinc++;
             if (vsdbncinc > multispeed) {
                 n = multimul;
-                if(mulbutton == 1) {
+                if(xpanelsfnbutton == 1) {
                     while (n>0) {
                         XPLMCommandOnce(ApVsUp);
                         --n;
@@ -272,7 +272,7 @@ void process_vs_switch()
                     vsdbncinc = 0;
                 }
 
-                if(mulbutton == 0) {
+                if(xpanelsfnbutton == 0) {
                     XPLMCommandOnce(ApVsUp);
                     vsdbncinc = 0;
                 }
@@ -282,14 +282,14 @@ void process_vs_switch()
 	    vsdbncdec++;
             if (vsdbncdec > multispeed) {
                 n = multimul;
-                if(mulbutton == 1) {
+                if(xpanelsfnbutton == 1) {
                     while (n>0) {
                         XPLMCommandOnce(ApVsDn);
                         --n;
                     }
                 }
                 vsdbncdec = 0;
-                if(mulbutton == 0) {
+                if(xpanelsfnbutton == 0) {
                     XPLMCommandOnce(ApVsDn);
                     vsdbncdec = 0;
                 }
@@ -320,14 +320,14 @@ void process_ias_switch()
             iasdbncinc++;
             if (iasdbncinc > multispeed) {
                 n = multimul;
-                if(mulbutton == 1) {
+                if(xpanelsfnbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApAsUp);
                        --n;
                     }
                     iasdbncinc = 0;
                 }
-                if(mulbutton == 0) {
+                if(xpanelsfnbutton == 0) {
                     XPLMCommandOnce(ApAsUp);
                     iasdbncinc = 0;
                 }
@@ -337,14 +337,14 @@ void process_ias_switch()
             iasdbncdec++;
             if (iasdbncdec > multispeed) {
                 n = 5;
-                if(mulbutton == 1) {
+                if(xpanelsfnbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApAsDn);
                        --n;
                     }
                     iasdbncdec = 0;
                  }
-                 if(mulbutton == 0) {
+                 if(xpanelsfnbutton == 0) {
                      XPLMCommandOnce(ApAsDn);
                      iasdbncdec = 0;
                  }
@@ -368,11 +368,11 @@ void process_hdg_switch()
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    hdgdbncinc++;
             if (hdgdbncinc > multispeed) {
-                 if(mulbutton == 1) {
+                 if(xpanelsfnbutton == 1) {
                     upaphdg = upaphdg + multimul;
                     hdgdbncinc = 0;
                  }
-                 if(mulbutton == 0) {
+                 if(xpanelsfnbutton == 0) {
                     upaphdg = upaphdg + 1;
                     hdgdbncinc = 0;
                  }
@@ -381,11 +381,11 @@ void process_hdg_switch()
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    hdgdbncdec++;
             if (hdgdbncdec > multispeed) {
-                if(mulbutton == 1) {
+                if(xpanelsfnbutton == 1) {
                     upaphdg = upaphdg - multimul;
                     hdgdbncdec = 0;
                 }
-                if(mulbutton == 0) {
+                if(xpanelsfnbutton == 0) {
                     upaphdg = upaphdg - 1;
                     hdgdbncdec = 0;
                 }
@@ -414,11 +414,11 @@ void process_crs_switch()
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
             if (crsdbncinc > multispeed) {
-                 if (mulbutton == 1) {
+                 if (xpanelsfnbutton == 1) {
                     upapcrs = upapcrs + multimul;
                     crsdbncinc = 0;
                 }
-                if(mulbutton == 0) {
+                if(xpanelsfnbutton == 0) {
                     upapcrs = upapcrs + 1;
                     crsdbncinc = 0;
                 }
@@ -427,11 +427,11 @@ void process_crs_switch()
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
             if (crsdbncdec > multispeed) {
-                if (mulbutton == 1) {
+                if (xpanelsfnbutton == 1) {
                     upapcrs = upapcrs - multimul;
                     crsdbncdec = 0;
                 }
-                if(mulbutton == 0) {
+                if(xpanelsfnbutton == 0) {
                     upapcrs = upapcrs - 1;
                     crsdbncdec = 0;
                 }
@@ -536,8 +536,15 @@ void process_hdg_button()
 
         if (multires > 0) {
           if(testbit(multibuf,HDG_BUTTON)) {
-            XPLMCommandOnce(ApHdgBtn);
-            lastappos = 1;
+
+            if(xpanelsfnbutton == 1) {
+                rhdgf = XPLMGetDataf(MHdg);
+                XPLMSetDataf(ApHdg, rhdgf);
+            }
+            if(xpanelsfnbutton == 0) {
+                XPLMCommandOnce(ApHdgBtn);
+                lastappos = 1;
+            }
           }
         }
         
@@ -681,8 +688,14 @@ void process_apr_button()
 
         if (multires > 0) {
           if(testbit(multibuf,APR_BUTTON)) {
-            XPLMCommandOnce(ApAprBtn);
-            lastappos = 1;
+            if(xpanelsfnbutton == 1) {
+                rhdgf = XPLMGetDataf(MHdg);
+                XPLMSetDataf(ApCrs, rhdgf);
+            }
+            if(xpanelsfnbutton == 0) {
+                XPLMCommandOnce(ApAprBtn);
+                lastappos = 1;
+            }
           }
         }
 	switch(XPLMGetDatai(ApAprStat)){

@@ -44,6 +44,8 @@ XPLMCommandRef	Afd2StbyOnesUp = NULL, Afd2StbyOnesDn = NULL;
 
 XPLMCommandRef	XpdrThUp = NULL, XpdrThDn = NULL, XpdrHunUp = NULL, XpdrHunDn = NULL;
 XPLMCommandRef	XpdrTensUp = NULL, XpdrTensDn = NULL, XpdrOnesUp = NULL, XpdrOnesDn = NULL;
+XPLMCommandRef	BaroUp = NULL, BaroDn = NULL;
+
 
 XPLMCommandRef Com1ActStby = NULL, Com2ActStby = NULL, Nav1ActStby = NULL, Nav2ActStby = NULL;
 XPLMCommandRef Adf1ActStby = NULL, Adf2ActStby = NULL;
@@ -55,7 +57,7 @@ XPLMDataRef Com1StbyFreq = NULL, Com2StbyFreq = NULL, Nav1StbyFreq = NULL, Nav2S
 XPLMDataRef Adf1StbyFreq = NULL, Adf2StbyFreq = NULL;
 XPLMDataRef Adf1ActFreq = NULL, Adf2ActFreq = NULL;
 
-XPLMDataRef XpdrCode = NULL;
+XPLMDataRef XpdrCode = NULL, BaroSetting = NULL;
 
 XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
 XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
@@ -295,7 +297,10 @@ PLUGIN_API int XPluginStart(char *		outName,
   XpdrTensUp	= XPLMFindCommand("sim/transponder/transponder_tens_up");
   XpdrTensDn	= XPLMFindCommand("sim/transponder/transponder_tens_down");
   XpdrOnesUp	= XPLMFindCommand("sim/transponder/transponder_ones_up");
-  XpdrOnesDn	= XPLMFindCommand("sim/transponder/transponder_ones_down");  	
+  XpdrOnesDn	= XPLMFindCommand("sim/transponder/transponder_ones_down");
+
+  BaroUp	= XPLMFindCommand("sim/instruments/barometer_up");
+  BaroDn	= XPLMFindCommand("sim/instruments/barometer_down");
 
   Com1ActStby = XPLMFindCommand("sim/radios/com1_standy_flip");
   Com2ActStby = XPLMFindCommand("sim/radios/com2_standy_flip");
@@ -322,6 +327,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   Adf2ActFreq	= XPLMFindDataRef("sim/cockpit/radios/adf2_freq_hz");
 
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
+  BaroSetting	= XPLMFindDataRef("sim/cockpit/misc/barometer_setting");
+
 
   DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
   DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");

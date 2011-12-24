@@ -36,6 +36,8 @@ static int updmefreqhnd, updmefreqfrc;
 static int lodmefreqhnd, lodmefreqfrc;
 
 static int upxpdrcode[4], loxpdrcode[4];
+static int upbaroset[4], lobaroset[4];
+
 static int updmemode[4], lodmemode[4];
 static int updmesource[4], lodmesource[4];
 static int updmefreq[4], lodmefreq[4];
@@ -57,6 +59,9 @@ static int upadfdbncfninc[4] = {0, 0, 0, 0}, upadfdbncfndec[4] = {0, 0, 0, 0};
 static int upadfdbnccorinc[4] = {0, 0, 0, 0}, upadfdbnccordec[4] = {0, 0, 0, 0};
 static int upxpdrdbncfninc[4] = {0, 0, 0, 0}, upxpdrdbncfndec[4] = {0, 0, 0, 0};
 static int upxpdrdbnccorinc[4] = {0, 0, 0, 0}, upxpdrdbnccordec[4] = {0, 0, 0, 0};
+static int upqnhdbncfninc[4] = {0, 0, 0, 0}, upqnhdbncfndec[4] = {0, 0, 0, 0};
+static int upqnhdbnccorinc[4] = {0, 0, 0, 0}, upqnhdbnccordec[4] = {0, 0, 0, 0};
+
 
 static int locom1dbncfninc[4] = {0, 0, 0, 0}, locom1dbncfndec[4] = {0, 0, 0, 0};
 static int locom1dbnccorinc[4] = {0, 0, 0, 0}, locom1dbnccordec[4] = {0, 0, 0, 0};
@@ -70,12 +75,16 @@ static int loadfdbncfninc[4] = {0, 0, 0, 0}, loadfdbncfndec[4] = {0, 0, 0, 0};
 static int loadfdbnccorinc[4] = {0, 0, 0, 0}, loadfdbnccordec[4] = {0, 0, 0, 0};
 static int loxpdrdbncfninc[4] = {0, 0, 0, 0}, loxpdrdbncfndec[4] = {0, 0, 0, 0};
 static int loxpdrdbnccorinc[4] = {0, 0, 0, 0}, loxpdrdbnccordec[4] = {0, 0, 0, 0};
+static int loqnhdbncfninc[4] = {0, 0, 0, 0}, loqnhdbncfndec[4] = {0, 0, 0, 0};
+static int loqnhdbnccorinc[4] = {0, 0, 0, 0}, loqnhdbnccordec[4] = {0, 0, 0, 0};
 
 static float updmedistf[4], lodmedistf[4];
 static float updmenav1speedf[4], updmenav2speedf[4], lodmenav1speedf[4], lodmenav2speedf[4];
 static float updmespeedf[4], lodmespeedf[4];
 
 static float updmetime[4], lodmetime[4];
+static float upbarosetf[4], lobarosetf[4];
+
 
 static int radioaactv, radioadig1, radioarem1, radioadig2, radioarem2, radioadig3, radioarem3;
 static int radioadig4, radioarem4, radioadig5;
@@ -87,6 +96,8 @@ static int radiodstby, radioddig1, radiodrem1, radioddig2, radiodrem2, radioddig
 static int radioddig4, radiodrem4, radioddig5;
 
 static int upxpdrsel[4] = {1, 1, 1, 1}, loxpdrsel[4] = {1, 1, 1, 1};
+static int upqnhsel[4] = {1, 1, 1, 1}, loqnhsel[4] = {1, 1, 1, 1};
+
 static int upadfsel[4] = {1, 1, 1, 1}, loadfsel[4] = {1, 1, 1, 1};
 
 static int upseldis[4] = {1, 1, 1, 1}, loseldis[4] = {1, 1, 1, 1};
@@ -287,43 +298,86 @@ void process_radio_upper_display()
 
   else if (upseldis[radnum] == 9) {
 
-    if (upxpdrsel[radnum] == 1) {
-      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
-      radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
-      radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
-      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
-      radiobdig5 = radiobrem4,  radiobdig5 = radiobdig5+208;
-    }
+      if(xpanelsfnbutton == 0) {
+          if (upxpdrsel[radnum] == 1) {
+            radioaactv = upbaroset[radnum];
+            radioadig1 = 15, radioadig2 = radioaactv/1000, radioarem2 = radioaactv%1000;
+            radioadig3 = radioarem2/100, radioarem3 = radioarem2%100;
+            radioadig3 = radioadig3+208;
+            radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
+            radioadig5 = radioarem4;
 
-    if (upxpdrsel[radnum] == 2) {
-      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
-      radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
-      radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
-      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
-      radiobdig4 = radiobdig4+208, radiobdig5 = radiobrem4;
-    }
+            radiobstby = upxpdrcode[radnum];
+            radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+            radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
+            radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+            radiobdig5 = radiobrem4,  radiobdig5 = radiobdig5+208;
+          }
 
-    if (upxpdrsel[radnum] == 3) {
-      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
-      radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
-      radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
-      radiobdig3 = radiobdig3+208;
-      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
-      radiobdig5 = radiobrem4;
-    }
+          if (upxpdrsel[radnum] == 2) {
+            radioaactv = upbaroset[radnum];
+            radioadig1 = 15, radioadig2 = radioaactv/1000, radioarem2 = radioaactv%1000;
+            radioadig3 = radioarem2/100, radioarem3 = radioarem2%100;
+            radioadig3 = radioadig3+208;
+            radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
+            radioadig5 = radioarem4;
 
-    if (upxpdrsel[radnum] == 4) {
-      radioadig1 = 15, radioadig2 = 15, radioadig3 = 15, radioadig4 = 15, radioadig5 = 15;
-      radiobstby = upxpdrcode[radnum];
-      radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
-      radiobdig2 = radiobdig2+208;
-      radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
-      radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
-      radiobdig5 = radiobrem4;
-    }
+            radiobstby = upxpdrcode[radnum];
+            radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+            radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
+            radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+            radiobdig4 = radiobdig4+208, radiobdig5 = radiobrem4;
+          }
+
+          if (upxpdrsel[radnum] == 3) {
+            radioaactv = upbaroset[radnum];
+            radioadig1 = 15, radioadig2 = radioaactv/1000, radioarem2 = radioaactv%1000;
+            radioadig3 = radioarem2/100, radioarem3 = radioarem2%100;
+            radioadig3 = radioadig3+208;
+            radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
+            radioadig5 = radioarem4;
+
+            radiobstby = upxpdrcode[radnum];
+            radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+            radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
+            radiobdig3 = radiobdig3+208;
+            radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+            radiobdig5 = radiobrem4;
+          }
+
+          if (upxpdrsel[radnum] == 4) {
+            radioaactv = upbaroset[radnum];
+            radioadig1 = 15, radioadig2 = radioaactv/1000, radioarem2 = radioaactv%1000;
+            radioadig3 = radioarem2/100, radioarem3 = radioarem2%100;
+            radioadig3 = radioadig3+208;
+            radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
+            radioadig5 = radioarem4;
+
+            radiobstby = upxpdrcode[radnum];
+            radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+            radiobdig2 = radiobdig2+208;
+            radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
+            radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+            radiobdig5 = radiobrem4;
+          }
+
+
+      }
+
+      if(xpanelsfnbutton == 1) {
+            radioaactv = upbaroset[radnum];
+            radioadig1 = 15+208, radioadig2 = radioaactv/1000, radioarem2 = radioaactv%1000;
+            radioadig3 = radioarem2/100, radioarem3 = radioarem2%100;
+            radioadig3 = radioadig3+208;
+            radioadig4 = radioarem3/10, radioarem4 = radioarem3%10;
+            radioadig5 = radioarem4;
+
+            radiobstby = upxpdrcode[radnum];
+            radiobdig1 = 15, radiobdig2 = radiobstby/1000, radiobrem2 = radiobstby%1000;
+            radiobdig3 = radiobrem2/100, radiobrem3 = radiobrem2%100;
+            radiobdig4 = radiobrem3/10, radiobrem4 = radiobrem3%10;
+            radiobdig5 = radiobrem4,  radiobdig5 = radiobdig5;
+      }
 
   }
 
@@ -471,43 +525,85 @@ void process_radio_lower_display()
 
   else if (loseldis[radnum] == 9) {
 
-    if (loxpdrsel[radnum] == 1) {
-      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
-      radiodstby = loxpdrcode[radnum];
-      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
-      radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
-      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
-      radioddig5 = radiodrem4, radioddig5 = radioddig5+208;
-    }
+    if(xpanelsfnbutton == 0) {
+      if (loxpdrsel[radnum] == 1) {
+        radiocactv = lobaroset[radnum];
+        radiocdig1 = 15, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
+        radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
+        radiocdig3 = radiocdig3+208;
+        radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
+        radiocdig5 = radiocrem4;
 
-    if (loxpdrsel[radnum] == 2) {
-      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
-      radiodstby = loxpdrcode[radnum];
-      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
-      radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
-      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
-      radioddig4 = radioddig4+208;
-      radioddig5 = radiodrem4;
-    }
+        radiodstby = loxpdrcode[radnum];
+        radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+        radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
+        radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+        radioddig5 = radiodrem4, radioddig5 = radioddig5+208;
+      }
 
-    if (loxpdrsel[radnum] == 3) {
-      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
-      radiodstby = loxpdrcode[radnum];
-      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
-      radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
-      radioddig3 = radioddig3+208;
-      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
-      radioddig5 = radiodrem4;
-    }
+      if (loxpdrsel[radnum] == 2) {
+        radiocactv = lobaroset[radnum];
+        radiocdig1 = 15, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
+        radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
+        radiocdig3 = radiocdig3+208;
+        radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
+        radiocdig5 = radiocrem4;
 
-    if (loxpdrsel[radnum] == 4) {
-      radiocdig1 = 15, radiocdig2 = 15, radiocdig3 = 15, radiocdig4 = 15, radiocdig5 = 15;
-      radiodstby = loxpdrcode[radnum];
-      radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
-      radioddig2 = radioddig2+208;
-      radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
-      radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
-      radioddig5 = radiodrem4;
+        radiodstby = loxpdrcode[radnum];
+        radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+        radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
+        radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+        radioddig4 = radioddig4+208;
+        radioddig5 = radiodrem4;
+      }
+
+      if (loxpdrsel[radnum] == 3) {
+        radiocactv = lobaroset[radnum];
+        radiocdig1 = 15, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
+        radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
+        radiocdig3 = radiocdig3+208;
+        radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
+        radiocdig5 = radiocrem4;
+
+        radiodstby = loxpdrcode[radnum];
+        radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+        radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
+        radioddig3 = radioddig3+208;
+        radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+        radioddig5 = radiodrem4;
+      }
+
+      if (loxpdrsel[radnum] == 4) {
+        radiocactv = lobaroset[radnum];
+        radiocdig1 = 15, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
+        radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
+        radiocdig3 = radiocdig3+208;
+        radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
+        radiocdig5 = radiocrem4;
+
+        radiodstby = loxpdrcode[radnum];
+        radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+        radioddig2 = radioddig2+208;
+        radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
+        radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+        radioddig5 = radiodrem4;
+      }
+
+   }
+
+    if(xpanelsfnbutton == 1) {
+          radiocactv = lobaroset[radnum];
+          radiocdig1 = 15+208, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
+          radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
+          radiocdig3 = radiocdig3+208;
+          radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
+          radiocdig5 = radiocrem4;
+
+          radiodstby = upxpdrcode[radnum];
+          radioddig1 = 15, radioddig2 = radiodstby/1000, radiodrem2 = radiodstby%1000;
+          radioddig3 = radiodrem2/100, radiodrem3 = radiodrem2%100;
+          radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
+          radioddig5 = radiodrem4,  radioddig5 = radioddig5;
     }
   
   }
@@ -973,77 +1069,79 @@ void process_upper_xpdr_switch()
     if(testbit(radiobuf[radnum],UPPER_XPDR)) {
       upseldis[radnum] = 9;
       if (radiores > 0) {
-        if (upxpdrsel[radnum] == 1) {	
-          if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
-            upxpdrdbncfninc[radnum]++;
-            if (upxpdrdbncfninc[radnum] > radspeed) {
-	      XPLMCommandOnce(XpdrOnesUp);
-	      upxpdrdbncfninc[radnum] = 0;
-	    }
-          }
-          if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
-	    upxpdrdbncfndec[radnum]++;
-            if (upxpdrdbncfndec[radnum] > radspeed) {
-	      XPLMCommandOnce(XpdrOnesDn);
-	      upxpdrdbncfndec[radnum] = 0;
-	    }
-          }
-
-	}
-
-        else if (upxpdrsel[radnum] == 2) { 
-	  if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
-	    upxpdrdbncfninc[radnum]++;
-            if (upxpdrdbncfninc[radnum] > radspeed) {
-              XPLMCommandOnce(XpdrTensUp);
-	      upxpdrdbncfninc[radnum] = 0;
-	    }
-          }
-          if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
-	    upxpdrdbncfndec[radnum]++;
-            if (upxpdrdbncfndec[radnum] > radspeed) {
-              XPLMCommandOnce(XpdrTensDn);
-	      upxpdrdbncfndec[radnum] = 0;
-	    }
-          }
-
-        }
-
-        else if (upxpdrsel[radnum] == 3) {
-          if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
-            upxpdrdbncfninc[radnum]++;
-            if (upxpdrdbncfninc[radnum] > radspeed) {
-              XPLMCommandOnce(XpdrHunUp);
-              upxpdrdbncfninc[radnum] = 0;
+// ****** Function button is not pushed  *******
+        if(xpanelsfnbutton == 0) {
+          if (upxpdrsel[radnum] == 1) {
+            if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
+              upxpdrdbncfninc[radnum]++;
+              if (upxpdrdbncfninc[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrOnesUp);
+                upxpdrdbncfninc[radnum] = 0;
+              }
             }
-          }
-          if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
-            upxpdrdbncfndec[radnum]++;
-            if (upxpdrdbncfndec[radnum] > radspeed) {
-              XPLMCommandOnce(XpdrHunDn);
-              upxpdrdbncfndec[radnum] = 0;
+            if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
+              upxpdrdbncfndec[radnum]++;
+              if (upxpdrdbncfndec[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrOnesDn);
+                upxpdrdbncfndec[radnum] = 0;
+              }
             }
+
           }
 
-        }
-
-        else if (upxpdrsel[radnum] == 4) {
-          if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
-            upxpdrdbncfninc[radnum]++;
-            if (upxpdrdbncfninc[radnum] > radspeed) {
-              XPLMCommandOnce(XpdrThUp);
-              upxpdrdbncfninc[radnum] = 0;
+          else if (upxpdrsel[radnum] == 2) {
+            if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
+              upxpdrdbncfninc[radnum]++;
+              if (upxpdrdbncfninc[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrTensUp);
+                upxpdrdbncfninc[radnum] = 0;
+              }
             }
-          }
-          if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
-            upxpdrdbncfndec[radnum]++;
-            if (upxpdrdbncfndec[radnum] > radspeed) {
-              XPLMCommandOnce(XpdrThDn);
-              upxpdrdbncfndec[radnum] = 0;
+            if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
+              upxpdrdbncfndec[radnum]++;
+              if (upxpdrdbncfndec[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrTensDn);
+                upxpdrdbncfndec[radnum] = 0;
+              }
             }
+
           }
 
-        }
+          else if (upxpdrsel[radnum] == 3) {
+            if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
+              upxpdrdbncfninc[radnum]++;
+              if (upxpdrdbncfninc[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrHunUp);
+                upxpdrdbncfninc[radnum] = 0;
+              }
+            }
+            if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
+              upxpdrdbncfndec[radnum]++;
+              if (upxpdrdbncfndec[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrHunDn);
+                upxpdrdbncfndec[radnum] = 0;
+              }
+            }
+
+          }
+
+          else if (upxpdrsel[radnum] == 4) {
+            if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
+              upxpdrdbncfninc[radnum]++;
+              if (upxpdrdbncfninc[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrThUp);
+                upxpdrdbncfninc[radnum] = 0;
+              }
+            }
+            if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
+              upxpdrdbncfndec[radnum]++;
+              if (upxpdrdbncfndec[radnum] > radspeed) {
+                XPLMCommandOnce(XpdrThDn);
+                upxpdrdbncfndec[radnum] = 0;
+              }
+            }
+
+          }
 
   // Use the Coarse knob to select digit in the up direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
@@ -1053,9 +1151,9 @@ void process_upper_xpdr_switch()
                upxpdrdbnccorinc[radnum] = 0;
             }
             if (upxpdrsel[radnum] == 5) {
-	      upxpdrsel[radnum] = 1;
-	    }
-	  }
+              upxpdrsel[radnum] = 1;
+            }
+          }
   // Use the Coarse knob to select digit in the down direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
             upxpdrdbnccordec[radnum]++;
@@ -1067,9 +1165,53 @@ void process_upper_xpdr_switch()
               upxpdrsel[radnum] = 4;
             }
           }
+        }
 
+// ****** Function button is pushed ******
+        if(xpanelsfnbutton == 1) {
+            if(testbit(radiobuf[radnum],UPPER_FINE_UP)) {
+              upqnhdbncfninc[radnum]++;
+              if (upqnhdbncfninc[radnum] > radspeed) {
+                XPLMCommandOnce(BaroUp);
+                upqnhdbncfninc[radnum] = 0;
+              }
+            }
+            if(testbit(radiobuf[radnum],UPPER_FINE_DN)) {
+              upqnhdbncfndec[radnum]++;
+              if (upqnhdbncfndec[radnum] > radspeed) {
+                XPLMCommandOnce(BaroDn);
+                upqnhdbncfndec[radnum] = 0;
+              }
+            }
+
+            if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
+              upqnhdbncfninc[radnum]++;
+              if (upqnhdbncfninc[radnum] > radspeed) {
+                XPLMCommandOnce(BaroUp);
+                XPLMCommandOnce(BaroUp);
+                XPLMCommandOnce(BaroUp);
+                XPLMCommandOnce(BaroUp);
+                upqnhdbncfninc[radnum] = 0;
+              }
+            }
+            if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
+              upqnhdbncfndec[radnum]++;
+              if (upqnhdbncfndec[radnum] > radspeed) {
+                XPLMCommandOnce(BaroDn);
+                XPLMCommandOnce(BaroDn);
+                XPLMCommandOnce(BaroDn);
+                XPLMCommandOnce(BaroDn);
+                upqnhdbncfndec[radnum] = 0;
+              }
+            }
+
+
+        }
       }
-    upxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
+      upxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
+      upbarosetf[radnum] = XPLMGetDataf(BaroSetting);
+      upbarosetf[radnum] = upbarosetf[radnum] * 100.0;
+      upbaroset[radnum] = (int)upbarosetf[radnum];
     }
 
 }
@@ -1592,23 +1734,25 @@ void process_lower_xpdr_switch()
    if(testbit(radiobuf[radnum],LOWER_XPDR)) {
      loseldis[radnum] = 9;
      if (radiores > 0) {
-       if (loxpdrsel[radnum] == 1) {	
-         if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
-	   loxpdrdbncfninc[radnum]++;
-           if (loxpdrdbncfninc[radnum] > radspeed) {
-	     XPLMCommandOnce(XpdrOnesUp);
-	     loxpdrdbncfninc[radnum] = 0;
-	   }
+// ****** Function button is not pushed  *******
+       if(xpanelsfnbutton == 0) {
+         if (loxpdrsel[radnum] == 1) {
+           if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
+             loxpdrdbncfninc[radnum]++;
+             if (loxpdrdbncfninc[radnum] > radspeed) {
+               XPLMCommandOnce(XpdrOnesUp);
+               loxpdrdbncfninc[radnum] = 0;
+             }
+           }
+           if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+             loxpdrdbncfndec[radnum]++;
+             if (loxpdrdbncfndec[radnum] > radspeed) {
+               XPLMCommandOnce(XpdrOnesDn);
+               loxpdrdbncfndec[radnum] = 0;
+             }
+           }
          }
-         if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
-	   loxpdrdbncfndec[radnum]++;
-           if (loxpdrdbncfndec[radnum] > radspeed) {
-	     XPLMCommandOnce(XpdrOnesDn);
-	     loxpdrdbncfndec[radnum] = 0;
-	   }
-         }
-        }
-         if (loxpdrsel[radnum] == 2) {	
+         if (loxpdrsel[radnum] == 2) {
            if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
 	     loxpdrdbncfninc[radnum]++;
              if (loxpdrdbncfninc[radnum] > radspeed) {
@@ -1663,35 +1807,83 @@ void process_lower_xpdr_switch()
          }
 
 // Use the Coarse knob to select digit in the up direction
-           if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
-             loxpdrdbnccorinc[radnum]++;
-             if(loxpdrdbnccorinc[radnum] == 3) {
-                loxpdrsel[radnum] ++;
-                loxpdrdbnccorinc[radnum] = 0;
-             }
-
-             if (loxpdrsel[radnum] == 5) {
-               loxpdrsel[radnum] = 1;
-             }
-           }
-// Use the Coarse knob to select digit in the up direction
-           if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
-             loxpdrdbnccordec[radnum]++;
-             if(loxpdrdbnccordec[radnum] == 3) {
-                loxpdrsel[radnum] --;
-                loxpdrdbnccordec[radnum] = 0;
-             }
-
-             if (loxpdrsel[radnum] == 0) {
-               loxpdrsel[radnum] = 4;
-             }
+         if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+           loxpdrdbnccorinc[radnum]++;
+           if(loxpdrdbnccorinc[radnum] == 3) {
+              loxpdrsel[radnum] ++;
+              loxpdrdbnccorinc[radnum] = 0;
            }
 
-
-
+           if (loxpdrsel[radnum] == 5) {
+             loxpdrsel[radnum] = 1;
+           }
          }
-    loxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
-    }
+// Use the Coarse knob to select digit in the up direction
+         if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
+           loxpdrdbnccordec[radnum]++;
+           if(loxpdrdbnccordec[radnum] == 3) {
+              loxpdrsel[radnum] --;
+              loxpdrdbnccordec[radnum] = 0;
+           }
+
+           if (loxpdrsel[radnum] == 0) {
+             loxpdrsel[radnum] = 4;
+           }
+         }
+
+       }
+
+ // ****** Function button is pushed  *******
+        if(xpanelsfnbutton == 1) {
+          if(testbit(radiobuf[radnum],LOWER_FINE_UP)) {
+            loqnhdbncfninc[radnum]++;
+            if (loqnhdbncfninc[radnum] > radspeed) {
+              XPLMCommandOnce(BaroUp);
+              loqnhdbncfninc[radnum] = 0;
+            }
+          }
+          if(testbit(radiobuf[radnum],LOWER_FINE_DN)) {
+            loqnhdbncfndec[radnum]++;
+            if (loqnhdbncfndec[radnum] > radspeed) {
+              XPLMCommandOnce(BaroDn);
+              loqnhdbncfndec[radnum] = 0;
+            }
+          }
+
+          if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
+            loqnhdbncfninc[radnum]++;
+            if (loqnhdbncfninc[radnum] > radspeed) {
+              XPLMCommandOnce(BaroUp);
+              XPLMCommandOnce(BaroUp);
+              XPLMCommandOnce(BaroUp);
+              XPLMCommandOnce(BaroUp);
+              XPLMCommandOnce(BaroUp);
+              loqnhdbncfninc[radnum] = 0;
+            }
+          }
+          if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+            loqnhdbncfndec[radnum]++;
+            if (loqnhdbncfndec[radnum] > radspeed) {
+              XPLMCommandOnce(BaroDn);
+              XPLMCommandOnce(BaroDn);
+              XPLMCommandOnce(BaroDn);
+              XPLMCommandOnce(BaroDn);
+              XPLMCommandOnce(BaroDn);
+              loqnhdbncfndec[radnum] = 0;
+            }
+          }
+
+
+        }
+
+
+     }
+     loxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
+     lobarosetf[radnum] = XPLMGetDataf(BaroSetting);
+     lobarosetf[radnum] = lobarosetf[radnum] * 100.0;
+     lobaroset[radnum] = (int)lobarosetf[radnum];
+
+   }
 
 }
 void process_radio_blank_display()

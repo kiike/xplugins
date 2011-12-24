@@ -28,7 +28,7 @@ extern XPLMCommandRef Afd2StbyOnesUp, Afd2StbyOnesDn;
 
 extern XPLMCommandRef XpdrThUp, XpdrThDn, XpdrHunUp, XpdrHunDn;
 extern XPLMCommandRef XpdrTensUp, XpdrTensDn, XpdrOnesUp, XpdrOnesDn;
-extern XPLMCommandRef BaroUp, BaroDn;
+extern XPLMCommandRef BaroUp, BaroDn, BaroStd;
 
 extern XPLMCommandRef Com1ActStby, Com2ActStby, Nav1ActStby, Nav2ActStby;
 extern XPLMCommandRef Adf1ActStby, Adf2ActStby;
@@ -40,7 +40,7 @@ extern XPLMDataRef Com1StbyFreq, Com2StbyFreq, Nav1StbyFreq, Nav2StbyFreq;
 extern XPLMDataRef Adf1StbyFreq, Adf2StbyFreq;
 extern XPLMDataRef Adf1ActFreq, Adf2ActFreq;
 
-extern XPLMDataRef XpdrCode, BaroSetting;
+extern XPLMDataRef XpdrCode, XpdrMode, BaroSetting;
 extern XPLMDataRef DmeMode, DmeSlvSource;
 extern XPLMDataRef Nav1DmeNmDist, Nav1DmeSpeed;
 extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed;

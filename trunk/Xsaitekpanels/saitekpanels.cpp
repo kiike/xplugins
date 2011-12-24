@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.31   ***************
-// ****** Dec 09 2011   **************
+// ******** ver 1.32   ***************
+// ****** Dec 23 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -84,7 +84,7 @@ XPLMCommandRef ApVsBtn = NULL, ApAprBtn = NULL, ApRevBtn = NULL;
 XPLMCommandRef ApAutThrOn = NULL, ApAutThrOff = NULL, FlapsDn = NULL, FlapsUp = NULL;
 XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
-XPLMCommandRef MulButtonCommand = NULL;
+XPLMCommandRef xpanelsfnbuttonCommand = NULL;
 
 // ***************** Multi Panel Data Ref *********************
 XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL;
@@ -93,7 +93,7 @@ XPLMDataRef ApMstrStat = NULL, ApHdgStat = NULL, ApNavStat = NULL, ApIasStat = N
 XPLMDataRef ApAltStat = NULL, ApVsStat = NULL, ApAprStat = NULL, ApRevStat = NULL;
 XPLMDataRef x737athr_armed = NULL, x737swBatBus = NULL, x737stbyPwr = NULL;
 XPLMDataRef ApState = NULL;
-XPLMDataRef Frp = NULL;
+XPLMDataRef Frp = NULL, MHdg = NULL;
 
 XPLMMenuID      MultiMenu;
 XPLMMenuID      MultiMenuId;
@@ -180,7 +180,7 @@ int loaded737 = 0;
 
 int trimspeed, multispeed;
 
-int mulbutton = 0;
+int xpanelsfnbutton = 0;
 
 hid_device *multihandle;
 
@@ -225,7 +225,7 @@ float	MyPanelsFlightLoopCallback(
                                    int                  inCounter,    
                                    void *               inRefcon);
 
-int    MulButtonCommandHandler(XPLMCommandRef       inCommand,          //  custom command handler
+int    xpanelsfnbuttonCommandHandler(XPLMCommandRef       inCommand,          //  custom command handler
                                XPLMCommandPhase     inPhase,
                                void *               inRefcon);
 
@@ -249,7 +249,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.31");
+  strcpy(outName, "Xsaitekpanels v1.32");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -375,7 +375,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   FlapsDn = XPLMFindCommand("sim/flight_controls/flaps_down");
   FlapsUp = XPLMFindCommand("sim/flight_controls/flaps_up");
 
-  MulButtonCommand = XPLMCreateCommand("xplugins/xsaitekpanels/mul_button","Mul Button");
+  xpanelsfnbuttonCommand = XPLMCreateCommand("xplugins/xsaitekpanels/x_panels_fn_button","Xpanels Fn Button");
 
 
 // **************** Find Multi Panel Data Ref ********************
@@ -399,6 +399,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   AvPwrOn = XPLMFindDataRef("sim/cockpit/electrical/avionics_on");
   BatPwrOn = XPLMFindDataRef("sim/cockpit/electrical/battery_on");
   Frp = XPLMFindDataRef("sim/operation/misc/frame_rate_period");
+
+  MHdg = XPLMFindDataRef("sim/flightmodel/position/magpsi");
 
 
 
@@ -618,8 +620,8 @@ PLUGIN_API int XPluginStart(char *		outName,
                         NULL);				// * refcon not used. *
 
   // Register our custom commands
-  XPLMRegisterCommandHandler(MulButtonCommand,           // in Command name
-                             MulButtonCommandHandler,    // in Handler
+  XPLMRegisterCommandHandler(xpanelsfnbuttonCommand,           // in Command name
+                             xpanelsfnbuttonCommandHandler,    // in Handler
                              1,                          // Receive input before plugin windows.
                              (void *) 0);                // inRefcon.
 
@@ -729,7 +731,7 @@ PLUGIN_API void	XPluginStop(void)
 {
   // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
-  XPLMUnregisterCommandHandler(MulButtonCommand, MulButtonCommandHandler, 1, NULL);
+  XPLMUnregisterCommandHandler(xpanelsfnbuttonCommand, xpanelsfnbuttonCommandHandler, 1, NULL);
   XPDestroyWidget(BipWidgetID, 1);
   XPLMDestroyMenu(BipMenuId);
   XPLMDestroyMenu(MultiMenuId);
@@ -959,7 +961,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
     return;
 }
 
-int    MulButtonCommandHandler(XPLMCommandRef       inCommand,
+int    xpanelsfnbuttonCommandHandler(XPLMCommandRef       inCommand,
                         XPLMCommandPhase     inPhase,
                         void *               inRefcon)
 {
@@ -968,11 +970,11 @@ int    MulButtonCommandHandler(XPLMCommandRef       inCommand,
 //  If inPhase == 1 the command is executed continuously.
      if (inPhase == 1)
    {
-          mulbutton = 1;
+          xpanelsfnbutton = 1;
     }
      if (inPhase == 2)
    {
-          mulbutton = 0;
+          xpanelsfnbutton = 0;
     }
 
 return 0;
@@ -990,30 +992,6 @@ float	MyPanelsFlightLoopCallback(
     (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
     (void) inCounter; // To get rid of warnings on unused variables
     (void) inRefcon; // To get rid of warnings on unused variables
-
-
-  //Fps = 1 / XPLMGetDataf(Frp);
-  //printf("Frame per Second %d\n", Fps);
-
-  //if(Fps < 200){
-  //    multi_auto_mul = 3;
-  //}
-
-  //if(Fps < 150){
-  //    multi_auto_mul = 2;
-  //}
-
-  //if(Fps < 100){
-  //    multi_auto_mul = 1;
-  //}
-
-  //if(Fps < 50){
- //     multi_auto_mul = 0;
- // }
-
- // printf("muli_auto_mul %d\n", multi_auto_mul);
-
-
 
 
   if(radcnt > 0){

@@ -940,7 +940,7 @@ void process_upper_dme_switch()
              if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
                 XPLMSetDatai(DmeMode, 1);
                 updmepushed = 1;
-                uplastdmepos = 1;
+                uplastdmepos = 0;
               }
           }
         }
@@ -948,7 +948,7 @@ void process_upper_dme_switch()
         if (updmepushed == 0) {
           if (XPLMGetDatai(DmeMode) == 1) {
              if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
-                 if (uplastdmepos == 1){
+                 if (uplastdmepos == 0){
                    XPLMSetDatai(DmeMode, 2);
                    updmepushed = 1;
                  }
@@ -1073,7 +1073,7 @@ void process_upper_xpdr_switch()
 
     if(testbit(radiobuf[radnum],UPPER_XPDR)) {
       upseldis[radnum] = 9;
-      if (radiores > 0) {
+      //if (radiores > 0) {
 // ****** Function button is not pushed  *******
         if(xpanelsfnbutton == 0) {
           if (upxpdrsel[radnum] == 1) {
@@ -1170,6 +1170,70 @@ void process_upper_xpdr_switch()
               upxpdrsel[radnum] = 4;
             }
           }
+
+ // Use the ACT/STBY button to select XPDR mode
+
+          if (upxpdrpushed == 0) {
+            if (XPLMGetDatai(XpdrMode) == 0) {
+               if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                  XPLMSetDatai(XpdrMode, 1);
+                  upxpdrpushed = 1;
+                  uplastxpdrpos = 0;
+                }
+            }
+          }
+
+          if (upxpdrpushed == 0) {
+            if (XPLMGetDatai(XpdrMode) == 1) {
+               if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                   if (uplastxpdrpos == 0){
+                     XPLMSetDatai(XpdrMode, 2);
+                     upxpdrpushed = 1;
+                     uplastxpdrpos = 1;
+                   }
+                   if (uplastxpdrpos == 2){
+                       XPLMSetDatai(XpdrMode, 0);
+                       upxpdrpushed = 1;
+                   }
+                }
+            }
+          }
+          if (upxpdrpushed == 0) {
+            if (XPLMGetDatai(XpdrMode) == 2) {
+               if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                   if (uplastxpdrpos == 1){
+                     XPLMSetDatai(XpdrMode, 3);
+                     upxpdrpushed = 1;
+                     uplastxpdrpos = 2;
+                   }
+                   if (uplastxpdrpos == 3){
+                       XPLMSetDatai(XpdrMode, 1);
+                       upxpdrpushed = 1;
+                       uplastxpdrpos = 2;
+                   }
+                }
+            }
+          }
+
+          if (upxpdrpushed == 0) {
+            if (XPLMGetDatai(XpdrMode) == 3) {
+                if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                   XPLMSetDatai(XpdrMode, 2);
+                   upxpdrpushed = 1;
+                   uplastxpdrpos = 3;
+                }
+            }
+          }
+
+          if (upxpdrpushed == 1){
+             upxpdrloop++;
+              if (upxpdrloop == 50){
+                 upxpdrpushed = 0;
+                 upxpdrloop = 0;
+              }
+
+          }
+
         }
 
 // ****** Function button is pushed ******
@@ -1216,7 +1280,7 @@ void process_upper_xpdr_switch()
            }
 
         }
-      }
+      //}
       upxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
       upxpdrmode[radnum] = XPLMGetDatai(XpdrMode);
       upbarosetf[radnum] = XPLMGetDataf(BaroSetting);
@@ -1743,7 +1807,7 @@ void process_lower_xpdr_switch()
  
    if(testbit(radiobuf[radnum],LOWER_XPDR)) {
      loseldis[radnum] = 9;
-     if (radiores > 0) {
+     //if (radiores > 0) {
 // ****** Function button is not pushed  *******
        if(xpanelsfnbutton == 0) {
          if (loxpdrsel[radnum] == 1) {
@@ -1841,9 +1905,70 @@ void process_lower_xpdr_switch()
            }
          }
 
+
+// Use the ACT/STBY button to select XPDR mode
+
+         if (loxpdrpushed == 0) {
+           if (XPLMGetDatai(XpdrMode) == 0) {
+             if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+               XPLMSetDatai(XpdrMode, 1);
+               loxpdrpushed = 1;
+               lolastxpdrpos = 0;
+             }
+           }
+         }
+
+         if (loxpdrpushed == 0) {
+           if (XPLMGetDatai(XpdrMode) == 1) {
+             if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+               if (lolastxpdrpos == 0){
+                 XPLMSetDatai(XpdrMode, 2);
+                 loxpdrpushed = 1;
+                 lolastxpdrpos = 1;
+               }
+               if (lolastxpdrpos == 2){
+                 XPLMSetDatai(XpdrMode, 0);
+                 loxpdrpushed = 1;
+               }
+             }
+           }
+         }
+         if (loxpdrpushed == 0) {
+           if (XPLMGetDatai(XpdrMode) == 2) {
+             if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+               if (lolastxpdrpos == 1){
+                 XPLMSetDatai(XpdrMode, 3);
+                 loxpdrpushed = 1;
+                 lolastxpdrpos = 2;
+               }
+               if (lolastxpdrpos == 3){
+                 XPLMSetDatai(XpdrMode, 1);
+                 loxpdrpushed = 1;
+                 lolastxpdrpos = 2;
+               }
+             }
+           }
+         }
+
+         if (loxpdrpushed == 0) {
+           if (XPLMGetDatai(XpdrMode) == 3) {
+             if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+               XPLMSetDatai(XpdrMode, 2);
+               loxpdrpushed = 1;
+               lolastxpdrpos = 3;
+             }
+           }
+         }
+
+         if (loxpdrpushed == 1){
+           loxpdrloop++;
+             if (loxpdrloop == 50){
+               loxpdrpushed = 0;
+               loxpdrloop = 0;
+             }
+         }
+
        }
-
-
 
  // ****** Function button is pushed  *******
         if(xpanelsfnbutton == 1) {
@@ -1890,7 +2015,7 @@ void process_lower_xpdr_switch()
 
         }
 
-     }
+     //}
      loxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
      loxpdrmode[radnum] = XPLMGetDatai(XpdrMode);
      lobarosetf[radnum] = XPLMGetDataf(BaroSetting);

@@ -1,5 +1,5 @@
 Xsaitekpanels Ver 1.32
-William Good 12-23-11
+William Good 12-26-11
 
 Thanks to Alan Ott's HIDAPI (https://github.com/signal11/hidapi) I am able to now support Linux, Windows and Mac with my plugin Xsaitekpanels. 
 
@@ -133,19 +133,19 @@ g) Second number to check.
 
 Linux
 
-Supported platforms at this release are Patched Ubuntu 10.10, Patched 11.04, and 11.04 with kernel 2.6.39 X-Plane 9.69 & 9.70. See my patch downloads for more info on what is needed. I am glad to announce that 11.10 runs this plugin unpatched and is my present testing version. Other versions may work but have not been tested. You will need to install a new 51-Xsaitekpanels.rules in /lib/udev/rules.d for these Saitek panels to be seen by this plugin. It is included in this archive.
+Supported platforms at this release are Patched Ubuntu 10.10, Patched 11.04, and 11.04 with kernel 2.6.39 X-Plane 9.69 & 9.70 & 10.3. See my patch downloads for more info on what is needed. I am glad to announce that 11.10 runs this plugin unpatched and is my present testing version. Other versions may work but have not been tested. You will need to install a new 51-Xsaitekpanels.rules in /lib/udev/rules.d for these Saitek panels to be seen by this plugin. It is included in this archive.
 
 ****************************************************************************************************************
 
 Windows
 
-Supported and tested platforms at this release is Windows XP, Windows 7 and X-Plane 9.69 & 9.70. I would like to add more but I will have to get feedback as to what versions of Windows this is running on. When X-Plane initialy loads the radio and the multi panel may be dark. This is because initialy the switches are not read so do not know what to display. Move any switch on the radio or multi panel and if the battery and avionics switch are on they should display the appropriate. 
+Supported and tested platforms at this release is Windows XP, Windows 7 and X-Plane 9.69 & 9.70 & 10.3. I would like to add more but I will have to get feedback as to what versions of Windows this is running on. When X-Plane initialy loads the radio and the multi panel may be dark. This is because initialy the switches are not read so do not know what to display. Move any switch on the radio or multi panel and if the battery and avionics switch are on they should display the appropriate. 
 
 *******************************************************************************************************************
 
 Mac
 
-Thanks to Marcos Lemos and Steven King I now have support for the Mac.I am sure that OSX 10.7 Lion Intel Only is working at this point in time and now have a successful user with a switch and radio panel on a MacBook Pro that has OSX 10.6.8 on it (Thanks Sandy). Looking forward to feedback from other Mac users.  When X-Plane initialy loads the radio and the multi panel may be dark. This is because initialy the switches are not read so do not know what to display. Move any switch on the radio or multi panel and if the battery and avionics switch are on they should display the appropriate.
+Thanks to Marcos Lemos and Steven King I now have support for the Mac. I have users using OSX 10.7 Lion Intel Only and another successful user with a switch and radio panel on a MacBook Pro that has OSX 10.6.8 on it (Thanks Sandy). I also now have a Intel MacBook user on OSX 10.5.8. When X-Plane initialy loads the radio and the multi panel may be dark. This is because initialy the switches are not read so do not know what to display. Move any switch on the radio or multi panel and if the battery and avionics switch are on they should display the appropriate.
 
 ********************************************************************************************************************
 

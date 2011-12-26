@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.32   ***************
-// ****** Dec 23 2011   **************
+// ****** Dec 26 2011   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -86,7 +86,7 @@ XPLMCommandRef ApVsBtn = NULL, ApAprBtn = NULL, ApRevBtn = NULL;
 XPLMCommandRef ApAutThrOn = NULL, ApAutThrOff = NULL, FlapsDn = NULL, FlapsUp = NULL;
 XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
-XPLMCommandRef xpanelsfnbuttonCommand = NULL;
+XPLMCommandRef XpanelsFnButtonCommand = NULL;
 
 // ***************** Multi Panel Data Ref *********************
 XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL;
@@ -227,20 +227,13 @@ float	MyPanelsFlightLoopCallback(
                                    int                  inCounter,    
                                    void *               inRefcon);
 
-int    xpanelsfnbuttonCommandHandler(XPLMCommandRef       inCommand,          //  custom command handler
+int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,          //  custom command handler
                                XPLMCommandPhase     inPhase,
                                void *               inRefcon);
-
-
-
-
 
 void WriteCSVTableToDisk(void);
 
 bool ReadConfigFile(string PlaneICAO);
-
-
-
 // ******************Plugin Calls ******************
 PLUGIN_API int XPluginStart(char *		outName,
 			    char *		outSig,
@@ -331,9 +324,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   XpdrMode	= XPLMFindDataRef("sim/cockpit/radios/transponder_mode");
   BaroSetting	= XPLMFindDataRef("sim/cockpit/misc/barometer_setting");
 
-
-
-
   DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
   DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");
 
@@ -386,7 +376,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   FlapsDn = XPLMFindCommand("sim/flight_controls/flaps_down");
   FlapsUp = XPLMFindCommand("sim/flight_controls/flaps_up");
 
-  xpanelsfnbuttonCommand = XPLMCreateCommand("xplugins/xsaitekpanels/x_panels_fn_button","Xpanels Fn Button");
+  XpanelsFnButtonCommand = XPLMCreateCommand("xplugins/xsaitekpanels/x_panels_fn_button","Xpanels Fn Button");
 
 
 // **************** Find Multi Panel Data Ref ********************
@@ -631,8 +621,8 @@ PLUGIN_API int XPluginStart(char *		outName,
                         NULL);				// * refcon not used. *
 
   // Register our custom commands
-  XPLMRegisterCommandHandler(xpanelsfnbuttonCommand,           // in Command name
-                             xpanelsfnbuttonCommandHandler,    // in Handler
+  XPLMRegisterCommandHandler(XpanelsFnButtonCommand,           // in Command name
+                             XpanelsFnButtonCommandHandler,    // in Handler
                              1,                          // Receive input before plugin windows.
                              (void *) 0);                // inRefcon.
 
@@ -742,7 +732,7 @@ PLUGIN_API void	XPluginStop(void)
 {
   // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
-  XPLMUnregisterCommandHandler(xpanelsfnbuttonCommand, xpanelsfnbuttonCommandHandler, 1, NULL);
+  XPLMUnregisterCommandHandler(XpanelsFnButtonCommand, XpanelsFnButtonCommandHandler, 1, NULL);
   XPDestroyWidget(BipWidgetID, 1);
   XPLMDestroyMenu(BipMenuId);
   XPLMDestroyMenu(MultiMenuId);
@@ -966,13 +956,12 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              bataltinverse = 1;
          }
 
-
     }
 
     return;
 }
 
-int    xpanelsfnbuttonCommandHandler(XPLMCommandRef       inCommand,
+int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,
                         XPLMCommandPhase     inPhase,
                         void *               inRefcon)
 {
@@ -1003,7 +992,6 @@ float	MyPanelsFlightLoopCallback(
     (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
     (void) inCounter; // To get rid of warnings on unused variables
     (void) inRefcon; // To get rid of warnings on unused variables
-
 
   if(radcnt > 0){
     process_radio_panel();

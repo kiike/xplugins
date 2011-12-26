@@ -1224,10 +1224,12 @@ void process_upper_xpdr_switch()
                 }
             }
           }
-
+// if upxpdrloop is to low mode switch will not stop in position
+// if upxpdrloop is to high mode switch sometimes will not move
+// ToDo Need to find a better way
           if (upxpdrpushed == 1){
              upxpdrloop++;
-              if (upxpdrloop == 50){
+              if (upxpdrloop == 25){
                  upxpdrpushed = 0;
                  upxpdrloop = 0;
               }
@@ -1807,7 +1809,7 @@ void process_lower_xpdr_switch()
  
    if(testbit(radiobuf[radnum],LOWER_XPDR)) {
      loseldis[radnum] = 9;
-     //if (radiores > 0) {
+
 // ****** Function button is not pushed  *******
        if(xpanelsfnbutton == 0) {
          if (loxpdrsel[radnum] == 1) {
@@ -1959,10 +1961,12 @@ void process_lower_xpdr_switch()
              }
            }
          }
-
+// if loxpdrloop is to low mode switch will not stop in position
+// if loxpdrloop is to high mode switch sometimes will not move
+// ToDo Need to find a better way
          if (loxpdrpushed == 1){
            loxpdrloop++;
-             if (loxpdrloop == 50){
+             if (loxpdrloop == 25){
                loxpdrpushed = 0;
                loxpdrloop = 0;
              }
@@ -2015,7 +2019,6 @@ void process_lower_xpdr_switch()
 
         }
 
-     //}
      loxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
      loxpdrmode[radnum] = XPLMGetDatai(XpdrMode);
      lobarosetf[radnum] = XPLMGetDataf(BaroSetting);
@@ -2147,7 +2150,6 @@ void process_radio_panel()
     process_lower_xpdr_switch();
     if(radiores > 0){
         process_radio_blank_display();
-
         process_radio_upper_display();
         process_radio_lower_display();
         process_radio_make_message();
@@ -2157,7 +2159,6 @@ void process_radio_panel()
   }while((radiores > 0) && (radio_safety_cntr > 0));
 
   process_radio_blank_display();
-
   process_radio_upper_display();
   process_radio_lower_display();
   process_radio_make_message();
@@ -2173,7 +2174,6 @@ void process_radio_panel()
         radionowrite[radnum]++;
     }
 
-
   // *********** loop untill all radios serviced *************
   // **************   then start again    *******************
 
@@ -2184,14 +2184,3 @@ void process_radio_panel()
 
     return;
   }
-
-
-
-
-
-
-
-
-
-
-

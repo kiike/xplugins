@@ -13,6 +13,8 @@
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
 
+#define MSG_ADD_DATAREF 0x01000000
+
 #include "hidapi.h"
 
 #include <stdio.h>
@@ -213,6 +215,8 @@ int             XsaitekpanelsMenuItem;
 int             BipMenuItem;
 
 int Fps, multi_auto_mul;
+
+XPLMPluginID PluginID = NULL;
 
 void process_radio_panel();
 void process_multi_panel();
@@ -992,6 +996,12 @@ float	MyPanelsFlightLoopCallback(
     (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
     (void) inCounter; // To get rid of warnings on unused variables
     (void) inRefcon; // To get rid of warnings on unused variables
+
+   void *Param = NULL;
+   XPLMPluginID PluginID = XPLMFindPluginBySignature("xplanesdk.examples.DataRefEditor");
+   if (PluginID != XPLM_NO_PLUGIN_ID){
+                   XPLMSendMessageToPlugin(PluginID, MSG_ADD_DATAREF, (void*)"xplugins/xsaitekpanels/x_panels_fn_button");
+   }
 
   if(radcnt > 0){
     process_radio_panel();

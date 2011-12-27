@@ -18,7 +18,7 @@
 
 // ********************** Radio Panel variables ***********************
 static int radnum = 0, radionowrite[4] = {0, 0, 0, 0};
-static int radiores = 0;
+static int radiores = 0, radn;
 
 static int updmepushed = 0, lodmepushed = 0;
 static int updmeloop = 0, lodmeloop = 0;
@@ -1073,7 +1073,7 @@ void process_upper_xpdr_switch()
 
     if(testbit(radiobuf[radnum],UPPER_XPDR)) {
       upseldis[radnum] = 9;
-      //if (radiores > 0) {
+
 // ****** Function button is not pushed  *******
         if(xpanelsfnbutton == 0) {
           if (upxpdrsel[radnum] == 1) {
@@ -1258,23 +1258,23 @@ void process_upper_xpdr_switch()
             if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
               upqnhdbnccorinc[radnum]++;
               if (upqnhdbnccorinc[radnum] > radspeed) {
-                XPLMCommandOnce(BaroUp);
-                XPLMCommandOnce(BaroUp);
-                XPLMCommandOnce(BaroUp);
-                XPLMCommandOnce(BaroUp);
-                XPLMCommandOnce(BaroUp);
-                upqnhdbnccorinc[radnum] = 0;
+                 radn = 10;
+                 while (radn>0) {
+                   XPLMCommandOnce(BaroUp);
+                   --radn;
+                 }
+                 upqnhdbnccorinc[radnum] = 0;
               }
             }
             if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
               upqnhdbnccordec[radnum]++;
               if (upqnhdbnccordec[radnum] > radspeed) {
-                XPLMCommandOnce(BaroDn);
-                XPLMCommandOnce(BaroDn);
-                XPLMCommandOnce(BaroDn);
-                XPLMCommandOnce(BaroDn);
-                XPLMCommandOnce(BaroDn);
-                upqnhdbnccordec[radnum] = 0;
+                  radn = 10;
+                  while (radn>0) {
+                    XPLMCommandOnce(BaroDn);
+                    --radn;
+                  }
+                  upqnhdbnccordec[radnum] = 0;
               }
             }
            if(testbit(radiobuf[radnum],UPPER_ACT_STBY)) {
@@ -1282,7 +1282,7 @@ void process_upper_xpdr_switch()
            }
 
         }
-      //}
+
       upxpdrcode[radnum] = XPLMGetDatai(XpdrCode);
       upxpdrmode[radnum] = XPLMGetDatai(XpdrMode);
       upbarosetf[radnum] = XPLMGetDataf(BaroSetting);
@@ -1994,23 +1994,23 @@ void process_lower_xpdr_switch()
           if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
             loqnhdbnccorinc[radnum]++;
             if (loqnhdbnccorinc[radnum] > radspeed) {
-              XPLMCommandOnce(BaroUp);
-              XPLMCommandOnce(BaroUp);
-              XPLMCommandOnce(BaroUp);
-              XPLMCommandOnce(BaroUp);
-              XPLMCommandOnce(BaroUp);
+              radn = 10;
+              while (radn>0) {
+                XPLMCommandOnce(BaroUp);
+                --radn;
+              }
               loqnhdbnccorinc[radnum] = 0;
             }
           }
           if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
             loqnhdbnccordec[radnum]++;
             if (loqnhdbnccordec[radnum] > radspeed) {
-              XPLMCommandOnce(BaroDn);
-              XPLMCommandOnce(BaroDn);
-              XPLMCommandOnce(BaroDn);
-              XPLMCommandOnce(BaroDn);
-              XPLMCommandOnce(BaroDn);
-              loqnhdbnccordec[radnum] = 0;
+                radn = 10;
+                while (radn>0) {
+                  XPLMCommandOnce(BaroDn);
+                  --radn;
+                }
+                loqnhdbnccordec[radnum] = 0;
             }
           }
           if(testbit(radiobuf[radnum],LOWER_ACT_STBY)) {

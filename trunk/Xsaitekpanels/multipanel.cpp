@@ -336,7 +336,7 @@ void process_ias_switch()
           if(testbit(multibuf,ADJUSTMENT_DN)) {
             iasdbncdec++;
             if (iasdbncdec > multispeed) {
-                n = 5;
+                n = multimul;
                 if(xpanelsfnbutton == 1) {
                     while (n>0) {
                        XPLMCommandOnce(ApAsDn);

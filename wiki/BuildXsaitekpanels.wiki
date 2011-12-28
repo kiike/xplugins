@@ -26,7 +26,7 @@ The source code from this site go in the Xsaitekpanels folder and using the foll
 
 cd /home/bill/xplugins
 
-svn checkout http://linux-track.googlecode.com/svn/trunk/Xsaitekpanels Xsaitekpanels
+svn checkout http://xplugins.googlecode.com/svn/trunk/Xsaitekpanels Xsaitekpanels
 
 Now, there are some prerequisities to download...
 

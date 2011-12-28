@@ -30,17 +30,14 @@ svn checkout http://linux-track.googlecode.com/svn/trunk/Xsaitekpanels Xsaitekpa
 
 Now, there are some prerequisities to download...
 
+
 * * XPlane SDK 2.0.1 * - http://www.xsquawkbox.net/xpsdk/XPSDK201.zip
 
 * * Signal11 / Hidapi  * - https://github.com/signal11/hidapi/downloads/hidapi-0.7.0.zip 
 
 Mac users may find this Hidapi to work better at this point in time.
 
-* * Vlovich / Hidapi  * - https://github.com/vlovich/hidapi/downloads/vlovich-hidapi-hidapi-0.7.0-8-gdcdb7fe.zip
-
-
-
-
+* * Vlovich / Hidapi  * - https://github.com/vlovich/hidapi/downloads
  
 
 =*Building Xsaitekpanels on Linux*= 

@@ -4,7 +4,7 @@
 
 This page provides instructions how to build Xsaitekpanels on Linux.
 
-The first thing I would is use this thread ad make sure you can build a hello world.
+The first thing I would do is to use this thread an make sure you can build a hello world.
 
 [http://forums.x-plane.org/index.php?showtopic=48012 How to setup your universal X-Plane plugin dev environment on every platform]
 
@@ -31,13 +31,13 @@ svn checkout http://linux-track.googlecode.com/svn/trunk/Xsaitekpanels Xsaitekpa
 Now, there are some prerequisities to download...
 
 
-* * XPlane SDK 2.0.1 * - http://www.xsquawkbox.net/xpsdk/XPSDK201.zip
+ * * X Plane SDK 2.0.1 * - http://www.xsquawkbox.net/xpsdk/XPSDK201.zip
 
-* * Signal11 / Hidapi  * - https://github.com/signal11/hidapi/downloads/hidapi-0.7.0.zip 
+ * * Signal11 / Hidapi * - https://github.com/signal11/hidapi/downloads/hidapi-0.7.0.zip 
 
 Mac users may find this Hidapi to work better at this point in time.
 
-* * Vlovich / Hidapi  * - https://github.com/vlovich/hidapi/downloads
+ * * Vlovich / Hidapi  * - https://github.com/vlovich/hidapi/downloads
  
 
 =*Building Xsaitekpanels on Linux*= 

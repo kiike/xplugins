@@ -2,8 +2,19 @@
 
 = Introduction =
 
-Add your content here.
+This page provides instructions how to build Xsaitekpanels on Linux.
 
+=*Building Xsaitekpanels on Linux*=
+
+On my home I have the folder
+xplugins
+
+In the xplugins folder I have these three folders
+SDK
+hidapi-0.7.0
+Xsaitekpanels
+        
+The source code from this site go in the Xsaitekpanels folder            
 
 = Details =
 

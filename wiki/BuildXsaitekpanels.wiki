@@ -8,9 +8,7 @@ The first thing I would is use this thread ad make sure you can build a hello wo
 
 [http://forums.x-plane.org/index.php?showtopic=48012 How to setup your universal X-Plane plugin dev environment on every platform]
 
-http://forums.x-plane.org/index.php?showtopic=48012
-
-=*Building Xsaitekpanels on Linux*=
+I have my Linux development computer set up in the following manner.
 
 On my home I have the folder
 
@@ -24,7 +22,33 @@ In the xplugins folder I have these three folders
 
 *Xsaitekpanels*
 
-   
-The source code from this site go in the Xsaitekpanels folder            
+The source code from this site go in the Xsaitekpanels folder and using the following commands will do this for you. Change bill to your computer home name.
+
+cd /home/bill/xplugins
+
+svn checkout http://linux-track.googlecode.com/svn/trunk/Xsaitekpanels Xsaitekpanels
+
+Now, there are some prerequisities to download...
+
+* * XPlane SDK 2.0.1 * - http://www.xsquawkbox.net/xpsdk/XPSDK201.zip
+
+* * Signal11 / Hidapi  * - https://github.com/signal11/hidapi/downloads/hidapi-0.7.0.zip 
+
+Mac users may find this Hidapi to work better at this point in time.
+
+* * Vlovich / Hidapi  * - https://github.com/vlovich/hidapi/downloads/vlovich-hidapi-hidapi-0.7.0-8-gdcdb7fe.zip
+
+
+
+
+ 
+
+=*Building Xsaitekpanels on Linux*= 
+
+This is my Build settings from QtCreator          
 
 [http://xplugins.googlecode.com/svn/wiki/img/BuildSettings.png]
+
+This is my Run Settings from QtCreator
+
+[http://xplugins.googlecode.com/svn/wiki/img/RunSettings.png]

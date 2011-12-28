@@ -4,6 +4,12 @@
 
 This page provides instructions how to build Xsaitekpanels on Linux.
 
+The first thing I would is use this thread ad make sure you can build a hello world.
+
+[http://forums.x-plane.org/index.php?showtopic=48012 How to setup your universal X-Plane plugin dev environment on every platform]
+
+http://forums.x-plane.org/index.php?showtopic=48012
+
 =*Building Xsaitekpanels on Linux*=
 
 On my home I have the folder

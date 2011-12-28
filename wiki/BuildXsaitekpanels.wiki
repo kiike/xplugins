@@ -20,3 +20,5 @@ In the xplugins folder I have these three folders
 
    
 The source code from this site go in the Xsaitekpanels folder            
+
+[http://xplugins.googlecode.com/svn/wiki/img/BuildSettings.png]

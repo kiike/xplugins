@@ -59,3 +59,6 @@ This is my Build settings for Windows XP 32 Bit
 This is my Run Settings
 
 [http://xplugins.googlecode.com/svn/wiki/img/WinRunSettings.jpg]
+
+=*Building Xsaitekpanels on a Mac*=
+ 

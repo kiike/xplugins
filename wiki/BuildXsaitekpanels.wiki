@@ -2,7 +2,7 @@
 
 = Introduction =
 
-This page provides instructions how to build Xsaitekpanels on Linux.
+This page provides instructions how to build Xsaitekpanels on Linux, Windows or a Mac.
 
 The first thing I would do is to use this thread an make sure you can build a hello world.
 

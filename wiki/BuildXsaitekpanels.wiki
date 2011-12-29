@@ -42,7 +42,7 @@ Mac users may find this Hidapi to work better at this point in time.
 
 =*Building Xsaitekpanels on Linux*= 
 
-This is my Build settings
+This is my Build settings for Ubuntu 64 Bit
 
 [http://xplugins.googlecode.com/svn/wiki/img/BuildSettings.png]
 

@@ -35,6 +35,18 @@ unix:!macx {
     LIBS += `pkg-config libudev --libs`
 }
 
+
+# Trying to give info that might be helpfull in Mac building
+# I do not own a Mac so am depending on what I have read in forums
+# You should also consider building with 10.6 SDK otherwise
+# only poeple with 10.7 will be able to load your plugins.
+# QMAKE_CXXFLAGS += -m32 -isysroot /Developer/SDKs/MacOSX10.6.sdk
+# QMAKE_LFLAGS += -m32 -flat_namespace -undefined suppress  -isysroot /Developer/SDKs/MacOSX10.6.sdk
+# I have read that this will also work
+# QMAKE_CXXFLAGS += -arch i386 -isysroot /Developer/SDKs/MacOSX10.6.sdk
+# QMAKE_LFLAGS += -arch i386 -flat_namespace -undefined suppress  -isysroot /Developer/SDKs/MacOSX10.6.sdk
+
+# This is what my builder is using on 10.7
 macx {
     DEFINES += APL=1 IBM=0 LIN=0
     TARGET = mac.xpl
@@ -47,11 +59,10 @@ macx {
     # The following line is only needed to build universal on PPC architectures.
     # QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     # The following line defines for which architectures we build.
-    CONFIG += x86 ppc
+    CONFIG += x86
 }
 
 HEADERS += saitekpanels.h
-
 
 SOURCES += saitekpanels.cpp\
     radiopanels.cpp \

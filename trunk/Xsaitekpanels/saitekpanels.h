@@ -81,7 +81,7 @@ extern XPLMCommandRef ApHdgBtn, ApNavBtn, ApAltBtn;
 extern XPLMCommandRef ApIasBtn;
 extern XPLMCommandRef ApVsBtn, ApAprBtn, ApRevBtn;
 
-extern XPLMCommandRef ApAutThrOn, ApAutThrOff, FlapsDn, FlapsUp;
+extern XPLMCommandRef FlapsDn, FlapsUp;
 extern XPLMCommandRef PitchTrimDn, PitchTrimUp, PitchTrimTkOff;
 
 
@@ -91,7 +91,7 @@ extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs;
 extern XPLMDataRef ApMstrStat, ApHdgStat, ApNavStat, ApIasStat;
 extern XPLMDataRef ApAltStat, ApVsStat, ApAprStat, ApRevStat;
 extern XPLMDataRef x737athr_armed ,x737swBatBus ,x737stbyPwr ;
-extern XPLMDataRef ApState;
+extern XPLMDataRef ApState, ApAutThr;
 extern XPLMMenuID      MultiMenu;
 extern XPLMMenuID      MultiMenuId;
 extern XPLMMenuID      Frp;

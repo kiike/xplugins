@@ -457,14 +457,14 @@ void process_autothrottle_switch()
           if (loaded737 == 1){
              XPLMSetDatai(x737athr_armed, 1);
           }else{
-             XPLMCommandOnce(ApAutThrOn);
+             XPLMSetDatai(ApAutThr, 1);
           }
         }
         else {
            if (loaded737 == 1){
              XPLMSetDatai(x737athr_armed, 0);
            }else{
-             XPLMCommandOnce(ApAutThrOff);
+             XPLMSetDatai(ApAutThr, 0);
            }
          }
 }

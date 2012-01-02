@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.32   ***************
-// ****** Dec 26 2011   **************
+// ******** ver 1.33   ***************
+// ****** Jan 01 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -85,7 +85,7 @@ XPLMCommandRef ApIasBtn = NULL;
 
 XPLMCommandRef ApVsBtn = NULL, ApAprBtn = NULL, ApRevBtn = NULL;
 
-XPLMCommandRef ApAutThrOn = NULL, ApAutThrOff = NULL, FlapsDn = NULL, FlapsUp = NULL;
+XPLMCommandRef FlapsDn = NULL, FlapsUp = NULL;
 XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
 XPLMCommandRef XpanelsFnButtonCommand = NULL;
@@ -96,7 +96,7 @@ XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL;
 XPLMDataRef ApMstrStat = NULL, ApHdgStat = NULL, ApNavStat = NULL, ApIasStat = NULL;
 XPLMDataRef ApAltStat = NULL, ApVsStat = NULL, ApAprStat = NULL, ApRevStat = NULL;
 XPLMDataRef x737athr_armed = NULL, x737swBatBus = NULL, x737stbyPwr = NULL;
-XPLMDataRef ApState = NULL;
+XPLMDataRef ApState = NULL, ApAutThr;
 XPLMDataRef Frp = NULL, MHdg = NULL;
 
 XPLMMenuID      MultiMenu;
@@ -248,7 +248,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.32");
+  strcpy(outName, "Xsaitekpanels v1.33");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -1029,8 +1029,8 @@ float	MyPanelsFlightLoopCallback(
   else{
        loaded737 = 0;
 
-       ApAutThrOn = XPLMFindCommand("sim/autopilot/autothrottle_on");
-       ApAutThrOff = XPLMFindCommand("sim/autopilot/autothrottle_off");
+       ApAutThr = XPLMFindDataRef("sim/cockpit2/autopilot/autothrottle_enabled");
+       //ApAutThrOff = XPLMFindCommand("sim/autopilot/autothrottle_off");
 
   }
 

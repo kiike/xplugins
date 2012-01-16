@@ -44,11 +44,11 @@ Mac users may find this Hidapi to work better at this point in time.
 
 This is my Build settings for Ubuntu 64 Bit
 
-[http://xplugins.googlecode.com/svn/wiki/img/BuildSettings.png]
+[http://xplugins.googlecode.com/svn/wiki/img/LinBuildSettings.png]
 
 This is my Run Settings
 
-[http://xplugins.googlecode.com/svn/wiki/img/RunSettings.png]
+[http://xplugins.googlecode.com/svn/wiki/img/LinRunSettings.png]
 
 =*Building Xsaitekpanels on Windows*= 
 

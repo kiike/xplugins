@@ -935,6 +935,9 @@ void process_upper_dme_switch()
 
     if(testbit(radiobuf[radnum],UPPER_DME)) {
 
+      // ****** Function button is not pushed  *******
+      if(xpanelsfnbutton == 0) {
+
         if (updmepushed == 0) {
           if (XPLMGetDatai(DmeMode) == 0) {
              if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
@@ -1063,6 +1066,47 @@ void process_upper_dme_switch()
       }
 
     }
+
+    // ****** Function button is pushed  *******
+    if(xpanelsfnbutton == 1) {
+
+        if (updmepushed == 0) {
+          if (XPLMGetDatai(DmeSlvSource) == 0) {
+             if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                XPLMSetDatai(DmeSlvSource, 1);
+                updmepushed = 1;
+                uplastdmepos = 0;
+              }
+          }
+        }
+
+        if (updmepushed == 0) {
+          if (XPLMGetDatai(DmeSlvSource) == 1) {
+             if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
+                 if (uplastdmepos == 0){
+                   XPLMSetDatai(DmeSlvSource, 0);
+                   updmepushed = 1;
+                 }
+
+              }
+          }
+        }
+
+        if (updmepushed == 1){
+           updmeloop++;
+            if (updmeloop == 50){
+               updmepushed = 0;
+               updmeloop = 0;
+            }
+
+        }
+
+
+    }
+
+
+  }
+
 
 }
 
@@ -1673,6 +1717,9 @@ void process_lower_dme_switch()
 
     if(testbit(radiobuf[radnum],LOWER_DME)) {
 
+      // ****** Function button is not pushed  *******
+      if(xpanelsfnbutton == 0) {
+
         if (lodmepushed == 0) {
           if (XPLMGetDatai(DmeMode) == 0) {
              if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
@@ -1798,6 +1845,46 @@ void process_lower_dme_switch()
             lodmetime[radnum] = XPLMGetDataf(DmeTime);
 
         }
+
+  }
+
+      // ****** Function button is pushed  *******
+      if(xpanelsfnbutton == 1) {
+
+          if (lodmepushed == 0) {
+            if (XPLMGetDatai(DmeSlvSource) == 0) {
+               if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+                  XPLMSetDatai(DmeSlvSource, 1);
+                  lodmepushed = 1;
+                  lolastdmepos = 0;
+                }
+            }
+          }
+
+          if (lodmepushed == 0) {
+            if (XPLMGetDatai(DmeSlvSource) == 1) {
+               if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
+                   if (lolastdmepos == 0){
+                     XPLMSetDatai(DmeSlvSource, 0);
+                     lodmepushed = 1;
+                   }
+
+                }
+            }
+          }
+
+          if (lodmepushed == 1){
+             lodmeloop++;
+              if (lodmeloop == 50){
+                 lodmepushed = 0;
+                 lodmeloop = 0;
+              }
+
+          }
+
+
+      }
+
 
     }
 }

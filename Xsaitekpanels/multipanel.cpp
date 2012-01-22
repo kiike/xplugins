@@ -28,14 +28,14 @@ static int appushed = 0;
 static int lastappos = 0;
 static int aploop = 0;
 
-static int upapalt, upapvs, upapas, upaphdg, upapcrs, neg;
+static int upapalt, upapvs, upapas, upaphdg, upapcrs, upapcrs2, neg;
 static int flashcnt = 0, flashon = 0;
 
 static int altdbncinc = 0, altdbncdec = 0, vsdbncinc = 0, vsdbncdec = 0;
 static int iasdbncinc = 0, iasdbncdec = 0, hdgdbncinc = 0, hdgdbncdec = 0;
 static int crsdbncinc = 0, crsdbncdec = 0; 
 
-static float upapaltf, upapvsf, upapasf, upaphdgf, upapcrsf, rhdgf;
+static float upapaltf, upapvsf, upapasf, upaphdgf, upapcrsf, upapcrsf2, rhdgf;
 
 static int multiaactv, multiadig1, multiarem1, multiadig2, multiarem2;
 static int multiadig3, multiarem3, multiadig4, multiarem4, multiadig5;
@@ -407,44 +407,73 @@ void process_crs_switch()
 {
 // ***************** CRS Switch Position *******************
 
+    float cur_apcrsf = 0;
+    int   cur_apcrs  = 0;
+
+    // if the toggle is selected, use nav2, otherwise, nav1
+    XPLMDataRef crs_dataref =  !xpanelscrstoggle ? ApCrs : ApCrs2;
+
 	if(testbit(multibuf,CRS_SWITCH)) {
           multiseldis = 4;
           upapcrsf = XPLMGetDataf(ApCrs);
           upapcrs = (int)(upapcrsf);
+
+          //  get the appropriate course setting depending on if the toggle is down
+          cur_apcrsf = XPLMGetDataf(crs_dataref);
+          cur_apcrs = (int)(cur_apcrsf);
+
 	  if(testbit(multibuf,ADJUSTMENT_UP)) {
 	    crsdbncinc++;
             if (crsdbncinc > multispeed) {
+
                  if (xpanelsfnbutton == 1) {
-                    upapcrs = upapcrs + multimul;
-                    crsdbncinc = 0;
+                    cur_apcrs = cur_apcrs + multimul;
                 }
                 if(xpanelsfnbutton == 0) {
-                    upapcrs = upapcrs + 1;
-                    crsdbncinc = 0;
+                    cur_apcrs = cur_apcrs + 1;
                 }
+                crsdbncinc = 0;
              }
 	  }
+
 	  if(testbit(multibuf,ADJUSTMENT_DN)) {
 	    crsdbncdec++;
             if (crsdbncdec > multispeed) {
+
                 if (xpanelsfnbutton == 1) {
-                    upapcrs = upapcrs - multimul;
-                    crsdbncdec = 0;
+                    cur_apcrs = cur_apcrs - multimul;
                 }
                 if(xpanelsfnbutton == 0) {
-                    upapcrs = upapcrs - 1;
-                    crsdbncdec = 0;
+                    cur_apcrs = cur_apcrs - 1;
                 }
+
+                crsdbncdec = 0;
             }
           }
-          if(upapcrs > 360){
-              upapcrs = 1;
+
+          if(cur_apcrs > 360){
+              cur_apcrs = 1;
           }
-          if(upapcrs < 0){
-              upapcrs = 359;
+
+          if(cur_apcrs < 0){
+              cur_apcrs = 359;
           }
-          upapcrsf = upapcrs;
-          XPLMSetDataf(ApCrs, upapcrsf);
+
+          cur_apcrsf = cur_apcrs;
+          XPLMSetDataf(crs_dataref, cur_apcrsf);
+
+          //  set the appropriate global based on whether the crs toggle is on
+          if( !xpanelscrstoggle ) {
+              //  toggle off - nav1
+              upapcrsf = cur_apcrsf;
+              upapcrs  = cur_apcrs;
+          }
+          else {
+              //  toggle on - nav2
+              upapcrsf2 = cur_apcrsf;
+              upapcrs2   = cur_apcrs;
+              upapcrs   = cur_apcrs;
+          }
 
 	}
 }
@@ -574,8 +603,14 @@ void process_nav_button()
 
         if (multires > 0) {
           if(testbit(multibuf,NAV_BUTTON)) {
-            XPLMCommandOnce(ApNavBtn);
-            lastappos = 1;
+            if(xpanelsfnbutton == 1) {
+                xpanelscrstoggle = !xpanelscrstoggle;
+            }
+            if(xpanelsfnbutton == 0) {
+                XPLMCommandOnce(ApNavBtn);
+                lastappos = 1;
+            }
+
           }
         }
 

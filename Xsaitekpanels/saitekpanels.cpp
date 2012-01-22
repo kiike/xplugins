@@ -77,7 +77,7 @@ XPLMMenuID      RadioMenuId;
 // ****************** Multi Panel Command Ref **********************
 XPLMCommandRef ApAltDn = NULL, ApAltUp = NULL, ApVsDn = NULL, ApVsUp = NULL;
 XPLMCommandRef ApAsDn = NULL, ApAsUp = NULL, ApHdgDn = NULL, ApHdgUp = NULL;
-XPLMCommandRef ApCrsDn = NULL, ApCrsUp = NULL;
+XPLMCommandRef ApCrsDn = NULL, ApCrsUp = NULL, ApCrsDn2 = NULL, ApCrsUp2 = NULL;
 
 XPLMCommandRef ApMstrBtnUp = NULL, ApMstrBtnDn = NULL, ApMstrBtnOff = NULL;
 XPLMCommandRef ApHdgBtn = NULL, ApNavBtn = NULL, ApAltBtn = NULL;
@@ -88,10 +88,10 @@ XPLMCommandRef ApVsBtn = NULL, ApAprBtn = NULL, ApRevBtn = NULL;
 XPLMCommandRef FlapsDn = NULL, FlapsUp = NULL;
 XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
-XPLMCommandRef XpanelsFnButtonCommand = NULL;
+XPLMCommandRef XpanelsFnButtonCommand = NULL, XpanelsCrsToggleCommand = NULL;
 
 // ***************** Multi Panel Data Ref *********************
-XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL;
+XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL, ApCrs2 = NULL;
 
 XPLMDataRef ApMstrStat = NULL, ApHdgStat = NULL, ApNavStat = NULL, ApIasStat = NULL;
 XPLMDataRef ApAltStat = NULL, ApVsStat = NULL, ApAprStat = NULL, ApRevStat = NULL;
@@ -184,7 +184,7 @@ int loaded737 = 0;
 
 int trimspeed, multispeed;
 
-int xpanelsfnbutton = 0;
+int xpanelsfnbutton = 0, xpanelscrstoggle = 0;
 
 hid_device *multihandle;
 
@@ -361,8 +361,14 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApAsUp = XPLMFindCommand("sim/autopilot/airspeed_up");
   ApHdgDn = XPLMFindCommand("sim/autopilot/heading_down");
   ApHdgUp = XPLMFindCommand("sim/autopilot/heading_up");
-  ApCrsDn = XPLMFindCommand("sim/radios/obs_HSI_down");
-  ApCrsUp = XPLMFindCommand("sim/radios/obs_HSI_up");
+
+  //ApCrsDn = XPLMFindCommand("sim/radios/obs_HSI_down");
+  //ApCrsUp = XPLMFindCommand("sim/radios/obs_HSI_up");
+
+  ApCrsDn = XPLMFindCommand("sim/radios/obs1_down");
+  ApCrsUp = XPLMFindCommand("sim/radios/obs1_up");
+  ApCrsDn2 = XPLMFindCommand("sim/radios/obs2_down");
+  ApCrsUp2 = XPLMFindCommand("sim/radios/obs2_up");
 
   ApMstrBtnUp = XPLMFindCommand("sim/autopilot/fdir_servos_up_one");
   ApMstrBtnDn = XPLMFindCommand("sim/autopilot/fdir_servos_down_one");
@@ -390,8 +396,10 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApVs = XPLMFindDataRef("sim/cockpit/autopilot/vertical_velocity");
   ApAs = XPLMFindDataRef("sim/cockpit/autopilot/airspeed");
   ApHdg = XPLMFindDataRef("sim/cockpit/autopilot/heading_mag");
-  ApCrs = XPLMFindDataRef("sim/cockpit2/radios/actuators/hsi_obs_deg_mag_pilot");
+  //ApCrs = XPLMFindDataRef("sim/cockpit2/radios/actuators/hsi_obs_deg_mag_pilot");
 
+  ApCrs  = XPLMFindDataRef("sim/cockpit/radios/nav1_obs_degm");
+  ApCrs2 = XPLMFindDataRef("sim/cockpit/radios/nav2_obs_degm");
 
   ApMstrStat = XPLMFindDataRef("sim/cockpit2/autopilot/flight_director_mode");
   ApState = XPLMFindDataRef("sim/cockpit/autopilot/autopilot_state");

@@ -74,7 +74,7 @@ extern hid_device *radiohandle[4];
 // ********** Multi Panel Command Ref ***************
 extern XPLMCommandRef ApAltDn, ApAltUp, ApVsDn, ApVsUp;
 extern XPLMCommandRef ApAsDn, ApAsUp, ApHdgDn, ApHdgUp;
-extern XPLMCommandRef ApCrsDn, ApCrsUp;
+extern XPLMCommandRef ApCrsDn, ApCrsUp, ApCrsDn2, ApCrsUp2;
 
 extern XPLMCommandRef ApMstrBtnUp, ApMstrBtnDn, ApMstrBtnOff;
 extern XPLMCommandRef ApHdgBtn, ApNavBtn, ApAltBtn;
@@ -86,7 +86,7 @@ extern XPLMCommandRef PitchTrimDn, PitchTrimUp, PitchTrimTkOff;
 
 
 // ************ Multi Panel Data Ref *****************
-extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs;
+extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs, ApCrs2;
 
 extern XPLMDataRef ApMstrStat, ApHdgStat, ApNavStat, ApIasStat;
 extern XPLMDataRef ApAltStat, ApVsStat, ApAprStat, ApRevStat;
@@ -103,6 +103,7 @@ extern int trimspeed, numadf;
 extern int loaded737;
 extern int multispeed;
 extern int xpanelsfnbutton;
+extern int xpanelscrstoggle;
 extern int multi_auto_mul;
 extern hid_device *multihandle;
 

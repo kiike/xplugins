@@ -33,12 +33,7 @@ Now, there are some prerequisities to download...
 
  * * X Plane SDK 2.0.1 * - http://www.xsquawkbox.net/xpsdk/XPSDK201.zip
 
- * * Signal11 / Hidapi * - https://github.com/signal11/hidapi/downloads/hidapi-0.7.0.zip 
-
-Mac users may find this Hidapi to work better at this point in time.
-
- * * Vlovich / Hidapi  * - https://github.com/vlovich/hidapi/downloads
- 
+ * * Signal11 / Hidapi * - https://github.com/signal11/hidapi/downloads 
 
 =*Building Xsaitekpanels on Linux*= 
 

@@ -35,6 +35,8 @@ Now, there are some prerequisities to download...
 
  * * Signal11 / Hidapi * - https://github.com/signal11/hidapi/downloads 
 
+Click on the Download as Zip button for the latest version.
+
 =*Building Xsaitekpanels on Linux*= 
 
 This is my Build settings for Ubuntu 64 Bit

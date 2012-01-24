@@ -49,13 +49,13 @@ This is my Run Settings
 
 =*Building Xsaitekpanels on Windows*= 
 
-This is my Build settings for Windows XP 32 Bit
+This is my Build settings for Windows 7 64 Bit
 
-[http://xplugins.googlecode.com/svn/wiki/img/WinBuildSettings.jpg]
+[http://xplugins.googlecode.com/svn/wiki/img/Win7BuildSettings.PNG]
 
 This is my Run Settings
 
-[http://xplugins.googlecode.com/svn/wiki/img/WinRunSettings.jpg]
+[http://xplugins.googlecode.com/svn/wiki/img/Win7RunSettings.PNG]
 
 =*Building Xsaitekpanels on a Mac*=
 

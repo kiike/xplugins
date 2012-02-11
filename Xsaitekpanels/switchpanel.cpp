@@ -19,7 +19,7 @@
 
 // ****************** Switch Panel variables *******************************
 static int switchnowrite = 0;
-static int switchres;
+static int switchres, switchwres;
 
 static int batnum = 0, gennum = 0, engnum = 0;
 
@@ -43,18 +43,14 @@ static unsigned char switchbuf[4];
 static unsigned char switchwbuf[2], gearled;
 
 
-/** Switch Panel Process  **/
-void process_switch_panel()
-
+void process_switch_menu()
 {
-
 
     XPLMClearAllMenuItems(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "Bat Alt Normal or Alt Bat Cessna", (void *) "VOID", 4);
     XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "NORMAL", (void *) "NORMAL", 4);
     XPLMAppendMenuItem(SwitchMenuId, "CESSNA", (void *) "CESSNA", 4);
-
 
     if (bataltinverse == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Checked);
@@ -69,7 +65,6 @@ void process_switch_panel()
        XPLMCheckMenuItem(SwitchMenuId, 3, xplm_Menu_Unchecked);
     }
 
-
   switchwbuf[0] = 0;
   switchwbuf[1] = gearled;
   if (bataltinverse == 0) {
@@ -79,28 +74,10 @@ void process_switch_panel()
     MASTER_BATTERY = 6, MASTER_ALTENATOR = 7;
   }
 
-// ******* Only do a read if something new to be read ********
+}
 
-  hid_set_nonblocking(switchhandle, 1);
-  hid_read(switchhandle, switchbuf, sizeof(switchbuf));
-  //switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
-  switchnowrite = 1;
-
-// * if no gear do not write *
-
-  if(XPLMGetDatai(GearRetract) > 0){
-    if (XPLMGetDatai(BatPwrOn) == 0) {
-          switchwbuf[0] = 0, switchwbuf[1] = 0;
-          switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
-    }
-    if (XPLMGetDatai(BatPwrOn) == 1) {
-          switchres = hid_send_feature_report(switchhandle, switchwbuf, 2);
-    }
-  }
-  else {
-  }
-
-  batnum = XPLMGetDatai(BatNum), gennum = XPLMGetDatai(GenNum), engnum = XPLMGetDatai(EngNum);
+void process_engines_mag_off_switch()
+{
 
 // ***************** Engines Mag Off ********************
 
@@ -125,6 +102,11 @@ void process_switch_panel()
 	  }
  	}
 
+}
+
+void process_engines_right_mag_switch()
+{
+
 // ***************** Engines Right Mag *******************
 
 	if(testbit(switchbuf,MAG_RIGHT)) {
@@ -147,6 +129,10 @@ void process_switch_panel()
 	    XPLMCommandOnce(MagRight4);
 	  }
  	}
+}
+
+void process_engines_left_mag_switch()
+{
 
 // ***************** Engines Left Mag *******************
 
@@ -170,6 +156,10 @@ void process_switch_panel()
 	    XPLMCommandOnce(MagLeft4);
 	  }
  	}
+}
+
+void process_engines_both_mag_switch()
+{
 
 // ***************** Engines Both Mags *******************
 
@@ -193,6 +183,10 @@ void process_switch_panel()
 	    XPLMCommandOnce(MagBoth4);
 	  }
 	}
+}
+
+void process_engines_start_switch()
+{
 
 // ***************** Engines Starting *******************
 
@@ -216,6 +210,10 @@ void process_switch_panel()
 	    XPLMCommandOnce(EngStart4);
 	  }
 	}
+}
+
+void process_master_battery_switch()
+{
 
 // ***************** Master Battery *******************
 
@@ -328,6 +326,10 @@ void process_switch_panel()
           }
         }
         XPLMSetDatavi(BatArrayOnDR, BatArrayOn, 0, 8);
+}
+
+void process_master_altenator_switch()
+{
 
 // ***************** Master Altenator *******************
 
@@ -372,6 +374,10 @@ void process_switch_panel()
 	    XPLMCommandOnce(GenOff4);
 	  }
  	}
+}
+
+void process_avionics_power_switch()
+{
 
 // ***************** Avionics Power *******************
 
@@ -381,6 +387,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,AVIONICS_POWER)) {
           XPLMCommandOnce(AvLtOff);
  	}
+}
+
+void process_fuel_pump_switch()
+{
 
 // ***************** Fuel Pump *******************
 
@@ -424,6 +434,10 @@ void process_switch_panel()
 	    XPLMCommandOnce(FuelPumpOff4);
 	  }
  	}
+}
+
+void process_de_ice_switch()
+{
 
 // ***************** De Ice *******************
 
@@ -433,6 +447,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,DE_ICE)) {
           XPLMSetDatai(AntiIce, 0);
  	}
+}
+
+void process_pitot_heat_switch()
+{
 
 // ***************** Pitot Heat *******************
 
@@ -442,6 +460,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,PITOT_HEAT)) {
           XPLMCommandOnce(PtHtOff);
  	}
+}
+
+void process_cowl_flaps_switch()
+{
 
 // ***************** Cowl Flaps *******************
 
@@ -496,6 +518,10 @@ void process_switch_panel()
 	  }
           XPLMSetDatavf(CowlFlaps, closecowl, 0, 8);
  	}
+}
+
+void process_panel_lights_switch()
+{
 
 // ***************** Panel Lights *******************
 
@@ -505,6 +531,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,PANEL_LIGHTS)) {
 	  XPLMSetDataf(CockpitLights, 0);
 	}
+}
+
+void process_beacon_lights_switch()
+{
 
 // ***************** Beacon Lights *******************
 
@@ -514,6 +544,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,BEACON_LIGHTS)) {
           XPLMCommandOnce(BcLtOff);
  	}
+}
+
+void process_nav_lights_switch()
+{
 
 // ***************** Nav Lights *******************
 
@@ -523,6 +557,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,NAV_LIGHTS)) {
           XPLMCommandOnce(NvLtOff);
  	}
+}
+
+void process_strobe_lights_switch()
+{
 
 // ***************** Strobe Lights *******************
 
@@ -532,6 +570,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,STROBE_LIGHTS)) {
           XPLMCommandOnce(StLtOff);
  	}
+}
+
+void process_taxi_lights_switch()
+{
 
 // ***************** Taxi Lights *******************
 
@@ -541,6 +583,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,TAXI_LIGHTS)) {
           XPLMCommandOnce(TxLtOff);
  	}
+}
+
+void process_landing_lights_switch()
+{
 
 // ***************** Landing Lights *******************
 
@@ -550,6 +596,10 @@ void process_switch_panel()
 	if(!testbit(switchbuf,LANDING_LIGHTS)) {
           XPLMCommandOnce(LnLtOff);
  	}
+}
+
+void process_gear_switch_switch()
+{
 
 // ***************** Gear Switch *******************
 	
@@ -748,7 +798,61 @@ void process_switch_panel()
 	if(XPLMGetDatai(GearRetract) == 0){
 	  gearled = 0x00;
 	}
+}
 
+
+/** Switch Panel Process  **/
+void process_switch_panel()
+
+{
+    process_switch_menu();
+
+    // ******* Only do a read if something new to be read ********
+
+      hid_set_nonblocking(switchhandle, 1);
+      int switch_safety_cntr = 30;
+      do{
+        switchres = hid_read(switchhandle, switchbuf, sizeof(switchbuf));
+        process_engines_mag_off_switch();
+        process_engines_right_mag_switch();
+        process_engines_left_mag_switch();
+        process_engines_both_mag_switch();
+        process_engines_start_switch();
+        process_master_battery_switch();
+        process_master_altenator_switch();
+        process_avionics_power_switch();
+        process_fuel_pump_switch();
+        process_de_ice_switch();
+        process_pitot_heat_switch();
+        process_cowl_flaps_switch();
+        process_panel_lights_switch();
+        process_beacon_lights_switch();
+        process_nav_lights_switch();
+        process_strobe_lights_switch();
+        process_taxi_lights_switch();
+        process_landing_lights_switch();
+        process_gear_switch_switch();
+
+        --switch_safety_cntr;
+      }while((switchres > 0) && (switch_safety_cntr > 0));
+
+      switchnowrite = 1;
+
+    // * if no gear do not write *
+
+      if(XPLMGetDatai(GearRetract) > 0){
+        if (XPLMGetDatai(BatPwrOn) == 0) {
+              switchwbuf[0] = 0, switchwbuf[1] = 0;
+              switchwres = hid_send_feature_report(switchhandle, switchwbuf, 2);
+        }
+        if (XPLMGetDatai(BatPwrOn) == 1) {
+              switchwres = hid_send_feature_report(switchhandle, switchwbuf, 2);
+        }
+      }
+      else {
+      }
+
+      batnum = XPLMGetDatai(BatNum), gennum = XPLMGetDatai(GenNum), engnum = XPLMGetDatai(EngNum);
 
   return;
 }

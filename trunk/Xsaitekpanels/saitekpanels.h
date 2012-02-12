@@ -172,11 +172,12 @@ extern hid_device *switchhandle;
 extern XPLMDataRef gTimeSimIsRunningXDataRef;
 
 extern XPLMMenuID      BipMenu;
-extern XPLMMenuID      BipMenuId;
-extern XPWidgetID      BipWidgetID;
+extern XPLMMenuID      BipMenuId, Bip2MenuId, Bip3MenuId, Bip4MenuId;
+extern XPWidgetID      BipWidgetID, Bip2WidgetID, Bip3WidgetID, Bip4WidgetID;
 
 // ***************** Bip Panel variables ********************
-extern hid_device *biphandle;
+extern hid_device *biphandle[4];
+extern int bipcnt;
 
 void WriteCSVTableToDisk(void);
 bool ReadConfigFile(string PlaneICAO);

@@ -57,10 +57,12 @@ using namespace std;
 float   LookAtThisValue;
 int     LookAtThisIntValue;
 
-static unsigned char bipwbuf[10];
-static unsigned char lastbipwbuf[10];
+static int bipnum = 0, bipnowrite[4] = {0, 0, 0, 0};
+static unsigned char bipwbuf[4][10];
+static unsigned char lastbipwbuf[4][10];
 
-static int bipchange, biploop, res, i;
+static int bipchange, biploop[4], res, i;
+static ifstream ReadFile[4];
 
 struct  BipTableStructure
 {
@@ -162,17 +164,23 @@ bool ReadConfigFile(string PlaneICAO)
     int             Index;
     int             i;
 
+    ifstream ReadFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+    ifstream ReadFile2("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+    ifstream ReadFile3("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+    ifstream ReadFile4("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
+
+
     PlaneICAO.erase(PlaneICAO.find(']')+1);
     LetWidgetSay(PlaneICAO);
 
     LastMenuEntry = -1;
 
-    XPLMClearAllMenuItems(BipMenuId);
-    XPLMAppendMenuItem(BipMenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
-    XPLMAppendMenuItem(BipMenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
-    XPLMAppendMenuSeparator(BipMenuId);
+    if(bipnum == 0) {
 
-    ifstream ReadFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+      XPLMClearAllMenuItems(BipMenuId);
+      XPLMAppendMenuItem(BipMenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
+      XPLMAppendMenuItem(BipMenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
+      XPLMAppendMenuSeparator(BipMenuId);
 
     if (ReadFile.is_open() != true)
     {
@@ -347,6 +355,198 @@ bool ReadConfigFile(string PlaneICAO)
 
     ReadFile.close();
     return true;
+
+   }
+
+
+    if(bipnum == 1) {
+
+      XPLMClearAllMenuItems(Bip2MenuId);
+      XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
+      XPLMAppendMenuItem(Bip2MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
+      XPLMAppendMenuSeparator(Bip2MenuId);
+
+    if (ReadFile2.is_open() != true)
+    {
+        logMsg("Error: Can't read Xdataref2BIP config file!");
+        return false;
+    }
+    ErrorInLine = 0;
+
+    LastTableElement = -1;
+    for (i = 0; i < MAXTABLEELEMENTS; i++)
+    {
+        BipTable[i].Row = '0';
+        BipTable[i].Position = 0;
+        BipTable[i].Color = '0';
+        BipTable[i].DataRefToSet = NULL;
+        BipTable[i].DataRefType = 0;
+        BipTable[i].DataRefIndex = 0;
+        BipTable[i].WhatToDo = '0';
+        BipTable[i].FloatValueToSet = 0;
+        BipTable[i].FloatLimit = 0;
+        BipTable[i].CSVDebugString = "";
+    }
+
+    while (getline(ReadFile2, LineToEncrypt))
+    {
+        ErrorInLine++;
+        if (LineToEncrypt.find("#BE SILENT") == 0)
+        {
+            InSilentMode = true;
+            continue;
+        }
+        if (LineToEncrypt.find("#BE CHATTY") == 0)
+        {
+            InSilentMode = false;
+            continue;
+        }
+        if (LineToEncrypt.find("#SHOW ICAO") == 0)
+        {
+            XPShowWidget(Bip2WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find("#HIDE ICAO") == 0)
+        {
+            XPHideWidget(Bip2WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find('[') == 0)
+        {
+            if ((LineToEncrypt.find("[DEFAULT]") == 0) || (LineToEncrypt.find(PlaneICAO) == 0))
+            {
+                CorrectICAO = true;
+            }
+            else
+            {
+                CorrectICAO = false;
+            }
+            if ((LineToEncrypt.find("[DEFAULT]") != 0) && (++LastMenuEntry < 50))
+            {
+                strcpy(MenuEntries[LastMenuEntry], LineToEncrypt.c_str());
+                XPLMAppendMenuItem(Bip2MenuId, MenuEntries[LastMenuEntry], (void *) MenuEntries[LastMenuEntry], 1);
+            }
+        }
+        if (!CorrectICAO) continue;
+
+        if (LineToEncrypt.find("#RESET AUTHORITY") == 0)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadFile2.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].WhatToDo = 'T';
+            continue;
+        }
+
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadFile2.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadFile2.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_IntArray) || (DataRefType == xplmType_FloatArray)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadFile2.close();
+                return false;
+            }
+
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadFile2.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].DataRefIndex = Index;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadFile2.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadFile2.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_Int) || (DataRefType == xplmType_Float)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadFile2.close();
+                return false;
+            }
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadFile2.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+
+
+        if (LineToEncrypt.find('#') == 0)
+        {
+            logMsg("Xdataref2BIP: Can't understand the line of code!");
+            ReadFile2.close();
+            LastTableElement = MAXTABLEELEMENTS - 1;
+            return false;
+        }
+    }
+
+    ReadFile2.close();
+    return true;
+
+   }
+
+
+
+
+
+
 }
 
 
@@ -378,45 +578,45 @@ void process_bip_panel()
                 if (BipTable[i].Row == 'A') {
                     if (BipTable[i].Color == 'G') {
                         // Make BipTable[i].Position position Top Row Green
-                        bipwbuf[1] |= (1<<(BipTable[i].Position)), bipwbuf[4] &= ~(1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][1] |= (1<<(BipTable[i].Position)), bipwbuf[bipnum][4] &= ~(1<<(BipTable[i].Position));
                     }
                     if (BipTable[i].Color == 'R') {
                         // Make BipTable[i].Position position Top Row Red
-                        bipwbuf[1] &= ~(1<<(BipTable[i].Position)), bipwbuf[4] |= (1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][1] &= ~(1<<(BipTable[i].Position)), bipwbuf[bipnum][4] |= (1<<(BipTable[i].Position));
                     }
                     if (BipTable[i].Color == 'A') {
                         // Make BipTable[i].Position position Top Row Amber
-                        bipwbuf[1] |= (1<<(BipTable[i].Position)), bipwbuf[4] |= (1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][1] |= (1<<(BipTable[i].Position)), bipwbuf[bipnum][4] |= (1<<(BipTable[i].Position));
                     }
                 }
 
                 if (BipTable[i].Row == 'B') {
                     if (BipTable[i].Color == 'G') {
                         // Make BipTable[i].Position position Middle Row Green
-                        bipwbuf[2] |= (1<<(BipTable[i].Position)), bipwbuf[5] &= ~(1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][2] |= (1<<(BipTable[i].Position)), bipwbuf[bipnum][5] &= ~(1<<(BipTable[i].Position));
                     }
                     if (BipTable[i].Color == 'R') {
                         // Make BipTable[i].Position position Middle Row Red
-                        bipwbuf[2] &= ~(1<<(BipTable[i].Position)), bipwbuf[5] |= (1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][2] &= ~(1<<(BipTable[i].Position)), bipwbuf[bipnum][5] |= (1<<(BipTable[i].Position));
                     }
                     if (BipTable[i].Color == 'A') {
                         // Make BipTable[i].Position position Middle Row Amber
-                        bipwbuf[2] |= (1<<(BipTable[i].Position)), bipwbuf[5] |= (1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][2] |= (1<<(BipTable[i].Position)), bipwbuf[bipnum][5] |= (1<<(BipTable[i].Position));
                     }
                 }
 
                 if (BipTable[i].Row == 'C') {
                     if (BipTable[i].Color == 'G') {
                         // Make BipTable[i].Position position Bottom Row Green
-                        bipwbuf[3] |= (1<<(BipTable[i].Position)), bipwbuf[6] &= ~(1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][3] |= (1<<(BipTable[i].Position)), bipwbuf[bipnum][6] &= ~(1<<(BipTable[i].Position));
                     }
                     if (BipTable[i].Color == 'R') {
                         // Make BipTable[i].Position position Bottom Row Red
-                        bipwbuf[3] &= ~(1<<(BipTable[i].Position)), bipwbuf[6] |= (1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][3] &= ~(1<<(BipTable[i].Position)), bipwbuf[bipnum][6] |= (1<<(BipTable[i].Position));
                     }
                     if (BipTable[i].Color == 'A') {
                         // Make BipTable[i].Position position Bottom Row Amber
-                        bipwbuf[3] |= (1<<(BipTable[i].Position)), bipwbuf[6] |= (1<<(BipTable[i].Position));
+                        bipwbuf[bipnum][3] |= (1<<(BipTable[i].Position)), bipwbuf[bipnum][6] |= (1<<(BipTable[i].Position));
                     }
                 }
             }
@@ -425,15 +625,15 @@ void process_bip_panel()
                 //printf("**********************   OFF   *********************************\n");
                 if (BipTable[i].Row == 'A') {
                     // Make BipTable[i].Position position Top Row Off
-                    bipwbuf[1] &= ~(1<<(BipTable[i].Position)), bipwbuf[4] &= ~(1<<(BipTable[i].Position));
+                    bipwbuf[bipnum][1] &= ~(1<<(BipTable[i].Position)), bipwbuf[bipnum][4] &= ~(1<<(BipTable[i].Position));
                 }
                 if (BipTable[i].Row == 'B') {
                     // Make BipTable[i].Position position Middle Row Off
-                    bipwbuf[2] &= ~(1<<(BipTable[i].Position)), bipwbuf[5] &= ~(1<<(BipTable[i].Position));
+                    bipwbuf[bipnum][2] &= ~(1<<(BipTable[i].Position)), bipwbuf[bipnum][5] &= ~(1<<(BipTable[i].Position));
                 }
                 if (BipTable[i].Row == 'C')  {
                     // Make BipTable[i].Position position Bottom Row Off
-                    bipwbuf[3] &= ~(1<<(BipTable[i].Position)), bipwbuf[6] &= ~(1<<(BipTable[i].Position));
+                    bipwbuf[bipnum][3] &= ~(1<<(BipTable[i].Position)), bipwbuf[bipnum][6] &= ~(1<<(BipTable[i].Position));
                 }
 
 
@@ -447,35 +647,43 @@ void process_bip_panel()
         LastValues[i] = ActualValues[i];
     }
 
-    if (biploop < 2) {
+    if (biploop[bipnum] < 2) {
       // Clear Display on first loop
-      bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
-      bipwbuf[1] = 0, bipwbuf[2] = 0, bipwbuf[3] = 0;
-      bipwbuf[4] = 0, bipwbuf[5] = 0, bipwbuf[6] = 0;
-      res = hid_send_feature_report(biphandle, bipwbuf, 10);
-      biploop++;
+      bipwbuf[bipnum][0] = 0xb8;  //0xb8 Report ID to display
+      bipwbuf[bipnum][1] = 0, bipwbuf[bipnum][2] = 0, bipwbuf[bipnum][3] = 0;
+      bipwbuf[bipnum][4] = 0, bipwbuf[bipnum][5] = 0, bipwbuf[bipnum][6] = 0;
+      res = hid_send_feature_report(biphandle[bipnum], bipwbuf[bipnum], 10);
+      biploop[bipnum]++;
     }
 
     // Trying to only write on changes to improve FPS impact
-    if(biploop == 2) {
-      bipchange = memcmp(bipwbuf, lastbipwbuf, 10);
+    if(biploop[bipnum] == 2) {
+        bipchange = memcmp(bipwbuf[bipnum], lastbipwbuf[bipnum], 10);
       if (bipchange == 0) {
       }
       if (bipchange != 0) {
         if (XPLMGetDatai(BatPwrOn) == 0) {
-              bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
-              bipwbuf[1] = 0, bipwbuf[2] = 0, bipwbuf[3] = 0;
-              bipwbuf[4] = 0, bipwbuf[5] = 0, bipwbuf[6] = 0;
-              res = hid_send_feature_report(biphandle, bipwbuf, 10);
-              memcpy(lastbipwbuf, bipwbuf, 10);
+              bipwbuf[bipnum][0] = 0xb8;  //0xb8 Report ID to display
+              bipwbuf[bipnum][1] = 0, bipwbuf[bipnum][2] = 0, bipwbuf[bipnum][3] = 0;
+              bipwbuf[bipnum][4] = 0, bipwbuf[bipnum][5] = 0, bipwbuf[bipnum][6] = 0;
+              res = hid_send_feature_report(biphandle[bipnum], bipwbuf[bipnum], 10);
+              memcpy(lastbipwbuf[bipnum], bipwbuf[bipnum], 10);
         }
         if (XPLMGetDatai(BatPwrOn) == 1) {
-              res = hid_send_feature_report(biphandle, bipwbuf, 10);
-              memcpy(lastbipwbuf, bipwbuf, 10);
+            res = hid_send_feature_report(biphandle[bipnum], bipwbuf[bipnum], 10);
+            memcpy(lastbipwbuf[bipnum], bipwbuf[bipnum], 10);
         }
     }
 
   }
 
-    return;
+  // *********** loop untill all bips serviced *************
+  // **************   then start again    *******************
+
+  bipnum++;
+  if (bipnum == bipcnt) {
+    bipnum = 0;
+  }
+
+  return;
 }

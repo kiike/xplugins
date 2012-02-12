@@ -156,11 +156,13 @@ XPLMDataRef gTimeSimIsRunningXDataRef = NULL;
 
 XPLMMenuID      XsaitekpanelsMenu;
 XPLMMenuID      BipMenu;
-XPLMMenuID      BipMenuId;
+XPLMMenuID      BipMenuId, Bip2MenuId, Bip3MenuId, Bip4MenuId;
 
 XPWidgetID      XsaitekpanelsWidgetID = NULL;
 XPWidgetID      BipWidgetID = NULL;
-
+XPWidgetID      Bip2WidgetID = NULL;
+XPWidgetID      Bip3WidgetID = NULL;
+XPWidgetID      Bip4WidgetID = NULL;
 
 // ********************** Radio Panel variables ************************
 int radcnt = 0, radiores, stopradcnt;
@@ -201,9 +203,9 @@ hid_device *switchhandle;
 
 // ****************** BIP Panel variables *******************************
 int bipcnt = 0, bipres, biploop, stopbipcnt;
-unsigned char bipwbuf[10];
+unsigned char bipwbuf[4][10];
 
-hid_device *biphandle;
+hid_device *biphandle[4];
 
 // ****************** Saitek Panels variables *******************************
 void            XsaitekpanelsMenuHandler(void *, void *);
@@ -244,7 +246,8 @@ PLUGIN_API int XPluginStart(char *		outName,
 			    char *		outDesc)
 {
 
-  int BipSubMenuItem, MultiSubMenuItem, RadioSubMenuItem;
+  int BipSubMenuItem, Bip2SubMenuItem, Bip3SubMenuItem;
+  int MultiSubMenuItem, RadioSubMenuItem;
   int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
@@ -606,18 +609,18 @@ PLUGIN_API int XPluginStart(char *		outName,
   bip_devs = hid_enumerate(0x6a3, 0xb4e);
   bip_cur_dev = bip_devs;
   while (bip_cur_dev) {
-        biphandle = hid_open_path(bip_cur_dev->path);
+      biphandle[bipcnt] = hid_open_path(bip_cur_dev->path);
         //  If Found Set brightness to full (0 - 100)
         // 0xb2 Report ID for brightness
         // Next byte 0 - 100 brightness value
-        if (biphandle > 0) {
-           bipwbuf[0] = 0xb2; // 0xb2 Report ID for brightness
-           bipwbuf[1] = 100;  // Set brightness to 100%
-           bipres = hid_send_feature_report(biphandle, bipwbuf, 10);
+      if (biphandle[bipcnt] > 0) {
+           bipwbuf[bipcnt][0] = 0xb2; // 0xb2 Report ID for brightness
+           bipwbuf[bipcnt][1] = 100;  // Set brightness to 100%
+           bipres = hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
            biploop = 1;
         }
 
-        hid_send_feature_report(biphandle, bipwbuf, 10);
+      hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
         bipcnt++;
         bip_cur_dev = bip_cur_dev->next;
     }
@@ -659,6 +662,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
    if (bipcnt > 0) {
 
+     if(bipcnt == 1){
        BipSubMenuItem = XPLMAppendMenuItem(
                XsaitekpanelsMenu,
                "Bip",
@@ -675,7 +679,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 
 
-   BipWidgetID = XPCreateWidget(XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-150,
+       BipWidgetID = XPCreateWidget(XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-150,
                                     XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")),
                                     XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-10,
                                     XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height"))-10,         // screen coordinates
@@ -683,7 +687,35 @@ PLUGIN_API int XPluginStart(char *		outName,
                                     "Xdataref2BIP is working!", // description
                                     1, NULL,                      // we want it root
                                     xpWidgetClass_Caption);
-   XPSetWidgetProperty(BipWidgetID, xpProperty_CaptionLit, 0);
+       XPSetWidgetProperty(BipWidgetID, xpProperty_CaptionLit, 0);
+     }
+
+     if(bipcnt == 2) {
+       Bip2SubMenuItem = XPLMAppendMenuItem(
+           XsaitekpanelsMenu,
+           "Bip2",
+           NULL,
+           1);
+
+       Bip2MenuId = XPLMCreateMenu(
+           "Bip2",
+           XsaitekpanelsMenu,
+           Bip2SubMenuItem,
+           XsaitekpanelsMenuHandler,
+           (void *)1);
+
+       Bip2WidgetID = XPCreateWidget(XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-150,
+                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")),
+                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-10,
+                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height"))-10,         // screen coordinates
+                                1,                            // visible
+                                "Xdataref2BIP is working!", // description
+                                1, NULL,                      // we want it root
+                                xpWidgetClass_Caption);
+       XPSetWidgetProperty(Bip2WidgetID, xpProperty_CaptionLit, 0);
+
+     }
+
 
    }
 
@@ -748,6 +780,8 @@ PLUGIN_API void	XPluginStop(void)
   XPLMUnregisterCommandHandler(XpanelsFnButtonCommand, XpanelsFnButtonCommandHandler, 1, NULL);
   XPDestroyWidget(BipWidgetID, 1);
   XPLMDestroyMenu(BipMenuId);
+  XPLMDestroyMenu(Bip2MenuId);
+  XPLMDestroyMenu(Bip3MenuId);
   XPLMDestroyMenu(MultiMenuId);
   XPLMDestroyMenu(RadioMenuId);
   XPLMDestroyMenu(SwitchMenuId);
@@ -756,7 +790,7 @@ PLUGIN_API void	XPluginStop(void)
 
   // *** if open blank display and then close that radio panel ****
 
-    if (stopradcnt == 3) {
+  if (stopradcnt == 3) {
 
       blankradiowbuf[3][0] = 0, blankradiowbuf[3][1] = 15, blankradiowbuf[3][2] = 15;
       blankradiowbuf[3][3] = 15, blankradiowbuf[3][4] = 15, blankradiowbuf[3][5] = 15;
@@ -769,9 +803,9 @@ PLUGIN_API void	XPluginStop(void)
       radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radiohandle[stopradcnt]);
       stopradcnt--;
-    }
+  }
 
-    if (stopradcnt == 2) {
+  if (stopradcnt == 2) {
 
       blankradiowbuf[2][0] = 0, blankradiowbuf[2][1] = 15, blankradiowbuf[2][2] = 15;
       blankradiowbuf[2][3] = 15, blankradiowbuf[2][4] = 15, blankradiowbuf[2][5] = 15;
@@ -784,9 +818,9 @@ PLUGIN_API void	XPluginStop(void)
       radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radiohandle[stopradcnt]);
       stopradcnt--;
-    }
+  }
 
-    if (stopradcnt == 1) {
+  if (stopradcnt == 1) {
 
       blankradiowbuf[1][0] = 0, blankradiowbuf[1][1] = 15, blankradiowbuf[1][2] = 15;
       blankradiowbuf[1][3] = 15, blankradiowbuf[1][4] = 15, blankradiowbuf[1][5] = 15;
@@ -799,9 +833,9 @@ PLUGIN_API void	XPluginStop(void)
       radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radiohandle[stopradcnt]);
       stopradcnt--;
-    }
+  }
 
-    if (stopradcnt == 0) {
+  if (stopradcnt == 0) {
 
       blankradiowbuf[0][0] = 0, blankradiowbuf[0][1] = 15, blankradiowbuf[0][2] = 15;
       blankradiowbuf[0][3] = 15, blankradiowbuf[0][4] = 15, blankradiowbuf[0][5] = 15;
@@ -813,12 +847,12 @@ PLUGIN_API void	XPluginStop(void)
 
       radres = hid_send_feature_report(radiohandle[stopradcnt], blankradiowbuf[stopradcnt], 23);
       hid_close(radiohandle[stopradcnt]);
-    }
+  }
 
 
 
   // *** if open blank display and then close that multi panel ***
-    if (multicnt > 0) {
+  if (multicnt > 0) {
         blankmultiwbuf[0] = 0, blankmultiwbuf[1] = 15, blankmultiwbuf[2] = 15;
         blankmultiwbuf[3] = 15, blankmultiwbuf[4] = 15, blankmultiwbuf[5] = 15;
         blankmultiwbuf[6] = 15, blankmultiwbuf[7] = 15, blankmultiwbuf[8] = 15;
@@ -826,30 +860,67 @@ PLUGIN_API void	XPluginStop(void)
         multires = hid_send_feature_report(multihandle, blankmultiwbuf, 13);
         hid_close(multihandle);
 
-    }
+  }
 
 
 // *** if open close that switch panel ***
 
-    if (switchcnt > 0) {
+  if (switchcnt > 0) {
 
       blankswitchwbuf[0] = 0;
       blankswitchwbuf[1] = 0;
       switchres = hid_send_feature_report(switchhandle, blankswitchwbuf, 2);
       hid_close(switchhandle);
-    }
+  }
 
 // *** if open close that bip panel ***
 
-    if (bipcnt > 0) {
+  stopbipcnt = bipcnt - 1;
 
-       bipwbuf[0] = 0xb8;  //0xb8 Report ID to display
-       bipwbuf[1] = 0, bipwbuf[2] = 0, bipwbuf[3] = 0;
-       bipwbuf[4] = 0, bipwbuf[5] = 0, bipwbuf[6] = 0;
-       bipres = hid_send_feature_report(biphandle, bipwbuf, 10);
-       hid_close(biphandle);
-    }
 
+  if (stopbipcnt == 3) {
+
+       bipwbuf[3][0] = 0xb8;  //0xb8 Report ID to display
+       bipwbuf[3][1] = 0, bipwbuf[3][2] = 0, bipwbuf[3][3] = 0;
+       bipwbuf[3][4] = 0, bipwbuf[3][5] = 0, bipwbuf[3][6] = 0;
+
+       bipres = hid_send_feature_report(biphandle[stopbipcnt], bipwbuf[stopbipcnt], 10);
+       hid_close(biphandle[stopbipcnt]);
+       stopbipcnt--;
+  }
+
+  if (stopbipcnt == 2) {
+
+       bipwbuf[2][0] = 0xb8;  //0xb8 Report ID to display
+       bipwbuf[2][1] = 0, bipwbuf[2][2] = 0, bipwbuf[2][3] = 0;
+       bipwbuf[2][4] = 0, bipwbuf[2][5] = 0, bipwbuf[2][6] = 0;
+
+       bipres = hid_send_feature_report(biphandle[stopbipcnt], bipwbuf[stopbipcnt], 10);
+       hid_close(biphandle[stopbipcnt]);
+       stopbipcnt--;
+  }
+
+  if (stopbipcnt == 1) {
+
+       bipwbuf[1][0] = 0xb8;  //0xb8 Report ID to display
+       bipwbuf[1][1] = 0, bipwbuf[1][2] = 0, bipwbuf[1][3] = 0;
+       bipwbuf[1][4] = 0, bipwbuf[1][5] = 0, bipwbuf[1][6] = 0;
+
+       bipres = hid_send_feature_report(biphandle[stopbipcnt], bipwbuf[stopbipcnt], 10);
+       hid_close(biphandle[stopbipcnt]);
+       stopbipcnt--;
+  }
+
+  if (stopbipcnt == 0) {
+
+       bipwbuf[0][0] = 0xb8;  //0xb8 Report ID to display
+       bipwbuf[0][1] = 0, bipwbuf[0][2] = 0, bipwbuf[0][3] = 0;
+       bipwbuf[0][4] = 0, bipwbuf[0][5] = 0, bipwbuf[0][6] = 0;
+
+       bipres = hid_send_feature_report(biphandle[stopbipcnt], bipwbuf[stopbipcnt], 10);
+       hid_close(biphandle[stopbipcnt]);
+       stopbipcnt--;
+  }
 
 
 }

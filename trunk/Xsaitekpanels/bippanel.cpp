@@ -164,10 +164,10 @@ bool ReadConfigFile(string PlaneICAO)
     int             Index;
     int             i;
 
-    ifstream ReadFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-    ifstream ReadFile2("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-    ifstream ReadFile3("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-    ifstream ReadFile4("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
+    ReadFile[0].open("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+    ReadFile[1].open("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+    ReadFile[2].open("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+    ReadFile[3].open("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
 
 
     PlaneICAO.erase(PlaneICAO.find(']')+1);
@@ -175,14 +175,14 @@ bool ReadConfigFile(string PlaneICAO)
 
     LastMenuEntry = -1;
 
-    if(bipnum == 0) {
+    if(bipcnt > 0) {
 
       XPLMClearAllMenuItems(BipMenuId);
       XPLMAppendMenuItem(BipMenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
       XPLMAppendMenuItem(BipMenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
       XPLMAppendMenuSeparator(BipMenuId);
 
-    if (ReadFile.is_open() != true)
+    if (ReadFile[bipnum].is_open() != true)
     {
         logMsg("Error: Can't read Xdataref2BIP config file!");
         return false;
@@ -204,7 +204,7 @@ bool ReadConfigFile(string PlaneICAO)
         BipTable[i].CSVDebugString = "";
     }
 
-    while (getline(ReadFile, LineToEncrypt))
+    while (getline(ReadFile[bipnum], LineToEncrypt))
     {
         ErrorInLine++;
         if (LineToEncrypt.find("#BE SILENT") == 0)
@@ -250,7 +250,7 @@ bool ReadConfigFile(string PlaneICAO)
             if (++LastTableElement >= MAXTABLEELEMENTS)
             {
                 logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -263,7 +263,7 @@ bool ReadConfigFile(string PlaneICAO)
             if (++LastTableElement >= MAXTABLEELEMENTS)
             {
                 logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -271,21 +271,21 @@ bool ReadConfigFile(string PlaneICAO)
             if (DataRefNumber == NULL)
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 return false;
             }
             DataRefType = XPLMGetDataRefTypes(DataRefNumber);
             if (!((DataRefType == xplmType_IntArray) || (DataRefType == xplmType_FloatArray)))
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 return false;
             }
 
             if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
             {
                 logMsg("Xdataref2BIP: Indicator does not exist!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -306,7 +306,7 @@ bool ReadConfigFile(string PlaneICAO)
             if (++LastTableElement >= MAXTABLEELEMENTS)
             {
                 logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -314,20 +314,20 @@ bool ReadConfigFile(string PlaneICAO)
             if (DataRefNumber == NULL)
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 return false;
             }
             DataRefType = XPLMGetDataRefTypes(DataRefNumber);
             if (!((DataRefType == xplmType_Int) || (DataRefType == xplmType_Float)))
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 return false;
             }
             if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
             {
                 logMsg("Xdataref2BIP: Indicator does not exist!");
-                ReadFile.close();
+                ReadFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -347,204 +347,16 @@ bool ReadConfigFile(string PlaneICAO)
         if (LineToEncrypt.find('#') == 0)
         {
             logMsg("Xdataref2BIP: Can't understand the line of code!");
-            ReadFile.close();
+            ReadFile[bipnum].close();
             LastTableElement = MAXTABLEELEMENTS - 1;
             return false;
         }
     }
 
-    ReadFile.close();
+    ReadFile[bipnum].close();
     return true;
 
    }
-
-
-    if(bipnum == 1) {
-
-      XPLMClearAllMenuItems(Bip2MenuId);
-      XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
-      XPLMAppendMenuItem(Bip2MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
-      XPLMAppendMenuSeparator(Bip2MenuId);
-
-    if (ReadFile2.is_open() != true)
-    {
-        logMsg("Error: Can't read Xdataref2BIP config file!");
-        return false;
-    }
-    ErrorInLine = 0;
-
-    LastTableElement = -1;
-    for (i = 0; i < MAXTABLEELEMENTS; i++)
-    {
-        BipTable[i].Row = '0';
-        BipTable[i].Position = 0;
-        BipTable[i].Color = '0';
-        BipTable[i].DataRefToSet = NULL;
-        BipTable[i].DataRefType = 0;
-        BipTable[i].DataRefIndex = 0;
-        BipTable[i].WhatToDo = '0';
-        BipTable[i].FloatValueToSet = 0;
-        BipTable[i].FloatLimit = 0;
-        BipTable[i].CSVDebugString = "";
-    }
-
-    while (getline(ReadFile2, LineToEncrypt))
-    {
-        ErrorInLine++;
-        if (LineToEncrypt.find("#BE SILENT") == 0)
-        {
-            InSilentMode = true;
-            continue;
-        }
-        if (LineToEncrypt.find("#BE CHATTY") == 0)
-        {
-            InSilentMode = false;
-            continue;
-        }
-        if (LineToEncrypt.find("#SHOW ICAO") == 0)
-        {
-            XPShowWidget(Bip2WidgetID);
-            continue;
-        }
-        if (LineToEncrypt.find("#HIDE ICAO") == 0)
-        {
-            XPHideWidget(Bip2WidgetID);
-            continue;
-        }
-        if (LineToEncrypt.find('[') == 0)
-        {
-            if ((LineToEncrypt.find("[DEFAULT]") == 0) || (LineToEncrypt.find(PlaneICAO) == 0))
-            {
-                CorrectICAO = true;
-            }
-            else
-            {
-                CorrectICAO = false;
-            }
-            if ((LineToEncrypt.find("[DEFAULT]") != 0) && (++LastMenuEntry < 50))
-            {
-                strcpy(MenuEntries[LastMenuEntry], LineToEncrypt.c_str());
-                XPLMAppendMenuItem(Bip2MenuId, MenuEntries[LastMenuEntry], (void *) MenuEntries[LastMenuEntry], 1);
-            }
-        }
-        if (!CorrectICAO) continue;
-
-        if (LineToEncrypt.find("#RESET AUTHORITY") == 0)
-        {
-            if (++LastTableElement >= MAXTABLEELEMENTS)
-            {
-                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile2.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            BipTable[LastTableElement].WhatToDo = 'T';
-            continue;
-        }
-
-        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
-        {
-            if (++LastTableElement >= MAXTABLEELEMENTS)
-            {
-                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile2.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            DataRefNumber = XPLMFindDataRef(DataRefString);
-            if (DataRefNumber == NULL)
-            {
-                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
-                ReadFile2.close();
-                return false;
-            }
-            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
-            if (!((DataRefType == xplmType_IntArray) || (DataRefType == xplmType_FloatArray)))
-            {
-                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
-                ReadFile2.close();
-                return false;
-            }
-
-            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
-            {
-                logMsg("Xdataref2BIP: Indicator does not exist!");
-                ReadFile2.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            BipTable[LastTableElement].Row = *RowString;
-            BipTable[LastTableElement].Position = BipPosition;
-            BipTable[LastTableElement].Color = *ColorString;
-            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
-            BipTable[LastTableElement].DataRefType = DataRefType;
-            BipTable[LastTableElement].DataRefIndex = Index;
-            BipTable[LastTableElement].FloatValueToSet = Argument;
-            BipTable[LastTableElement].FloatLimit = Limit;
-            BipTable[LastTableElement].WhatToDo = 'v';
-            BipTable[LastTableElement].CSVDebugString = DataRefString;
-            continue;
-        }
-        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
-        {
-            if (++LastTableElement >= MAXTABLEELEMENTS)
-            {
-                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile2.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            DataRefNumber = XPLMFindDataRef(DataRefString);
-            if (DataRefNumber == NULL)
-            {
-                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
-                ReadFile2.close();
-                return false;
-            }
-            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
-            if (!((DataRefType == xplmType_Int) || (DataRefType == xplmType_Float)))
-            {
-                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
-                ReadFile2.close();
-                return false;
-            }
-            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
-            {
-                logMsg("Xdataref2BIP: Indicator does not exist!");
-                ReadFile2.close();
-                LastTableElement = MAXTABLEELEMENTS - 1;
-                return false;
-            }
-            BipTable[LastTableElement].Row = *RowString;
-            BipTable[LastTableElement].Position = BipPosition;
-            BipTable[LastTableElement].Color = *ColorString;
-            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
-            BipTable[LastTableElement].DataRefType = DataRefType;
-            BipTable[LastTableElement].FloatValueToSet = Argument;
-            BipTable[LastTableElement].FloatLimit = Limit;
-            BipTable[LastTableElement].WhatToDo = 'v';
-            BipTable[LastTableElement].CSVDebugString = DataRefString;
-            continue;
-        }
-
-
-        if (LineToEncrypt.find('#') == 0)
-        {
-            logMsg("Xdataref2BIP: Can't understand the line of code!");
-            ReadFile2.close();
-            LastTableElement = MAXTABLEELEMENTS - 1;
-            return false;
-        }
-    }
-
-    ReadFile2.close();
-    return true;
-
-   }
-
-
-
-
 
 
 }

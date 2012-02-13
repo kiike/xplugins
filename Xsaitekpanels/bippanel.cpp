@@ -62,7 +62,7 @@ static unsigned char bipwbuf[4][10];
 static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i;
-static ifstream ReadFile[4];
+static ifstream ReadBipFile[4];
 
 struct  BipTableStructure
 {
@@ -164,10 +164,10 @@ bool ReadConfigFile(string PlaneICAO)
     int             Index;
     int             i;
 
-    ReadFile[0].open("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-    ReadFile[1].open("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-    ReadFile[2].open("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-    ReadFile[3].open("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
+    ReadBipFile[0].open("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+    ReadBipFile[1].open("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+    ReadBipFile[2].open("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+    ReadBipFile[3].open("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
 
 
     PlaneICAO.erase(PlaneICAO.find(']')+1);
@@ -182,7 +182,7 @@ bool ReadConfigFile(string PlaneICAO)
       XPLMAppendMenuItem(BipMenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
       XPLMAppendMenuSeparator(BipMenuId);
 
-    if (ReadFile[bipnum].is_open() != true)
+    if (ReadBipFile[bipnum].is_open() != true)
     {
         logMsg("Error: Can't read Xdataref2BIP config file!");
         return false;
@@ -204,7 +204,7 @@ bool ReadConfigFile(string PlaneICAO)
         BipTable[i].CSVDebugString = "";
     }
 
-    while (getline(ReadFile[bipnum], LineToEncrypt))
+    while (getline(ReadBipFile[bipnum], LineToEncrypt))
     {
         ErrorInLine++;
         if (LineToEncrypt.find("#BE SILENT") == 0)
@@ -250,7 +250,7 @@ bool ReadConfigFile(string PlaneICAO)
             if (++LastTableElement >= MAXTABLEELEMENTS)
             {
                 logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -263,7 +263,7 @@ bool ReadConfigFile(string PlaneICAO)
             if (++LastTableElement >= MAXTABLEELEMENTS)
             {
                 logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -271,21 +271,21 @@ bool ReadConfigFile(string PlaneICAO)
             if (DataRefNumber == NULL)
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 return false;
             }
             DataRefType = XPLMGetDataRefTypes(DataRefNumber);
             if (!((DataRefType == xplmType_IntArray) || (DataRefType == xplmType_FloatArray)))
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 return false;
             }
 
             if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
             {
                 logMsg("Xdataref2BIP: Indicator does not exist!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -306,7 +306,7 @@ bool ReadConfigFile(string PlaneICAO)
             if (++LastTableElement >= MAXTABLEELEMENTS)
             {
                 logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -314,20 +314,20 @@ bool ReadConfigFile(string PlaneICAO)
             if (DataRefNumber == NULL)
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 return false;
             }
             DataRefType = XPLMGetDataRefTypes(DataRefNumber);
             if (!((DataRefType == xplmType_Int) || (DataRefType == xplmType_Float)))
             {
                 logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 return false;
             }
             if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
             {
                 logMsg("Xdataref2BIP: Indicator does not exist!");
-                ReadFile[bipnum].close();
+                ReadBipFile[bipnum].close();
                 LastTableElement = MAXTABLEELEMENTS - 1;
                 return false;
             }
@@ -347,13 +347,13 @@ bool ReadConfigFile(string PlaneICAO)
         if (LineToEncrypt.find('#') == 0)
         {
             logMsg("Xdataref2BIP: Can't understand the line of code!");
-            ReadFile[bipnum].close();
+            ReadBipFile[bipnum].close();
             LastTableElement = MAXTABLEELEMENTS - 1;
             return false;
         }
     }
 
-    ReadFile[bipnum].close();
+    ReadBipFile[bipnum].close();
     return true;
 
    }

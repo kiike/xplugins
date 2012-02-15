@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.35   ***************
-// ****** Feb 10 2012   **************
+// ****** Feb 14 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -627,7 +627,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   hid_free_enumeration(bip_devs);
 
 
-
   // * Register our callback for every loop. Positive intervals
   // * are in seconds, negative are the negative of sim frames.  Zero
   // * registers but does not schedule a callback for time.
@@ -662,7 +661,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
    if (bipcnt > 0) {
 
-     if(bipcnt == 1){
+     if(bipcnt > 0){
        BipSubMenuItem = XPLMAppendMenuItem(
                XsaitekpanelsMenu,
                "Bip",
@@ -690,7 +689,7 @@ PLUGIN_API int XPluginStart(char *		outName,
        XPSetWidgetProperty(BipWidgetID, xpProperty_CaptionLit, 0);
      }
 
-     if(bipcnt == 2) {
+     if(bipcnt > 1) {
        Bip2SubMenuItem = XPLMAppendMenuItem(
            XsaitekpanelsMenu,
            "Bip2",

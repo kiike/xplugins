@@ -62,7 +62,7 @@ static unsigned char bipwbuf[4][10];
 static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i;
-static ifstream ReadBipFile;
+
 
 struct  BipTableStructure
 {
@@ -164,21 +164,10 @@ bool ReadConfigFile(string PlaneICAO)
     int             Index;
     int             i;
 
-    if (bipnum == 0) {
-        ReadBipFile.open("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-    }
-
-    if (bipnum == 1) {
-        ReadBipFile.open("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-    }
-
-    if (bipnum == 2) {
-        ReadBipFile.open("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-    }
-
-    if (bipnum == 3) {
-        ReadBipFile.open("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
-    }
+    fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+    fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+    fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+    fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
 
 
     PlaneICAO.erase(PlaneICAO.find(']')+1);
@@ -186,7 +175,7 @@ bool ReadConfigFile(string PlaneICAO)
 
     LastMenuEntry = -1;
 
-    if(bipcnt > 0) {
+    if(bipnum == 0) {
 
       XPLMClearAllMenuItems(BipMenuId);
       XPLMAppendMenuItem(BipMenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
@@ -369,6 +358,556 @@ bool ReadConfigFile(string PlaneICAO)
 
    }
 
+    if(bipnum == 1) {
+
+      XPLMClearAllMenuItems(Bip2MenuId);
+      XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
+      XPLMAppendMenuItem(Bip2MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
+      XPLMAppendMenuSeparator(Bip2MenuId);
+
+    if (ReadBip2File.is_open() != true)
+    {
+        logMsg("Error: Can't read D2B_config2 config file!");
+        return false;
+    }
+    ErrorInLine = 0;
+
+    LastTableElement = -1;
+    for (i = 0; i < MAXTABLEELEMENTS; i++)
+    {
+        BipTable[i].Row = '0';
+        BipTable[i].Position = 0;
+        BipTable[i].Color = '0';
+        BipTable[i].DataRefToSet = NULL;
+        BipTable[i].DataRefType = 0;
+        BipTable[i].DataRefIndex = 0;
+        BipTable[i].WhatToDo = '0';
+        BipTable[i].FloatValueToSet = 0;
+        BipTable[i].FloatLimit = 0;
+        BipTable[i].CSVDebugString = "";
+    }
+
+    while (getline(ReadBip2File, LineToEncrypt))
+    {
+        ErrorInLine++;
+        if (LineToEncrypt.find("#BE SILENT") == 0)
+        {
+            InSilentMode = true;
+            continue;
+        }
+        if (LineToEncrypt.find("#BE CHATTY") == 0)
+        {
+            InSilentMode = false;
+            continue;
+        }
+        if (LineToEncrypt.find("#SHOW ICAO") == 0)
+        {
+            XPShowWidget(Bip2WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find("#HIDE ICAO") == 0)
+        {
+            XPHideWidget(Bip2WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find("[") == 0)
+        {
+            if ((LineToEncrypt.find("[DEFAULT]") == 0) || (LineToEncrypt.find(PlaneICAO) == 0))
+            {
+                CorrectICAO = true;
+            }
+            else
+            {
+                CorrectICAO = false;
+            }
+            if ((LineToEncrypt.find("[DEFAULT]") != 0) && (++LastMenuEntry < 50))
+            {
+                strcpy(MenuEntries[LastMenuEntry], LineToEncrypt.c_str());
+                XPLMAppendMenuItem(Bip2MenuId, MenuEntries[LastMenuEntry], (void *) MenuEntries[LastMenuEntry], 1);
+            }
+        }
+        if (!CorrectICAO) continue;
+
+        if (LineToEncrypt.find("#RESET AUTHORITY") == 0)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip2File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].WhatToDo = 'T';
+            continue;
+        }
+
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip2File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadBip2File.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_IntArray) || (DataRefType == xplmType_FloatArray)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadBip2File.close();
+                return false;
+            }
+
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadBip2File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].DataRefIndex = Index;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip2File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadBip2File.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_Int) || (DataRefType == xplmType_Float)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadBip2File.close();
+                return false;
+            }
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadBip2File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+
+
+        if (LineToEncrypt.find('#') == 0)
+        {
+            logMsg("Xdataref2BIP: Can't understand the line of code!");
+            ReadBip2File.close();
+            LastTableElement = MAXTABLEELEMENTS - 1;
+            return false;
+        }
+    }
+
+    ReadBip2File.close();
+    return true;
+
+   }
+
+
+    if(bipnum == 2) {
+
+      XPLMClearAllMenuItems(BipMenuId);
+      XPLMAppendMenuItem(Bip3MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
+      XPLMAppendMenuItem(Bip3MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
+      XPLMAppendMenuSeparator(Bip3MenuId);
+
+    if (ReadBip3File.is_open() != true)
+    {
+        logMsg("Error: Can't read D2B_config3 config file!");
+        return false;
+    }
+    ErrorInLine = 0;
+
+    LastTableElement = -1;
+    for (i = 0; i < MAXTABLEELEMENTS; i++)
+    {
+        BipTable[i].Row = '0';
+        BipTable[i].Position = 0;
+        BipTable[i].Color = '0';
+        BipTable[i].DataRefToSet = NULL;
+        BipTable[i].DataRefType = 0;
+        BipTable[i].DataRefIndex = 0;
+        BipTable[i].WhatToDo = '0';
+        BipTable[i].FloatValueToSet = 0;
+        BipTable[i].FloatLimit = 0;
+        BipTable[i].CSVDebugString = "";
+    }
+
+    while (getline(ReadBip3File, LineToEncrypt))
+    {
+        ErrorInLine++;
+        if (LineToEncrypt.find("#BE SILENT") == 0)
+        {
+            InSilentMode = true;
+            continue;
+        }
+        if (LineToEncrypt.find("#BE CHATTY") == 0)
+        {
+            InSilentMode = false;
+            continue;
+        }
+        if (LineToEncrypt.find("#SHOW ICAO") == 0)
+        {
+            XPShowWidget(Bip3WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find("#HIDE ICAO") == 0)
+        {
+            XPHideWidget(Bip3WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find("[") == 0)
+        {
+            if ((LineToEncrypt.find("[DEFAULT]") == 0) || (LineToEncrypt.find(PlaneICAO) == 0))
+            {
+                CorrectICAO = true;
+            }
+            else
+            {
+                CorrectICAO = false;
+            }
+            if ((LineToEncrypt.find("[DEFAULT]") != 0) && (++LastMenuEntry < 50))
+            {
+                strcpy(MenuEntries[LastMenuEntry], LineToEncrypt.c_str());
+                XPLMAppendMenuItem(Bip3MenuId, MenuEntries[LastMenuEntry], (void *) MenuEntries[LastMenuEntry], 1);
+            }
+        }
+        if (!CorrectICAO) continue;
+
+        if (LineToEncrypt.find("#RESET AUTHORITY") == 0)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip3File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].WhatToDo = 'T';
+            continue;
+        }
+
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip3File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadBip3File.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_IntArray) || (DataRefType == xplmType_FloatArray)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadBip3File.close();
+                return false;
+            }
+
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadBip3File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].DataRefIndex = Index;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip3File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadBipFile.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_Int) || (DataRefType == xplmType_Float)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadBip3File.close();
+                return false;
+            }
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadBip3File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+
+
+        if (LineToEncrypt.find('#') == 0)
+        {
+            logMsg("Xdataref2BIP: Can't understand the line of code!");
+            ReadBip3File.close();
+            LastTableElement = MAXTABLEELEMENTS - 1;
+            return false;
+        }
+    }
+
+    ReadBip3File.close();
+    return true;
+
+   }
+
+
+    if(bipnum == 3) {
+
+      XPLMClearAllMenuItems(Bip4MenuId);
+      XPLMAppendMenuItem(Bip4MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
+      XPLMAppendMenuItem(Bip4MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
+      XPLMAppendMenuSeparator(Bip4MenuId);
+
+    if (ReadBip4File.is_open() != true)
+    {
+        logMsg("Error: Can't read D2B_config4 config file!");
+        return false;
+    }
+    ErrorInLine = 0;
+
+    LastTableElement = -1;
+    for (i = 0; i < MAXTABLEELEMENTS; i++)
+    {
+        BipTable[i].Row = '0';
+        BipTable[i].Position = 0;
+        BipTable[i].Color = '0';
+        BipTable[i].DataRefToSet = NULL;
+        BipTable[i].DataRefType = 0;
+        BipTable[i].DataRefIndex = 0;
+        BipTable[i].WhatToDo = '0';
+        BipTable[i].FloatValueToSet = 0;
+        BipTable[i].FloatLimit = 0;
+        BipTable[i].CSVDebugString = "";
+    }
+
+    while (getline(ReadBip4File, LineToEncrypt))
+    {
+        ErrorInLine++;
+        if (LineToEncrypt.find("#BE SILENT") == 0)
+        {
+            InSilentMode = true;
+            continue;
+        }
+        if (LineToEncrypt.find("#BE CHATTY") == 0)
+        {
+            InSilentMode = false;
+            continue;
+        }
+        if (LineToEncrypt.find("#SHOW ICAO") == 0)
+        {
+            XPShowWidget(Bip4WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find("#HIDE ICAO") == 0)
+        {
+            XPHideWidget(Bip4WidgetID);
+            continue;
+        }
+        if (LineToEncrypt.find("[") == 0)
+        {
+            if ((LineToEncrypt.find("[DEFAULT]") == 0) || (LineToEncrypt.find(PlaneICAO) == 0))
+            {
+                CorrectICAO = true;
+            }
+            else
+            {
+                CorrectICAO = false;
+            }
+            if ((LineToEncrypt.find("[DEFAULT]") != 0) && (++LastMenuEntry < 50))
+            {
+                strcpy(MenuEntries[LastMenuEntry], LineToEncrypt.c_str());
+                XPLMAppendMenuItem(Bip4MenuId, MenuEntries[LastMenuEntry], (void *) MenuEntries[LastMenuEntry], 1);
+            }
+        }
+        if (!CorrectICAO) continue;
+
+        if (LineToEncrypt.find("#RESET AUTHORITY") == 0)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip4File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].WhatToDo = 'T';
+            continue;
+        }
+
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip4File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadBip4File.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_IntArray) || (DataRefType == xplmType_FloatArray)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadBip4File.close();
+                return false;
+            }
+
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadBip4File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].DataRefIndex = Index;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
+        {
+            if (++LastTableElement >= MAXTABLEELEMENTS)
+            {
+                logMsg("Xdataref2BIP: Fatal Error: Too much code to handle!");
+                ReadBip4File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            DataRefNumber = XPLMFindDataRef(DataRefString);
+            if (DataRefNumber == NULL)
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use is not defined!");
+                ReadBip4File.close();
+                return false;
+            }
+            DataRefType = XPLMGetDataRefTypes(DataRefNumber);
+            if (!((DataRefType == xplmType_Int) || (DataRefType == xplmType_Float)))
+            {
+                logMsg("Xdataref2BIP: A DataRef you want to use can not be read (wrong type)!");
+                ReadBip4File.close();
+                return false;
+            }
+            if ((BipPosition >= MAXINDICATORS) || (BipPosition < 0))
+            {
+                logMsg("Xdataref2BIP: Indicator does not exist!");
+                ReadBip4File.close();
+                LastTableElement = MAXTABLEELEMENTS - 1;
+                return false;
+            }
+            BipTable[LastTableElement].Row = *RowString;
+            BipTable[LastTableElement].Position = BipPosition;
+            BipTable[LastTableElement].Color = *ColorString;
+            BipTable[LastTableElement].DataRefToSet = DataRefNumber;
+            BipTable[LastTableElement].DataRefType = DataRefType;
+            BipTable[LastTableElement].FloatValueToSet = Argument;
+            BipTable[LastTableElement].FloatLimit = Limit;
+            BipTable[LastTableElement].WhatToDo = 'v';
+            BipTable[LastTableElement].CSVDebugString = DataRefString;
+            continue;
+        }
+
+
+        if (LineToEncrypt.find('#') == 0)
+        {
+            logMsg("Xdataref2BIP: Can't understand the line of code!");
+            ReadBip4File.close();
+            LastTableElement = MAXTABLEELEMENTS - 1;
+            return false;
+        }
+    }
+
+    ReadBip4File.close();
+    return true;
+
+   }
 
 }
 

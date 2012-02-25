@@ -202,7 +202,7 @@ int bataltinverse;
 hid_device *switchhandle;
 
 // ****************** BIP Panel variables *******************************
-int bipcnt = 0, bipres, biploop, stopbipcnt;
+int bipcnt = 0, bipres, biploop[4], stopbipcnt;
 unsigned char bipwbuf[4][10];
 
 hid_device *biphandle[4];
@@ -617,7 +617,7 @@ PLUGIN_API int XPluginStart(char *		outName,
            bipwbuf[bipcnt][0] = 0xb2; // 0xb2 Report ID for brightness
            bipwbuf[bipcnt][1] = 100;  // Set brightness to 100%
            bipres = hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
-           biploop = 1;
+           biploop[bipcnt] = 1;
         }
 
       hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
@@ -683,7 +683,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                                     XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-10,
                                     XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height"))-10,         // screen coordinates
                                     1,                            // visible
-                                    "Xdataref2BIP is working!", // description
+                                    "BIP is working!", // description
                                     1, NULL,                      // we want it root
                                     xpWidgetClass_Caption);
        XPSetWidgetProperty(BipWidgetID, xpProperty_CaptionLit, 0);
@@ -706,9 +706,9 @@ PLUGIN_API int XPluginStart(char *		outName,
        Bip2WidgetID = XPCreateWidget(XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-150,
                                 XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")),
                                 XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-10,
-                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height"))-10,         // screen coordinates
+                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height"))-100,         // screen coordinates
                                 1,                            // visible
-                                "Xdataref2BIP is working!", // description
+                                "BIP2 is working!", // description
                                 1, NULL,                      // we want it root
                                 xpWidgetClass_Caption);
        XPSetWidgetProperty(Bip2WidgetID, xpProperty_CaptionLit, 0);
@@ -935,7 +935,7 @@ PLUGIN_API int XPluginEnable(void)
 
 PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 				      long		inMessage,
-				      void *		inParam)
+                                      void *		inParam)
 {
     (void) inFromWho; // To get rid of warnings on unused variables
 
@@ -971,6 +971,9 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
          }
+         //if (strcmp((char *) inItemRef, "<<DEFAULT>>") == 0) {
+         //      ReadConfigFile((char *) inItemRef);
+         //}
          else {
             ReadConfigFile((char *) inItemRef);
 
@@ -1097,6 +1100,7 @@ float	MyPanelsFlightLoopCallback(
 
   if(bipcnt > 0){
     process_bip_panel();
+    printf("bipcnt   %d\n", bipcnt);
   }
 
   if (XPLMIsDataRefGood(XPLMFindDataRef("x737/systems/afds/plugin_status"))) {

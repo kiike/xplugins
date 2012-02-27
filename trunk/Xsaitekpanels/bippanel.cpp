@@ -62,7 +62,7 @@ static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i[4];
 static int testloop = 0;
-
+static int bip0loop, bip1loop;
 
 struct  BipTableStructure
 {
@@ -94,15 +94,15 @@ bool ReadConfigFile(string PlaneICAO);
 void WriteCSVTableToDisk(void);
 
 
-void LetWidgetSay(string TextToDisplay)
+void LetWidgetSay(string BipTextToDisplay, string Bip2TextToDisplay)
 {
-    XPSetWidgetDescriptor(BipWidgetID, TextToDisplay.c_str());
-    int x = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width")) - (int) XPLMMeasureString(xplmFont_Proportional, TextToDisplay.c_str(), TextToDisplay.length()) - 10;
+    XPSetWidgetDescriptor(BipWidgetID, BipTextToDisplay.c_str());
+    int x = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width")) - (int) XPLMMeasureString(xplmFont_Proportional, BipTextToDisplay.c_str(), BipTextToDisplay.length()) - 10;
     int y = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")) - 35;
     XPSetWidgetGeometry(BipWidgetID, x, y, x+5, y-5);
 
-    XPSetWidgetDescriptor(Bip2WidgetID, TextToDisplay.c_str());
-    int x2 = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width")) - (int) XPLMMeasureString(xplmFont_Proportional, TextToDisplay.c_str(), TextToDisplay.length()) - 10;
+    XPSetWidgetDescriptor(Bip2WidgetID, Bip2TextToDisplay.c_str());
+    int x2 = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width")) - (int) XPLMMeasureString(xplmFont_Proportional, Bip2TextToDisplay.c_str(), Bip2TextToDisplay.length()) - 10;
     int y2 = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")) - 50;
     XPSetWidgetGeometry(Bip2WidgetID, x2, y2, x2+5, y2-5);
 
@@ -119,7 +119,7 @@ void logMsg ( std::string message )
   out.erase();
   ErrorHelper << ErrorInLine;
   ErrorHelper >> out;
-  LetWidgetSay(message.append(" (in line no. ").append(out).append(")"));
+  LetWidgetSay(message.append(" (in line no. ").append(out).append(")"), message.append(" (in line no. ").append(out).append(")"));
 }
 
 void WriteCSVTableToDisk(void)
@@ -156,10 +156,10 @@ void WriteCSVTableToDisk(void)
     CSVFile.close();
 }
 
-
 bool ReadConfigFile(string PlaneICAO)
 {
-    string          LineToEncrypt;
+
+    string          LineToEncrypt[4];
     bool            CorrectICAO = true;
     char            RowString[1];
     int             BipPosition;
@@ -169,27 +169,28 @@ bool ReadConfigFile(string PlaneICAO)
     XPLMDataTypeID  DataRefType;
     float           Argument, Limit;
     int             Index;
-    int             i;
+    int             i, i1;
 
     fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
     fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
     fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
     fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
 
-
     PlaneICAO.erase(PlaneICAO.find(']')+1);
-    LetWidgetSay(PlaneICAO);
+    LetWidgetSay(PlaneICAO, PlaneICAO);
 
-    //LastMenuEntry = -1;
+    //PlaneICAOstring = PlaneICAO;
+
+    LastMenuEntry[0] = -1;
 
     printf("bipnum   %d", bipnum);
     printf("   bipcnt   %d\n", bipcnt);
     //printf("   PlaneICAO  %s\n", PlaneICAO);
 
+
     if(bipcnt > 0) {
 
-        printf("bipnum > 0   %d\n", bipnum);
-
+        printf("bipcnt > 0  bipcnt = %d  bipnum = %d\n", bipcnt, bipnum);
 
 
     if (ReadBipFile.is_open() != true)
@@ -199,7 +200,7 @@ bool ReadConfigFile(string PlaneICAO)
     }
     ErrorInLine = 0;
 
-    //LastTableElement[4] = ;
+    LastTableElement[0] = -1;
     for (i = 0; i < MAXTABLEELEMENTS; i++)
     {
         BipTable[0][i].Row = '0';
@@ -213,33 +214,35 @@ bool ReadConfigFile(string PlaneICAO)
         BipTable[0][i].FloatLimit = 0;
         BipTable[0][i].CSVDebugString = "";
     }
-
-    while (getline(ReadBipFile, LineToEncrypt))
+    bip0loop = 0;
+    while (getline(ReadBipFile, LineToEncrypt[0]))
     {
+        printf("bib0loop = %d  LastTableElement[0] = %d\n", bip0loop, LastTableElement[0]);
+        bip0loop++;
         ErrorInLine++;
-        if (LineToEncrypt.find("#BE SILENT") == 0)
+        if (LineToEncrypt[0].find("#BE SILENT") == 0)
         {
             InSilentMode = true;
             continue;
         }
-        if (LineToEncrypt.find("#BE CHATTY") == 0)
+        if (LineToEncrypt[0].find("#BE CHATTY") == 0)
         {
             InSilentMode = false;
             continue;
         }
-        if (LineToEncrypt.find("#SHOW ICAO") == 0)
+        if (LineToEncrypt[0].find("#SHOW ICAO") == 0)
         {
             XPShowWidget(BipWidgetID);
             continue;
         }
-        if (LineToEncrypt.find("#HIDE ICAO") == 0)
+        if (LineToEncrypt[0].find("#HIDE ICAO") == 0)
         {
             XPHideWidget(BipWidgetID);
             continue;
         }
-        if (LineToEncrypt.find("[") == 0)
+        if (LineToEncrypt[0].find("[") == 0)
         {
-            if ((LineToEncrypt.find("[DEFAULT]") == 0) || (LineToEncrypt.find(PlaneICAO) == 0))
+            if ((LineToEncrypt[0].find("[DEFAULT]") == 0) || (LineToEncrypt[0].find(PlaneICAO) == 0))
             {
                 CorrectICAO = true;
             }
@@ -247,15 +250,15 @@ bool ReadConfigFile(string PlaneICAO)
             {
                 CorrectICAO = false;
             }
-            if ((LineToEncrypt.find("[DEFAULT]") != 0) && (++LastMenuEntry[0] < 50))
+            if ((LineToEncrypt[0].find("[DEFAULT]") != 0) && (++LastMenuEntry[0] < 50))
             {
-                strcpy(MenuEntries[0][LastMenuEntry[0]], LineToEncrypt.c_str());
+                strcpy(MenuEntries[0][LastMenuEntry[0]], LineToEncrypt[0].c_str());
 
             }
         }
         if (!CorrectICAO) continue;
 
-        if (LineToEncrypt.find("#RESET AUTHORITY") == 0)
+        if (LineToEncrypt[0].find("#RESET AUTHORITY") == 0)
         {
             if (++LastTableElement[0] >= MAXTABLEELEMENTS)
             {
@@ -268,7 +271,7 @@ bool ReadConfigFile(string PlaneICAO)
             continue;
         }
 
-        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
+        if (sscanf(LineToEncrypt[0].c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
         {
             if (++LastTableElement[0] >= MAXTABLEELEMENTS)
             {
@@ -311,7 +314,7 @@ bool ReadConfigFile(string PlaneICAO)
             BipTable[0][LastTableElement[0]].CSVDebugString = DataRefString;
             continue;
         }
-        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
+        if (sscanf(LineToEncrypt[0].c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
         {
             if (++LastTableElement[0] >= MAXTABLEELEMENTS)
             {
@@ -354,7 +357,7 @@ bool ReadConfigFile(string PlaneICAO)
         }
 
 
-        if (LineToEncrypt.find('#') == 0)
+        if (LineToEncrypt[0].find('#') == 0)
         {
             logMsg("Xdataref2BIP: Can't understand the line of code!");
             ReadBipFile.close();
@@ -368,9 +371,11 @@ bool ReadConfigFile(string PlaneICAO)
 
    }
 
+
+
     if(bipcnt > 1) {
 
-        printf("bipcnt > 1  %d\n", bipnum);
+        printf("bipcnt > 1  bipcnt = %d  bipnum = %d\n", bipcnt, bipnum);
 
 
     if (ReadBip2File.is_open() != true)
@@ -381,46 +386,48 @@ bool ReadConfigFile(string PlaneICAO)
     ErrorInLine = 0;
 
     LastTableElement[1] = -1;
-    for (i = 0; i < MAXTABLEELEMENTS; i++)
+    for (i1 = 0; i1 < MAXTABLEELEMENTS; i1++)
     {
-        BipTable[1][i].Row = '0';
-        BipTable[1][i].Position = 0;
-        BipTable[1][i].Color = '0';
-        BipTable[1][i].DataRefToSet = NULL;
-        BipTable[1][i].DataRefType = 0;
-        BipTable[1][i].DataRefIndex = 0;
-        BipTable[1][i].WhatToDo = '0';
-        BipTable[1][i].FloatValueToSet = 0;
-        BipTable[1][i].FloatLimit = 0;
-        BipTable[1][i].CSVDebugString = "";
+        BipTable[1][i1].Row = '0';
+        BipTable[1][i1].Position = 0;
+        BipTable[1][i1].Color = '0';
+        BipTable[1][i1].DataRefToSet = NULL;
+        BipTable[1][i1].DataRefType = 0;
+        BipTable[1][i1].DataRefIndex = 0;
+        BipTable[1][i1].WhatToDo = '0';
+        BipTable[1][i1].FloatValueToSet = 0;
+        BipTable[1][i1].FloatLimit = 0;
+        BipTable[1][i1].CSVDebugString = "";
     }
-
-    while (getline(ReadBip2File, LineToEncrypt))
+    bip1loop = 0;
+    while (getline(ReadBip2File, LineToEncrypt[1]))
     {
+        printf("bip1loop = %d  LastTableElement[1] = %d\n", bip1loop, LastTableElement[1]);
+        bip1loop++;
         ErrorInLine++;
-        if (LineToEncrypt.find("#BE SILENT") == 0)
+        if (LineToEncrypt[1].find("#BE SILENT") == 0)
         {
             InSilentMode = true;
             continue;
         }
-        if (LineToEncrypt.find("#BE CHATTY") == 0)
+        if (LineToEncrypt[1].find("#BE CHATTY") == 0)
         {
             InSilentMode = false;
             continue;
         }
-        if (LineToEncrypt.find("#SHOW ICAO") == 0)
+        if (LineToEncrypt[1].find("#SHOW ICAO") == 0)
         {
             XPShowWidget(Bip2WidgetID);
             continue;
         }
-        if (LineToEncrypt.find("#HIDE ICAO") == 0)
+        if (LineToEncrypt[1].find("#HIDE ICAO") == 0)
         {
             XPHideWidget(Bip2WidgetID);
             continue;
         }
-        if (LineToEncrypt.find("[") == 0)
+        if (LineToEncrypt[1].find("[") == 0)
         {
-            if ((LineToEncrypt.find("[DEFAULT]") == 0) || (LineToEncrypt.find(PlaneICAO) == 0))
+            if ((LineToEncrypt[1].find("[DEFAULT2]") == 0) || (LineToEncrypt[1].find(PlaneICAO) == 0))
             {
                 CorrectICAO = true;
             }
@@ -428,15 +435,15 @@ bool ReadConfigFile(string PlaneICAO)
             {
                 CorrectICAO = false;
             }
-            if ((LineToEncrypt.find("[DEFAULT]") != 0) && (++LastMenuEntry[1] < 50))
+            if ((LineToEncrypt[1].find("[DEFAULT2]") != 0) && (++LastMenuEntry[1] < 50))
             {
-                strcpy(MenuEntries[1][LastMenuEntry[1]], LineToEncrypt.c_str());
+                strcpy(MenuEntries[1][LastMenuEntry[1]], LineToEncrypt[1].c_str());
 
             }
         }
         if (!CorrectICAO) continue;
 
-        if (LineToEncrypt.find("#RESET AUTHORITY") == 0)
+        if (LineToEncrypt[1].find("#RESET AUTHORITY") == 0)
         {
             if (++LastTableElement[1] >= MAXTABLEELEMENTS)
             {
@@ -449,7 +456,7 @@ bool ReadConfigFile(string PlaneICAO)
             continue;
         }
 
-        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
+        if (sscanf(LineToEncrypt[1].c_str(), "#SET BIP %c %i %c FROM ARRAY %s %i RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Index, &Argument, &Limit) == 7)
         {
             if (++LastTableElement[1] >= MAXTABLEELEMENTS)
             {
@@ -492,7 +499,7 @@ bool ReadConfigFile(string PlaneICAO)
             BipTable[1][LastTableElement[1]].CSVDebugString = DataRefString;
             continue;
         }
-        if (sscanf(LineToEncrypt.c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
+        if (sscanf(LineToEncrypt[1].c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
         {
             if (++LastTableElement[1] >= MAXTABLEELEMENTS)
             {
@@ -535,13 +542,14 @@ bool ReadConfigFile(string PlaneICAO)
         }
 
 
-        if (LineToEncrypt.find('#') == 0)
+        if (LineToEncrypt[1].find('#') == 0)
         {
             logMsg("Xdataref2BIP: Can't understand the line of code!");
             ReadBip2File.close();
             LastTableElement[1] = MAXTABLEELEMENTS - 1;
             return false;
         }
+
     }
 
     ReadBip2File.close();
@@ -553,7 +561,6 @@ bool ReadConfigFile(string PlaneICAO)
 
 return true;
 }
-
 
 void process_bip_menu()
 
@@ -582,7 +589,6 @@ void process_bip_menu()
     return;
 
 }
-
 
 void process_bip_what_to_do_v()
 

@@ -703,15 +703,7 @@ PLUGIN_API int XPluginStart(char *		outName,
            XsaitekpanelsMenuHandler,
            (void *)1);
 
-       Bip2WidgetID = XPCreateWidget(XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-150,
-                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")),
-                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width"))-10,
-                                XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height"))-100,         // screen coordinates
-                                1,                            // visible
-                                "BIP2 is working!", // description
-                                1, NULL,                      // we want it root
-                                xpWidgetClass_Caption);
-       XPSetWidgetProperty(Bip2WidgetID, xpProperty_CaptionLit, 0);
+
 
      }
 
@@ -774,6 +766,9 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 PLUGIN_API void	XPluginStop(void)
 {
+
+    //printf("XPluginStop has been called \n");
+    XPLMDebugString("XPluginStop has been called \n");
   // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
   XPLMUnregisterCommandHandler(XpanelsFnButtonCommand, XpanelsFnButtonCommandHandler, 1, NULL);
@@ -971,9 +966,9 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
          }
-         //if (strcmp((char *) inItemRef, "<<DEFAULT>>") == 0) {
-         //      ReadConfigFile((char *) inItemRef);
-         //}
+         if (strcmp((char *) inItemRef, "<<BIP2>>") == 0) {
+               ReadConfigFile((char *) inItemRef);
+         }
          else {
             ReadConfigFile((char *) inItemRef);
 
@@ -1100,7 +1095,7 @@ float	MyPanelsFlightLoopCallback(
 
   if(bipcnt > 0){
     process_bip_panel();
-    printf("bipcnt   %d\n", bipcnt);
+    //printf("bipcnt   %d\n", bipcnt);
   }
 
   if (XPLMIsDataRefGood(XPLMFindDataRef("x737/systems/afds/plugin_status"))) {

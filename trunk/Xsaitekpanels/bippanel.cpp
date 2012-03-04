@@ -61,7 +61,6 @@ static unsigned char bipwbuf[4][10];
 static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i[4];
-static int testloop = 0;
 static int bip0loop, bip1loop;
 
 struct  BipTableStructure
@@ -85,30 +84,24 @@ static int                  LastTableElement[4] = {-1, -1, -1, -1};
 static int                  ErrorInLine = 0;
 static bool                 InSilentMode = false;
 
-
 static char     MenuEntries[4][50][250];
-//static int      LastMenuEntry[4] = {0, 0, 0, 0};
+
 static int      LastMenuEntry[4] = {0, 0, 0, 0};
 
 bool ReadConfigFile(string PlaneICAO);
 void WriteCSVTableToDisk(void);
 
 
-void LetWidgetSay(string BipTextToDisplay, string Bip2TextToDisplay)
+void LetWidgetSay(string BipTextToDisplay)
 {
+
     XPSetWidgetDescriptor(BipWidgetID, BipTextToDisplay.c_str());
     int x = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width")) - (int) XPLMMeasureString(xplmFont_Proportional, BipTextToDisplay.c_str(), BipTextToDisplay.length()) - 10;
     int y = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")) - 35;
     XPSetWidgetGeometry(BipWidgetID, x, y, x+5, y-5);
 
-    XPSetWidgetDescriptor(Bip2WidgetID, Bip2TextToDisplay.c_str());
-    int x2 = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_width")) - (int) XPLMMeasureString(xplmFont_Proportional, Bip2TextToDisplay.c_str(), Bip2TextToDisplay.length()) - 10;
-    int y2 = XPLMGetDatai(XPLMFindDataRef("sim/graphics/view/window_height")) - 50;
-    XPSetWidgetGeometry(Bip2WidgetID, x2, y2, x2+5, y2-5);
 
 }
-
-
 
 void logMsg ( std::string message )
 {
@@ -119,7 +112,7 @@ void logMsg ( std::string message )
   out.erase();
   ErrorHelper << ErrorInLine;
   ErrorHelper >> out;
-  LetWidgetSay(message.append(" (in line no. ").append(out).append(")"), message.append(" (in line no. ").append(out).append(")"));
+  LetWidgetSay(message.append(" (in line no. ").append(out).append(")"));
 }
 
 void WriteCSVTableToDisk(void)
@@ -159,66 +152,61 @@ void WriteCSVTableToDisk(void)
 bool ReadConfigFile(string PlaneICAO)
 {
 
-    string          LineToEncrypt[4];
-    bool            CorrectICAO = true;
-    char            RowString[1];
-    int             BipPosition;
-    char            ColorString[1];
-    char            DataRefString[512];
-    XPLMDataRef     DataRefNumber;
-    XPLMDataTypeID  DataRefType;
-    float           Argument, Limit;
-    int             Index;
-    int             i, i1;
+  string          LineToEncrypt[4];
+  bool            CorrectICAO = true;
+  char            RowString[1];
+  int             BipPosition;
+  char            ColorString[1];
+  char            DataRefString[512];
+  XPLMDataRef     DataRefNumber;
+  XPLMDataTypeID  DataRefType;
+  float           Argument, Limit;
+  int             Index;
+  int             i, i1;
 
-    fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-    fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-    fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-    fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
-
-    PlaneICAO.erase(PlaneICAO.find(']')+1);
-    LetWidgetSay(PlaneICAO, PlaneICAO);
-
-    //PlaneICAOstring = PlaneICAO;
-
-    LastMenuEntry[0] = -1;
-
-    printf("bipnum   %d", bipnum);
-    printf("   bipcnt   %d\n", bipcnt);
-    //printf("   PlaneICAO  %s\n", PlaneICAO);
+  fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+  fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+  fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+  fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
 
 
-    if(bipcnt > 0) {
 
-        printf("bipcnt > 0  bipcnt = %d  bipnum = %d\n", bipcnt, bipnum);
 
+  PlaneICAO.erase(PlaneICAO.find(']')+1);
+    LetWidgetSay(PlaneICAO);
+
+
+  LastMenuEntry[0] = -1;
+  LastMenuEntry[1] = -1;
+
+  if(bipcnt > 0) {
 
     if (ReadBipFile.is_open() != true)
     {
-        logMsg("Error: Can't read D2B_config config file!");
-        return false;
+      logMsg("Error: Can't read D2B_config config file!");
+      return false;
     }
     ErrorInLine = 0;
 
     LastTableElement[0] = -1;
     for (i = 0; i < MAXTABLEELEMENTS; i++)
     {
-        BipTable[0][i].Row = '0';
-        BipTable[0][i].Position = 0;
-        BipTable[0][i].Color = '0';
-        BipTable[0][i].DataRefToSet = NULL;
-        BipTable[0][i].DataRefType = 0;
-        BipTable[0][i].DataRefIndex = 0;
-        BipTable[0][i].WhatToDo = '0';
-        BipTable[0][i].FloatValueToSet = 0;
-        BipTable[0][i].FloatLimit = 0;
-        BipTable[0][i].CSVDebugString = "";
+      BipTable[0][i].Row = '0';
+      BipTable[0][i].Position = 0;
+      BipTable[0][i].Color = '0';
+      BipTable[0][i].DataRefToSet = NULL;
+      BipTable[0][i].DataRefType = 0;
+      BipTable[0][i].DataRefIndex = 0;
+      BipTable[0][i].WhatToDo = '0';
+      BipTable[0][i].FloatValueToSet = 0;
+      BipTable[0][i].FloatLimit = 0;
+      BipTable[0][i].CSVDebugString = "";
     }
-    bip0loop = 0;
+
     while (getline(ReadBipFile, LineToEncrypt[0]))
     {
-        printf("bib0loop = %d  LastTableElement[0] = %d\n", bip0loop, LastTableElement[0]);
-        bip0loop++;
+
+
         ErrorInLine++;
         if (LineToEncrypt[0].find("#BE SILENT") == 0)
         {
@@ -375,8 +363,6 @@ bool ReadConfigFile(string PlaneICAO)
 
     if(bipcnt > 1) {
 
-        printf("bipcnt > 1  bipcnt = %d  bipnum = %d\n", bipcnt, bipnum);
-
 
     if (ReadBip2File.is_open() != true)
     {
@@ -399,11 +385,11 @@ bool ReadConfigFile(string PlaneICAO)
         BipTable[1][i1].FloatLimit = 0;
         BipTable[1][i1].CSVDebugString = "";
     }
-    bip1loop = 0;
+
     while (getline(ReadBip2File, LineToEncrypt[1]))
     {
-        printf("bip1loop = %d  LastTableElement[1] = %d\n", bip1loop, LastTableElement[1]);
-        bip1loop++;
+
+
         ErrorInLine++;
         if (LineToEncrypt[1].find("#BE SILENT") == 0)
         {
@@ -582,6 +568,7 @@ void process_bip_menu()
         XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT2]", (void *) "[DEFAULT2]", 1);
         XPLMAppendMenuItem(Bip2MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
         XPLMAppendMenuSeparator(Bip2MenuId);
+        XPLMAppendMenuItem(Bip2MenuId, MenuEntries[1][LastMenuEntry[0]], (void *) MenuEntries[1][LastMenuEntry[0]], 1);
         XPLMAppendMenuItem(Bip2MenuId, MenuEntries[1][LastMenuEntry[1]], (void *) MenuEntries[1][LastMenuEntry[1]], 1);
 
     }
@@ -762,24 +749,10 @@ void process_bip_what_to_do_v()
 }
 
 
-
-
-
-
 // ***** BIP Panel Process  *******
 void process_bip_panel()
 
 {
-
-    printf("bipnum   %d LastTableElement[bipnum]   %d   testloop   %d\n", bipnum, LastTableElement[bipnum], testloop);
-    testloop++;
-
-    //if (LastTableElement[bipnum] == -1) {
-    //    LetWidgetSay("Xdatasref2BIP STANDBY");
-    //    return ;
-    //}
-
-
 
 
     if (biploop[bipnum] < 2) {
@@ -821,11 +794,10 @@ void process_bip_panel()
   // **************   then start again    *******************
 
   bipnum++;
-  printf("bipnum   %d LastTableElement[bipnum]   %d   testloop   %d\n", bipnum, LastTableElement[bipnum], testloop);
+
   if (bipnum == bipcnt) {
     bipnum = 0;
   }
-  printf("bipnum   %d LastTableElement[bipnum]   %d   testloop   %d\n", bipnum, LastTableElement[bipnum], testloop);
-  //printf("bipnum %d    bipcnt %d\n", bipnum, bipcnt);
+
   return;
 }

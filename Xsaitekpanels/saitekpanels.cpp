@@ -254,6 +254,10 @@ int             BipMenuItem;
 
 int Fps, multi_auto_mul;
 
+int gXPlaneVersion = 0;
+int gXPLMVersion = 0;
+int gHostID = 0;
+
 XPLMPluginID PluginID = NULL;
 
 void process_radio_panel();
@@ -285,6 +289,11 @@ PLUGIN_API int XPluginStart(char *		outName,
   int BipSubMenuItem, Bip2SubMenuItem, Bip3SubMenuItem;
   int MultiSubMenuItem, RadioSubMenuItem;
   int SwitchSubMenuItem;
+
+  XPLMGetVersions(&gXPlaneVersion, &gXPLMVersion, &gHostID);
+
+  printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", gXPlaneVersion, gXPLMVersion, gHostID);
+
 
 	/* First set up our plugin info. */
   strcpy(outName, "Xsaitekpanels v1.36");

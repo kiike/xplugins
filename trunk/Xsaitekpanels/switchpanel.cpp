@@ -442,11 +442,22 @@ void process_de_ice_switch()
 // ***************** De Ice *******************
 
 	if(testbit(switchbuf,DE_ICE)) {
-          XPLMSetDatai(AntiIce, 1);
+
+            if (loaded737 == 1){
+                XPLMCommandOnce(x737ice_wing_on);
+            } else {
+                XPLMSetDatai(AntiIce, 1);
+            }
+
  	}
 	if(!testbit(switchbuf,DE_ICE)) {
-          XPLMSetDatai(AntiIce, 0);
- 	}
+
+            if (loaded737 == 1){
+                XPLMCommandOnce(x737ice_wing_off);
+            } else {
+                XPLMSetDatai(AntiIce, 0);
+            }
+     }
 }
 
 void process_pitot_heat_switch()
@@ -455,10 +466,26 @@ void process_pitot_heat_switch()
 // ***************** Pitot Heat *******************
 
 	if(testbit(switchbuf,PITOT_HEAT)) {
-          XPLMCommandOnce(PtHtOn);
+
+            if (loaded737 == 1){
+                XPLMCommandOnce(x737ice_pitot1_on);
+                XPLMCommandOnce(x737ice_pitot2_on);
+            } else {
+                XPLMCommandOnce(PtHt0On);
+                XPLMCommandOnce(PtHt1On);
+            }
+
  	}
 	if(!testbit(switchbuf,PITOT_HEAT)) {
-          XPLMCommandOnce(PtHtOff);
+
+            if (loaded737 == 1){
+                XPLMCommandOnce(x737ice_pitot1_off);
+                XPLMCommandOnce(x737ice_pitot2_off);
+            } else {
+                XPLMCommandOnce(PtHt0Off);
+                XPLMCommandOnce(PtHt1Off);
+            }
+
  	}
 }
 
@@ -468,7 +495,11 @@ void process_cowl_flaps_switch()
 // ***************** Cowl Flaps *******************
 
         if(!testbit(switchbuf,COWL_FLAPS)) {
-	  if(engnum == 1){
+          if (loaded737 == 1){
+                XPLMCommandOnce(x737ice_engine1_on);
+                XPLMCommandOnce(x737ice_engine2_on);
+          } else {
+          if(engnum == 1){
             opencowl[0] = 1;
           }
 
@@ -492,10 +523,15 @@ void process_cowl_flaps_switch()
 	  }
           XPLMSetDatavf(CowlFlaps, opencowl, 0, 8);
  	}
+    }
 
         if(testbit(switchbuf,COWL_FLAPS)) {
-	  if(engnum == 1){
-            closecowl[0] = 0;
+            if (loaded737 == 1){
+                XPLMCommandOnce(x737ice_engine1_off);
+                XPLMCommandOnce(x737ice_engine2_off);
+            } else {
+              if(engnum == 1){
+                closecowl[0] = 0;
 
 	  }
 	  if(engnum == 2){
@@ -518,6 +554,7 @@ void process_cowl_flaps_switch()
 	  }
           XPLMSetDatavf(CowlFlaps, closecowl, 0, 8);
  	}
+    }
 }
 
 void process_panel_lights_switch()

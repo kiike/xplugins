@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.35   ***************
-// ****** Mar 04 2012   **************
+// ******** ver 1.36   ***************
+// ****** Mar 08 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -90,6 +90,21 @@ XPLMCommandRef PitchTrimDn = NULL, PitchTrimUp = NULL, PitchTrimTkOff = NULL;
 
 XPLMCommandRef XpanelsFnButtonCommand = NULL, XpanelsCrsToggleCommand = NULL;
 
+XPLMCommandRef x737mcp_cmd_a_toggle = NULL;
+XPLMCommandRef x737mcp_hdg_up = NULL, x737mcp_hdg_down = NULL;
+XPLMCommandRef x737mcp_hdg_up_fast = NULL, x737mcp_hdg_down_fast = NULL;
+XPLMCommandRef x737mcp_spd_up = NULL, x737mcp_spd_down = NULL;
+XPLMCommandRef x737mcp_spd_up_fast = NULL, x737mcp_spd_down_fast = NULL;
+XPLMCommandRef x737mcp_alt_up = NULL, x737mcp_alt_down = NULL;
+XPLMCommandRef x737mcp_alt_up_fast = NULL, x737mcp_alt_down_fast = NULL;
+XPLMCommandRef x737mcp_vvi_up = NULL, x737mcp_vvi_down = NULL;
+XPLMCommandRef x737mcp_vvi_up_fast = NULL, x737mcp_vvi_down_fast = NULL;
+
+XPLMCommandRef x737mcp_hdg_toggle = NULL, x737mcp_vorloc_toggle = NULL;
+XPLMCommandRef x737mcp_lvlchange_toggle = NULL, x737mcp_alt_toggle = NULL;
+XPLMCommandRef x737mcp_vs_toggle = NULL, x737mcp_app_toggle = NULL;
+XPLMCommandRef x737mcp_spd_changeover = NULL, x737mcp_lnav_toggle = NULL;
+
 // ***************** Multi Panel Data Ref *********************
 XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL, ApCrs2 = NULL;
 
@@ -99,11 +114,26 @@ XPLMDataRef x737athr_armed = NULL, x737swBatBus = NULL, x737stbyPwr = NULL;
 XPLMDataRef ApState = NULL, ApAutThr;
 XPLMDataRef Frp = NULL, MHdg = NULL;
 
+XPLMDataRef AirspeedIsMach = NULL, Airspeed = NULL;
+
+XPLMDataRef x737mcp_hdg = NULL, x737mcp_alt = NULL;
+XPLMDataRef x737mcp_vs = NULL, x737mcp_vs_arm = NULL;
+
+XPLMDataRef x737mcp_cmd_a_led = NULL;
+XPLMDataRef x737mcp_hdg_led = NULL, x737mcp_vorloc_led = NULL, x737mcp_vorloc_armed = NULL;
+XPLMDataRef x737mcp_lnav = NULL, x737mcp_lnav_armed = NULL;
+XPLMDataRef x737mcp_lvlchange_led = NULL, x737mcp_alt_led = NULL;
+XPLMDataRef x737mcp_vvi_led = NULL, x737mcp_vvi_armed_led = NULL, x737mcp_app_led = NULL;
+XPLMDataRef HsiSelector = NULL;
+
 XPLMMenuID      MultiMenu;
 XPLMMenuID      MultiMenuId;
 
 // *************** Switch Panel Command Ref *******************
-XPLMCommandRef ClFlOpn = NULL, ClFlCls = NULL, PtHtOn = NULL, PtHtOff = NULL;
+XPLMCommandRef ClFlOpn = NULL, ClFlCls = NULL;
+XPLMCommandRef PtHtOn = NULL, PtHtOff = NULL;
+XPLMCommandRef PtHt0On = NULL, PtHt0Off = NULL, PtHt1On = NULL, PtHt1Off = NULL;
+
 XPLMCommandRef AvLtOn = NULL, AvLtOff = NULL, BatOn = NULL, BatOff = NULL;
 XPLMCommandRef LnLtOn = NULL, LnLtOff = NULL, TxLtOn = NULL, TxLtOff = NULL;
 XPLMCommandRef StLtOn = NULL, StLtOff = NULL, NvLtOn = NULL, NvLtOff = NULL;
@@ -137,6 +167,12 @@ XPLMCommandRef FuelPumpOn5 = NULL, FuelPumpOn6 = NULL, FuelPumpOn7 = NULL, FuelP
 
 XPLMCommandRef FuelPumpOff1 = NULL, FuelPumpOff2 = NULL, FuelPumpOff3 = NULL, FuelPumpOff4 = NULL;
 XPLMCommandRef FuelPumpOff5 = NULL, FuelPumpOff6 = NULL, FuelPumpOff7 = NULL, FuelPumpOff8 = NULL;
+
+XPLMCommandRef x737ice_pitot1_on = NULL, x737ice_pitot2_on = NULL;
+XPLMCommandRef x737ice_pitot1_off = NULL, x737ice_pitot2_off = NULL;
+XPLMCommandRef x737ice_engine1_on = NULL, x737ice_engine2_on = NULL;
+XPLMCommandRef x737ice_engine1_off = NULL, x737ice_engine2_off = NULL;
+XPLMCommandRef x737ice_wing_on = NULL, x737ice_wing_off = NULL;
 
 // ******************* Switch Panel Data Ref ********************
 XPLMDataRef BatNum = NULL, GenNum = NULL, EngNum = NULL;
@@ -251,7 +287,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   int SwitchSubMenuItem;
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.35");
+  strcpy(outName, "Xsaitekpanels v1.36");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -419,13 +455,25 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   MHdg = XPLMFindDataRef("sim/flightmodel/position/magpsi");
 
+  AirspeedIsMach = XPLMFindDataRef("sim/cockpit/autopilot/airspeed_is_mach");
+  Airspeed = XPLMFindDataRef("sim/cockpit/autopilot/airspeed");
+
 
 
 // **************** Find Switch Panel Commands Ref *******************
   ClFlOpn  = XPLMFindCommand("sim/flight_controls/cowl_flaps_open");
   ClFlCls  = XPLMFindCommand("sim/flight_controls/cowl_flaps_closed");
+  PtHt0On   = XPLMFindCommand("sim/ice/pitot_heat0_on");
+  PtHt0Off  = XPLMFindCommand("sim/ice/pitot_heat0_off");
+  PtHt1On   = XPLMFindCommand("sim/ice/pitot_heat1_on");
+  PtHt1Off  = XPLMFindCommand("sim/ice/pitot_heat1_off");
+
+
   PtHtOn   = XPLMFindCommand("sim/ice/pitot_heat_on");
   PtHtOff  = XPLMFindCommand("sim/ice/pitot_heat_off");
+
+
+
 
   AvLtOn   = XPLMFindCommand("sim/systems/avionics_on");
   AvLtOff  = XPLMFindCommand("sim/systems/avionics_off");
@@ -1103,8 +1151,69 @@ float	MyPanelsFlightLoopCallback(
 
      x737athr_armed = XPLMFindDataRef("x737/systems/athr/athr_armed");
 
-  }
-  else{
+     x737ice_pitot1_on = XPLMFindCommand("x737/ice_and_rain/PITOTHEAT1_ON");
+     x737ice_pitot1_off = XPLMFindCommand("x737/ice_and_rain/PITOTHEAT1_OFF");
+     x737ice_pitot2_on = XPLMFindCommand("x737/ice_and_rain/PITOTHEAT2_ON");
+     x737ice_pitot2_off = XPLMFindCommand("x737/ice_and_rain/PITOTHEAT2_OFF");
+     x737ice_engine1_on = XPLMFindCommand("x737/ice_and_rain/EAI1_ON");
+     x737ice_engine1_off = XPLMFindCommand("x737/ice_and_rain/EAI1_OFF");
+     x737ice_engine2_on = XPLMFindCommand("x737/ice_and_rain/EAI2_ON");
+     x737ice_engine2_off = XPLMFindCommand("x737/ice_and_rain/EAI2_OFF");
+     x737ice_wing_on = XPLMFindCommand("x737/ice_and_rain/WAI_ON");
+     x737ice_wing_off = XPLMFindCommand("x737/ice_and_rain/WAI_OFF");
+
+     x737mcp_cmd_a_toggle = XPLMFindCommand("x737/mcp/CMDA_TOGGLE");
+     x737mcp_cmd_a_led = XPLMFindDataRef("x737/systems/MCP/LED_CMDA_on");
+
+     x737mcp_hdg = XPLMFindDataRef("x737/systems/afds/HDG");
+     x737mcp_hdg_toggle = XPLMFindCommand("x737/mcp/HDGSEL_TOGGLE");
+     x737mcp_hdg_up = XPLMFindCommand("x737/mcp/HDG+1");
+     x737mcp_hdg_up_fast = XPLMFindCommand("x737/mcp/HDG+6");
+     x737mcp_hdg_down = XPLMFindCommand("x737/mcp/HDG-1");
+     x737mcp_hdg_down_fast = XPLMFindCommand("x737/mcp/HDG-6");
+
+     x737mcp_lnav_armed = XPLMFindDataRef("x737/systems/afds/LNAV_arm");
+     x737mcp_lnav = XPLMFindDataRef("x737/systems/afds/LNAV");
+     x737mcp_lnav_toggle = XPLMFindCommand("x737/mcp/LNAV_TOGGLE");
+
+     x737mcp_vorloc_armed = XPLMFindDataRef("x737/systems/afds/VORLOC_armed");
+     x737mcp_vorloc_toggle = XPLMFindCommand("x737/mcp/VORLOC_TOGGLE");
+
+     HsiSelector = XPLMFindDataRef("sim/cockpit/switches/HSI_selector");
+
+     x737mcp_lvlchange_toggle = XPLMFindCommand("x737/mcp/LVLCHANGE_TOGGLE");
+     x737mcp_spd_up = XPLMFindCommand("x737/mcp/MCPSPD+1");
+     x737mcp_spd_up_fast = XPLMFindCommand("x737/mcp/MCPSPD+10");
+     x737mcp_spd_down = XPLMFindCommand("x737/mcp/MCPSPD-1");
+     x737mcp_spd_down_fast = XPLMFindCommand("x737/mcp/MCPSPD-10");
+     x737mcp_spd_changeover = XPLMFindCommand("x737/mcp/CHANGEOVER");
+
+     x737mcp_alt = XPLMFindDataRef("x737/systems/afds/ALTHLD_baroalt");
+     x737mcp_alt_toggle = XPLMFindCommand("x737/mcp/ALTHLD_TOGGLE");
+     x737mcp_alt_up = XPLMFindCommand("x737/mcp/ALTSEL+100");
+     x737mcp_alt_down = XPLMFindCommand("x737/mcp/ALTSEL-100");
+     x737mcp_alt_up_fast = XPLMFindCommand("x737/mcp/ALTSEL+1000");
+     x737mcp_alt_down_fast = XPLMFindCommand("x737/mcp/ALTSEL-1000");
+
+     x737mcp_vs = XPLMFindDataRef("x737/systems/afds/VS");
+     x737mcp_vs_arm = XPLMFindDataRef("x737/systems/afds/VS_arm");
+     x737mcp_vs_toggle = XPLMFindCommand("x737/mcp/VS_TOGGLE");
+     x737mcp_vvi_up = XPLMFindCommand("x737/mcp/VVI+100");
+     x737mcp_vvi_down = XPLMFindCommand("x737/mcp/VVI-100");
+     x737mcp_vvi_up_fast = XPLMFindCommand("x737/mcp/VVI+500");
+     x737mcp_vvi_down_fast = XPLMFindCommand("x737/mcp/VVI-500");
+
+     x737mcp_app_toggle = XPLMFindCommand("x737/mcp/APP_TOGGLE");
+
+     // x737 LEDs (match x737's custom glareshield and power source)
+     x737mcp_hdg_led = XPLMFindDataRef("x737/systems/MCP/LED_HDG_on");
+     x737mcp_vorloc_led = XPLMFindDataRef("x737/systems/afds/VORLOC");
+     x737mcp_lvlchange_led = XPLMFindDataRef("x737/systems/MCP/LED_LVLCHG_on");
+     x737mcp_alt_led = XPLMFindDataRef("x737/systems/MCP/LED_ALTHLD_on");
+     x737mcp_vvi_led = XPLMFindDataRef("x737/systems/MCP/LED_VVI_on");
+     x737mcp_vvi_armed_led = XPLMFindDataRef("x737/systems/MCP/LED_VVIARMED_on");
+     x737mcp_app_led = XPLMFindDataRef("x737/systems/MCP/LED_APP_on");
+  } else {
        loaded737 = 0;
 
        ApAutThr = XPLMFindDataRef("sim/cockpit2/autopilot/autothrottle_enabled");

@@ -473,6 +473,7 @@ void process_pitot_heat_switch()
             } else {
                 XPLMCommandOnce(PtHt0On);
                 XPLMCommandOnce(PtHt1On);
+                XPLMCommandOnce(PtHtOn);
             }
 
  	}
@@ -484,6 +485,7 @@ void process_pitot_heat_switch()
             } else {
                 XPLMCommandOnce(PtHt0Off);
                 XPLMCommandOnce(PtHt1Off);
+                XPLMCommandOnce(PtHtOff);
             }
 
  	}

@@ -471,9 +471,12 @@ void process_pitot_heat_switch()
                 XPLMCommandOnce(x737ice_pitot1_on);
                 XPLMCommandOnce(x737ice_pitot2_on);
             } else {
-                XPLMCommandOnce(PtHt0On);
-                XPLMCommandOnce(PtHt1On);
-                XPLMCommandOnce(PtHtOn);
+                if (gXPlaneVersion > 9700){
+                    XPLMCommandOnce(PtHt0On);
+                    XPLMCommandOnce(PtHt1On);
+                } else {
+                    XPLMCommandOnce(PtHtOn);
+                }
             }
 
  	}
@@ -483,9 +486,12 @@ void process_pitot_heat_switch()
                 XPLMCommandOnce(x737ice_pitot1_off);
                 XPLMCommandOnce(x737ice_pitot2_off);
             } else {
-                XPLMCommandOnce(PtHt0Off);
-                XPLMCommandOnce(PtHt1Off);
-                XPLMCommandOnce(PtHtOff);
+                if (gXPlaneVersion > 9700){
+                    XPLMCommandOnce(PtHt0Off);
+                    XPLMCommandOnce(PtHt1Off);
+                } else {
+                    XPLMCommandOnce(PtHtOff);
+                }
             }
 
  	}

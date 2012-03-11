@@ -254,11 +254,9 @@ int             BipMenuItem;
 
 int Fps, multi_auto_mul;
 
-int gXPlaneVersion = 0;
-int gXPLMVersion = 0;
-int gHostID = 0;
-
-XPLMPluginID PluginID = NULL;
+int wrgXPlaneVersion = 0;
+int wrgXPLMVersion = 0;
+int wrgHostID = 0;
 
 void process_radio_panel();
 void process_multi_panel();
@@ -290,9 +288,9 @@ PLUGIN_API int XPluginStart(char *		outName,
   int MultiSubMenuItem, RadioSubMenuItem;
   int SwitchSubMenuItem;
 
-  XPLMGetVersions(&gXPlaneVersion, &gXPLMVersion, &gHostID);
+  XPLMGetVersions(&wrgXPlaneVersion, &wrgXPLMVersion, &wrgHostID);
 
-  printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", gXPlaneVersion, gXPLMVersion, gHostID);
+  printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
 
 	/* First set up our plugin info. */
@@ -1130,12 +1128,6 @@ float	MyPanelsFlightLoopCallback(
     (void) inElapsedTimeSinceLastFlightLoop; // To get rid of warnings on unused variables
     (void) inCounter; // To get rid of warnings on unused variables
     (void) inRefcon; // To get rid of warnings on unused variables
-
-   void *Param = NULL;
-   XPLMPluginID PluginID = XPLMFindPluginBySignature("xplanesdk.examples.DataRefEditor");
-   if (PluginID != XPLM_NO_PLUGIN_ID){
-                   XPLMSendMessageToPlugin(PluginID, MSG_ADD_DATAREF, (void*)"xplugins/xsaitekpanels/x_panels_fn_button");
-   }
 
   if(radcnt > 0){
     process_radio_panel();

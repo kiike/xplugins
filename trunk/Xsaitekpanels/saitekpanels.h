@@ -219,9 +219,9 @@ bool ReadConfigFile(string PlaneICAO);
 
 // ***************** Saitek Panel variables ********************
 
-extern int gXPlaneVersion;
-extern int gXPLMVersion;
-extern int gHostID;
+extern int wrgXPlaneVersion;
+extern int wrgXPLMVersion;
+extern int wrgHostID;
 
 
 #endif

@@ -168,6 +168,8 @@ XPLMCommandRef FuelPumpOn5 = NULL, FuelPumpOn6 = NULL, FuelPumpOn7 = NULL, FuelP
 XPLMCommandRef FuelPumpOff1 = NULL, FuelPumpOff2 = NULL, FuelPumpOff3 = NULL, FuelPumpOff4 = NULL;
 XPLMCommandRef FuelPumpOff5 = NULL, FuelPumpOff6 = NULL, FuelPumpOff7 = NULL, FuelPumpOff8 = NULL;
 
+XPLMCommandRef x737gen1_on = NULL, x737gen2_on = NULL;
+XPLMCommandRef x737gen1_off = NULL, x737gen2_off = NULL;
 XPLMCommandRef x737ice_pitot1_on = NULL, x737ice_pitot2_on = NULL;
 XPLMCommandRef x737ice_pitot1_off = NULL, x737ice_pitot2_off = NULL;
 XPLMCommandRef x737ice_engine1_on = NULL, x737ice_engine2_on = NULL;
@@ -1152,6 +1154,10 @@ float	MyPanelsFlightLoopCallback(
 
      x737athr_armed = XPLMFindDataRef("x737/systems/athr/athr_armed");
 
+     x737gen1_on = XPLMFindCommand("x737/electrical/GEN_1_CONNECT");
+     x737gen1_off = XPLMFindCommand("x737/electrical/GEN_1_DISCONNECT");
+     x737gen2_on = XPLMFindCommand("x737/electrical/GEN_2_CONNECT");
+     x737gen2_off = XPLMFindCommand("x737/electrical/GEN_2_DISCONNECT");
      x737ice_pitot1_on = XPLMFindCommand("x737/ice_and_rain/PITOTHEAT1_ON");
      x737ice_pitot1_off = XPLMFindCommand("x737/ice_and_rain/PITOTHEAT1_OFF");
      x737ice_pitot2_on = XPLMFindCommand("x737/ice_and_rain/PITOTHEAT2_ON");

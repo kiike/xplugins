@@ -217,7 +217,10 @@ void process_master_battery_switch()
 
 // ***************** Master Battery *******************
 
-	if(testbit(switchbuf,MASTER_BATTERY)) {
+    if(testbit(switchbuf,MASTER_BATTERY)) {
+        if (loaded737) {
+            XPLMCommandOnce(x737gen1_on);
+        } else {
           if(batnum == 1){
             BatArrayOn[0] = 1;
           }
@@ -271,7 +274,11 @@ void process_master_battery_switch()
             BatArrayOn[7] = 1;
           }
         }
-	if(!testbit(switchbuf,MASTER_BATTERY)) {
+    }
+    if(!testbit(switchbuf,MASTER_BATTERY)) {
+        if (loaded737) {
+            XPLMCommandOnce(x737gen1_off);
+        } else {
           if(batnum == 1){
             BatArrayOn[0] = 0;
           }
@@ -325,7 +332,12 @@ void process_master_battery_switch()
             BatArrayOn[7] = 0;
           }
         }
-        XPLMSetDatavi(BatArrayOnDR, BatArrayOn, 0, 8);
+    }
+
+    if (loaded737) {
+        return;
+    }
+    XPLMSetDatavi(BatArrayOnDR, BatArrayOn, 0, 8);
 }
 
 void process_master_altenator_switch()
@@ -333,51 +345,62 @@ void process_master_altenator_switch()
 
 // ***************** Master Altenator *******************
 
-	if(testbit(switchbuf,MASTER_ALTENATOR)) {
-	  if(gennum == 1){
-	    XPLMCommandOnce(GenOn1);
-	  }
-	  if(gennum == 2){
-	    XPLMCommandOnce(GenOn1);
-	    XPLMCommandOnce(GenOn2);
-	  }
-	  if(gennum == 3){
-	    XPLMCommandOnce(GenOn1);
-	    XPLMCommandOnce(GenOn2);
-	    XPLMCommandOnce(GenOn3);
-	  }
-	  if(gennum == 4){
-	    XPLMCommandOnce(GenOn1);
-	    XPLMCommandOnce(GenOn2);
-	    XPLMCommandOnce(GenOn3);
-	    XPLMCommandOnce(GenOn4);
-	  }
- 	}
+    if(testbit(switchbuf,MASTER_ALTENATOR)) {
+        if (loaded737) {
+            XPLMCommandOnce(x737gen2_on);
+        } else {
+          if(gennum == 1){
+            XPLMCommandOnce(GenOn1);
+          }
+          if(gennum == 2){
+            XPLMCommandOnce(GenOn1);
+            XPLMCommandOnce(GenOn2);
+          }
+          if(gennum == 3){
+            XPLMCommandOnce(GenOn1);
+            XPLMCommandOnce(GenOn2);
+            XPLMCommandOnce(GenOn3);
+          }
+          if(gennum == 4){
+            XPLMCommandOnce(GenOn1);
+            XPLMCommandOnce(GenOn2);
+            XPLMCommandOnce(GenOn3);
+            XPLMCommandOnce(GenOn4);
+          }
+        }
+    }
 
-	if(!testbit(switchbuf,MASTER_ALTENATOR)) {
-	  if(gennum == 1){
-	    XPLMCommandOnce(GenOff1);
-	  }
-	  if(gennum == 2){
-	    XPLMCommandOnce(GenOff1);
-	    XPLMCommandOnce(GenOff2);
-	  }
-	  if(gennum == 3){
-	    XPLMCommandOnce(GenOff1);
-	    XPLMCommandOnce(GenOff2);
-	    XPLMCommandOnce(GenOff3);
-	  }
-	  if(gennum == 4){
-	    XPLMCommandOnce(GenOff1);
-	    XPLMCommandOnce(GenOff2);
-	    XPLMCommandOnce(GenOff3);
-	    XPLMCommandOnce(GenOff4);
-	  }
- 	}
+    if(!testbit(switchbuf,MASTER_ALTENATOR)) {
+        if (loaded737) {
+            XPLMCommandOnce(x737gen2_off);
+        } else {
+          if(gennum == 1){
+            XPLMCommandOnce(GenOff1);
+          }
+          if(gennum == 2){
+            XPLMCommandOnce(GenOff1);
+            XPLMCommandOnce(GenOff2);
+          }
+          if(gennum == 3){
+            XPLMCommandOnce(GenOff1);
+            XPLMCommandOnce(GenOff2);
+            XPLMCommandOnce(GenOff3);
+          }
+          if(gennum == 4){
+            XPLMCommandOnce(GenOff1);
+            XPLMCommandOnce(GenOff2);
+            XPLMCommandOnce(GenOff3);
+            XPLMCommandOnce(GenOff4);
+          }
+        }
+    }
 }
 
 void process_avionics_power_switch()
 {
+    if (loaded737) {
+        return;
+    }
 
 // ***************** Avionics Power *******************
 
@@ -391,7 +414,9 @@ void process_avionics_power_switch()
 
 void process_fuel_pump_switch()
 {
-
+    if (loaded737) {
+        return;
+    }
 // ***************** Fuel Pump *******************
 
 	if(testbit(switchbuf,FUEL_PUMP)) {
@@ -567,6 +592,9 @@ void process_cowl_flaps_switch()
 
 void process_panel_lights_switch()
 {
+    if (loaded737) {
+        return;
+    }
 
 // ***************** Panel Lights *******************
 

@@ -99,7 +99,6 @@ extern XPLMCommandRef x737mcp_lvlchange_toggle, x737mcp_alt_toggle;
 extern XPLMCommandRef x737mcp_vs_toggle, x737mcp_app_toggle;
 extern XPLMCommandRef x737mcp_spd_changeover, x737mcp_lnav_toggle;
 
-
 // ************ Multi Panel Data Ref *****************
 extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs, ApCrs2;
 
@@ -176,6 +175,9 @@ extern XPLMCommandRef FuelPumpOn5, FuelPumpOn6, FuelPumpOn7, FuelPumpOn8;
 
 extern XPLMCommandRef FuelPumpOff1, FuelPumpOff2, FuelPumpOff3, FuelPumpOff4;
 extern XPLMCommandRef FuelPumpOff5, FuelPumpOff6, FuelPumpOff7, FuelPumpOff8;
+
+extern XPLMCommandRef x737gen1_on, x737gen2_on;
+extern XPLMCommandRef x737gen1_off, x737gen2_off;
 
 extern XPLMCommandRef x737ice_pitot1_on, x737ice_pitot2_on;
 extern XPLMCommandRef x737ice_pitot1_off, x737ice_pitot2_off;

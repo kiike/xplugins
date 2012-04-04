@@ -265,6 +265,7 @@ void process_multi_panel();
 void process_switch_panel();
 void process_bip_panel();
 void process_pref_file();
+void process_config_file();
 
 // ********************* MyPanelsFlightLoopCallback **************************
 float	MyPanelsFlightLoopCallback(
@@ -607,8 +608,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   BatArrayOnDR      = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
 
 
-  process_pref_file();
-
+  //process_pref_file();
+  process_config_file();
 
 // ************* Open any Radio that is connected *****************
 

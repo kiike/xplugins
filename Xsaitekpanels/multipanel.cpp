@@ -73,6 +73,11 @@ void process_multi_menu()
     XPLMAppendMenuItem(MultiMenuId, "TRIM X1", (void *) "TRIM X1", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X2", (void *) "TRIM X2", 2);
     XPLMAppendMenuItem(MultiMenuId, "TRIM X3", (void *) "TRIM X3", 2);
+    XPLMAppendMenuSeparator(MultiMenuId);
+    XPLMAppendMenuItem(MultiMenuId, "Auto Throttle Switch enable / disable", (void *) "VOID", 2);
+    XPLMAppendMenuSeparator(MultiMenuId);
+    XPLMAppendMenuItem(MultiMenuId, "ENABLE", (void *) "ENABLE_AUTO_THROTTLE", 2);
+    XPLMAppendMenuItem(MultiMenuId, "DISABLE", (void *) "DISABLE_AUTO_THROTTLE", 2);
 
   //!!! I'm adding memory of old setup, so the change is easily detected...
   //!!! Although I'm pretty sure it would be much better to handle this in the menu callback
@@ -554,6 +559,9 @@ void process_crs_switch()
 
 void process_autothrottle_switch()
 {
+    if(autothrottleswitchenable == 0) {
+        return;
+    }
 // ***************** Auto Throttle Switch Position *******************
 
         if(testbit(multibuf,AUTO_THROTTLE_SWITCH)) {

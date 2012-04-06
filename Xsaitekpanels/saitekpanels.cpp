@@ -222,7 +222,7 @@ unsigned char multibuf[4], multiwbuf[13];
 
 int loaded737 = 0;
 
-int trimspeed, multispeed;
+int trimspeed, multispeed, autothrottleswitchenable;
 
 int xpanelsfnbutton = 0, xpanelscrstoggle = 0;
 
@@ -235,7 +235,7 @@ static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
 float LandingGearDeployRatio[10];
 
-int bataltinverse;
+int bataltinverse, cowlflapsenable, landinggearknobenable;
 
 hid_device *switchhandle;
 
@@ -1060,6 +1060,13 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              trimspeed = 3;
          }
 
+         if (strcmp((char *) inItemRef, "ENABLE_AUTO_THROTTLE") == 0) {
+             autothrottleswitchenable = 1;
+         }
+         if (strcmp((char *) inItemRef, "DISABLE_AUTO_THROTTLE") == 0) {
+             autothrottleswitchenable = 0;
+         }
+
     }
 
     if((long)inMenuRef == 3){
@@ -1095,7 +1102,21 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              bataltinverse = 1;
          }
 
-    }
+         if (strcmp((char *) inItemRef, "ENABLE_COWL") == 0) {
+             cowlflapsenable = 1;
+         }
+         if (strcmp((char *) inItemRef, "DISABLE_COWL") == 0) {
+             cowlflapsenable = 0;
+         }
+
+         if (strcmp((char *) inItemRef, "ENABLE_GEAR") == 0) {
+             landinggearknobenable = 1;
+         }
+         if (strcmp((char *) inItemRef, "DISABLE_GEAR") == 0) {
+             landinggearknobenable = 0;
+         }
+
+     }
 
     return;
 }

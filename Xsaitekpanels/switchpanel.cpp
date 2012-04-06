@@ -48,22 +48,90 @@ void process_switch_menu()
 
     XPLMClearAllMenuItems(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "Bat Alt Normal or Alt Bat Cessna", (void *) "VOID", 4);
-    XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "NORMAL", (void *) "NORMAL", 4);
     XPLMAppendMenuItem(SwitchMenuId, "CESSNA", (void *) "CESSNA", 4);
+    XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "Deice Switch enable / disable", (void *) "VOID", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_DEICE", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_DEICE", 4);
+    XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "Cowl Flaps enable / disable", (void *) "VOID", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_COWL", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_COWL", 4);
+    XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "Panel Lights Switch enable / disable", (void *) "VOID", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_PANEL_LIGHTS", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_PANEL_LIGHTS", 4);
+    XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "Landing Gear Knob enable / disable", (void *) "VOID", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_GEAR", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_GEAR", 4);
 
     if (bataltinverse == 0) {
-       XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Checked);
+       XPLMCheckMenuItem(SwitchMenuId, 1, xplm_Menu_Checked);
     }
     if (bataltinverse != 0) {
-       XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(SwitchMenuId, 1, xplm_Menu_Unchecked);
     }
     if (bataltinverse == 1) {
-       XPLMCheckMenuItem(SwitchMenuId, 3, xplm_Menu_Checked);
+       XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Checked);
     }
     if (bataltinverse != 1) {
-       XPLMCheckMenuItem(SwitchMenuId, 3, xplm_Menu_Unchecked);
+       XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Unchecked);
     }
+
+    if (deiceswitchenable == 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Checked);
+    }
+    if (deiceswitchenable != 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Unchecked);
+    }
+    if (deiceswitchenable == 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Checked);
+    }
+    if (deiceswitchenable != 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Unchecked);
+    }
+
+    if (cowlflapsenable == 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Checked);
+    }
+    if (cowlflapsenable != 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Unchecked);
+    }
+    if (cowlflapsenable == 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Checked);
+    }
+    if (cowlflapsenable != 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Unchecked);
+    }
+
+    if (panellightsenable == 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Checked);
+    }
+    if (panellightsenable != 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Unchecked);
+    }
+    if (panellightsenable == 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Checked);
+    }
+    if (panellightsenable != 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Unchecked);
+    }
+
+    if (landinggearknobenable == 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Checked);
+    }
+    if (landinggearknobenable != 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Unchecked);
+    }
+    if (landinggearknobenable == 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Checked);
+    }
+    if (landinggearknobenable != 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Unchecked);
+    }
+
 
   switchwbuf[0] = 0;
   switchwbuf[1] = gearled;
@@ -524,6 +592,9 @@ void process_pitot_heat_switch()
 
 void process_cowl_flaps_switch()
 {
+    if(cowlflapsenable == 0) {
+        return;
+    }
 
 // ***************** Cowl Flaps *******************
 
@@ -673,6 +744,9 @@ void process_landing_lights_switch()
 
 void process_gear_switch_switch()
 {
+    if(landinggearknobenable == 0) {
+        return;
+    }
 
 // ***************** Gear Switch *******************
 	

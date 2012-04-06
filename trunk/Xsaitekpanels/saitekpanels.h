@@ -124,9 +124,9 @@ extern XPLMMenuID      MHdg;
 
 // **************** Multi Panel variables *******************
 extern int multifd;
-extern int trimspeed, numadf;
+extern int numadf;
 extern int loaded737;
-extern int multispeed;
+extern int trimspeed, multispeed, autothrottleswitchenable;
 extern int xpanelsfnbutton;
 extern int xpanelscrstoggle;
 extern int multi_auto_mul;
@@ -199,7 +199,7 @@ extern XPLMMenuID      SwitchMenuId;
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;
-extern int bataltinverse;
+extern int bataltinverse, cowlflapsenable, landinggearknobenable;
 extern float LandingGearDeployRatio[10];
 extern hid_device *switchhandle;
 

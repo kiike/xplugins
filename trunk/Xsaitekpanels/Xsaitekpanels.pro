@@ -34,7 +34,7 @@ unix:!macx {
     SOURCES += \
           ../hidapi-0.7.0/linux/hid.c
     LIBS += `pkg-config libudev --libs`
-    #LIBS += -L$../XPPConfig --lxppconfig
+    LIBS += -L../XPPConfig -lxppconfig
 }
 
 

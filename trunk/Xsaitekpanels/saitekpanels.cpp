@@ -1,6 +1,6 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.36   ***************
+// ******** ver 1.37   ***************
 // ****** Mar 13 2012   **************
 
 #include "XPLMDisplay.h"
@@ -231,11 +231,12 @@ hid_device *multihandle;
 // ****************** Switch Panel variables *******************************
 int switchcnt = 0, switchres, stopswitchcnt;
 
+int bataltinverse, cowlflapsenable, deiceswitchenable;
+int panellightsenable, landinggearknobenable;
+
 static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
 float LandingGearDeployRatio[10];
-
-int bataltinverse, cowlflapsenable, landinggearknobenable;
 
 hid_device *switchhandle;
 
@@ -265,7 +266,8 @@ void process_multi_panel();
 void process_switch_panel();
 void process_bip_panel();
 void process_pref_file();
-void process_config_file();
+//void process_config_file();
+void process_read_ini_file();
 
 // ********************* MyPanelsFlightLoopCallback **************************
 float	MyPanelsFlightLoopCallback(
@@ -297,7 +299,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.36");
+  strcpy(outName, "Xsaitekpanels v1.37");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -609,7 +611,8 @@ PLUGIN_API int XPluginStart(char *		outName,
 
 
   //process_pref_file();
-  process_config_file();
+  //process_config_file();
+  process_read_ini_file();
 
 // ************* Open any Radio that is connected *****************
 
@@ -1102,11 +1105,25 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              bataltinverse = 1;
          }
 
+         if (strcmp((char *) inItemRef, "ENABLE_DEICE") == 0) {
+             deiceswitchenable = 1;
+         }
+         if (strcmp((char *) inItemRef, "DISABLE_DEICE") == 0) {
+             deiceswitchenable = 0;
+         }
+
          if (strcmp((char *) inItemRef, "ENABLE_COWL") == 0) {
              cowlflapsenable = 1;
          }
          if (strcmp((char *) inItemRef, "DISABLE_COWL") == 0) {
              cowlflapsenable = 0;
+         }
+
+         if (strcmp((char *) inItemRef, "ENABLE_PANEL_LIGHTS") == 0) {
+             panellightsenable = 1;
+         }
+         if (strcmp((char *) inItemRef, "DISABLE_PANEL_LIGHTS") == 0) {
+             panellightsenable = 0;
          }
 
          if (strcmp((char *) inItemRef, "ENABLE_GEAR") == 0) {

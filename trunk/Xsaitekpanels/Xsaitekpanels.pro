@@ -11,7 +11,6 @@ INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Wrappers
 INCLUDEPATH += ../SDK/CHeaders/Widgets
 INCLUDEPATH += ../hidapi-0.7.0/hidapi
-INCLUDEPATH += ../XPPConfig
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200
@@ -34,7 +33,7 @@ unix:!macx {
     SOURCES += \
           ../hidapi-0.7.0/linux/hid.c
     LIBS += `pkg-config libudev --libs`
-    LIBS += -L../XPPConfig -lxppconfig
+
 }
 
 
@@ -64,12 +63,16 @@ macx {
     CONFIG += x86
 }
 
-HEADERS += saitekpanels.h
+HEADERS += saitekpanels.h \
+      inireader.h
 
 SOURCES += saitekpanels.cpp\
     radiopanels.cpp \
     multipanel.cpp \
     switchpanel.cpp \
     bippanel.cpp \
-    preferencefile.cpp \
-    configfile.cpp
+    inireader.cpp \
+    readinifile.cpp
+
+OTHER_FILES += \
+    xsaitekpanels.ini

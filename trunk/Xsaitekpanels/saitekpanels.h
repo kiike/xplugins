@@ -199,7 +199,9 @@ extern XPLMMenuID      SwitchMenuId;
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;
-extern int bataltinverse, cowlflapsenable, landinggearknobenable;
+extern int bataltinverse, cowlflapsenable, deiceswitchenable;
+extern int panellightsenable, landinggearknobenable;
+
 extern float LandingGearDeployRatio[10];
 extern hid_device *switchhandle;
 

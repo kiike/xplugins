@@ -127,6 +127,7 @@ extern int multifd;
 extern int numadf;
 extern int loaded737;
 extern int trimspeed, multispeed, autothrottleswitchenable;
+extern string gear_switch_up, gear_switch_down;
 extern int xpanelsfnbutton;
 extern int xpanelscrstoggle;
 extern int multi_auto_mul;
@@ -146,6 +147,7 @@ extern XPLMCommandRef AvLtOn, AvLtOff, BatOn, BatOff;
 extern XPLMCommandRef LnLtOn, LnLtOff, TxLtOn, TxLtOff;
 extern XPLMCommandRef StLtOn, StLtOff, NvLtOn, NvLtOff;
 extern XPLMCommandRef BcLtOn, BcLtOff, GearUp, GearDn;
+extern XPLMCommandRef GearTestUp, GearTestDn;
 
 extern XPLMCommandRef MagOff1, MagOff2, MagOff3, MagOff4;
 extern XPLMCommandRef MagOff5, MagOff6, MagOff7, MagOff8;

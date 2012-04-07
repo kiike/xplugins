@@ -139,6 +139,8 @@ XPLMCommandRef LnLtOn = NULL, LnLtOff = NULL, TxLtOn = NULL, TxLtOff = NULL;
 XPLMCommandRef StLtOn = NULL, StLtOff = NULL, NvLtOn = NULL, NvLtOff = NULL;
 XPLMCommandRef BcLtOn = NULL, BcLtOff = NULL, GearUp = NULL, GearDn = NULL;
 
+XPLMCommandRef GearTestUp = NULL, GearTestDn = NULL;
+
 XPLMCommandRef MagOff1 = NULL, MagOff2 = NULL, MagOff3 = NULL, MagOff4 = NULL;
 XPLMCommandRef MagOff5 = NULL, MagOff6 = NULL, MagOff7 = NULL, MagOff8 = NULL;
 
@@ -223,6 +225,7 @@ unsigned char multibuf[4], multiwbuf[13];
 int loaded737 = 0;
 
 int trimspeed, multispeed, autothrottleswitchenable;
+string gear_switch_up, gear_switch_down;
 
 int xpanelsfnbutton = 0, xpanelscrstoggle = 0;
 
@@ -233,6 +236,8 @@ int switchcnt = 0, switchres, stopswitchcnt;
 
 int bataltinverse, cowlflapsenable, deiceswitchenable;
 int panellightsenable, landinggearknobenable;
+
+const char *GearTestStrUp;
 
 static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
@@ -250,7 +255,7 @@ hid_device *biphandle[4];
 void            XsaitekpanelsMenuHandler(void *, void *);
 void WriteCSVTableToDisk(void);
 
-bool ReadConfigFile(string PlaneICAO);
+bool ReadConfigFile(std::string PlaneICAO);
 
 int             XsaitekpanelsMenuItem;
 int             BipMenuItem;
@@ -282,7 +287,7 @@ int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,          //
 
 void WriteCSVTableToDisk(void);
 
-bool ReadConfigFile(string PlaneICAO);
+bool ReadConfigFile(std::string PlaneICAO);
 // ******************Plugin Calls ******************
 PLUGIN_API int XPluginStart(char *		outName,
 			    char *		outSig,
@@ -610,8 +615,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   BatArrayOnDR      = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
 
 
-  //process_pref_file();
-  //process_config_file();
   process_read_ini_file();
 
 // ************* Open any Radio that is connected *****************
@@ -997,7 +1000,7 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 
 
 
-    string          PlaneICAO = "[]";
+    std::string          PlaneICAO = "[]";
     char            ICAOString[40];
 
 

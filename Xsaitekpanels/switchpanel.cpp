@@ -531,6 +531,9 @@ void process_fuel_pump_switch()
 
 void process_de_ice_switch()
 {
+    if(deiceswitchenable == 0) {
+        return;
+    }
 
 // ***************** De Ice *******************
 
@@ -745,6 +748,25 @@ void process_landing_lights_switch()
 void process_gear_switch_switch()
 {
     if(landinggearknobenable == 0) {
+        return;
+    }
+
+    if(landinggearknobenable == 2) {
+        printf("%s \n", gear_switch_up.c_str());
+        printf("%s \n", gear_switch_down.c_str());
+
+        if(testbit(switchbuf,GEAR_SWITCH_UP)) {
+          XPLMCommandOnce(GearTestUp);
+         }
+
+        if(testbit(switchbuf,GEAR_SWITCH_DN)) {
+          XPLMCommandOnce(GearTestDn);
+        }
+
+
+
+
+
         return;
     }
 

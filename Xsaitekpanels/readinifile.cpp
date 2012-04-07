@@ -50,5 +50,15 @@ void process_read_ini_file()
     multispeed = getOptionToInt("Multi Freq Knob Pulse per Command");
     autothrottleswitchenable = getOptionToInt("Auto Throttle Switch enable");
 
+    if (landinggearknobenable == 2) {
+        gear_switch_up = getOptionToString("gear_switch_up_cmd");
+        gear_switch_down = getOptionToString("gear_switch_down_cmd");
+        GearTestUp   = XPLMFindCommand(gear_switch_up.c_str());
+        GearTestDn   = XPLMFindCommand(gear_switch_down.c_str());
+        printf("gear_switch_up =  %s\n", gear_switch_up.c_str());
+        printf("gear_switch_down =  %s\n", gear_switch_down.c_str());
+    }
+
+
   return;
 }

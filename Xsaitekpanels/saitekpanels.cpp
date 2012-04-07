@@ -139,7 +139,11 @@ XPLMCommandRef LnLtOn = NULL, LnLtOff = NULL, TxLtOn = NULL, TxLtOff = NULL;
 XPLMCommandRef StLtOn = NULL, StLtOff = NULL, NvLtOn = NULL, NvLtOff = NULL;
 XPLMCommandRef BcLtOn = NULL, BcLtOff = NULL, GearUp = NULL, GearDn = NULL;
 
-XPLMCommandRef GearTestUp = NULL, GearTestDn = NULL;
+XPLMCommandRef DeiceOnCmd = NULL, DeiceOffCmd = NULL;
+XPLMCommandRef CowlFlapsOpenCmd = NULL, CowlFlapsCloseCmd = NULL;
+XPLMCommandRef PanelLightsOnCmd = NULL, PanelLightsOffCmd = NULL;
+XPLMCommandRef GearUpCmd = NULL, GearDnCmd = NULL;
+
 
 XPLMCommandRef MagOff1 = NULL, MagOff2 = NULL, MagOff3 = NULL, MagOff4 = NULL;
 XPLMCommandRef MagOff5 = NULL, MagOff6 = NULL, MagOff7 = NULL, MagOff8 = NULL;
@@ -225,7 +229,6 @@ unsigned char multibuf[4], multiwbuf[13];
 int loaded737 = 0;
 
 int trimspeed, multispeed, autothrottleswitchenable;
-string gear_switch_up, gear_switch_down;
 
 int xpanelsfnbutton = 0, xpanelscrstoggle = 0;
 
@@ -236,6 +239,11 @@ int switchcnt = 0, switchres, stopswitchcnt;
 
 int bataltinverse, cowlflapsenable, deiceswitchenable;
 int panellightsenable, landinggearknobenable;
+
+string deice_switch_on, deice_switch_off;
+string cowl_flaps_open, cowl_flaps_close;
+string panel_lights_switch_on, panel_lights_switch_off;
+string gear_switch_up, gear_switch_down;
 
 const char *GearTestStrUp;
 

@@ -144,10 +144,11 @@ void process_switch_menu()
 
 }
 
+// ***************** Engines Mag Off ********************
+
 void process_engines_mag_off_switch()
 {
 
-// ***************** Engines Mag Off ********************
 
 	if(testbit(switchbuf,MAG_OFF)) {
 	  if(engnum == 1){
@@ -172,10 +173,11 @@ void process_engines_mag_off_switch()
 
 }
 
+// ***************** Engines Right Mag *******************
+
 void process_engines_right_mag_switch()
 {
 
-// ***************** Engines Right Mag *******************
 
 	if(testbit(switchbuf,MAG_RIGHT)) {
 	  if(engnum == 1){
@@ -199,10 +201,11 @@ void process_engines_right_mag_switch()
  	}
 }
 
+// ***************** Engines Left Mag *******************
+
 void process_engines_left_mag_switch()
 {
 
-// ***************** Engines Left Mag *******************
 
 	if(testbit(switchbuf,MAG_LEFT)) {
 	  if(engnum == 1){
@@ -226,10 +229,10 @@ void process_engines_left_mag_switch()
  	}
 }
 
+// ***************** Engines Both Mags *******************
+
 void process_engines_both_mag_switch()
 {
-
-// ***************** Engines Both Mags *******************
 
 	if(testbit(switchbuf,MAG_BOTH)) {
 	  if(engnum == 1){
@@ -253,10 +256,11 @@ void process_engines_both_mag_switch()
 	}
 }
 
+// ***************** Engines Starting *******************
+
 void process_engines_start_switch()
 {
 
-// ***************** Engines Starting *******************
 
 	if(testbit(switchbuf,ENG_START)) {
 	  if(engnum == 1){
@@ -280,10 +284,12 @@ void process_engines_start_switch()
 	}
 }
 
+// ***************** Master Battery *******************
+
 void process_master_battery_switch()
 {
 
-// ***************** Master Battery *******************
+
 
     if(testbit(switchbuf,MASTER_BATTERY)) {
         if (loaded737) {
@@ -408,10 +414,12 @@ void process_master_battery_switch()
     XPLMSetDatavi(BatArrayOnDR, BatArrayOn, 0, 8);
 }
 
+// ***************** Master Altenator *******************
+
 void process_master_altenator_switch()
 {
 
-// ***************** Master Altenator *******************
+
 
     if(testbit(switchbuf,MASTER_ALTENATOR)) {
         if (loaded737) {
@@ -464,13 +472,15 @@ void process_master_altenator_switch()
     }
 }
 
+// ***************** Avionics Power *******************
+
 void process_avionics_power_switch()
 {
     if (loaded737) {
         return;
     }
 
-// ***************** Avionics Power *******************
+
 
 	if(testbit(switchbuf,AVIONICS_POWER)) {
           XPLMCommandOnce(AvLtOn);
@@ -480,12 +490,14 @@ void process_avionics_power_switch()
  	}
 }
 
+// ***************** Fuel Pump *******************
+
 void process_fuel_pump_switch()
 {
     if (loaded737) {
         return;
     }
-// ***************** Fuel Pump *******************
+
 
 	if(testbit(switchbuf,FUEL_PUMP)) {
 	  if(engnum == 1){
@@ -529,13 +541,28 @@ void process_fuel_pump_switch()
  	}
 }
 
+// ***************** De Ice *******************
+
 void process_de_ice_switch()
 {
     if(deiceswitchenable == 0) {
         return;
     }
 
-// ***************** De Ice *******************
+   if(deiceswitchenable == 2) {
+
+        if(testbit(switchbuf,DE_ICE)) {
+          XPLMCommandOnce(DeiceOnCmd);
+         }
+
+        if(!testbit(switchbuf,DE_ICE)) {
+          XPLMCommandOnce(DeiceOffCmd);
+        }
+
+        return;
+    }
+
+
 
 	if(testbit(switchbuf,DE_ICE)) {
 
@@ -556,10 +583,12 @@ void process_de_ice_switch()
      }
 }
 
+// ***************** Pitot Heat *******************
+
 void process_pitot_heat_switch()
 {
 
-// ***************** Pitot Heat *******************
+
 
 	if(testbit(switchbuf,PITOT_HEAT)) {
 
@@ -593,13 +622,27 @@ void process_pitot_heat_switch()
  	}
 }
 
+// ***************** Cowl Flaps *******************
+
 void process_cowl_flaps_switch()
 {
     if(cowlflapsenable == 0) {
         return;
     }
 
-// ***************** Cowl Flaps *******************
+    if(cowlflapsenable == 2) {
+
+         if(testbit(switchbuf,COWL_FLAPS)) {
+           XPLMCommandOnce(CowlFlapsOpenCmd);
+          }
+
+         if(!testbit(switchbuf,COWL_FLAPS)) {
+           XPLMCommandOnce(CowlFlapsCloseCmd);
+         }
+
+         return;
+     }
+
 
         if(!testbit(switchbuf,COWL_FLAPS)) {
           if (loaded737 == 1){
@@ -664,13 +707,32 @@ void process_cowl_flaps_switch()
     }
 }
 
+// ***************** Panel Lights *******************
+
 void process_panel_lights_switch()
 {
     if (loaded737) {
         return;
     }
 
-// ***************** Panel Lights *******************
+    if(panellightsenable == 0) {
+        return;
+    }
+
+    if(panellightsenable == 2) {
+
+         if(testbit(switchbuf,PANEL_LIGHTS)) {
+           XPLMCommandOnce(PanelLightsOnCmd);
+          }
+
+         if(!testbit(switchbuf,PANEL_LIGHTS)) {
+           XPLMCommandOnce(PanelLightsOffCmd);
+         }
+
+         return;
+     }
+
+
 
 	if(testbit(switchbuf,PANEL_LIGHTS)) {
 	  XPLMSetDataf(CockpitLights, 1);
@@ -752,20 +814,14 @@ void process_gear_switch_switch()
     }
 
     if(landinggearknobenable == 2) {
-        printf("%s \n", gear_switch_up.c_str());
-        printf("%s \n", gear_switch_down.c_str());
 
         if(testbit(switchbuf,GEAR_SWITCH_UP)) {
-          XPLMCommandOnce(GearTestUp);
+          XPLMCommandOnce(GearUpCmd);
          }
 
         if(testbit(switchbuf,GEAR_SWITCH_DN)) {
-          XPLMCommandOnce(GearTestDn);
+          XPLMCommandOnce(GearDnCmd);
         }
-
-
-
-
 
         return;
     }

@@ -127,7 +127,7 @@ extern int multifd;
 extern int numadf;
 extern int loaded737;
 extern int trimspeed, multispeed, autothrottleswitchenable;
-extern string gear_switch_up, gear_switch_down;
+
 extern int xpanelsfnbutton;
 extern int xpanelscrstoggle;
 extern int multi_auto_mul;
@@ -147,7 +147,11 @@ extern XPLMCommandRef AvLtOn, AvLtOff, BatOn, BatOff;
 extern XPLMCommandRef LnLtOn, LnLtOff, TxLtOn, TxLtOff;
 extern XPLMCommandRef StLtOn, StLtOff, NvLtOn, NvLtOff;
 extern XPLMCommandRef BcLtOn, BcLtOff, GearUp, GearDn;
-extern XPLMCommandRef GearTestUp, GearTestDn;
+
+extern XPLMCommandRef DeiceOnCmd, DeiceOffCmd;
+extern XPLMCommandRef CowlFlapsOpenCmd, CowlFlapsCloseCmd;
+extern XPLMCommandRef PanelLightsOnCmd, PanelLightsOffCmd;
+extern XPLMCommandRef GearUpCmd, GearDnCmd;
 
 extern XPLMCommandRef MagOff1, MagOff2, MagOff3, MagOff4;
 extern XPLMCommandRef MagOff5, MagOff6, MagOff7, MagOff8;
@@ -204,10 +208,14 @@ extern int switchfd;
 extern int bataltinverse, cowlflapsenable, deiceswitchenable;
 extern int panellightsenable, landinggearknobenable;
 
+extern string deice_switch_on, deice_switch_off;
+extern string cowl_flaps_open, cowl_flaps_close;
+extern string panel_lights_switch_on, panel_lights_switch_off;
+extern string gear_switch_up, gear_switch_down;
+
+
 extern float LandingGearDeployRatio[10];
 extern hid_device *switchhandle;
-
-
 
 // ************** Bip Panel Data Ref ******************
 extern XPLMDataRef gTimeSimIsRunningXDataRef;

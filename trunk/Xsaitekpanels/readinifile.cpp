@@ -3,13 +3,15 @@
 
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
+#include "XPLMPlanes.h"
 
 #include "saitekpanels.h"
 #include "inireader.h"
 
 #include <iostream>
 #include <fstream>
-#include <string>
+//#include <string>
+#include <string.h>
 
 
 // ***** Configuration File Process ******
@@ -17,14 +19,13 @@ void process_read_ini_file()
 
 {
 
+    char acfFilename[256];
+    char acfFullPath[512];
+
     char *configPath;
     char *defaultConfigFile;
+    const char *defaultConfigFileName = "xsaitekpanels.ini";
 
-    cleanupIniReader();
-
-    defaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
-
-    parseIniFile(defaultConfigFile);
 
     /* set defaults */
 
@@ -38,6 +39,30 @@ void process_read_ini_file()
     trimspeed                = 1,
     multispeed               = 3;
     autothrottleswitchenable = 1;
+
+    cleanupIniReader();
+
+    XPLMGetNthAircraftModel(0, acfFilename, acfFullPath);
+
+    configPath = strstr(acfFullPath, acfFilename);
+    //strncpy(configPath, defaultConfigFileName, sizeof(acfFilename));
+    //puts(acfFullPath);
+
+    defaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
+    //std::ifstream ifile(acfFullPath);
+    //if (ifile) {
+    //    parseIniFile(acfFullPath);
+    //} else {
+     //    parseIniFile(defaultConfigFile);
+     //}
+    std::ifstream ifile(defaultConfigFile);
+    if (ifile) {
+        parseIniFile(defaultConfigFile);
+    } else {
+         return;
+
+    }
+
 
     bataltinverse = getOptionToInt("Bat Alt inverse");
     deiceswitchenable = getOptionToInt("Deice Switch enable");
@@ -77,7 +102,6 @@ void process_read_ini_file()
         GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
         GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
     }
-
 
 
   return;

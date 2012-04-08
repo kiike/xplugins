@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.37   ***************
-// ****** Mar 13 2012   **************
+// ******** ver 1.38   ***************
+// ****** Apr 07 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -9,6 +9,7 @@
 #include "XPLMDataAccess.h"
 #include "XPLMProcessing.h"
 #include "XPLMPlugin.h"
+#include "XPLMPlanes.h"
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
@@ -22,7 +23,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <string>
+//#include <string>
 #include <string.h>
 
 #include <time.h>
@@ -279,7 +280,6 @@ void process_multi_panel();
 void process_switch_panel();
 void process_bip_panel();
 void process_pref_file();
-//void process_config_file();
 void process_read_ini_file();
 
 // ********************* MyPanelsFlightLoopCallback **************************
@@ -310,9 +310,8 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
-
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.37");
+  strcpy(outName, "Xsaitekpanels v1.38");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -460,7 +459,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApVs = XPLMFindDataRef("sim/cockpit/autopilot/vertical_velocity");
   ApAs = XPLMFindDataRef("sim/cockpit/autopilot/airspeed");
   ApHdg = XPLMFindDataRef("sim/cockpit/autopilot/heading_mag");
-  //ApCrs = XPLMFindDataRef("sim/cockpit2/radios/actuators/hsi_obs_deg_mag_pilot");
 
   ApCrs  = XPLMFindDataRef("sim/cockpit/radios/nav1_obs_degm");
   ApCrs2 = XPLMFindDataRef("sim/cockpit/radios/nav2_obs_degm");
@@ -484,7 +482,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   Airspeed = XPLMFindDataRef("sim/cockpit/autopilot/airspeed");
 
 
-
 // **************** Find Switch Panel Commands Ref *******************
   ClFlOpn  = XPLMFindCommand("sim/flight_controls/cowl_flaps_open");
   ClFlCls  = XPLMFindCommand("sim/flight_controls/cowl_flaps_closed");
@@ -493,12 +490,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   PtHt1On   = XPLMFindCommand("sim/ice/pitot_heat1_on");
   PtHt1Off  = XPLMFindCommand("sim/ice/pitot_heat1_off");
 
-
   PtHtOn   = XPLMFindCommand("sim/ice/pitot_heat_on");
   PtHtOff  = XPLMFindCommand("sim/ice/pitot_heat_off");
-
-
-
 
   AvLtOn   = XPLMFindCommand("sim/systems/avionics_on");
   AvLtOff  = XPLMFindCommand("sim/systems/avionics_off");

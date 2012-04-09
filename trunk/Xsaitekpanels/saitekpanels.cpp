@@ -202,6 +202,7 @@ XPLMDataRef gTimeSimIsRunningXDataRef = NULL;
 XPLMMenuID      XsaitekpanelsMenu;
 XPLMMenuID      BipMenu;
 XPLMMenuID      BipMenuId, Bip2MenuId, Bip3MenuId, Bip4MenuId;
+XPLMMenuID      ConfigMenuId;
 
 XPWidgetID      XsaitekpanelsWidgetID = NULL;
 XPWidgetID      BipWidgetID = NULL;
@@ -302,6 +303,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 			    char *		outDesc)
 {
 
+  int ConfigSubMenuItem;
   int BipSubMenuItem, Bip2SubMenuItem, Bip3SubMenuItem;
   int MultiSubMenuItem, RadioSubMenuItem;
   int SwitchSubMenuItem;
@@ -616,7 +618,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   BatArrayOnDR      = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
 
 
-  process_read_ini_file();
+  //process_read_ini_file();
 
 // ************* Open any Radio that is connected *****************
 
@@ -723,6 +725,23 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenuItem,
                XsaitekpanelsMenuHandler,
                (void *)0);
+
+   ConfigSubMenuItem = XPLMAppendMenuItem(
+           XsaitekpanelsMenu,
+           "xsaitekpanels.ini",
+           NULL,
+           5);
+
+   ConfigMenuId = XPLMCreateMenu(
+           "xsaitekpanels.ini",
+           XsaitekpanelsMenu,
+           ConfigSubMenuItem,
+           XsaitekpanelsMenuHandler,
+           (void *)5);
+
+    XPLMClearAllMenuItems(ConfigMenuId);
+    XPLMAppendMenuItem(ConfigMenuId, "Reload xsaitekpanels.ini", (void *) "TRUE", 1);
+
 
    if (bipcnt > 0) {
 
@@ -998,18 +1017,16 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
                                       void *		inParam)
 {
     (void) inFromWho; // To get rid of warnings on unused variables
-
-
-
     std::string          PlaneICAO = "[]";
     char            ICAOString[40];
 
-
     XPLMGetDatab(XPLMFindDataRef("sim/aircraft/view/acf_ICAO"), ICAOString, 0, 40);
-
 
     PlaneICAO.insert(1,ICAOString);
 
+    if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((long) inParam == 0)) {
+      process_read_ini_file();
+    }
 
     if(bipcnt > 0){
 
@@ -1138,6 +1155,13 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          }
 
      }
+
+    if((long)inMenuRef == 5){
+         if (strcmp((char *) inItemRef, "TRUE") == 0) {
+             process_read_ini_file();
+         }
+
+    }
 
     return;
 }

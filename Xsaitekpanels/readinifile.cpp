@@ -1,9 +1,17 @@
 // ****** readinifile.cpp **********
 // ****  William R. Good  ********
 
+#include "XPLMPlugin.h"
+#include "XPLMDisplay.h"
+#include "XPLMGraphics.h"
+#include "XPLMCamera.h"
+#include "XPLMPlanes.h"
 #include "XPLMUtilities.h"
 #include "XPLMDataAccess.h"
-#include "XPLMPlanes.h"
+#include "XPLMProcessing.h"
+#include "XPLMMenus.h"
+
+
 
 #include "saitekpanels.h"
 #include "inireader.h"
@@ -13,19 +21,16 @@
 //#include <string>
 #include <string.h>
 
-
 // ***** Configuration File Process ******
 void process_read_ini_file()
 
 {
 
-    char acfFilename[256];
-    char acfFullPath[512];
-
-    char *configPath;
     char *defaultConfigFile;
-    const char *defaultConfigFileName = "xsaitekpanels.ini";
+    const char *defaultConfigFileName;
 
+    defaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
+    defaultConfigFileName = "xsaitekpanels.ini";
 
     /* set defaults */
 
@@ -37,32 +42,30 @@ void process_read_ini_file()
     radspeed                 = 3,
     numadf                   = 1,
     trimspeed                = 1,
-    multispeed               = 3;
+    multispeed               = 3,
     autothrottleswitchenable = 1;
 
+    char acfFilename[256], acfFullPath[512];
+
+    char *configPath;
     cleanupIniReader();
 
     XPLMGetNthAircraftModel(0, acfFilename, acfFullPath);
 
-    configPath = strstr(acfFullPath, acfFilename);
-    //strncpy(configPath, defaultConfigFileName, sizeof(acfFilename));
-    //puts(acfFullPath);
-
-    defaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
-    //std::ifstream ifile(acfFullPath);
-    //if (ifile) {
-    //    parseIniFile(acfFullPath);
-    //} else {
-     //    parseIniFile(defaultConfigFile);
-     //}
-    std::ifstream ifile(defaultConfigFile);
-    if (ifile) {
-        parseIniFile(defaultConfigFile);
-    } else {
-         return;
-
+    if(strlen(acfFullPath) == 0){
+      return;
     }
 
+    configPath = strstr(acfFullPath, acfFilename);
+    strncpy(configPath, defaultConfigFileName, sizeof(acfFilename));
+    puts(acfFullPath);
+
+    std::ifstream ifile(acfFullPath);
+    if (ifile) {
+        parseIniFile(acfFullPath);
+    } else {
+        parseIniFile(defaultConfigFile);
+    }
 
     bataltinverse = getOptionToInt("Bat Alt inverse");
     deiceswitchenable = getOptionToInt("Deice Switch enable");
@@ -102,7 +105,6 @@ void process_read_ini_file()
         GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
         GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
     }
-
 
   return;
 }

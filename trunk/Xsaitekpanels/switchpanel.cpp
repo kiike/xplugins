@@ -51,6 +51,10 @@ void process_switch_menu()
     XPLMAppendMenuItem(SwitchMenuId, "NORMAL", (void *) "NORMAL", 4);
     XPLMAppendMenuItem(SwitchMenuId, "CESSNA", (void *) "CESSNA", 4);
     XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "Fuel Pump Switch enable / disable", (void *) "VOID", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_DEICE", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_DEICE", 4);
+    XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "Deice Switch enable / disable", (void *) "VOID", 4);
     XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_DEICE", 4);
     XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_DEICE", 4);
@@ -80,56 +84,69 @@ void process_switch_menu()
        XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Unchecked);
     }
 
-    if (deiceswitchenable == 1) {
+    if (fuelpumpswitchenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Checked);
     }
-    if (deiceswitchenable != 1) {
+    if (fuelpumpswitchenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Unchecked);
     }
-    if (deiceswitchenable == 0) {
+    if (fuelpumpswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Checked);
     }
-    if (deiceswitchenable != 0) {
+    if (fuelpumpswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Unchecked);
     }
 
-    if (cowlflapsenable == 1) {
+    if (deiceswitchenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Checked);
     }
-    if (cowlflapsenable != 1) {
+    if (deiceswitchenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Unchecked);
     }
-    if (cowlflapsenable == 0) {
+    if (deiceswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Checked);
     }
-    if (cowlflapsenable != 0) {
+    if (deiceswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Unchecked);
     }
 
-    if (panellightsenable == 1) {
+    if (cowlflapsenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Checked);
     }
-    if (panellightsenable != 1) {
+    if (cowlflapsenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Unchecked);
     }
-    if (panellightsenable == 0) {
+    if (cowlflapsenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Checked);
     }
-    if (panellightsenable != 0) {
+    if (cowlflapsenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Unchecked);
     }
 
-    if (landinggearknobenable == 1) {
+    if (panellightsenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Checked);
     }
-    if (landinggearknobenable != 1) {
+    if (panellightsenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Unchecked);
     }
-    if (landinggearknobenable == 0) {
+    if (panellightsenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Checked);
     }
-    if (landinggearknobenable != 0) {
+    if (panellightsenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Unchecked);
+    }
+
+    if (landinggearknobenable == 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 21, xplm_Menu_Checked);
+    }
+    if (landinggearknobenable != 1) {
+       XPLMCheckMenuItem(SwitchMenuId, 21, xplm_Menu_Unchecked);
+    }
+    if (landinggearknobenable == 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 22, xplm_Menu_Checked);
+    }
+    if (landinggearknobenable != 0) {
+       XPLMCheckMenuItem(SwitchMenuId, 22, xplm_Menu_Unchecked);
     }
 
 
@@ -480,8 +497,6 @@ void process_avionics_power_switch()
         return;
     }
 
-
-
 	if(testbit(switchbuf,AVIONICS_POWER)) {
           XPLMCommandOnce(AvLtOn);
  	}
@@ -498,6 +513,27 @@ void process_fuel_pump_switch()
         return;
     }
 
+    if(fuelpumpswitchenable == 0) {
+        return;
+    }
+
+   if(fuelpumpswitchenable == 2) {
+
+        if(testbit(switchbuf,FUEL_PUMP)) {
+          XPLMCommandOnce(FuelPumpOnCmd);
+         }
+
+        if(!testbit(switchbuf,FUEL_PUMP)) {
+          XPLMCommandOnce(FuelPumpOffCmd);
+        }
+
+        return;
+    }
+
+
+    if (fuelpumpswitchenable == 2) {
+        return;
+    }
 
 	if(testbit(switchbuf,FUEL_PUMP)) {
 	  if(engnum == 1){

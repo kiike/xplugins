@@ -87,6 +87,7 @@ void process_multi_menu()
   
   const int MMENU_BASE = 1;
   const int TMENU_BASE = 7;
+  const int AMENU_BASE = 13;
   
   //if(multispeed != last_multispeed){
     //last_multispeed = multispeed;
@@ -112,6 +113,18 @@ void process_multi_menu()
         XPLMCheckMenuItem(MultiMenuId, i + TMENU_BASE, xplm_Menu_Checked);
       }
     }
+
+    for(i = 1; i <= 2; ++i){
+      if(i != autothrottleswitchenable){
+        XPLMCheckMenuItem(MultiMenuId, i + AMENU_BASE, xplm_Menu_Unchecked);
+      }
+      if(i == autothrottleswitchenable){
+        XPLMCheckMenuItem(MultiMenuId, i + AMENU_BASE, xplm_Menu_Checked);
+      }
+    }
+
+
+
   //}
 }
 

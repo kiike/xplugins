@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.38   ***************
-// ****** Apr 07 2012   **************
+// ****** Apr 09 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -140,6 +140,7 @@ XPLMCommandRef LnLtOn = NULL, LnLtOff = NULL, TxLtOn = NULL, TxLtOff = NULL;
 XPLMCommandRef StLtOn = NULL, StLtOff = NULL, NvLtOn = NULL, NvLtOff = NULL;
 XPLMCommandRef BcLtOn = NULL, BcLtOff = NULL, GearUp = NULL, GearDn = NULL;
 
+XPLMCommandRef FuelPumpOnCmd = NULL, FuelPumpOffCmd = NULL;
 XPLMCommandRef DeiceOnCmd = NULL, DeiceOffCmd = NULL;
 XPLMCommandRef CowlFlapsOpenCmd = NULL, CowlFlapsCloseCmd = NULL;
 XPLMCommandRef PanelLightsOnCmd = NULL, PanelLightsOffCmd = NULL;
@@ -239,9 +240,10 @@ hid_device *multihandle;
 // ****************** Switch Panel variables *******************************
 int switchcnt = 0, switchres, stopswitchcnt;
 
-int bataltinverse, cowlflapsenable, deiceswitchenable;
-int panellightsenable, landinggearknobenable;
+int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
+int deiceswitchenable, panellightsenable, landinggearknobenable;
 
+string fuel_pump_switch_on, fuel_pump_switch_off;
 string deice_switch_on, deice_switch_off;
 string cowl_flaps_open, cowl_flaps_close;
 string panel_lights_switch_on, panel_lights_switch_off;
@@ -1125,6 +1127,14 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "CESSNA") == 0) {
              bataltinverse = 1;
          }
+
+         if (strcmp((char *) inItemRef, "ENABLE_FUEL_PUMP") == 0) {
+             fuelpumpswitchenable = 1;
+         }
+         if (strcmp((char *) inItemRef, "DISABLE_FUEL_PUMP") == 0) {
+             fuelpumpswitchenable = 0;
+         }
+
 
          if (strcmp((char *) inItemRef, "ENABLE_DEICE") == 0) {
              deiceswitchenable = 1;

@@ -148,6 +148,7 @@ extern XPLMCommandRef LnLtOn, LnLtOff, TxLtOn, TxLtOff;
 extern XPLMCommandRef StLtOn, StLtOff, NvLtOn, NvLtOff;
 extern XPLMCommandRef BcLtOn, BcLtOff, GearUp, GearDn;
 
+extern XPLMCommandRef FuelPumpOnCmd, FuelPumpOffCmd;
 extern XPLMCommandRef DeiceOnCmd, DeiceOffCmd;
 extern XPLMCommandRef CowlFlapsOpenCmd, CowlFlapsCloseCmd;
 extern XPLMCommandRef PanelLightsOnCmd, PanelLightsOffCmd;
@@ -205,9 +206,10 @@ extern XPLMMenuID      SwitchMenuId;
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;
-extern int bataltinverse, cowlflapsenable, deiceswitchenable;
-extern int panellightsenable, landinggearknobenable;
+extern int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
+extern int deiceswitchenable, panellightsenable, landinggearknobenable;
 
+extern string fuel_pump_switch_on, fuel_pump_switch_off;
 extern string deice_switch_on, deice_switch_off;
 extern string cowl_flaps_open, cowl_flaps_close;
 extern string panel_lights_switch_on, panel_lights_switch_off;

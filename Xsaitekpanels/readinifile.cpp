@@ -11,8 +11,6 @@
 #include "XPLMProcessing.h"
 #include "XPLMMenus.h"
 
-
-
 #include "saitekpanels.h"
 #include "inireader.h"
 
@@ -35,6 +33,7 @@ void process_read_ini_file()
     /* set defaults */
 
     bataltinverse            = 0,
+    fuelpumpswitchenable     = 1,
     deiceswitchenable        = 1,
     cowlflapsenable          = 1,
     panellightsenable        = 1,
@@ -64,10 +63,18 @@ void process_read_ini_file()
     if (ifile) {
         parseIniFile(acfFullPath);
     } else {
+        std::ifstream ifile(defaultConfigFile);
+       if (ifile) {
         parseIniFile(defaultConfigFile);
+       } else {
+           return;
+       }
     }
 
     bataltinverse = getOptionToInt("Bat Alt inverse");
+
+
+    fuelpumpswitchenable = getOptionToInt("Fuel Pump Switch enable");
     deiceswitchenable = getOptionToInt("Deice Switch enable");
     cowlflapsenable = getOptionToInt("Cowl Flaps enable");
     panellightsenable = getOptionToInt("Panel Lights Switch enable");
@@ -77,6 +84,13 @@ void process_read_ini_file()
     trimspeed = getOptionToInt("Multi Trim Speed");
     multispeed = getOptionToInt("Multi Freq Knob Pulse per Command");
     autothrottleswitchenable = getOptionToInt("Auto Throttle Switch enable");
+
+    if (fuelpumpswitchenable == 2) {
+        fuel_pump_switch_on = getOptionToString("fuel_pump_switch_on_cmd");
+        fuel_pump_switch_off = getOptionToString("fuel_pump_switch_off_cmd");
+        FuelPumpOnCmd   = XPLMFindCommand(fuel_pump_switch_on.c_str());
+        FuelPumpOffCmd   = XPLMFindCommand(fuel_pump_switch_off.c_str());
+    }
 
     if (deiceswitchenable == 2) {
         deice_switch_on = getOptionToString("deice_switch_on_cmd");

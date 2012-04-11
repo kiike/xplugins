@@ -21,10 +21,14 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 }
 #endif
 
-
-#include "XPLMDataAccess.h"
-#include "XPLMUtilities.h"
+#include "XPLMPlugin.h"
+#include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
+#include "XPLMCamera.h"
+#include "XPLMPlanes.h"
+#include "XPLMUtilities.h"
+#include "XPLMDataAccess.h"
+#include "XPLMProcessing.h"
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
@@ -164,16 +168,58 @@ bool ReadConfigFile(string PlaneICAO)
   int             Index;
   int             i, i1;
 
-  fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-  fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-  fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-  fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
+  char *bipdefaultConfigFile, *bipdefaultConfigFile2;
+  char *bipdefaultConfigFile3, *bipdefaultConfigFile4;
+  const char *bipdefaultConfigFileName, *bipdefaultConfigFileName2;
+  const char *bipdefaultConfigFileName3,*bipdefaultConfigFileName4;
 
 
+  char bipacfFilename[256], bipacfFullPath[512];
+  char bipoutpath[512], bipoutpath2[512];
+  char bipoutpath3[512], bipoutpath4[512];
+  char bipacfFilename2[256];
 
+  XPLMGetNthAircraftModel(0, bipacfFilename, bipacfFullPath);
+
+  if(strlen(bipacfFullPath) == 0){
+    return false;
+  }
+
+  bipdefaultConfigFileName = "D2B_config.txt";
+  bipdefaultConfigFileName2 = "D2B_config2.txt";
+  bipdefaultConfigFileName3 = "D2B_config3.txt";
+  bipdefaultConfigFileName4 = "D2B_config4.txt";
+
+  char * findbipacfFilename;
+  findbipacfFilename = strstr (bipacfFullPath, bipacfFilename);
+  strncpy (findbipacfFilename, bipdefaultConfigFileName, sizeof(bipacfFilename));
+  strcpy(bipoutpath, bipacfFullPath);
+  puts (bipoutpath);
+
+  strncpy (findbipacfFilename, bipdefaultConfigFileName2, sizeof(bipacfFilename));
+  strcpy(bipoutpath2, bipacfFullPath);
+  puts (bipoutpath2);
+
+  XPLMDebugString("bipoutpath = ");
+  XPLMDebugString(bipoutpath);
+  XPLMDebugString("\n");
+
+  XPLMDebugString("bipoutpath2 = ");
+  XPLMDebugString(bipoutpath2);
+  XPLMDebugString("\n");
+
+  bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
+  bipdefaultConfigFile2 = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
+  bipdefaultConfigFile3 = "./Resources/plugins/Xsaitekpanels/D2B_config3.txt";
+  bipdefaultConfigFile4 = "./Resources/plugins/Xsaitekpanels/D2B_config4.txt";
+
+  fstream ReadBipFile(bipdefaultConfigFile);
+  fstream ReadBip2File(bipdefaultConfigFile2);
+  fstream ReadBip3File(bipdefaultConfigFile3);
+  fstream ReadBip4File(bipdefaultConfigFile4);
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
-    LetWidgetSay(PlaneICAO);
+  LetWidgetSay(PlaneICAO);
 
 
   LastMenuEntry[0] = -1;

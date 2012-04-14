@@ -21,14 +21,10 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 }
 #endif
 
-#include "XPLMPlugin.h"
-#include "XPLMDisplay.h"
-#include "XPLMGraphics.h"
-#include "XPLMCamera.h"
-#include "XPLMPlanes.h"
-#include "XPLMUtilities.h"
+
 #include "XPLMDataAccess.h"
-#include "XPLMProcessing.h"
+#include "XPLMUtilities.h"
+#include "XPLMGraphics.h"
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
@@ -66,9 +62,6 @@ static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i[4];
 static int bip0loop, bip1loop;
-
-fstream ReadBipFile, ReadBip2File;
-fstream ReadBipAcfFile, ReadBip2AcfFile;
 
 struct  BipTableStructure
 {
@@ -171,81 +164,28 @@ bool ReadConfigFile(string PlaneICAO)
   int             Index;
   int             i, i1;
 
-  char *bipdefaultConfigFile, *bipdefaultConfigFile2;
-  char *bipdefaultConfigFile3, *bipdefaultConfigFile4;
-  const char *bipdefaultConfigFileName, *bipdefaultConfigFileName2;
-  const char *bipdefaultConfigFileName3,*bipdefaultConfigFileName4;
+  fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+  fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+  fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+  fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
 
-  char bipacfFilename[256], bipacfFullPath[512];
-  char bipacfpath[512], bipacfpath2[512];
-  char bipacfpath3[512], bipacfpath4[512];
-  char bipacfFilename2[256];
 
-  XPLMGetNthAircraftModel(0, bipacfFilename, bipacfFullPath);
 
-  if(strlen(bipacfFullPath) == 0){
-    return false;
-  }
-
-  bipdefaultConfigFileName = "D2B_config.txt";
-  bipdefaultConfigFileName2 = "D2B_config2.txt";
-  bipdefaultConfigFileName3 = "D2B_config3.txt";
-  bipdefaultConfigFileName4 = "D2B_config4.txt";
-
-  bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
-  bipdefaultConfigFile2 = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
-  bipdefaultConfigFile3 = "./Resources/plugins/Xsaitekpanels/D2B_config3.txt";
-  bipdefaultConfigFile4 = "./Resources/plugins/Xsaitekpanels/D2B_config4.txt";
-
-  char * findbipacfFilename;
-  findbipacfFilename = strstr (bipacfFullPath, bipacfFilename);
-  strncpy (findbipacfFilename, bipdefaultConfigFileName, sizeof(bipacfFilename));
-  strcpy(bipacfpath, bipacfFullPath);
-  puts (bipacfpath);
-
-  strncpy (findbipacfFilename, bipdefaultConfigFileName2, sizeof(bipacfFilename));
-  strcpy(bipacfpath2, bipacfFullPath);
-  puts (bipacfpath2);
-
-  XPLMDebugString("bipacfpath = ");
-  XPLMDebugString(bipacfpath);
-  XPLMDebugString("\n");
-
-  XPLMDebugString("bipacfpath2 = ");
-  XPLMDebugString(bipacfpath2);
-  XPLMDebugString("\n");
-
-  ReadBipFile.open(bipdefaultConfigFile);
-  ReadBip2File.open(bipdefaultConfigFile2);
-
-  ReadBipAcfFile.open(bipacfpath);
-  ReadBip2AcfFile.open(bipacfpath2);
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
-  LetWidgetSay(PlaneICAO);
+    LetWidgetSay(PlaneICAO);
+
 
   LastMenuEntry[0] = -1;
   LastMenuEntry[1] = -1;
 
   if(bipcnt > 0) {
 
-    if (ReadBipAcfFile.is_open() != true)
+    if (ReadBipFile.is_open() != true)
     {
-      if (ReadBipFile.is_open() != true) {
-          logMsg("Error: Can't read D2B_config config file!");
-          XPLMDebugString("Error: Can't read D2B_config config file!\n");
-          return false;
-      }
-      XPLMDebugString("bipdefaultConfigFile    =    ");
-      XPLMDebugString(bipdefaultConfigFile);
-      XPLMDebugString("\n");
-
+      logMsg("Error: Can't read D2B_config config file!");
+      return false;
     }
-    if (ReadBipAcfFile.is_open() == true) {
-        ReadBipFile.close();
-        ReadBipFile.open(bipacfpath);
-    }
-
     ErrorInLine = 0;
 
     LastTableElement[0] = -1;
@@ -265,6 +205,7 @@ bool ReadConfigFile(string PlaneICAO)
 
     while (getline(ReadBipFile, LineToEncrypt[0]))
     {
+
 
         ErrorInLine++;
         if (LineToEncrypt[0].find("#BE SILENT") == 0)
@@ -418,21 +359,16 @@ bool ReadConfigFile(string PlaneICAO)
 
    }
 
+
+
     if(bipcnt > 1) {
 
-       if (ReadBip2AcfFile.is_open() != true) {
 
-          if (ReadBip2File.is_open() != true) {
-              logMsg("Error: Can't read D2B_config config file!");
-              return false;
-          }
-
-       }
-       if (ReadBip2AcfFile.is_open() == true) {
-           ReadBip2File.close();
-           ReadBip2File.open(bipacfpath2);
-       }
-
+    if (ReadBip2File.is_open() != true)
+    {
+        logMsg("Error: Can't read D2B_config2 config file!");
+        return false;
+    }
     ErrorInLine = 0;
 
     LastTableElement[1] = -1;

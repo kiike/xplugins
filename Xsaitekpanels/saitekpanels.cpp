@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.38   ***************
-// ****** Apr 09 2012   **************
+// ****** Apr 12 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -429,9 +429,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   ApHdgDn = XPLMFindCommand("sim/autopilot/heading_down");
   ApHdgUp = XPLMFindCommand("sim/autopilot/heading_up");
 
-  //ApCrsDn = XPLMFindCommand("sim/radios/obs_HSI_down");
-  //ApCrsUp = XPLMFindCommand("sim/radios/obs_HSI_up");
-
   ApCrsDn = XPLMFindCommand("sim/radios/obs1_down");
   ApCrsUp = XPLMFindCommand("sim/radios/obs1_up");
   ApCrsDn2 = XPLMFindCommand("sim/radios/obs2_down");
@@ -620,7 +617,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   BatArrayOnDR      = XPLMFindDataRef("sim/cockpit/electrical/battery_array_on");
 
 
-  //process_read_ini_file();
 
 // ************* Open any Radio that is connected *****************
 
@@ -1223,7 +1219,7 @@ float	MyPanelsFlightLoopCallback(
 
   if(bipcnt > 0){
     process_bip_panel();
-    //printf("bipcnt   %d\n", bipcnt);
+
   }
 
   if (XPLMIsDataRefGood(XPLMFindDataRef("x737/systems/afds/plugin_status"))) {
@@ -1301,7 +1297,7 @@ float	MyPanelsFlightLoopCallback(
        loaded737 = 0;
 
        ApAutThr = XPLMFindDataRef("sim/cockpit2/autopilot/autothrottle_enabled");
-       //ApAutThrOff = XPLMFindCommand("sim/autopilot/autothrottle_off");
+
 
   }
 

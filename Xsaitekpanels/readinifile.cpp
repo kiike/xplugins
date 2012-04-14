@@ -73,7 +73,6 @@ void process_read_ini_file()
     }
 
     bataltinverse = getOptionToInt("Bat Alt inverse");
-
     fuelpumpswitchenable = getOptionToInt("Fuel Pump Switch enable");
     deiceswitchenable = getOptionToInt("Deice Switch enable");
     cowlflapsenable = getOptionToInt("Cowl Flaps enable");

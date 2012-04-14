@@ -52,8 +52,8 @@ void process_switch_menu()
     XPLMAppendMenuItem(SwitchMenuId, "CESSNA", (void *) "CESSNA", 4);
     XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "Fuel Pump Switch enable / disable", (void *) "VOID", 4);
-    XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_DEICE", 4);
-    XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_DEICE", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_FUEL_PUMP", 4);
+    XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_FUEL_PUMP", 4);
     XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "Deice Switch enable / disable", (void *) "VOID", 4);
     XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_DEICE", 4);

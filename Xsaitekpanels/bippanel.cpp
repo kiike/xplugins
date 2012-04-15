@@ -28,6 +28,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
+#include "XPLMPlanes.h"
 
 #include "hidapi.h"
 #include "saitekpanels.h"
@@ -147,6 +148,32 @@ void WriteCSVTableToDisk(void)
         CSVFile << "\"" << BipTable[0][i].CSVDebugString << "\"\n";
     }
     CSVFile.close();
+}
+
+std::ifstream bipgetConfigurationStream() {
+    char bipacfFilename[256];
+    char bipacfFullPath[512];
+
+    char *bipconfigPath;
+    char *bipdefaultConfigFile;
+    const char *bipdefaultConfigFileName = "D2B_config.txt";
+
+    XPLMGetNthAircraftModel(0, bipacfFilename, bipacfFullPath);
+
+    bipconfigPath = strstr(bipacfFullPath, bipacfFilename);
+    strncpy(bipconfigPath, bipdefaultConfigFileName, sizeof(bipacfFilename));
+    puts(bipacfFullPath);
+
+    bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
+
+    // Check if ACF-specific configuration exists
+    std::ifstream bipcustomStream(bipacfFullPath);
+    if (bipcustomStream.good()) {
+        return bipcustomStream;
+    } else {
+        std::ifstream bipdefaultStream(bipdefaultConfigFile);
+        return bipdefaultStream;
+    }
 }
 
 bool ReadConfigFile(string PlaneICAO)

@@ -36,6 +36,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <time.h>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include <string>
 #include <string.h>
 #include <stdio.h>
@@ -150,13 +151,16 @@ void WriteCSVTableToDisk(void)
     CSVFile.close();
 }
 
-std::ifstream bipgetConfigurationStream() {
-    char bipacfFilename[256];
-    char bipacfFullPath[512];
+
+char* bipgetConfigurationPath() {
+    char bipacfFilename[256], bipacfFullPath[512];
 
     char *bipconfigPath;
     char *bipdefaultConfigFile;
-    const char *bipdefaultConfigFileName = "D2B_config.txt";
+    const char *bipdefaultConfigFileName;
+
+    bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
+    bipdefaultConfigFileName = "D2B_config.txt";
 
     XPLMGetNthAircraftModel(0, bipacfFilename, bipacfFullPath);
 
@@ -164,15 +168,45 @@ std::ifstream bipgetConfigurationStream() {
     strncpy(bipconfigPath, bipdefaultConfigFileName, sizeof(bipacfFilename));
     puts(bipacfFullPath);
 
-    bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
-
     // Check if ACF-specific configuration exists
     std::ifstream bipcustomStream(bipacfFullPath);
     if (bipcustomStream.good()) {
-        return bipcustomStream;
+        return bipacfFullPath;
     } else {
         std::ifstream bipdefaultStream(bipdefaultConfigFile);
-        return bipdefaultStream;
+        if (bipdefaultStream.good()) {
+            return bipdefaultConfigFile;
+        }
+
+    }
+}
+
+char* bip2getConfigurationPath() {
+    char bip2acfFilename[256], bip2acfFullPath[512];
+
+    char *bip2configPath;
+    char *bip2defaultConfigFile;
+    const char *bip2defaultConfigFileName;
+
+    bip2defaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
+    bip2defaultConfigFileName = "D2B_config2.txt";
+
+    XPLMGetNthAircraftModel(0, bip2acfFilename, bip2acfFullPath);
+
+    bip2configPath = strstr(bip2acfFullPath, bip2acfFilename);
+    strncpy(bip2configPath, bip2defaultConfigFileName, sizeof(bip2acfFilename));
+    puts(bip2acfFullPath);
+
+    // Check if ACF-specific configuration exists
+    std::ifstream bip2customStream(bip2acfFullPath);
+    if (bip2customStream.good()) {
+        return bip2acfFullPath;
+    } else {
+        std::ifstream bip2defaultStream(bip2defaultConfigFile);
+        if (bip2defaultStream.good()) {
+            return bip2defaultConfigFile;
+        }
+
     }
 }
 
@@ -191,22 +225,24 @@ bool ReadConfigFile(string PlaneICAO)
   int             Index;
   int             i, i1;
 
-  fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-  fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-  fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-  fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
-
-
+  char           *bip1ConfigurationPath;
+  char           *bip2ConfigurationPath;
 
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
-    LetWidgetSay(PlaneICAO);
-
+  LetWidgetSay(PlaneICAO);
 
   LastMenuEntry[0] = -1;
   LastMenuEntry[1] = -1;
 
   if(bipcnt > 0) {
+
+    bip1ConfigurationPath = bipgetConfigurationPath();
+    XPLMDebugString("bip1ConfigurationPath = ");
+    XPLMDebugString(bip1ConfigurationPath);
+    XPLMDebugString("\n");
+    //bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
+    fstream ReadBipFile(bip1ConfigurationPath);
 
     if (ReadBipFile.is_open() != true)
     {
@@ -386,15 +422,19 @@ bool ReadConfigFile(string PlaneICAO)
 
    }
 
+  if(bipcnt > 1) {
 
-
-    if(bipcnt > 1) {
-
+     bip2ConfigurationPath = bip2getConfigurationPath();
+     XPLMDebugString("bip1ConfigurationPath = ");
+     XPLMDebugString(bip1ConfigurationPath);
+     XPLMDebugString("\n");
+     //bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
+     fstream ReadBip2File(bip2ConfigurationPath);
 
     if (ReadBip2File.is_open() != true)
     {
-        logMsg("Error: Can't read D2B_config2 config file!");
-        return false;
+          logMsg("Error: Can't read D2B_config2 config file!");
+          return false;
     }
     ErrorInLine = 0;
 

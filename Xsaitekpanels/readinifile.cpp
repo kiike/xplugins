@@ -43,6 +43,8 @@ void process_read_ini_file()
     trimspeed                = 1,
     multispeed               = 3,
     autothrottleswitchenable = 1;
+    metricpressenable        = 0;
+
 
     char acfFilename[256], acfFullPath[512];
 
@@ -83,6 +85,7 @@ void process_read_ini_file()
     trimspeed = getOptionToInt("Multi Trim Speed");
     multispeed = getOptionToInt("Multi Freq Knob Pulse per Command");
     autothrottleswitchenable = getOptionToInt("Auto Throttle Switch enable");
+    metricpressenable = getOptionToInt("Metric Press enable");
 
     if (fuelpumpswitchenable == 2) {
         fuel_pump_switch_on = getOptionToString("fuel_pump_switch_on_cmd");
@@ -118,6 +121,7 @@ void process_read_ini_file()
         GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
         GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
     }
+
 
   return;
 }

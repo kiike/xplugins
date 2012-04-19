@@ -41,6 +41,7 @@ extern XPLMDataRef Adf1StbyFreq, Adf2StbyFreq;
 extern XPLMDataRef Adf1ActFreq, Adf2ActFreq;
 
 extern XPLMDataRef XpdrCode, XpdrMode, BaroSetting;
+extern XPLMDataRef MetricPress;
 extern XPLMDataRef DmeMode, DmeSlvSource;
 extern XPLMDataRef Nav1DmeNmDist, Nav1DmeSpeed;
 extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed;
@@ -59,7 +60,7 @@ extern XPLMMenuID      RadioMenuId;
 extern int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;
 extern int radio8fd, radio9fd, radio10fd, radio11fd, radio12fd, radio13fd, radio14fd, radio15fd;
 extern int radiofd[4], radcnt, radres;
-extern int radspeed;
+extern int radspeed, metricpressenable;
 extern float interval;
 extern unsigned char radbuf[4], radwbuf[21];
 
@@ -229,6 +230,9 @@ extern XPWidgetID      BipWidgetID, Bip2WidgetID, Bip3WidgetID, Bip4WidgetID;
 // ***************** Bip Panel variables ********************
 extern hid_device *biphandle[4];
 extern int bipcnt;
+
+extern string aircraft_path;
+
 
 void WriteCSVTableToDisk(void);
 bool ReadConfigFile(string PlaneICAO);

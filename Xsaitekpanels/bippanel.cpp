@@ -41,6 +41,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <algorithm>
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -154,16 +155,12 @@ void WriteCSVTableToDisk(void)
 
 char* bipgetConfigurationPath() {
     char bipacfFilename[256], bipacfFullPath[512];
-
     char *bipconfigPath;
     char *bipdefaultConfigFile;
     const char *bipdefaultConfigFileName;
-
     bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
     bipdefaultConfigFileName = "D2B_config.txt";
-
     XPLMGetNthAircraftModel(0, bipacfFilename, bipacfFullPath);
-
     bipconfigPath = strstr(bipacfFullPath, bipacfFilename);
     strncpy(bipconfigPath, bipdefaultConfigFileName, sizeof(bipacfFilename));
     puts(bipacfFullPath);
@@ -181,18 +178,15 @@ char* bipgetConfigurationPath() {
     }
 }
 
+
 char* bip2getConfigurationPath() {
     char bip2acfFilename[256], bip2acfFullPath[512];
-
     char *bip2configPath;
     char *bip2defaultConfigFile;
     const char *bip2defaultConfigFileName;
-
     bip2defaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
     bip2defaultConfigFileName = "D2B_config2.txt";
-
     XPLMGetNthAircraftModel(0, bip2acfFilename, bip2acfFullPath);
-
     bip2configPath = strstr(bip2acfFullPath, bip2acfFilename);
     strncpy(bip2configPath, bip2defaultConfigFileName, sizeof(bip2acfFilename));
     puts(bip2acfFullPath);
@@ -208,6 +202,14 @@ char* bip2getConfigurationPath() {
         }
 
     }
+}
+
+char * fixpatchseperator(char * in_path, char ch1, char ch2) {
+    for (int i = 0; i < strlen(in_path); ++i) {
+        if (in_path[i] == ch1)
+            in_path[i] = ch2;
+    }
+    return in_path;
 }
 
 bool ReadConfigFile(string PlaneICAO)
@@ -227,6 +229,9 @@ bool ReadConfigFile(string PlaneICAO)
 
   char           *bip1ConfigurationPath;
   char           *bip2ConfigurationPath;
+  char *test, *test2;
+  char *test_path;
+  char *x;
 
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
@@ -238,11 +243,18 @@ bool ReadConfigFile(string PlaneICAO)
   if(bipcnt > 0) {
 
     bip1ConfigurationPath = bipgetConfigurationPath();
-    XPLMDebugString("bip1ConfigurationPath = ");
-    XPLMDebugString(bip1ConfigurationPath);
-    XPLMDebugString("\n");
+
+    // The following lines changes the directory seperator
+    // in Windows but it still crashes so not much use
+    //test_path = bipgetConfigurationPath();
+    //test = fixpatchseperator(test_path, '\\', '/');
+
+    // For Windows uncomment the next line untill I find a better soultion
     //bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
-    fstream ReadBipFile(bip1ConfigurationPath);
+
+
+    ifstream ReadBipFile;
+    ReadBipFile.open(bip1ConfigurationPath);
 
     if (ReadBipFile.is_open() != true)
     {
@@ -268,7 +280,6 @@ bool ReadConfigFile(string PlaneICAO)
 
     while (getline(ReadBipFile, LineToEncrypt[0]))
     {
-
 
         ErrorInLine++;
         if (LineToEncrypt[0].find("#BE SILENT") == 0)
@@ -425,11 +436,12 @@ bool ReadConfigFile(string PlaneICAO)
   if(bipcnt > 1) {
 
      bip2ConfigurationPath = bip2getConfigurationPath();
-     XPLMDebugString("bip1ConfigurationPath = ");
-     XPLMDebugString(bip1ConfigurationPath);
-     XPLMDebugString("\n");
-     //bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
-     fstream ReadBip2File(bip2ConfigurationPath);
+
+    // uncoment the following line on Windows untill I have a beter solution.
+    //bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
+
+    ifstream ReadBip2File;
+    ReadBip2File.open(bip2ConfigurationPath);
 
     if (ReadBip2File.is_open() != true)
     {
@@ -455,7 +467,6 @@ bool ReadConfigFile(string PlaneICAO)
 
     while (getline(ReadBip2File, LineToEncrypt[1]))
     {
-
 
         ErrorInLine++;
         if (LineToEncrypt[1].find("#BE SILENT") == 0)

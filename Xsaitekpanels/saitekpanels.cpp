@@ -61,6 +61,7 @@ XPLMDataRef Adf1StbyFreq = NULL, Adf2StbyFreq = NULL;
 XPLMDataRef Adf1ActFreq = NULL, Adf2ActFreq = NULL;
 
 XPLMDataRef XpdrCode = NULL, XpdrMode = NULL, BaroSetting = NULL;
+XPLMDataRef MetricPress = NULL;
 
 XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
 XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
@@ -220,7 +221,7 @@ static unsigned char radiobuf[4][4], radiowbuf[4][23];
 
 unsigned char radbuf[4], radwbuf[21];
 
-int radspeed, numadf;
+int radspeed, numadf, metricpressenable;
 
 hid_device *radiohandle[4];
 
@@ -249,6 +250,7 @@ string cowl_flaps_open, cowl_flaps_close;
 string panel_lights_switch_on, panel_lights_switch_off;
 string gear_switch_up, gear_switch_down;
 
+
 const char *GearTestStrUp;
 
 static unsigned char blankswitchwbuf[2];
@@ -260,6 +262,8 @@ hid_device *switchhandle;
 // ****************** BIP Panel variables *******************************
 int bipcnt = 0, bipres, biploop[4], stopbipcnt;
 unsigned char bipwbuf[4][10];
+
+string aircraft_path;
 
 hid_device *biphandle[4];
 
@@ -394,6 +398,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
   XpdrMode	= XPLMFindDataRef("sim/cockpit/radios/transponder_mode");
   BaroSetting	= XPLMFindDataRef("sim/cockpit/misc/barometer_setting");
+  MetricPress   = XPLMFindDataRef("sim/physics/metric_press");
 
   DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
   DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");

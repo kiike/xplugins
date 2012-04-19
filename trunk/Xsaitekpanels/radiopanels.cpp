@@ -1331,6 +1331,12 @@ void process_upper_xpdr_switch()
       upbarosetf[radnum] = XPLMGetDataf(BaroSetting);
       upbarosetf[radnum] = upbarosetf[radnum] * 100.0;
       upbaroset[radnum] = (int)upbarosetf[radnum];
+      if (metricpressenable == 1){
+          XPLMSetDatai(MetricPress, 1);
+      }
+      if (metricpressenable == 0){
+         XPLMSetDatai(MetricPress, 0);
+      }
     }
 
 }

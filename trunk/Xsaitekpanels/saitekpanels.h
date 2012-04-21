@@ -216,7 +216,6 @@ extern string cowl_flaps_open, cowl_flaps_close;
 extern string panel_lights_switch_on, panel_lights_switch_off;
 extern string gear_switch_up, gear_switch_down;
 
-
 extern float LandingGearDeployRatio[10];
 extern hid_device *switchhandle;
 
@@ -233,7 +232,6 @@ extern int bipcnt;
 
 extern string aircraft_path;
 
-
 void WriteCSVTableToDisk(void);
 bool ReadConfigFile(string PlaneICAO);
 
@@ -242,6 +240,5 @@ bool ReadConfigFile(string PlaneICAO);
 extern int wrgXPlaneVersion;
 extern int wrgXPLMVersion;
 extern int wrgHostID;
-
 
 #endif

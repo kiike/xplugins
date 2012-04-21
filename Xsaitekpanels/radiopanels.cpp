@@ -143,11 +143,15 @@ void process_radio_menu()
     XPLMAppendMenuSeparator(RadioMenuId);
     XPLMAppendMenuItem(RadioMenuId, "ONE ADF TUNER", (void *) "ADF1", 1);
     XPLMAppendMenuItem(RadioMenuId, "TWO ADF TUNERS", (void *) "ADF2", 1);
+    XPLMAppendMenuSeparator(RadioMenuId);
+    XPLMAppendMenuItem(RadioMenuId, "QNH display inHg", (void *) "inHg", 1);
+    XPLMAppendMenuItem(RadioMenuId, "QNH display hPa", (void *) "hPa", 1);
 
     int i;
 
     const int RMENU_BASE = 1;
     const int AMENU_BASE = 7;
+    const int QMENU_BASE = 11;
 
 
     for(i = 1; i <= 5; ++i){
@@ -168,6 +172,14 @@ void process_radio_menu()
       }
     }
 
+    for(i = 0; i <= 1; ++i){
+      if(i != metricpressenable){
+        XPLMCheckMenuItem(RadioMenuId, i + QMENU_BASE, xplm_Menu_Unchecked);
+      }
+      if(i == metricpressenable){
+        XPLMCheckMenuItem(RadioMenuId, i + QMENU_BASE, xplm_Menu_Checked);
+      }
+    }
 
 }
 

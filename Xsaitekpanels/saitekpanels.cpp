@@ -1119,6 +1119,13 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "ADF2") == 0) {
              numadf = 2;
          }
+         if (strcmp((char *) inItemRef, "inHg") == 0) {
+             metricpressenable = 0;
+         }
+         if (strcmp((char *) inItemRef, "hPa") == 0) {
+             metricpressenable = 1;
+         }
+
 
     }
 

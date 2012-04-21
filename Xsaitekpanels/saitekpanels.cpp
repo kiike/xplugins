@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.39   ***************
-// ****** Apr 14 2012   **************
+// ****** Apr 21 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -272,6 +272,7 @@ void            XsaitekpanelsMenuHandler(void *, void *);
 void WriteCSVTableToDisk(void);
 
 bool ReadConfigFile(std::string PlaneICAO);
+
 
 int             XsaitekpanelsMenuItem;
 int             BipMenuItem;

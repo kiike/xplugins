@@ -204,14 +204,6 @@ char* bip2getConfigurationPath() {
     }
 }
 
-char * fixpatchseperator(char * in_path, char ch1, char ch2) {
-    for (int i = 0; i < strlen(in_path); ++i) {
-        if (in_path[i] == ch1)
-            in_path[i] = ch2;
-    }
-    return in_path;
-}
-
 bool ReadConfigFile(string PlaneICAO)
 {
 
@@ -244,14 +236,8 @@ bool ReadConfigFile(string PlaneICAO)
 
     bip1ConfigurationPath = bipgetConfigurationPath();
 
-    // The following lines changes the directory seperator
-    // in Windows but it still crashes so not much use
-    //test_path = bipgetConfigurationPath();
-    //test = fixpatchseperator(test_path, '\\', '/');
-
     // For Windows uncomment the next line untill I find a better soultion
     //bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
-
 
     ifstream ReadBipFile;
     ReadBipFile.open(bip1ConfigurationPath);

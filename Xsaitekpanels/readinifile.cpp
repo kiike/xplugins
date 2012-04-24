@@ -24,11 +24,11 @@ void process_read_ini_file()
 
 {
 
-    char *defaultConfigFile;
-    const char *defaultConfigFileName;
+    char *xspdefaultConfigFile;
+    const char *xspdefaultConfigFileName;
 
-    defaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
-    defaultConfigFileName = "xsaitekpanels.ini";
+    xspdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
+    xspdefaultConfigFileName = "xsaitekpanels.ini";
 
     /* set defaults */
 
@@ -46,30 +46,64 @@ void process_read_ini_file()
     metricpressenable        = 0;
 
 
-    char acfFilename[256], acfFullPath[512];
+    char xspacfFilename[256], xspacfFullPath[512];
 
-    char *configPath;
+    char *xspconfigPath;
 
     cleanupIniReader();
 
-    XPLMGetNthAircraftModel(0, acfFilename, acfFullPath);
+    // Get user aircraft filename and full path
+    XPLMGetNthAircraftModel(0, xspacfFilename, xspacfFullPath);
 
-    if(strlen(acfFullPath) == 0){
+    // Put the xspacfFilename and xspacfFullPath in Log.txt
+    XPLMDebugString("xspacfFilename = ");
+    XPLMDebugString(xspacfFilename);
+    XPLMDebugString("\n");
+    XPLMDebugString("xspacfFullPath = ");
+    XPLMDebugString(xspacfFullPath);
+    XPLMDebugString("\n");
+
+    if(strlen(xspacfFullPath) == 0){
+      XPLMDebugString("strlen(xspacfFullPath) == 0");
       return;
     }
 
-    configPath = strstr(acfFullPath, acfFilename);
-    strncpy(configPath, defaultConfigFileName, sizeof(acfFilename));
-    puts(acfFullPath);
+    xspconfigPath = strstr(xspacfFullPath, xspacfFilename);
+    XPLMDebugString("xspconfigPath = ");
+    XPLMDebugString(xspconfigPath);
+    XPLMDebugString("\n");
 
-    std::ifstream ifile(acfFullPath);
+    strncpy(xspconfigPath, xspdefaultConfigFileName, sizeof(xspacfFilename));
+    XPLMDebugString("xspconfigPath = ");
+    XPLMDebugString(xspconfigPath);
+    XPLMDebugString("\n");
+
+    XPLMDebugString("xspdefaultConfigFileName = ");
+    XPLMDebugString(xspdefaultConfigFileName);
+    XPLMDebugString("\n");
+
+    puts(xspacfFullPath);
+    XPLMDebugString("xspacfFullPath = ");
+    XPLMDebugString(xspacfFullPath);
+    XPLMDebugString("\n");
+
+    std::ifstream ifile(xspacfFullPath);
     if (ifile) {
-        parseIniFile(acfFullPath);
+        parseIniFile(xspacfFullPath);
+        XPLMDebugString("Found xsaitekpanels.ini in the current aircraft path and it is\n");
+        XPLMDebugString("xspacfFullPath = ");
+        XPLMDebugString(xspacfFullPath);
+        XPLMDebugString("\n");
     } else {
-        std::ifstream ifile(defaultConfigFile);
+        std::ifstream ifile(xspdefaultConfigFile);
        if (ifile) {
-        parseIniFile(defaultConfigFile);
+           XPLMDebugString("Found xsaitekpanels.ini in the Xsaitekpanels plugin path and it is\n");
+           XPLMDebugString("xspdefaultConfigFile = ");
+           XPLMDebugString(xspdefaultConfigFile);
+           XPLMDebugString("\n");
+           parseIniFile(xspdefaultConfigFile);
        } else {
+           XPLMDebugString("Did not find xsaitekpanels.ini anywhere\n");
            return;
        }
     }

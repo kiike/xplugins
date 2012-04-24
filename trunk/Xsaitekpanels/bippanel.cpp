@@ -160,18 +160,48 @@ char* bipgetConfigurationPath() {
     const char *bipdefaultConfigFileName;
     bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
     bipdefaultConfigFileName = "D2B_config.txt";
+
+    // Get user aircraft filename and full path
     XPLMGetNthAircraftModel(0, bipacfFilename, bipacfFullPath);
+
+    // Put the xspacfFilename and xspacfFullPath in Log.txt
+    XPLMDebugString("bipacfFilename = ");
+    XPLMDebugString(bipacfFilename);
+    XPLMDebugString("\n");
+    XPLMDebugString("bipacfFullPath = ");
+    XPLMDebugString(bipacfFullPath);
+    XPLMDebugString("\n");
+
     bipconfigPath = strstr(bipacfFullPath, bipacfFilename);
+    XPLMDebugString("bipconfigPath = ");
+    XPLMDebugString(bipconfigPath);
+    XPLMDebugString("\n");
+
     strncpy(bipconfigPath, bipdefaultConfigFileName, sizeof(bipacfFilename));
+    XPLMDebugString("bipdefaultConfigFileName = ");
+    XPLMDebugString(bipdefaultConfigFileName);
+    XPLMDebugString("\n");
+
     puts(bipacfFullPath);
+    XPLMDebugString("bipacfFullPath = ");
+    XPLMDebugString(bipacfFullPath);
+    XPLMDebugString("\n");
 
     // Check if ACF-specific configuration exists
     std::ifstream bipcustomStream(bipacfFullPath);
     if (bipcustomStream.good()) {
+        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
+        XPLMDebugString("bipacfFullPath = ");
+        XPLMDebugString(bipacfFullPath);
+        XPLMDebugString("\n");
         return bipacfFullPath;
     } else {
         std::ifstream bipdefaultStream(bipdefaultConfigFile);
         if (bipdefaultStream.good()) {
+            XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
+            XPLMDebugString("bipdefaultConfigFile = ");
+            XPLMDebugString(bipdefaultConfigFile);
+            XPLMDebugString("\n");
             return bipdefaultConfigFile;
         }
 
@@ -187,6 +217,7 @@ char* bip2getConfigurationPath() {
     bip2defaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
     bip2defaultConfigFileName = "D2B_config2.txt";
     XPLMGetNthAircraftModel(0, bip2acfFilename, bip2acfFullPath);
+
     bip2configPath = strstr(bip2acfFullPath, bip2acfFilename);
     strncpy(bip2configPath, bip2defaultConfigFileName, sizeof(bip2acfFilename));
     puts(bip2acfFullPath);

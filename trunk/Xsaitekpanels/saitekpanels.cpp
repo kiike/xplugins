@@ -33,7 +33,7 @@
 
 using namespace std;
 
-namespace XSP {
+
 
 // ************* Radio Panel Command Ref ****************
 XPLMCommandRef Com1StbyFineDn = NULL, Com1StbyFineUp = NULL, Com1StbyCorseDn = NULL, Com1StbyCorseUp = NULL;
@@ -1321,4 +1321,4 @@ float	MyPanelsFlightLoopCallback(
   return interval;
 }
 
-}
+

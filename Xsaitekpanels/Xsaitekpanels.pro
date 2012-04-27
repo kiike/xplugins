@@ -12,6 +12,7 @@ INCLUDEPATH += ../SDK/CHeaders/Wrappers
 INCLUDEPATH += ../SDK/CHeaders/Widgets
 INCLUDEPATH += ../hidapi-0.7.0/hidapi
 INCLUDEPATH += ../ppl/src
+INCLUDEPATH += ../ppl/include/simpleini
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200

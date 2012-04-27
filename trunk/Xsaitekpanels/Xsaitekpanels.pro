@@ -11,9 +11,13 @@ INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Wrappers
 INCLUDEPATH += ../SDK/CHeaders/Widgets
 INCLUDEPATH += ../hidapi-0.7.0/hidapi
+INCLUDEPATH += ../ppl/src
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200
+
+DEFINES += PRIVATENAMESPACE=XSP
+#DESTDIR = lib$$PRIVATENAMESPACE
 
 win32 {
     DEFINES += APL=0 IBM=1 LIN=0
@@ -33,6 +37,7 @@ unix:!macx {
     SOURCES += \
           ../hidapi-0.7.0/linux/hid.c
     LIBS += `pkg-config libudev --libs`
+    LIBS += -L../ppl/libXSP -lppl
 
 }
 
@@ -64,7 +69,8 @@ macx {
 }
 
 HEADERS += saitekpanels.h \
-      inireader.h
+      inireader.h \
+      pluginpath.h
 
 SOURCES += saitekpanels.cpp\
     radiopanels.cpp \

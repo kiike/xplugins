@@ -59,12 +59,14 @@ using namespace std;
 float   LookAtThisValue;
 int     LookAtThisIntValue;
 
-static int bipnum = 0, bipnowrite[4] = {0, 0, 0, 0};
+static int bipnum = 0;
+//static int bipnowrite[4] = {0, 0, 0, 0};
+
 static unsigned char bipwbuf[4][10];
 static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i[4];
-static int bip0loop, bip1loop;
+//static int bip0loop, bip1loop;
 
 struct  BipTableStructure
 {
@@ -152,7 +154,7 @@ void WriteCSVTableToDisk(void)
     CSVFile.close();
 }
 
-
+/*
 char* bipgetConfigurationPath() {
     char bipacfFilename[256], bipacfFullPath[512];
     char *bipconfigPath;
@@ -235,6 +237,8 @@ char* bip2getConfigurationPath() {
     }
 }
 
+*/
+
 bool ReadConfigFile(string PlaneICAO)
 {
 
@@ -252,9 +256,9 @@ bool ReadConfigFile(string PlaneICAO)
 
   char           *bip1ConfigurationPath;
   char           *bip2ConfigurationPath;
-  char *test, *test2;
-  char *test_path;
-  char *x;
+  //char *test, *test2;
+  //char *test_path;
+  //char *x;
 
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
@@ -265,10 +269,10 @@ bool ReadConfigFile(string PlaneICAO)
 
   if(bipcnt > 0) {
 
-    bip1ConfigurationPath = bipgetConfigurationPath();
+    //bip1ConfigurationPath = bipgetConfigurationPath();
 
     // For Windows uncomment the next line untill I find a better soultion
-    //bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
+    bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
 
     ifstream ReadBipFile;
     ReadBipFile.open(bip1ConfigurationPath);
@@ -452,10 +456,10 @@ bool ReadConfigFile(string PlaneICAO)
 
   if(bipcnt > 1) {
 
-     bip2ConfigurationPath = bip2getConfigurationPath();
+     //bip2ConfigurationPath = bip2getConfigurationPath();
 
     // uncoment the following line on Windows untill I have a beter solution.
-    //bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
+    bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
 
     ifstream ReadBip2File;
     ReadBip2File.open(bip2ConfigurationPath);

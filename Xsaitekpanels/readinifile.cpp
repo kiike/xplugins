@@ -19,6 +19,13 @@
 //#include <string>
 #include <string.h>
 
+#include "pluginpath.h" // from PPL
+#include "namespaces.h" // from PPL
+
+namespace XSP {
+
+
+
 // ***** Configuration File Process ******
 void process_read_ini_file()
 
@@ -51,6 +58,21 @@ void process_read_ini_file()
     char *xspconfigPath;
 
     cleanupIniReader();
+
+    // Start of PPL use
+
+    // the name of the file, regardless of the directory
+    std::string config_file_name = "panel_settings.ini";
+
+    // now put the path to the aircraft directory in front of it
+    //std::string config_file_absolute_path = XSP::prependPlanePath(config_file_name);
+
+    // Now fopen() on config_file_absolute_path.c_str();
+    // or use PPL::Settings to parse an ini-file.
+
+    XPLMDebugString("config_file_absolute_path.c_str() = ");
+    //XPLMDebugString(config_file_absolute_path.c_str());
+    XPLMDebugString("\n");
 
     // Get user aircraft filename and full path
     XPLMGetNthAircraftModel(0, xspacfFilename, xspacfFullPath);
@@ -158,4 +180,6 @@ void process_read_ini_file()
 
 
   return;
+}
+
 }

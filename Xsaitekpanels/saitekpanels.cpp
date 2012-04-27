@@ -33,6 +33,8 @@
 
 using namespace std;
 
+namespace XSP {
+
 // ************* Radio Panel Command Ref ****************
 XPLMCommandRef Com1StbyFineDn = NULL, Com1StbyFineUp = NULL, Com1StbyCorseDn = NULL, Com1StbyCorseUp = NULL;
 XPLMCommandRef Com2StbyFineDn = NULL, Com2StbyFineUp = NULL, Com2StbyCorseDn = NULL, Com2StbyCorseUp = NULL;
@@ -311,7 +313,8 @@ PLUGIN_API int XPluginStart(char *		outName,
 {
 
   int ConfigSubMenuItem;
-  int BipSubMenuItem, Bip2SubMenuItem, Bip3SubMenuItem;
+  int BipSubMenuItem, Bip2SubMenuItem;
+  //Bip3SubMenuItem;
   int MultiSubMenuItem, RadioSubMenuItem;
   int SwitchSubMenuItem;
 
@@ -1316,4 +1319,6 @@ float	MyPanelsFlightLoopCallback(
 
 
   return interval;
+}
+
 }

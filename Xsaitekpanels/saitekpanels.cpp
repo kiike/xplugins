@@ -243,8 +243,8 @@ hid_device *multihandle;
 // ****************** Switch Panel variables *******************************
 int switchcnt = 0, switchres, stopswitchcnt;
 
-int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
-int deiceswitchenable, panellightsenable, landinggearknobenable;
+long bataltinverse, cowlflapsenable, fuelpumpswitchenable;
+long deiceswitchenable, panellightsenable, landinggearknobenable;
 
 string fuel_pump_switch_on, fuel_pump_switch_off;
 string deice_switch_on, deice_switch_off;

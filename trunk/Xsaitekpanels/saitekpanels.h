@@ -207,8 +207,8 @@ extern XPLMMenuID      SwitchMenuId;
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;
-extern int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
-extern int deiceswitchenable, panellightsenable, landinggearknobenable;
+extern long bataltinverse, cowlflapsenable, fuelpumpswitchenable;
+extern long deiceswitchenable, panellightsenable, landinggearknobenable;
 
 extern string fuel_pump_switch_on, fuel_pump_switch_off;
 extern string deice_switch_on, deice_switch_off;

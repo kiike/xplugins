@@ -21,11 +21,10 @@
 
 #include "settings.h" // from PPL
 #include "pluginpath.h" // from PPL
-#include "namespaces.h" // from PPL
-#include "SimpleIni.h" // from PPL
+//#include "namespaces.h" // from PPL
+//#include "SimpleIni.h" // from PPL
 
 using namespace PPLXSP;
-
 
 
 // ***** Configuration File Process ******
@@ -55,137 +54,78 @@ void process_read_ini_file()
     metricpressenable        = 0;
 
 
-    char xspacfFilename[256], xspacfFullPath[512];
-
-    char *xspconfigPath;
-
-    cleanupIniReader();
-
     // Start of PPL use
 
+    bool testfile = 0;
+    char buf[32];
+
     // the name of the file, regardless of the directory
-    std::string config_file_name = "panel_settings.ini";
+    std::string config_file_name = "xsaitekpanels.ini";
 
     // now put the path to the aircraft directory in front of it
-    std::string config_file_absolute_path = PPLXSP::PluginPath::prependXPlanePath(config_file_name);
+    //std::string config_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
 
-    // Now fopen() on config_file_absolute_path.c_str();
-    // or use PPL::Settings to parse an ini-file.
+    PPLXSP::Settings settings(PPLXSP::PluginPath::prependPlanePath(config_file_name), true, true);
 
-    XPLMDebugString("config_file_absolute_path.c_str() = ");
-    XPLMDebugString(config_file_absolute_path.c_str());
+    testfile = settings.loadFromFile(); // always is returning true it is always a 1
+
+    sprintf(buf,"testfile = %d", testfile);
+    XPLMDebugString(buf);
     XPLMDebugString("\n");
 
+    // get some values from xsaitekpanels.ini file
+    bataltinverse = settings.getLong("switch", "Bat Alt inverse");
+    fuelpumpswitchenable = settings.getLong("switch", "Fuel Pump Switch enable");
+    deiceswitchenable = settings.getLong("switch", "Deice Switch enable");
+    cowlflapsenable = settings.getLong("switch", "Cowl Flaps enable");
 
-    PPLXSP::Settings settings(PPLXSP::PluginPath::prependPlanePath("panelsettings.ini"), true, true);
+    panellightsenable = settings.getLong("switch", "Panel Lights Switch enable");
+    landinggearknobenable = settings.getLong("switch", "Landing Gear Knob enable");
+    radspeed = settings.getLong("radio", "Radio Freq Knob Pulse per Command");
+    numadf = settings.getLong("radio", "Radio Number of ADF's");
+
+    trimspeed = settings.getLong("multi", "Multi Trim Speed");
+    multispeed = settings.getLong("multi", "Multi Freq Knob Pulse per Command");
+    autothrottleswitchenable = settings.getLong("multi", "Auto Throttle Switch enable");
+    metricpressenable = settings.getLong("radio", "Metric Press enable");
 
 
-    // Get user aircraft filename and full path
-    XPLMGetNthAircraftModel(0, xspacfFilename, xspacfFullPath);
 
-    // Put the xspacfFilename and xspacfFullPath in Log.txt
-    XPLMDebugString("xspacfFilename = ");
-    XPLMDebugString(xspacfFilename);
-    XPLMDebugString("\n");
-    XPLMDebugString("xspacfFullPath = ");
-    XPLMDebugString(xspacfFullPath);
-    XPLMDebugString("\n");
+    //if (fuelpumpswitchenable == 2) {
+    //    fuel_pump_switch_on = getOptionToString("fuel_pump_switch_on_cmd");
+    //    fuel_pump_switch_off = getOptionToString("fuel_pump_switch_off_cmd");
+    //    FuelPumpOnCmd   = XPLMFindCommand(fuel_pump_switch_on.c_str());
+    //    FuelPumpOffCmd   = XPLMFindCommand(fuel_pump_switch_off.c_str());
+    //}
 
-    if(strlen(xspacfFullPath) == 0){
-      XPLMDebugString("strlen(xspacfFullPath) == 0");
-      return;
-    }
+   // if (deiceswitchenable == 2) {
+   //     deice_switch_on = getOptionToString("deice_switch_on_cmd");
+   //     deice_switch_off = getOptionToString("deice_switch_off_cmd");
+   //     DeiceOnCmd   = XPLMFindCommand(deice_switch_on.c_str());
+  //      DeiceOffCmd   = XPLMFindCommand(deice_switch_off.c_str());
+  //  }
 
-    xspconfigPath = strstr(xspacfFullPath, xspacfFilename);
-    XPLMDebugString("xspconfigPath = ");
-    XPLMDebugString(xspconfigPath);
-    XPLMDebugString("\n");
+  //  if (cowlflapsenable == 2) {
+  //      cowl_flaps_open = getOptionToString("cowl_flaps_open_cmd");
+  //      cowl_flaps_close = getOptionToString("cowl_flaps_close_cmd");
+  //      CowlFlapsOpenCmd   = XPLMFindCommand(cowl_flaps_open.c_str());
+  //      CowlFlapsCloseCmd   = XPLMFindCommand(cowl_flaps_close.c_str());
+  //  }
 
-    strncpy(xspconfigPath, xspdefaultConfigFileName, sizeof(xspacfFilename));
-    XPLMDebugString("xspconfigPath = ");
-    XPLMDebugString(xspconfigPath);
-    XPLMDebugString("\n");
+  //  if (panellightsenable == 2) {
+  //      panel_lights_switch_on = getOptionToString("panel_lights_switch_on_cmd");
+  //      panel_lights_switch_off = getOptionToString("panel_lights_switch_off_cmd");
+  //      PanelLightsOnCmd   = XPLMFindCommand(panel_lights_switch_on.c_str());
+  //      PanelLightsOffCmd   = XPLMFindCommand(panel_lights_switch_off.c_str());
+  //  }
 
-    XPLMDebugString("xspdefaultConfigFileName = ");
-    XPLMDebugString(xspdefaultConfigFileName);
-    XPLMDebugString("\n");
-
-    puts(xspacfFullPath);
-    XPLMDebugString("xspacfFullPath = ");
-    XPLMDebugString(xspacfFullPath);
-    XPLMDebugString("\n");
-
-    std::ifstream ifile(xspacfFullPath);
-    if (ifile) {
-        parseIniFile(xspacfFullPath);
-        XPLMDebugString("Found xsaitekpanels.ini in the current aircraft path and it is\n");
-        XPLMDebugString("xspacfFullPath = ");
-        XPLMDebugString(xspacfFullPath);
-        XPLMDebugString("\n");
-    } else {
-        std::ifstream ifile(xspdefaultConfigFile);
-       if (ifile) {
-           XPLMDebugString("Found xsaitekpanels.ini in the Xsaitekpanels plugin path and it is\n");
-           XPLMDebugString("xspdefaultConfigFile = ");
-           XPLMDebugString(xspdefaultConfigFile);
-           XPLMDebugString("\n");
-           parseIniFile(xspdefaultConfigFile);
-       } else {
-           XPLMDebugString("Did not find xsaitekpanels.ini anywhere\n");
-           return;
-       }
-    }
-
-    bataltinverse = getOptionToInt("Bat Alt inverse");
-    fuelpumpswitchenable = getOptionToInt("Fuel Pump Switch enable");
-    deiceswitchenable = getOptionToInt("Deice Switch enable");
-    cowlflapsenable = getOptionToInt("Cowl Flaps enable");
-    panellightsenable = getOptionToInt("Panel Lights Switch enable");
-    landinggearknobenable = getOptionToInt("Landing Gear Knob enable");
-    radspeed = getOptionToInt("Radio Freq Knob Pulse per Command");
-    numadf = getOptionToInt("Radio Number of ADF's");
-    trimspeed = getOptionToInt("Multi Trim Speed");
-    multispeed = getOptionToInt("Multi Freq Knob Pulse per Command");
-    autothrottleswitchenable = getOptionToInt("Auto Throttle Switch enable");
-    metricpressenable = getOptionToInt("Metric Press enable");
-
-    if (fuelpumpswitchenable == 2) {
-        fuel_pump_switch_on = getOptionToString("fuel_pump_switch_on_cmd");
-        fuel_pump_switch_off = getOptionToString("fuel_pump_switch_off_cmd");
-        FuelPumpOnCmd   = XPLMFindCommand(fuel_pump_switch_on.c_str());
-        FuelPumpOffCmd   = XPLMFindCommand(fuel_pump_switch_off.c_str());
-    }
-
-    if (deiceswitchenable == 2) {
-        deice_switch_on = getOptionToString("deice_switch_on_cmd");
-        deice_switch_off = getOptionToString("deice_switch_off_cmd");
-        DeiceOnCmd   = XPLMFindCommand(deice_switch_on.c_str());
-        DeiceOffCmd   = XPLMFindCommand(deice_switch_off.c_str());
-    }
-
-    if (cowlflapsenable == 2) {
-        cowl_flaps_open = getOptionToString("cowl_flaps_open_cmd");
-        cowl_flaps_close = getOptionToString("cowl_flaps_close_cmd");
-        CowlFlapsOpenCmd   = XPLMFindCommand(cowl_flaps_open.c_str());
-        CowlFlapsCloseCmd   = XPLMFindCommand(cowl_flaps_close.c_str());
-    }
-
-    if (panellightsenable == 2) {
-        panel_lights_switch_on = getOptionToString("panel_lights_switch_on_cmd");
-        panel_lights_switch_off = getOptionToString("panel_lights_switch_off_cmd");
-        PanelLightsOnCmd   = XPLMFindCommand(panel_lights_switch_on.c_str());
-        PanelLightsOffCmd   = XPLMFindCommand(panel_lights_switch_off.c_str());
-    }
-
-    if (landinggearknobenable == 2) {
-        gear_switch_up = getOptionToString("gear_switch_up_cmd");
-        gear_switch_down = getOptionToString("gear_switch_down_cmd");
-        GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
-        GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
-    }
+  //  if (landinggearknobenable == 2) {
+  //      gear_switch_up = getOptionToString("gear_switch_up_cmd");
+  //      gear_switch_down = getOptionToString("gear_switch_down_cmd");
+  //      GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
+  //      GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
+  //  }
 
 
   return;
 }
-
-

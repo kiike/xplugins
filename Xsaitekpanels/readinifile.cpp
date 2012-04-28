@@ -12,7 +12,7 @@
 #include "XPLMMenus.h"
 
 #include "saitekpanels.h"
-#include "inireader.h"
+//#include "inireader.h"
 
 #include <iostream>
 #include <fstream>
@@ -32,11 +32,11 @@ void process_read_ini_file()
 
 {
 
-    char *xspdefaultConfigFile;
-    const char *xspdefaultConfigFileName;
+    //char *xspdefaultConfigFile;
+    //const char *xspdefaultConfigFileName;
 
-    xspdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
-    xspdefaultConfigFileName = "xsaitekpanels.ini";
+    //xspdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
+    //xspdefaultConfigFileName = "xsaitekpanels.ini";
 
     /* set defaults */
 

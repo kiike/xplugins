@@ -70,7 +70,6 @@ macx {
 }
 
 HEADERS += saitekpanels.h \
-      inireader.h \
       pluginpath.h
 
 SOURCES += saitekpanels.cpp\
@@ -78,7 +77,6 @@ SOURCES += saitekpanels.cpp\
     multipanel.cpp \
     switchpanel.cpp \
     bippanel.cpp \
-    inireader.cpp \
     readinifile.cpp
 
 OTHER_FILES += \

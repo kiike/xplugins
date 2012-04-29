@@ -65,7 +65,7 @@ void process_read_ini_file()
     // now put the path to the aircraft directory in front of it
     //std::string config_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
 
-    PPLXSP::Settings settings(PPLXSP::PluginPath::prependPlanePath(config_file_name), true, true);
+    PPLXSP::Settings settings(PPLXSP::PluginPath::prependPlanePath(config_file_name), true, false);
 
     testfile = settings.loadFromFile(); // always is returning true it is always a 1
 
@@ -78,53 +78,58 @@ void process_read_ini_file()
     fuelpumpswitchenable = settings.getLong("switch", "Fuel Pump Switch enable");
     deiceswitchenable = settings.getLong("switch", "Deice Switch enable");
     cowlflapsenable = settings.getLong("switch", "Cowl Flaps enable");
-
     panellightsenable = settings.getLong("switch", "Panel Lights Switch enable");
     landinggearknobenable = settings.getLong("switch", "Landing Gear Knob enable");
+
     radspeed = settings.getLong("radio", "Radio Freq Knob Pulse per Command");
     numadf = settings.getLong("radio", "Radio Number of ADF's");
+    metricpressenable = settings.getLong("radio", "Metric Press enable");
 
     trimspeed = settings.getLong("multi", "Multi Trim Speed");
     multispeed = settings.getLong("multi", "Multi Freq Knob Pulse per Command");
     autothrottleswitchenable = settings.getLong("multi", "Auto Throttle Switch enable");
-    metricpressenable = settings.getLong("radio", "Metric Press enable");
 
 
+    if (fuelpumpswitchenable == 2) {
+        //fuel_pump_switch_on = settings.get("command", "fuel_pump_switch_on_cmd");
+        //fuel_pump_switch_off = settings.get("command", "fuel_pump_switch_off_cmd");
 
-    //if (fuelpumpswitchenable == 2) {
-    //    fuel_pump_switch_on = getOptionToString("fuel_pump_switch_on_cmd");
-    //    fuel_pump_switch_off = getOptionToString("fuel_pump_switch_off_cmd");
-    //    FuelPumpOnCmd   = XPLMFindCommand(fuel_pump_switch_on.c_str());
-    //    FuelPumpOffCmd   = XPLMFindCommand(fuel_pump_switch_off.c_str());
-    //}
+        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
+        XPLMDebugString("fuel_pump_switch_on = ");
+        XPLMDebugString(fuel_pump_switch_on.c_str());
+        XPLMDebugString("\n");
 
-   // if (deiceswitchenable == 2) {
-   //     deice_switch_on = getOptionToString("deice_switch_on_cmd");
-   //     deice_switch_off = getOptionToString("deice_switch_off_cmd");
-   //     DeiceOnCmd   = XPLMFindCommand(deice_switch_on.c_str());
-  //      DeiceOffCmd   = XPLMFindCommand(deice_switch_off.c_str());
-  //  }
+        //FuelPumpOnCmd   = XPLMFindCommand(fuel_pump_switch_on.c_str());
+        //FuelPumpOffCmd   = XPLMFindCommand(fuel_pump_switch_off.c_str());
+    }
 
-  //  if (cowlflapsenable == 2) {
-  //      cowl_flaps_open = getOptionToString("cowl_flaps_open_cmd");
-  //      cowl_flaps_close = getOptionToString("cowl_flaps_close_cmd");
-  //      CowlFlapsOpenCmd   = XPLMFindCommand(cowl_flaps_open.c_str());
-  //      CowlFlapsCloseCmd   = XPLMFindCommand(cowl_flaps_close.c_str());
-  //  }
+    if (deiceswitchenable == 2) {
+        deice_switch_on = settings.get("command", "deice_switch_on_cmd");
+        deice_switch_off = settings.get("command", "deice_switch_off_cmd");
+        DeiceOnCmd   = XPLMFindCommand(deice_switch_on.c_str());
+        DeiceOffCmd   = XPLMFindCommand(deice_switch_off.c_str());
+    }
 
-  //  if (panellightsenable == 2) {
-  //      panel_lights_switch_on = getOptionToString("panel_lights_switch_on_cmd");
-  //      panel_lights_switch_off = getOptionToString("panel_lights_switch_off_cmd");
-  //      PanelLightsOnCmd   = XPLMFindCommand(panel_lights_switch_on.c_str());
-  //      PanelLightsOffCmd   = XPLMFindCommand(panel_lights_switch_off.c_str());
-  //  }
+    if (cowlflapsenable == 2) {
+        cowl_flaps_open = settings.get("command", "cowl_flaps_open_cmd");
+        cowl_flaps_close = settings.get("command", "cowl_flaps_close_cmd");
+        CowlFlapsOpenCmd   = XPLMFindCommand(cowl_flaps_open.c_str());
+        CowlFlapsCloseCmd   = XPLMFindCommand(cowl_flaps_close.c_str());
+    }
 
-  //  if (landinggearknobenable == 2) {
-  //      gear_switch_up = getOptionToString("gear_switch_up_cmd");
-  //      gear_switch_down = getOptionToString("gear_switch_down_cmd");
-  //      GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
-  //      GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
-  //  }
+    if (panellightsenable == 2) {
+        panel_lights_switch_on = settings.get("command", "panel_lights_switch_on_cmd");
+        panel_lights_switch_off = settings.get("command", "panel_lights_switch_off_cmd");
+        PanelLightsOnCmd   = XPLMFindCommand(panel_lights_switch_on.c_str());
+        PanelLightsOffCmd   = XPLMFindCommand(panel_lights_switch_off.c_str());
+    }
+
+    if (landinggearknobenable == 2) {
+        gear_switch_up = settings.get("command", "gear_switch_up_cmd");
+        gear_switch_down = settings.get("command", "gear_switch_down_cmd");
+        GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
+        GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
+    }
 
 
   return;

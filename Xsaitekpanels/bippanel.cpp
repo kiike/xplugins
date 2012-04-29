@@ -48,6 +48,13 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "settings.h" // from PPL
+#include "pluginpath.h" // from PPL
+//#include "namespaces.h" // from PPL
+//#include "SimpleIni.h" // from PPL
+
+using namespace PPLXSP;
+
 
 using namespace std;
 
@@ -154,90 +161,6 @@ void WriteCSVTableToDisk(void)
     CSVFile.close();
 }
 
-/*
-char* bipgetConfigurationPath() {
-    char bipacfFilename[256], bipacfFullPath[512];
-    char *bipconfigPath;
-    char *bipdefaultConfigFile;
-    const char *bipdefaultConfigFileName;
-    bipdefaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
-    bipdefaultConfigFileName = "D2B_config.txt";
-
-    // Get user aircraft filename and full path
-    XPLMGetNthAircraftModel(0, bipacfFilename, bipacfFullPath);
-
-    // Put the xspacfFilename and xspacfFullPath in Log.txt
-    XPLMDebugString("bipacfFilename = ");
-    XPLMDebugString(bipacfFilename);
-    XPLMDebugString("\n");
-    XPLMDebugString("bipacfFullPath = ");
-    XPLMDebugString(bipacfFullPath);
-    XPLMDebugString("\n");
-
-    bipconfigPath = strstr(bipacfFullPath, bipacfFilename);
-    XPLMDebugString("bipconfigPath = ");
-    XPLMDebugString(bipconfigPath);
-    XPLMDebugString("\n");
-
-    strncpy(bipconfigPath, bipdefaultConfigFileName, sizeof(bipacfFilename));
-    XPLMDebugString("bipdefaultConfigFileName = ");
-    XPLMDebugString(bipdefaultConfigFileName);
-    XPLMDebugString("\n");
-
-    puts(bipacfFullPath);
-    XPLMDebugString("bipacfFullPath = ");
-    XPLMDebugString(bipacfFullPath);
-    XPLMDebugString("\n");
-
-    // Check if ACF-specific configuration exists
-    std::ifstream bipcustomStream(bipacfFullPath);
-    if (bipcustomStream.good()) {
-        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
-        XPLMDebugString("bipacfFullPath = ");
-        XPLMDebugString(bipacfFullPath);
-        XPLMDebugString("\n");
-        return bipacfFullPath;
-    } else {
-        std::ifstream bipdefaultStream(bipdefaultConfigFile);
-        if (bipdefaultStream.good()) {
-            XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
-            XPLMDebugString("bipdefaultConfigFile = ");
-            XPLMDebugString(bipdefaultConfigFile);
-            XPLMDebugString("\n");
-            return bipdefaultConfigFile;
-        }
-
-    }
-}
-
-
-char* bip2getConfigurationPath() {
-    char bip2acfFilename[256], bip2acfFullPath[512];
-    char *bip2configPath;
-    char *bip2defaultConfigFile;
-    const char *bip2defaultConfigFileName;
-    bip2defaultConfigFile = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
-    bip2defaultConfigFileName = "D2B_config2.txt";
-    XPLMGetNthAircraftModel(0, bip2acfFilename, bip2acfFullPath);
-
-    bip2configPath = strstr(bip2acfFullPath, bip2acfFilename);
-    strncpy(bip2configPath, bip2defaultConfigFileName, sizeof(bip2acfFilename));
-    puts(bip2acfFullPath);
-
-    // Check if ACF-specific configuration exists
-    std::ifstream bip2customStream(bip2acfFullPath);
-    if (bip2customStream.good()) {
-        return bip2acfFullPath;
-    } else {
-        std::ifstream bip2defaultStream(bip2defaultConfigFile);
-        if (bip2defaultStream.good()) {
-            return bip2defaultConfigFile;
-        }
-
-    }
-}
-
-*/
 
 bool ReadConfigFile(string PlaneICAO)
 {
@@ -256,10 +179,7 @@ bool ReadConfigFile(string PlaneICAO)
 
   char           *bip1ConfigurationPath;
   char           *bip2ConfigurationPath;
-  //char *test, *test2;
-  //char *test_path;
-  //char *x;
-
+  const char     *foundd2bpath, *foundd2bpath2;
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
   LetWidgetSay(PlaneICAO);
@@ -269,13 +189,37 @@ bool ReadConfigFile(string PlaneICAO)
 
   if(bipcnt > 0) {
 
-    //bip1ConfigurationPath = bipgetConfigurationPath();
 
-    // For Windows uncomment the next line untill I find a better soultion
     bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
 
+    // the name of the file, regardless of the directory
+    std::string d2b_file_name = "D2B_config.txt";
+
+    // now put the path to the aircraft directory in front of it
+    std::string d2b_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file_name);
+
+    // Check if ACF-specific configuration exists
+    std::ifstream bipcustomStream(d2b_file_absolute_path.c_str());
+    if (bipcustomStream.good()) {
+        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
+        XPLMDebugString("d2b_file_absolute_path.c_str() = ");
+        XPLMDebugString(d2b_file_absolute_path.c_str());
+        XPLMDebugString("\n");
+        foundd2bpath = d2b_file_absolute_path.c_str();
+    } else {
+        std::ifstream bipdefaultStream(bip1ConfigurationPath);
+        if (bipdefaultStream.good()) {
+            XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
+            XPLMDebugString("bip1ConfigurationPath = ");
+            XPLMDebugString(bip1ConfigurationPath);
+            XPLMDebugString("\n");
+            foundd2bpath = bip1ConfigurationPath;
+        }
+
+    }
+
     ifstream ReadBipFile;
-    ReadBipFile.open(bip1ConfigurationPath);
+    ReadBipFile.open(foundd2bpath);
 
     if (ReadBipFile.is_open() != true)
     {
@@ -456,13 +400,38 @@ bool ReadConfigFile(string PlaneICAO)
 
   if(bipcnt > 1) {
 
-     //bip2ConfigurationPath = bip2getConfigurationPath();
 
-    // uncoment the following line on Windows untill I have a beter solution.
     bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
 
+    // the name of the file, regardless of the directory
+    std::string d2b_file2_name = "D2B_config2.txt";
+
+    // now put the path to the aircraft directory in front of it
+    std::string d2b_file2_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file2_name);
+
+
+    // Check if ACF-specific configuration exists
+    std::ifstream bipcustomStream(d2b_file2_absolute_path.c_str());
+    if (bipcustomStream.good()) {
+        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
+        XPLMDebugString("d2b_file_absolute_path.c_str() = ");
+        XPLMDebugString(d2b_file2_absolute_path.c_str());
+        XPLMDebugString("\n");
+        foundd2bpath2 = d2b_file2_absolute_path.c_str();
+    } else {
+        std::ifstream bipdefaultStream(bip2ConfigurationPath);
+        if (bipdefaultStream.good()) {
+            XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
+            XPLMDebugString("bip2ConfigurationPath = ");
+            XPLMDebugString(bip2ConfigurationPath);
+            XPLMDebugString("\n");
+            foundd2bpath2 = bip2ConfigurationPath;
+       }
+
+    }
+
     ifstream ReadBip2File;
-    ReadBip2File.open(bip2ConfigurationPath);
+    ReadBip2File.open(foundd2bpath2);
 
     if (ReadBip2File.is_open() != true)
     {
@@ -641,8 +610,6 @@ bool ReadConfigFile(string PlaneICAO)
     //return true;
 
    }
-
-
 
 return true;
 }

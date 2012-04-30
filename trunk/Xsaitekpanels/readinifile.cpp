@@ -119,42 +119,36 @@ void process_read_ini_file()
 
 
     if (fuelpumpswitchenable == 2) {
-        //fuel_pump_switch_on = settings.get("command", "fuel_pump_switch_on_cmd");
-        //fuel_pump_switch_off = settings.get("command", "fuel_pump_switch_off_cmd");
-
-        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
-        XPLMDebugString("fuel_pump_switch_on = ");
-        XPLMDebugString(fuel_pump_switch_on.c_str());
-        XPLMDebugString("\n");
-
-        //FuelPumpOnCmd   = XPLMFindCommand(fuel_pump_switch_on.c_str());
-        //FuelPumpOffCmd   = XPLMFindCommand(fuel_pump_switch_off.c_str());
+        fuel_pump_switch_on = settings.get("commands", "fuel_pump_switch_on_cmd");
+        fuel_pump_switch_off = settings.get("commands", "fuel_pump_switch_off_cmd");
+        FuelPumpOnCmd   = XPLMFindCommand(fuel_pump_switch_on.c_str());
+        FuelPumpOffCmd   = XPLMFindCommand(fuel_pump_switch_off.c_str());
     }
 
     if (deiceswitchenable == 2) {
-        deice_switch_on = settings.get("command", "deice_switch_on_cmd");
-        deice_switch_off = settings.get("command", "deice_switch_off_cmd");
+        deice_switch_on = settings.get("commands", "deice_switch_on_cmd");
+        deice_switch_off = settings.get("commands", "deice_switch_off_cmd");
         DeiceOnCmd   = XPLMFindCommand(deice_switch_on.c_str());
         DeiceOffCmd   = XPLMFindCommand(deice_switch_off.c_str());
     }
 
     if (cowlflapsenable == 2) {
-        cowl_flaps_open = settings.get("command", "cowl_flaps_open_cmd");
-        cowl_flaps_close = settings.get("command", "cowl_flaps_close_cmd");
+        cowl_flaps_open = settings.get("commands", "cowl_flaps_open_cmd");
+        cowl_flaps_close = settings.get("commands", "cowl_flaps_close_cmd");
         CowlFlapsOpenCmd   = XPLMFindCommand(cowl_flaps_open.c_str());
         CowlFlapsCloseCmd   = XPLMFindCommand(cowl_flaps_close.c_str());
     }
 
     if (panellightsenable == 2) {
-        panel_lights_switch_on = settings.get("command", "panel_lights_switch_on_cmd");
-        panel_lights_switch_off = settings.get("command", "panel_lights_switch_off_cmd");
+        panel_lights_switch_on = settings.get("commands", "panel_lights_switch_on_cmd");
+        panel_lights_switch_off = settings.get("commands", "panel_lights_switch_off_cmd");
         PanelLightsOnCmd   = XPLMFindCommand(panel_lights_switch_on.c_str());
         PanelLightsOffCmd   = XPLMFindCommand(panel_lights_switch_off.c_str());
     }
 
     if (landinggearknobenable == 2) {
-        gear_switch_up = settings.get("command", "gear_switch_up_cmd");
-        gear_switch_down = settings.get("command", "gear_switch_down_cmd");
+        gear_switch_up = settings.get("commands", "gear_switch_up_cmd");
+        gear_switch_down = settings.get("commands", "gear_switch_down_cmd");
         GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
         GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
     }

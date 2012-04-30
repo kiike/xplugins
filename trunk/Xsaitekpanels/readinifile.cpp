@@ -59,13 +59,41 @@ void process_read_ini_file()
     bool testfile = 0;
     char buf[32];
 
+    char *inipluginpath;
+    const char *foundinipath;
+
+    inipluginpath = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
+
     // the name of the file, regardless of the directory
     std::string config_file_name = "xsaitekpanels.ini";
 
     // now put the path to the aircraft directory in front of it
-    //std::string config_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
+    std::string xpsini_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
 
-    PPLXSP::Settings settings(PPLXSP::PluginPath::prependPlanePath(config_file_name), true, false);
+    // Check if ACF-specific configuration exists
+    std::ifstream xpscustomStream(xpsini_file_absolute_path.c_str());
+    if (xpscustomStream.good()) {
+        XPLMDebugString("Found xsaitekpanels.ini in the current aircraft path and it is\n");
+        XPLMDebugString("xpsini_file_absolute_path.c_str() = ");
+        XPLMDebugString(xpsini_file_absolute_path.c_str());
+        XPLMDebugString("\n");
+        foundinipath = xpsini_file_absolute_path.c_str();
+    } else {
+        std::ifstream xpsdefaultStream(inipluginpath);
+        if (xpsdefaultStream.good()) {
+            XPLMDebugString("Found xsaitekpanels.ini in the Xsaitekpanels plugin path and it is\n");
+            XPLMDebugString("inipluginpath = ");
+            XPLMDebugString(inipluginpath);
+            XPLMDebugString("\n");
+            foundinipath = inipluginpath;
+        }
+
+    }
+
+
+    PPLXSP::Settings settings(foundinipath, true, false);
+
+
 
     testfile = settings.loadFromFile(); // always is returning true it is always a 1
 

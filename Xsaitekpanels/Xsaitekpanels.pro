@@ -24,6 +24,7 @@ win32 {
     DEFINES += APL=0 IBM=1 LIN=0
     LIBS += -L../SDK/Libraries/Win
     LIBS += -lXPLM -lXPWidgets
+    LIBS += -L../ppl/libXSP -lppl
     LIBS += $$quote(C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\SetupAPI.Lib)
     SOURCES += \
           ../hidapi-0.7.0/windows/hid.c
@@ -61,6 +62,7 @@ macx {
     SOURCES += \
           ../hidapi-0.7.0/mac/hid.c
     LIBS += -framework IOKit -framework CoreFoundation
+    LIBS += -L../ppl/libXSP -lppl
 
     # Build for multiple architectures.
     # The following line is only needed to build universal on PPC architectures.
@@ -69,8 +71,7 @@ macx {
     CONFIG += x86
 }
 
-HEADERS += saitekpanels.h \
-      pluginpath.h
+HEADERS += saitekpanels.h
 
 SOURCES += saitekpanels.cpp\
     radiopanels.cpp \

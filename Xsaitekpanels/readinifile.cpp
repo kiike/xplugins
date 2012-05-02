@@ -69,6 +69,11 @@ void process_read_ini_file()
     // the name of the file, regardless of the directory
     std::string config_file_name = "xsaitekpanels.ini";
 
+    #if APL && __MACH__
+        // the name of the file, regardless of the directory
+        config_file_name = "/xsaitekpanels.ini";
+    #endif
+
     // now put the path to the aircraft directory in front of it
     std::string xpsini_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
 
@@ -97,13 +102,7 @@ void process_read_ini_file()
 
     PPLXSP::Settings settings(foundinipath, true, false);
 
-
-
     testfile = settings.loadFromFile(); // always is returning true it is always a 1
-
-    sprintf(buf,"testfile = %d", testfile);
-    XPLMDebugString(buf);
-    XPLMDebugString("\n");
 
     // get some values from xsaitekpanels.ini file
     bataltinverse = settings.getLong("switch", "Bat Alt inverse");

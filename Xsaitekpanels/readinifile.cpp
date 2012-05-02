@@ -56,6 +56,14 @@ void process_read_ini_file()
     char *inipluginpath;
     const char *foundinipath;
 
+    char xpsname[512];
+    char xpspath[512];
+    XPLMGetNthAircraftModel(0, xpsname, xpspath);
+
+    XPLMDebugString("Raw Current aircraft path = ");
+    XPLMDebugString(xpspath);
+    XPLMDebugString("\n");
+
     inipluginpath = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
 
     // the name of the file, regardless of the directory
@@ -64,7 +72,7 @@ void process_read_ini_file()
     // now put the path to the aircraft directory in front of it
     std::string xpsini_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
 
-    XPLMDebugString("Current aircraft path = ");
+    XPLMDebugString("Converted Current aircraft path = ");
     XPLMDebugString(xpsini_file_absolute_path.c_str());
     XPLMDebugString("\n");
 

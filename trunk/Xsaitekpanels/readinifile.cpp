@@ -72,7 +72,6 @@ void process_read_ini_file()
     std::ifstream xpscustomStream(xpsini_file_absolute_path.c_str());
     if (xpscustomStream.good()) {
         XPLMDebugString("Found xsaitekpanels.ini in the current aircraft path and it is\n");
-        XPLMDebugString("xpsini_file_absolute_path.c_str() = ");
         XPLMDebugString(xpsini_file_absolute_path.c_str());
         XPLMDebugString("\n");
         foundinipath = xpsini_file_absolute_path.c_str();
@@ -80,7 +79,6 @@ void process_read_ini_file()
         std::ifstream xpsdefaultStream(inipluginpath);
         if (xpsdefaultStream.good()) {
             XPLMDebugString("Found xsaitekpanels.ini in the Xsaitekpanels plugin path and it is\n");
-            XPLMDebugString("inipluginpath = ");
             XPLMDebugString(inipluginpath);
             XPLMDebugString("\n");
             foundinipath = inipluginpath;

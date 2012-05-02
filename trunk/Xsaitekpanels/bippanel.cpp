@@ -192,8 +192,14 @@ bool ReadConfigFile(string PlaneICAO)
 
     bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
 
+
     // the name of the file, regardless of the directory
     std::string d2b_file_name = "D2B_config.txt";
+
+    #if APL && __MACH__
+    // the name of the file, regardless of the directory
+       d2b_file_name = "/D2B_config.txt";
+    #endif
 
     // now put the path to the aircraft directory in front of it
     std::string d2b_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file_name);
@@ -407,6 +413,11 @@ bool ReadConfigFile(string PlaneICAO)
 
     // the name of the file, regardless of the directory
     std::string d2b_file2_name = "D2B_config2.txt";
+
+    #if APL && __MACH__
+    // the name of the file, regardless of the directory
+        d2b_file2_name = "/D2B_config2.txt";
+    #endif
 
     // now put the path to the aircraft directory in front of it
     std::string d2b_file2_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file2_name);

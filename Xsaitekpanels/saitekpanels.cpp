@@ -322,6 +322,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
+  XPLMDebugString("Xsaitekpanels v1.39\n");
 	/* First set up our plugin info. */
   strcpy(outName, "Xsaitekpanels v1.39");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");

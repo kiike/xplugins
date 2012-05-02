@@ -64,6 +64,10 @@ void process_read_ini_file()
     // now put the path to the aircraft directory in front of it
     std::string xpsini_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
 
+    XPLMDebugString("Current aircraft path = ");
+    XPLMDebugString(xpsini_file_absolute_path.c_str());
+    XPLMDebugString("\n");
+
     // Check if ACF-specific configuration exists
     std::ifstream xpscustomStream(xpsini_file_absolute_path.c_str());
     if (xpscustomStream.good()) {

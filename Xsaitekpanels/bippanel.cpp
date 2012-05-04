@@ -1,7 +1,6 @@
  // ****** bippanel.cpp **********
 // ****  William R. Good  ********
 
-
 #if IBM
 #include <windows.h>
 BOOL APIENTRY DllMain( HANDLE hModule,
@@ -189,11 +188,9 @@ bool ReadConfigFile(string PlaneICAO)
 
   if(bipcnt > 0) {
 
-
     bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
 
-
-    // the name of the file, regardless of the directory
+   // the name of the file, regardless of the directory
     std::string d2b_file_name = "D2B_config.txt";
 
     #if APL && __MACH__
@@ -203,10 +200,6 @@ bool ReadConfigFile(string PlaneICAO)
 
     // now put the path to the aircraft directory in front of it
     std::string d2b_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file_name);
-
-    XPLMDebugString("Current aircraft path = ");
-    XPLMDebugString(d2b_file_absolute_path.c_str());
-    XPLMDebugString("\n");
 
     // Check if ACF-specific configuration exists
     std::ifstream bipcustomStream(d2b_file_absolute_path.c_str());
@@ -421,10 +414,6 @@ bool ReadConfigFile(string PlaneICAO)
 
     // now put the path to the aircraft directory in front of it
     std::string d2b_file2_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file2_name);
-
-    XPLMDebugString("Current aircraft path = ");
-    XPLMDebugString(d2b_file2_absolute_path.c_str());
-    XPLMDebugString("\n");
 
     // Check if ACF-specific configuration exists
     std::ifstream bipcustomStream(d2b_file2_absolute_path.c_str());

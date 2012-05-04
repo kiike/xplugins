@@ -25,12 +25,10 @@
 
 using namespace PPLXSP;
 
-
 // ***** Configuration File Process ******
 void process_read_ini_file()
 
 {
-
 
     /* set defaults */
 
@@ -47,22 +45,13 @@ void process_read_ini_file()
     autothrottleswitchenable = 1;
     metricpressenable        = 0;
 
-
     // Start of PPL use
 
     bool testfile = 0;
-    char buf[32];
+    //char buf[32];
 
     char *inipluginpath;
     const char *foundinipath;
-
-    char xpsname[512];
-    char xpspath[512];
-    XPLMGetNthAircraftModel(0, xpsname, xpspath);
-
-    XPLMDebugString("Raw Current aircraft path = ");
-    XPLMDebugString(xpspath);
-    XPLMDebugString("\n");
 
     inipluginpath = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
 
@@ -76,10 +65,6 @@ void process_read_ini_file()
 
     // now put the path to the aircraft directory in front of it
     std::string xpsini_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
-
-    XPLMDebugString("Converted Current aircraft path = ");
-    XPLMDebugString(xpsini_file_absolute_path.c_str());
-    XPLMDebugString("\n");
 
     // Check if ACF-specific configuration exists
     std::ifstream xpscustomStream(xpsini_file_absolute_path.c_str());

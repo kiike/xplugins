@@ -48,10 +48,54 @@ void process_read_ini_file()
     // Start of PPL use
 
     bool testfile = 0;
+
     //char buf[32];
 
     char *inipluginpath;
     const char *foundinipath;
+
+    char xpsname[512];
+    char xpspath[512];
+    XPLMGetNthAircraftModel(0, xpsname, xpspath);
+
+    XPLMDebugString("Raw Current aircraft path = ");
+    XPLMDebugString(xpspath);
+    XPLMDebugString("\n");
+
+    //std::string test_path_name = "EaNa MBP SL:Users:carlos:Desktop:X-Plane 10:Aircraft:General Aviation:Skyhawk N172AC:Cessna_172SP.acf";
+    std::string test_path_name = "Macintosh HD:Users:davideschachter:Desktop:X-Plane 10:Aircraft:Heavy Metal:Boeing737-800_x737_v4_5_0:737.acf";
+    XPLMDebugString("test_path_name = ");
+    XPLMDebugString(test_path_name.c_str());
+    XPLMDebugString("\n");
+
+    std::size_t pos = test_path_name.find("737.acf");
+    test_path_name = test_path_name.substr(0, pos);
+
+    XPLMDebugString("test_path_name = ");
+    XPLMDebugString(test_path_name.c_str());
+    XPLMDebugString("\n");
+
+    std::size_t len = test_path_name.length();
+    pos = test_path_name.find(":");
+    test_path_name.erase (test_path_name.begin()+0, test_path_name.end()-(len - pos));
+
+    XPLMDebugString("test_path_name = ");
+    XPLMDebugString(test_path_name.c_str());
+    XPLMDebugString("\n");
+
+    size_t found;
+    int n = 8;
+
+    while (n>0) {
+       found = test_path_name.find(":");
+       test_path_name.replace(found, 1,"/");
+       --n;
+    }
+
+
+    XPLMDebugString("test_path_name = ");
+    XPLMDebugString(test_path_name.c_str());
+    XPLMDebugString("\n");
 
     inipluginpath = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
 
@@ -65,6 +109,10 @@ void process_read_ini_file()
 
     // now put the path to the aircraft directory in front of it
     std::string xpsini_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(config_file_name);
+
+    XPLMDebugString("Converted Current aircraft path = ");
+    XPLMDebugString(xpsini_file_absolute_path.c_str());
+    XPLMDebugString("\n");
 
     // Check if ACF-specific configuration exists
     std::ifstream xpscustomStream(xpsini_file_absolute_path.c_str());

@@ -47,12 +47,12 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "settings.h" // from PPL
-#include "pluginpath.h" // from PPL
+//#include "settings.h" // from PPL
+//#include "pluginpath.h" // from PPL
 //#include "namespaces.h" // from PPL
 //#include "SimpleIni.h" // from PPL
 
-using namespace PPLXSP;
+//using namespace PPLXSP;
 
 
 using namespace std;
@@ -199,10 +199,12 @@ bool ReadConfigFile(string PlaneICAO)
     #endif
 
     // now put the path to the aircraft directory in front of it
-    std::string d2b_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file_name);
+    //std::string d2b_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file_name);
 
     // Check if ACF-specific configuration exists
-    std::ifstream bipcustomStream(d2b_file_absolute_path.c_str());
+    //std::ifstream bipcustomStream(d2b_file_absolute_path.c_str());
+/*
+
     if (bipcustomStream.good()) {
         XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
         XPLMDebugString(d2b_file_absolute_path.c_str());
@@ -218,7 +220,7 @@ bool ReadConfigFile(string PlaneICAO)
         }
 
     }
-
+*/
     ifstream ReadBipFile;
     ReadBipFile.open(foundd2bpath);
 
@@ -413,9 +415,10 @@ bool ReadConfigFile(string PlaneICAO)
     #endif
 
     // now put the path to the aircraft directory in front of it
-    std::string d2b_file2_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file2_name);
+    //std::string d2b_file2_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file2_name);
 
     // Check if ACF-specific configuration exists
+ /*
     std::ifstream bipcustomStream(d2b_file2_absolute_path.c_str());
     if (bipcustomStream.good()) {
         XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
@@ -432,7 +435,7 @@ bool ReadConfigFile(string PlaneICAO)
        }
 
     }
-
+*/
     ifstream ReadBip2File;
     ReadBip2File.open(foundd2bpath2);
 

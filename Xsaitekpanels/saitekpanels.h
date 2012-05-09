@@ -41,7 +41,6 @@ extern XPLMDataRef Adf1StbyFreq, Adf2StbyFreq;
 extern XPLMDataRef Adf1ActFreq, Adf2ActFreq;
 
 extern XPLMDataRef XpdrCode, XpdrMode, BaroSetting;
-extern XPLMDataRef MetricPress;
 extern XPLMDataRef DmeMode, DmeSlvSource;
 extern XPLMDataRef Nav1DmeNmDist, Nav1DmeSpeed;
 extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed;
@@ -207,14 +206,15 @@ extern XPLMMenuID      SwitchMenuId;
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;
-extern long bataltinverse, cowlflapsenable, fuelpumpswitchenable;
-extern long deiceswitchenable, panellightsenable, landinggearknobenable;
+extern int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
+extern int deiceswitchenable, panellightsenable, landinggearknobenable;
 
 extern string fuel_pump_switch_on, fuel_pump_switch_off;
 extern string deice_switch_on, deice_switch_off;
 extern string cowl_flaps_open, cowl_flaps_close;
 extern string panel_lights_switch_on, panel_lights_switch_off;
 extern string gear_switch_up, gear_switch_down;
+
 
 extern float LandingGearDeployRatio[10];
 extern hid_device *switchhandle;
@@ -230,8 +230,6 @@ extern XPWidgetID      BipWidgetID, Bip2WidgetID, Bip3WidgetID, Bip4WidgetID;
 extern hid_device *biphandle[4];
 extern int bipcnt;
 
-extern string aircraft_path;
-
 void WriteCSVTableToDisk(void);
 bool ReadConfigFile(string PlaneICAO);
 
@@ -240,5 +238,6 @@ bool ReadConfigFile(string PlaneICAO);
 extern int wrgXPlaneVersion;
 extern int wrgXPLMVersion;
 extern int wrgHostID;
+
 
 #endif

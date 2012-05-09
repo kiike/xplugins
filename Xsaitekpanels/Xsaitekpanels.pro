@@ -11,20 +11,14 @@ INCLUDEPATH += ../SDK/CHeaders/XPLM
 INCLUDEPATH += ../SDK/CHeaders/Wrappers
 INCLUDEPATH += ../SDK/CHeaders/Widgets
 INCLUDEPATH += ../hidapi-0.7.0/hidapi
-#INCLUDEPATH += ../ppl/src
-#INCLUDEPATH += ../ppl/include/simpleini
 
 # Defined to use X-Plane SDK 2.0 capabilities - no backward compatibility before 9.0
 DEFINES += XPLM200
-
-#DEFINES += PRIVATENAMESPACE=XSP
-#DESTDIR = lib$$PRIVATENAMESPACE
 
 win32 {
     DEFINES += APL=0 IBM=1 LIN=0
     LIBS += -L../SDK/Libraries/Win
     LIBS += -lXPLM -lXPWidgets
-    #LIBS += -L../ppl/libXSP -lppl
     LIBS += $$quote(C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\SetupAPI.Lib)
     SOURCES += \
           ../hidapi-0.7.0/windows/hid.c
@@ -39,7 +33,6 @@ unix:!macx {
     SOURCES += \
           ../hidapi-0.7.0/linux/hid.c
     LIBS += `pkg-config libudev --libs`
-    #LIBS += -L../ppl/libXSP -lppl
 
 }
 
@@ -62,7 +55,6 @@ macx {
     SOURCES += \
           ../hidapi-0.7.0/mac/hid.c
     LIBS += -framework IOKit -framework CoreFoundation
-    #LIBS += -L../ppl/libXSP -lppl
 
     # Build for multiple architectures.
     # The following line is only needed to build universal on PPC architectures.
@@ -72,15 +64,15 @@ macx {
 }
 
 HEADERS += saitekpanels.h \
-    iniReader.h
+      inireader.h
 
 SOURCES += saitekpanels.cpp\
     radiopanels.cpp \
     multipanel.cpp \
     switchpanel.cpp \
     bippanel.cpp \
-    readinifile.cpp \
-    iniReader.c++
+    inireader.cpp \
+    readinifile.cpp
 
 OTHER_FILES += \
     xsaitekpanels.ini

@@ -1,6 +1,7 @@
 // ****** readinifile.cpp **********
 // ****  William R. Good  ********
 
+
 #include "XPLMPlugin.h"
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"

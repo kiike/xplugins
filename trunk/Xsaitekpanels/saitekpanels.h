@@ -41,6 +41,7 @@ extern XPLMDataRef Adf1StbyFreq, Adf2StbyFreq;
 extern XPLMDataRef Adf1ActFreq, Adf2ActFreq;
 
 extern XPLMDataRef XpdrCode, XpdrMode, BaroSetting;
+extern XPLMDataRef MetricPress;
 extern XPLMDataRef DmeMode, DmeSlvSource;
 extern XPLMDataRef Nav1DmeNmDist, Nav1DmeSpeed;
 extern XPLMDataRef Nav2DmeNmDist, Nav2DmeSpeed;

@@ -61,6 +61,7 @@ XPLMDataRef Adf1StbyFreq = NULL, Adf2StbyFreq = NULL;
 XPLMDataRef Adf1ActFreq = NULL, Adf2ActFreq = NULL;
 
 XPLMDataRef XpdrCode = NULL, XpdrMode = NULL, BaroSetting = NULL;
+XPLMDataRef MetricPress = NULL;
 
 XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
 XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
@@ -396,6 +397,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
   XpdrMode	= XPLMFindDataRef("sim/cockpit/radios/transponder_mode");
   BaroSetting	= XPLMFindDataRef("sim/cockpit/misc/barometer_setting");
+  MetricPress   = XPLMFindDataRef("sim/physics/metric_press");
 
   DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
   DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");

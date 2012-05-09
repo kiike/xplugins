@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.40    ***************
-// ****** May 06 2012   **************
+// ******** ver 1.40   ***************
+// ****** May 08 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -33,8 +33,6 @@
 
 using namespace std;
 
-
-
 // ************* Radio Panel Command Ref ****************
 XPLMCommandRef Com1StbyFineDn = NULL, Com1StbyFineUp = NULL, Com1StbyCorseDn = NULL, Com1StbyCorseUp = NULL;
 XPLMCommandRef Com2StbyFineDn = NULL, Com2StbyFineUp = NULL, Com2StbyCorseDn = NULL, Com2StbyCorseUp = NULL;
@@ -63,7 +61,6 @@ XPLMDataRef Adf1StbyFreq = NULL, Adf2StbyFreq = NULL;
 XPLMDataRef Adf1ActFreq = NULL, Adf2ActFreq = NULL;
 
 XPLMDataRef XpdrCode = NULL, XpdrMode = NULL, BaroSetting = NULL;
-XPLMDataRef MetricPress = NULL;
 
 XPLMDataRef DmeMode = NULL, DmeSlvSource = NULL;
 XPLMDataRef Nav1DmeNmDist = NULL, Nav1DmeSpeed = NULL;
@@ -243,15 +240,14 @@ hid_device *multihandle;
 // ****************** Switch Panel variables *******************************
 int switchcnt = 0, switchres, stopswitchcnt;
 
-long bataltinverse, cowlflapsenable, fuelpumpswitchenable;
-long deiceswitchenable, panellightsenable, landinggearknobenable;
+int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
+int deiceswitchenable, panellightsenable, landinggearknobenable;
 
 string fuel_pump_switch_on, fuel_pump_switch_off;
 string deice_switch_on, deice_switch_off;
 string cowl_flaps_open, cowl_flaps_close;
 string panel_lights_switch_on, panel_lights_switch_off;
 string gear_switch_up, gear_switch_down;
-
 
 const char *GearTestStrUp;
 
@@ -265,8 +261,6 @@ hid_device *switchhandle;
 int bipcnt = 0, bipres, biploop[4], stopbipcnt;
 unsigned char bipwbuf[4][10];
 
-string aircraft_path;
-
 hid_device *biphandle[4];
 
 // ****************** Saitek Panels variables *******************************
@@ -274,7 +268,6 @@ void            XsaitekpanelsMenuHandler(void *, void *);
 void WriteCSVTableToDisk(void);
 
 bool ReadConfigFile(std::string PlaneICAO);
-
 
 int             XsaitekpanelsMenuItem;
 int             BipMenuItem;
@@ -313,8 +306,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 {
 
   int ConfigSubMenuItem;
-  int BipSubMenuItem, Bip2SubMenuItem;
-  //Bip3SubMenuItem;
+  int BipSubMenuItem, Bip2SubMenuItem, Bip3SubMenuItem;
   int MultiSubMenuItem, RadioSubMenuItem;
   int SwitchSubMenuItem;
 
@@ -323,6 +315,7 @@ PLUGIN_API int XPluginStart(char *		outName,
   printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
   XPLMDebugString("Xsaitekpanels v1.40\n");
+
 	/* First set up our plugin info. */
   strcpy(outName, "Xsaitekpanels v1.40");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
@@ -403,7 +396,6 @@ PLUGIN_API int XPluginStart(char *		outName,
   XpdrCode	= XPLMFindDataRef("sim/cockpit/radios/transponder_code");
   XpdrMode	= XPLMFindDataRef("sim/cockpit/radios/transponder_mode");
   BaroSetting	= XPLMFindDataRef("sim/cockpit/misc/barometer_setting");
-  MetricPress   = XPLMFindDataRef("sim/physics/metric_press");
 
   DmeMode       = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_mode");
   DmeSlvSource  = XPLMFindDataRef("sim/cockpit2/radios/actuators/DME_slave_source");
@@ -1124,12 +1116,11 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              numadf = 2;
          }
          if (strcmp((char *) inItemRef, "inHg") == 0) {
-             metricpressenable = 0;
+            metricpressenable = 0;
          }
          if (strcmp((char *) inItemRef, "hPa") == 0) {
              metricpressenable = 1;
          }
-
 
     }
 
@@ -1321,5 +1312,3 @@ float	MyPanelsFlightLoopCallback(
 
   return interval;
 }
-
-

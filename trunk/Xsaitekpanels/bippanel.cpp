@@ -1,6 +1,7 @@
  // ****** bippanel.cpp **********
 // ****  William R. Good  ********
 
+
 #if IBM
 #include <windows.h>
 BOOL APIENTRY DllMain( HANDLE hModule,
@@ -27,7 +28,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
-#include "XPLMPlanes.h"
 
 #include "hidapi.h"
 #include "saitekpanels.h"
@@ -35,24 +35,15 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 #include <time.h>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <string>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <algorithm>
 
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-//#include "settings.h" // from PPL
-//#include "pluginpath.h" // from PPL
-//#include "namespaces.h" // from PPL
-//#include "SimpleIni.h" // from PPL
-
-//using namespace PPLXSP;
 
 
 using namespace std;
@@ -65,14 +56,12 @@ using namespace std;
 float   LookAtThisValue;
 int     LookAtThisIntValue;
 
-static int bipnum = 0;
-//static int bipnowrite[4] = {0, 0, 0, 0};
-
+static int bipnum = 0, bipnowrite[4] = {0, 0, 0, 0};
 static unsigned char bipwbuf[4][10];
 static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i[4];
-//static int bip0loop, bip1loop;
+static int bip0loop, bip1loop;
 
 struct  BipTableStructure
 {
@@ -89,8 +78,8 @@ struct  BipTableStructure
 };
 
 static BipTableStructure    BipTable[4][MAXTABLEELEMENTS];
-//static int                  LastValues[4][MAXINDICATORS];
-//static int                  ActualValues[4][MAXINDICATORS];
+static int                  LastValues[4][MAXINDICATORS];
+static int                  ActualValues[4][MAXINDICATORS];
 static int                  LastTableElement[4] = {-1, -1, -1, -1};
 static int                  ErrorInLine = 0;
 static bool                 InSilentMode = false;
@@ -160,7 +149,6 @@ void WriteCSVTableToDisk(void)
     CSVFile.close();
 }
 
-
 bool ReadConfigFile(string PlaneICAO)
 {
 
@@ -176,53 +164,22 @@ bool ReadConfigFile(string PlaneICAO)
   int             Index;
   int             i, i1;
 
-  char           *bip1ConfigurationPath;
-  char           *bip2ConfigurationPath;
-  const char     *foundd2bpath, *foundd2bpath2;
+  fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+  fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+  fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+  fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
+
+
+
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
-  LetWidgetSay(PlaneICAO);
+    LetWidgetSay(PlaneICAO);
+
 
   LastMenuEntry[0] = -1;
   LastMenuEntry[1] = -1;
 
   if(bipcnt > 0) {
-
-    bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
-
-   // the name of the file, regardless of the directory
-    std::string d2b_file_name = "D2B_config.txt";
-
-    #if APL && __MACH__
-    // the name of the file, regardless of the directory
-       d2b_file_name = "/D2B_config.txt";
-    #endif
-
-    // now put the path to the aircraft directory in front of it
-    //std::string d2b_file_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file_name);
-
-    // Check if ACF-specific configuration exists
-    //std::ifstream bipcustomStream(d2b_file_absolute_path.c_str());
-/*
-
-    if (bipcustomStream.good()) {
-        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
-        XPLMDebugString(d2b_file_absolute_path.c_str());
-        XPLMDebugString("\n");
-        foundd2bpath = d2b_file_absolute_path.c_str();
-    } else {
-        std::ifstream bipdefaultStream(bip1ConfigurationPath);
-        if (bipdefaultStream.good()) {
-            XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
-            XPLMDebugString(bip1ConfigurationPath);
-            XPLMDebugString("\n");
-            foundd2bpath = bip1ConfigurationPath;
-        }
-
-    }
-*/
-    ifstream ReadBipFile;
-    ReadBipFile.open(foundd2bpath);
 
     if (ReadBipFile.is_open() != true)
     {
@@ -248,6 +205,7 @@ bool ReadConfigFile(string PlaneICAO)
 
     while (getline(ReadBipFile, LineToEncrypt[0]))
     {
+
 
         ErrorInLine++;
         if (LineToEncrypt[0].find("#BE SILENT") == 0)
@@ -401,48 +359,15 @@ bool ReadConfigFile(string PlaneICAO)
 
    }
 
-  if(bipcnt > 1) {
 
 
-    bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
+    if(bipcnt > 1) {
 
-    // the name of the file, regardless of the directory
-    std::string d2b_file2_name = "D2B_config2.txt";
-
-    #if APL && __MACH__
-    // the name of the file, regardless of the directory
-        d2b_file2_name = "/D2B_config2.txt";
-    #endif
-
-    // now put the path to the aircraft directory in front of it
-    //std::string d2b_file2_absolute_path = PPLXSP::PluginPath::prependPlanePath(d2b_file2_name);
-
-    // Check if ACF-specific configuration exists
- /*
-    std::ifstream bipcustomStream(d2b_file2_absolute_path.c_str());
-    if (bipcustomStream.good()) {
-        XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
-        XPLMDebugString(d2b_file2_absolute_path.c_str());
-        XPLMDebugString("\n");
-        foundd2bpath2 = d2b_file2_absolute_path.c_str();
-    } else {
-        std::ifstream bipdefaultStream(bip2ConfigurationPath);
-        if (bipdefaultStream.good()) {
-            XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
-            XPLMDebugString(bip2ConfigurationPath);
-            XPLMDebugString("\n");
-            foundd2bpath2 = bip2ConfigurationPath;
-       }
-
-    }
-*/
-    ifstream ReadBip2File;
-    ReadBip2File.open(foundd2bpath2);
 
     if (ReadBip2File.is_open() != true)
     {
-          logMsg("Error: Can't read D2B_config2 config file!");
-          return false;
+        logMsg("Error: Can't read D2B_config2 config file!");
+        return false;
     }
     ErrorInLine = 0;
 
@@ -463,6 +388,7 @@ bool ReadConfigFile(string PlaneICAO)
 
     while (getline(ReadBip2File, LineToEncrypt[1]))
     {
+
 
         ErrorInLine++;
         if (LineToEncrypt[1].find("#BE SILENT") == 0)
@@ -616,6 +542,8 @@ bool ReadConfigFile(string PlaneICAO)
     //return true;
 
    }
+
+
 
 return true;
 }

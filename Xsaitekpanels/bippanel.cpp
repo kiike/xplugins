@@ -21,16 +21,22 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 }
 #endif
 
-
-#include "XPLMDataAccess.h"
-#include "XPLMUtilities.h"
+#include "XPLMPlugin.h"
+#include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
+#include "XPLMCamera.h"
+#include "XPLMPlanes.h"
+#include "XPLMUtilities.h"
+#include "XPLMDataAccess.h"
+#include "XPLMProcessing.h"
 #include "XPLMMenus.h"
 #include "XPWidgets.h"
 #include "XPStandardWidgets.h"
 
 #include "hidapi.h"
 #include "saitekpanels.h"
+
+#include <vector>
 
 #include <time.h>
 #include <fstream>
@@ -164,23 +170,96 @@ bool ReadConfigFile(string PlaneICAO)
   int             Index;
   int             i, i1;
 
-  fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-  fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-  fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-  fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
+  char           *bip1ConfigurationPath;
+  char           *bip2ConfigurationPath;
+  const char     *foundd2bpath, *foundd2bpath2;
 
-
-
+  //fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
+  //fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
+  //fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
+  //fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
 
   PlaneICAO.erase(PlaneICAO.find(']')+1);
-    LetWidgetSay(PlaneICAO);
-
+  LetWidgetSay(PlaneICAO);
 
   LastMenuEntry[0] = -1;
   LastMenuEntry[1] = -1;
 
+  char xpsbipacfname[512];
+  char xpsbipacfpath[512];
+  XPLMGetNthAircraftModel(0, xpsbipacfname, xpsbipacfpath);
+
+  XPLMDebugString("Raw Current aircraft path = ");
+  XPLMDebugString(xpsbipacfpath);
+  XPLMDebugString("\n");
+
+  if(strlen(xpsbipacfpath) == 0){
+    return false;
+  }
+
+  std::string xpsbipd2b_path_name = xpsbipacfpath;
+  std::string xpsbipd2b_path_name2;
+  XPLMDebugString("xpsbipini_path_name = ");
+  XPLMDebugString(xpsbipd2b_path_name.c_str());
+  XPLMDebugString("\n");
+
+  std::size_t pos = xpsbipd2b_path_name.find(xpsbipacfname);
+  xpsbipd2b_path_name = xpsbipd2b_path_name.substr(0, pos);
+
+  XPLMDebugString("xpsbipd2b_path_name = ");
+  XPLMDebugString(xpsbipd2b_path_name.c_str());
+  XPLMDebugString("\n");
+
+  #if APL && __MACH__
+      std::string mac_converted_path = convert_Mac_Path(xpsbipd2b_path_name);
+      XPLMDebugString("mac_converted_path = ");
+      XPLMDebugString(mac_converted_path.c_str());
+      XPLMDebugString("\n");
+      xpsbipd2b_path_name = mac_converted_path;
+  #endif
+
+  XPLMDebugString("xpsbipd2b_path_name = ");
+  XPLMDebugString(xpsbipd2b_path_name.c_str());
+  XPLMDebugString("\n");
+
+  xpsbipd2b_path_name2 = xpsbipd2b_path_name;
+
   if(bipcnt > 0) {
 
+      bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
+
+      xpsbipd2b_path_name.append("D2B_config.txt");
+
+      XPLMDebugString("xpsbipd2b_path_name = ");
+      XPLMDebugString(xpsbipd2b_path_name.c_str());
+      XPLMDebugString("\n");
+
+      std::vector<char> parse_d2b_path_name(xpsbipd2b_path_name.size() + 1);
+      std::copy(xpsbipd2b_path_name.begin(), xpsbipd2b_path_name.end(), parse_d2b_path_name.begin());
+
+      std::ifstream ifile(&parse_d2b_path_name[0]);
+      if (ifile) {
+          XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
+          XPLMDebugString(&parse_d2b_path_name[0]);
+          XPLMDebugString("\n");
+          foundd2bpath = (&parse_d2b_path_name[0]);
+
+      } else {
+          std::ifstream ifile(bip1ConfigurationPath);
+         if (ifile) {
+             XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
+             XPLMDebugString(bip1ConfigurationPath);
+             XPLMDebugString("\n");
+             foundd2bpath = bip1ConfigurationPath;
+
+
+         } else {
+             return false;
+         }
+      }
+
+    ifstream ReadBipFile;
+    ReadBipFile.open(foundd2bpath);
     if (ReadBipFile.is_open() != true)
     {
       logMsg("Error: Can't read D2B_config config file!");
@@ -359,10 +438,42 @@ bool ReadConfigFile(string PlaneICAO)
 
    }
 
-
-
     if(bipcnt > 1) {
 
+        bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
+
+        xpsbipd2b_path_name2.append("D2B_config2.txt");
+
+        XPLMDebugString("xpsbipd2b_path_name2 = ");
+        XPLMDebugString(xpsbipd2b_path_name2.c_str());
+        XPLMDebugString("\n");
+
+        std::vector<char> parse_d2b_path_name2(xpsbipd2b_path_name2.size() + 1);
+        std::copy(xpsbipd2b_path_name2.begin(), xpsbipd2b_path_name2.end(), parse_d2b_path_name2.begin());
+
+        std::ifstream ifile(&parse_d2b_path_name2[0]);
+        if (ifile) {
+            XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
+            XPLMDebugString(&parse_d2b_path_name2[0]);
+            XPLMDebugString("\n");
+            foundd2bpath2 = (&parse_d2b_path_name2[0]);
+
+        } else {
+            std::ifstream ifile(bip2ConfigurationPath);
+           if (ifile) {
+               XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
+               XPLMDebugString(bip2ConfigurationPath);
+               XPLMDebugString("\n");
+               foundd2bpath2 = bip2ConfigurationPath;
+
+
+           } else {
+               return false;
+           }
+        }
+
+      ifstream ReadBip2File;
+      ReadBip2File.open(foundd2bpath2);
 
     if (ReadBip2File.is_open() != true)
     {

@@ -26,6 +26,7 @@
 string convert_Mac_Path(string in_path) {
 
     string out_path;
+    char seperator_number_buffer[255] = {0};
 
     XPLMDebugString("in_path = ");
     XPLMDebugString(in_path.c_str());
@@ -38,6 +39,14 @@ string convert_Mac_Path(string in_path) {
     XPLMDebugString("in_path = ");
     XPLMDebugString(in_path.c_str());
     XPLMDebugString("\n");
+
+    // Find how many path seperators in the path
+    int count = 0;
+    for (int i = 0; i < in_path.size(); i++)
+      if (in_path[i] == ':') count++;
+
+    sprintf(seperator_number_buffer, "How many path seperators are in the path = %d\n", count);
+    XPLMDebugString(seperator_number_buffer);
 
     size_t found;
     int n = 8;

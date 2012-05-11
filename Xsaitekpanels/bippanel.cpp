@@ -158,7 +158,6 @@ void WriteCSVTableToDisk(void)
 string convert_Mac_Bip_Path(string bip_in_path) {
 
     string bip_out_path;
-    char bip_seperator_number_buffer[255] = {0};
 
     XPLMDebugString("bip_in_path = ");
     XPLMDebugString(bip_in_path.c_str());
@@ -172,13 +171,7 @@ string convert_Mac_Bip_Path(string bip_in_path) {
     XPLMDebugString(bip_in_path.c_str());
     XPLMDebugString("\n");
 
-    // Find how many path seperators in the path
-    int bip_count = 0;
-    for (int i = 0; i < bip_in_path.size(); i++)
-      if (bip_in_path[i] == ':') bip_count++;
-
-    sprintf(bip_seperator_number_buffer, "How many path seperators are in the path = %d\n", bip_count);
-    XPLMDebugString(bip_seperator_number_buffer);
+    // Todo Find how many path seperators in the path
 
     size_t bip_found;
     int n = 8;

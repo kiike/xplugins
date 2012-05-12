@@ -159,17 +159,9 @@ string convert_Mac_Bip_Path(string bip_in_path) {
 
     string bip_out_path;
 
-    XPLMDebugString("bip_in_path = ");
-    XPLMDebugString(bip_in_path.c_str());
-    XPLMDebugString("\n");
-
     std::size_t bip_len = bip_in_path.length();
     std::size_t bip_pos = bip_in_path.find(":");
     bip_in_path.erase (bip_in_path.begin()+0, bip_in_path.end()-(bip_len - bip_pos));
-
-    XPLMDebugString("bip_in_path = ");
-    XPLMDebugString(bip_in_path.c_str());
-    XPLMDebugString("\n");
 
     // Todo Find how many path seperators in the path
 
@@ -206,11 +198,6 @@ bool ReadConfigFile(string PlaneICAO)
   char           *bip2ConfigurationPath;
   const char     *foundd2bpath, *foundd2bpath2;
 
-  //fstream ReadBipFile("Resources/plugins/Xsaitekpanels/D2B_config.txt");
-  //fstream ReadBip2File("Resources/plugins/Xsaitekpanels/D2B_config2.txt");
-  //fstream ReadBip3File("Resources/plugins/Xsaitekpanels/D2B_config3.txt");
-  //fstream ReadBip4File("Resources/plugins/Xsaitekpanels/D2B_config4.txt");
-
   PlaneICAO.erase(PlaneICAO.find(']')+1);
   LetWidgetSay(PlaneICAO);
 
@@ -221,38 +208,22 @@ bool ReadConfigFile(string PlaneICAO)
   char xpsbipacfpath[512];
   XPLMGetNthAircraftModel(0, xpsbipacfname, xpsbipacfpath);
 
-  XPLMDebugString("Raw Current aircraft path = ");
-  XPLMDebugString(xpsbipacfpath);
-  XPLMDebugString("\n");
-
   if(strlen(xpsbipacfpath) == 0){
     return false;
   }
 
   std::string xpsbipd2b_path_name = xpsbipacfpath;
   std::string xpsbipd2b_path_name2;
-  XPLMDebugString("xpsbipd2b_path_name = ");
-  XPLMDebugString(xpsbipd2b_path_name.c_str());
-  XPLMDebugString("\n");
-
   std::size_t pos = xpsbipd2b_path_name.find(xpsbipacfname);
   xpsbipd2b_path_name = xpsbipd2b_path_name.substr(0, pos);
 
-  XPLMDebugString("xpsbipd2b_path_name = ");
-  XPLMDebugString(xpsbipd2b_path_name.c_str());
-  XPLMDebugString("\n");
-
   #if APL && __MACH__
       std::string mac_converted_bip_path = convert_Mac_Bip_Path(xpsbipd2b_path_name);
-      XPLMDebugString("mac_converted_bip_path = ");
+      XPLMDebugString("\nmac_converted_bip_path is\n");
       XPLMDebugString(mac_converted_bip_path.c_str());
       XPLMDebugString("\n");
       xpsbipd2b_path_name = mac_converted_bip_path;
   #endif
-
-  XPLMDebugString("xpsbipd2b_path_name = ");
-  XPLMDebugString(xpsbipd2b_path_name.c_str());
-  XPLMDebugString("\n");
 
   xpsbipd2b_path_name2 = xpsbipd2b_path_name;
 
@@ -262,7 +233,7 @@ bool ReadConfigFile(string PlaneICAO)
 
       xpsbipd2b_path_name.append("D2B_config.txt");
 
-      XPLMDebugString("xpsbipd2b_path_name = ");
+      XPLMDebugString("\nThe full path for D2B_config.txt in the current aircraft folder is\n");
       XPLMDebugString(xpsbipd2b_path_name.c_str());
       XPLMDebugString("\n");
 
@@ -271,7 +242,7 @@ bool ReadConfigFile(string PlaneICAO)
 
       std::ifstream ifile(&parse_d2b_path_name[0]);
       if (ifile) {
-          XPLMDebugString("Found D2B_config.txt in the current aircraft path and it is\n");
+          XPLMDebugString("\nFound D2B_config.txt in the current aircraft path and it is\n");
           XPLMDebugString(&parse_d2b_path_name[0]);
           XPLMDebugString("\n");
           foundd2bpath = (&parse_d2b_path_name[0]);
@@ -279,7 +250,7 @@ bool ReadConfigFile(string PlaneICAO)
       } else {
           std::ifstream ifile(bip1ConfigurationPath);
          if (ifile) {
-             XPLMDebugString("Found D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
+             XPLMDebugString("\nFound D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
              XPLMDebugString(bip1ConfigurationPath);
              XPLMDebugString("\n");
              foundd2bpath = bip1ConfigurationPath;
@@ -474,7 +445,7 @@ bool ReadConfigFile(string PlaneICAO)
 
         xpsbipd2b_path_name2.append("D2B_config2.txt");
 
-        XPLMDebugString("xpsbipd2b_path_name2 = ");
+        XPLMDebugString("\nThe full path for D2B_config2.txt in the current aircraft folder is\n");
         XPLMDebugString(xpsbipd2b_path_name2.c_str());
         XPLMDebugString("\n");
 
@@ -483,7 +454,7 @@ bool ReadConfigFile(string PlaneICAO)
 
         std::ifstream ifile(&parse_d2b_path_name2[0]);
         if (ifile) {
-            XPLMDebugString("Found D2B_config2.txt in the current aircraft path and it is\n");
+            XPLMDebugString("\nFound D2B_config2.txt in the current aircraft path and it is\n");
             XPLMDebugString(&parse_d2b_path_name2[0]);
             XPLMDebugString("\n");
             foundd2bpath2 = (&parse_d2b_path_name2[0]);
@@ -491,7 +462,7 @@ bool ReadConfigFile(string PlaneICAO)
         } else {
             std::ifstream ifile(bip2ConfigurationPath);
            if (ifile) {
-               XPLMDebugString("Found D2B_config2.txt in the Xsaitekpanels plugin path and it is\n");
+               XPLMDebugString("\nFound D2B_config2.txt in the Xsaitekpanels plugin path and it is\n");
                XPLMDebugString(bip2ConfigurationPath);
                XPLMDebugString("\n");
                foundd2bpath2 = bip2ConfigurationPath;

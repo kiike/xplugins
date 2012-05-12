@@ -27,17 +27,9 @@ string convert_Mac_Path(string in_path) {
 
     string out_path;
 
-    XPLMDebugString("in_path = ");
-    XPLMDebugString(in_path.c_str());
-    XPLMDebugString("\n");
-
     std::size_t len = in_path.length();
     std::size_t pos = in_path.find(":");
     in_path.erase (in_path.begin()+0, in_path.end()-(len - pos));
-
-    XPLMDebugString("in_path = ");
-    XPLMDebugString(in_path.c_str());
-    XPLMDebugString("\n");
 
     // Todo Find how many path seperators in the path
 
@@ -84,16 +76,13 @@ void process_read_ini_file()
 
     char *configPath;
 
-    //int mac;
-    //string mac_converted_path;
-
     cleanupIniReader();
 
     char xpsacfname[512];
     char xpsacfpath[512];
     XPLMGetNthAircraftModel(0, xpsacfname, xpsacfpath);
 
-    XPLMDebugString("Raw Current aircraft path = ");
+    XPLMDebugString("\nRaw Current aircraft path is \n");
     XPLMDebugString(xpsacfpath);
     XPLMDebugString("\n");
 
@@ -102,32 +91,20 @@ void process_read_ini_file()
     }
 
     std::string xpsini_path_name = xpsacfpath;
-    XPLMDebugString("xpsini_path_name = ");
-    XPLMDebugString(xpsini_path_name.c_str());
-    XPLMDebugString("\n");
-
     std::size_t pos = xpsini_path_name.find(xpsacfname);
     xpsini_path_name = xpsini_path_name.substr(0, pos);
 
-    XPLMDebugString("xpsini_path_name = ");
-    XPLMDebugString(xpsini_path_name.c_str());
-    XPLMDebugString("\n");
-
     #if APL && __MACH__
         std::string mac_converted_path = convert_Mac_Path(xpsini_path_name);
-        XPLMDebugString("mac_converted_path = ");
+        XPLMDebugString("\nmac_converted_path is \n");
         XPLMDebugString(mac_converted_path.c_str());
         XPLMDebugString("\n");
         xpsini_path_name = mac_converted_path;
     #endif
 
-    XPLMDebugString("xpsini_path_name = ");
-    XPLMDebugString(xpsini_path_name.c_str());
-    XPLMDebugString("\n");
-
     xpsini_path_name.append("xsaitekpanels.ini");
 
-    XPLMDebugString("xpsini_path_name = ");
+    XPLMDebugString("\nThe full path to xsaitekpanels.ini in the current aircraft folder is \n");
     XPLMDebugString(xpsini_path_name.c_str());
     XPLMDebugString("\n");
 
@@ -136,8 +113,8 @@ void process_read_ini_file()
 
     std::ifstream ifile(&parse_ini_path_name[0]);
     if (ifile) {
-        XPLMDebugString("Found xsaitekpanels.ini in the current aircraft path and it is\n");
-        XPLMDebugString(xpsini_path_name.c_str());
+        XPLMDebugString("\nFound xsaitekpanels.ini in the current aircraft path and it is\n");
+        XPLMDebugString(&parse_ini_path_name[0]);
         XPLMDebugString("\n");
 
         parseIniFile(&parse_ini_path_name[0]);
@@ -145,7 +122,7 @@ void process_read_ini_file()
     } else {
         std::ifstream ifile(iniDefaultPluginPath);
        if (ifile) {
-           XPLMDebugString("Found xsaitekpanels.ini in the Xsaitekpanels plugin path and it is\n");
+           XPLMDebugString("\nFound xsaitekpanels.ini in the Xsaitekpanels plugin path and it is\n");
            XPLMDebugString(iniDefaultPluginPath);
            XPLMDebugString("\n");
 

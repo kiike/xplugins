@@ -1396,7 +1396,7 @@ void process_upper_xpdr_switch()
           XPLMSetDatai(MetricPress, 0);
       }
       if (metricpressenable == 1) {
-          upbarosetf[radnum] = upbarosetf[radnum] * 33.85;
+          upbarosetf[radnum] = upbarosetf[radnum] * 33.8639;
           XPLMSetDatai(MetricPress, 1);
       }
       upbaroset[radnum] = (int)upbarosetf[radnum];
@@ -2182,7 +2182,7 @@ void process_lower_xpdr_switch()
          XPLMSetDatai(MetricPress, 0);
      }
      if (metricpressenable == 1) {
-         lobarosetf[radnum] = lobarosetf[radnum] * 33.85;
+         lobarosetf[radnum] = lobarosetf[radnum] * 33.8639;
          XPLMSetDatai(MetricPress, 1);
      }
      lobaroset[radnum] = (int)lobarosetf[radnum];

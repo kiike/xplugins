@@ -70,6 +70,8 @@ void process_switch_menu()
     XPLMAppendMenuItem(SwitchMenuId, "Landing Gear Knob enable / disable", (void *) "VOID", 4);
     XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_GEAR", 4);
     XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_GEAR", 4);
+    XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuItem(SwitchMenuId, "Switch Panel Widget", (void *) "SWITCH_WIDGET", 4);
 
     if (bataltinverse == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 1, xplm_Menu_Checked);

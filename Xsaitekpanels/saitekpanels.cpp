@@ -1,6 +1,6 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.40   ***************
+// ******** ver 1.41   ***************
 // ****** May 12 2012   **************
 
 #include "XPLMDisplay.h"
@@ -196,6 +196,12 @@ XPLMDataRef Gear1Fail = NULL, Gear2Fail = NULL, Gear3Fail = NULL;
 XPLMMenuID      SwitchMenu;
 XPLMMenuID      SwitchMenuId;
 
+XPWidgetID	SwitchWidget = NULL;
+XPWidgetID	SwitchWindow = NULL;
+XPWidgetID	SwitchTextWidget[50] = {NULL};
+
+
+
 // ****************** BIP Panel Command Ref **********************
 
 //  ***************** BIP Panel Data Ref *********************
@@ -256,6 +262,36 @@ static unsigned char blankswitchwbuf[2];
 unsigned char switchbuf[4], switchwbuf[2];
 float LandingGearDeployRatio[10];
 
+void SwitchMenuHandler(void *, void *);
+void CreateSwitchWidget(int x1, int y1, int w, int h);
+int SwitchHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2);
+
+int gMenuItem;
+
+char SwitchText[50][200] = {
+"      OFF",
+"      RIGHT",
+"      LEFT",
+"      BOTH",
+"      START",
+"      MASTER BAT",
+"      MASTER ALT",
+"      AVIONICS",
+"      FUEL PUMP",
+"      DEICE",
+"      PITOT HEAT",
+"      GEAR",
+"      COWL FLAPS",
+"      PANEL LIGHTS",
+"      BEACON LIGHTS",
+"      NAV LIGHTS",
+"      STROBE LIGHTS",
+"      TAXI LIGHTS",
+"      LANDING LIGHTS",
+"end"
+
+};
+
 hid_device *switchhandle;
 
 // ****************** BIP Panel variables *******************************
@@ -315,10 +351,10 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
-  XPLMDebugString("Xsaitekpanels v1.40\n");
+  XPLMDebugString("Xsaitekpanels v1.41\n");
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.40");
+  strcpy(outName, "Xsaitekpanels v1.41");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -866,6 +902,12 @@ PLUGIN_API void	XPluginStop(void)
   XPLMDestroyMenu(RadioMenuId);
   XPLMDestroyMenu(SwitchMenuId);
 
+  if (gMenuItem == 1)
+  {
+          XPDestroyWidget(SwitchWidget, 1);
+          gMenuItem = 0;
+  }
+
   stopradcnt = radcnt - 1;
 
   // *** if open blank display and then close that radio panel ****
@@ -1170,6 +1212,12 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              landinggearknobenable = 0;
          }
 
+         if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
+             CreateSwitchWidget(150, 412, 300, 410);	//left, top, right, bottom.
+             gMenuItem = 1;
+
+         }
+
      }
 
     if((long)inMenuRef == 5){
@@ -1180,6 +1228,83 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
     }
 
     return;
+}
+
+void SwitchMenuHandler(void * inMenuRef, void * inItemRef)
+{
+        switch ( (int) inItemRef)
+        {
+
+                case 1:	if (gMenuItem == 0)
+                                {
+                                        CreateSwitchWidget(150, 412, 300, 410);	//left, top, right, bottom.
+                                        gMenuItem = 1;
+                                }
+                                else
+                                {
+                                        if(!XPIsWidgetVisible(SwitchWidget))
+                                        XPShowWidget(SwitchWidget);
+                                }
+                                break;
+        }
+}
+
+// This will create our widget dialog.
+void CreateSwitchWidget(int x, int y, int w, int h)
+{
+int Index;
+
+        int x2 = x + w;
+        int y2 = y - h;
+
+// Create the Main Widget window.
+        SwitchWidget = XPCreateWidget(x, y, x2, y2,
+                                        1,										// Visible
+                                        "Switch Panel Enable / Disable / Remapable",	// desc
+                                        1,										// root
+                                        NULL,									// no container
+                                        xpWidgetClass_MainWindow);
+
+
+// Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
+        XPSetWidgetProperty(SwitchWidget, xpProperty_MainWindowHasCloseBoxes, 1);
+        XPSetWidgetProperty(SwitchWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
+
+// Print each line of instructions.
+        for (Index=0; Index < 50; Index++)
+        {
+        if(strcmp(SwitchText[Index],"end") == 0) {break;}
+
+                // Create a text widget
+
+                SwitchTextWidget[Index] = XPCreateWidget(x+10, y-(30+(Index*20)) , x2-10, y-(42+(Index*20)),
+                1,	// Visible
+                SwitchText[Index],// desc
+                0,		// root
+                SwitchWidget,
+                xpWidgetClass_Caption);
+                XPSetWidgetProperty(SwitchTextWidget[Index], xpProperty_CaptionLit, 1);
+        }
+
+
+
+// Register our widget handler
+        XPAddWidgetCallback(SwitchWidget, SwitchHandler);
+}
+
+// This is our widget handler.  In this example we are only interested when the close box is pressed.
+int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2)
+{
+        if (SwitchinMessage == xpMessage_CloseButtonPushed)
+        {
+                if (gMenuItem == 1)
+                {
+                        XPHideWidget(SwitchWidget);
+                }
+                return 1;
+        }
+
+        return 0;
 }
 
 int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,
@@ -1200,6 +1325,9 @@ int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,
 
 return 0;
 }
+
+
+
 
 // ************************* Panels Callback  *************************
 float	MyPanelsFlightLoopCallback(

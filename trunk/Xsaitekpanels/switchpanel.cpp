@@ -75,6 +75,7 @@ void process_switch_menu()
 
     if (bataltinverse == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 1, xplm_Menu_Checked);
+
     }
     if (bataltinverse != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 1, xplm_Menu_Unchecked);
@@ -88,67 +89,87 @@ void process_switch_menu()
 
     if (fuelpumpswitchenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 1);
     }
     if (fuelpumpswitchenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 0);
     }
     if (fuelpumpswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 1);
     }
     if (fuelpumpswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 0);
     }
 
     if (deiceswitchenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[9], xpProperty_ButtonState, 1);
     }
     if (deiceswitchenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[9], xpProperty_ButtonState, 0);
     }
     if (deiceswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[9], xpProperty_ButtonState, 1);
     }
     if (deiceswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[9], xpProperty_ButtonState, 0);
     }
 
     if (cowlflapsenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 1);
     }
     if (cowlflapsenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
     }
     if (cowlflapsenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 1);
     }
     if (cowlflapsenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
     }
 
     if (panellightsenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 1);
     }
     if (panellightsenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 0);
     }
     if (panellightsenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 1);
     }
     if (panellightsenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 0);
     }
 
     if (landinggearknobenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 21, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 1);
     }
     if (landinggearknobenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 21, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 0);
     }
     if (landinggearknobenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 22, xplm_Menu_Checked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 1);
     }
     if (landinggearknobenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 22, xplm_Menu_Unchecked);
+       XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 0);
     }
 
 

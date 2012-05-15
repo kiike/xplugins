@@ -1299,7 +1299,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 
            XPSetWidgetProperty(SwitchEnableCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
            XPSetWidgetProperty(SwitchEnableCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
-           XPSetWidgetProperty(SwitchEnableCheckWidget[Index], xpProperty_ButtonState, 1);
+           XPSetWidgetProperty(SwitchEnableCheckWidget[Index], xpProperty_ButtonState, 0);
 
        }
 
@@ -1319,7 +1319,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 
             XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
             XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
-            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonState, 1);
+            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonState, 0);
 
        }
 
@@ -1339,7 +1339,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 
             XPSetWidgetProperty(SwitchRemapCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
             XPSetWidgetProperty(SwitchRemapCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
-            XPSetWidgetProperty(SwitchRemapCheckWidget[Index], xpProperty_ButtonState, 1);
+            XPSetWidgetProperty(SwitchRemapCheckWidget[Index], xpProperty_ButtonState, 0);
 
        }
 
@@ -1383,21 +1383,10 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
 
         if(SwitchinMessage == xpMsg_ButtonStateChanged)
         {
+            //XPGetWidgetProperty(SwitchEnableCheckWidget[i], xpProperty_ButtonState, 1);
 
-    /*        //  for(int i = 0; i < max_items; ++i){
-                  int i = 0;
-                  if(inParam1 == (intptr_t)SwitchEnableCheckWidget[i]){
 
-                      XPSetWidgetProperty(SwitchEnableCheckWidget[i],
-                                          xpProperty_ButtonState, 1);
 
-                  } else {
-                      XPSetWidgetProperty(SwitchEnableCheckWidget[i],
-                                          xpProperty_ButtonState, 0);
-                  }
-
-                  // }
-  */
         }
 
 

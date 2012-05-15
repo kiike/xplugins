@@ -204,6 +204,10 @@ extern XPLMDataRef Gear1Fail, Gear2Fail, Gear3Fail;
 
 extern XPLMMenuID      SwitchMenu;
 extern XPLMMenuID      SwitchMenuId;
+extern XPWidgetID      SwitchEnableCheckWidget[50];
+extern XPWidgetID      SwitchDisableCheckWidget[50];
+extern XPWidgetID      SwitchRemapCheckWidget[50];
+
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;

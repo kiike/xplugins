@@ -30,6 +30,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -196,9 +197,17 @@ XPLMDataRef Gear1Fail = NULL, Gear2Fail = NULL, Gear3Fail = NULL;
 XPLMMenuID      SwitchMenu;
 XPLMMenuID      SwitchMenuId;
 
-XPWidgetID	SwitchWidget = NULL;
+XPWidgetID	SwitchWidgetID = NULL;
 XPWidgetID	SwitchWindow = NULL;
+XPWidgetID	SwitchEnableCheckWidget[50] = {NULL};
+XPWidgetID	SwitchDisableCheckWidget[50] = {NULL};
+XPWidgetID	SwitchRemapCheckWidget[50] = {NULL};
 XPWidgetID	SwitchTextWidget[50] = {NULL};
+XPWidgetID	SwitchTextWidget1[50] = {NULL};
+
+typedef	std::vector<XPLMDataRef> aXPLMDataRefID;
+
+static aXPLMDataRefID DataRefID;
 
 
 
@@ -264,30 +273,32 @@ float LandingGearDeployRatio[10];
 
 void SwitchMenuHandler(void *, void *);
 void CreateSwitchWidget(int x1, int y1, int w, int h);
-int SwitchHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2);
+int SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, intptr_t  inParam1, intptr_t  inParam2);
 
 int gMenuItem;
+int max_items = 19;
+int checkable = -1;
 
 char SwitchText[50][200] = {
-"      OFF",
-"      RIGHT",
-"      LEFT",
-"      BOTH",
-"      START",
-"      MASTER BAT",
-"      MASTER ALT",
-"      AVIONICS",
-"      FUEL PUMP",
-"      DEICE",
-"      PITOT HEAT",
-"      GEAR",
-"      COWL FLAPS",
-"      PANEL LIGHTS",
-"      BEACON LIGHTS",
-"      NAV LIGHTS",
-"      STROBE LIGHTS",
-"      TAXI LIGHTS",
-"      LANDING LIGHTS",
+"MAGS OFF",
+"MAGS RIGHT",
+"MAGS LEFT",
+"MAGS BOTH",
+"START ENGINE",
+"BATTERY MASTER",
+"ALTERNATOR MASTER",
+"AVIONICS MASTER",
+"FUEL PUMP",
+"DEICE SWITCH",
+"PITOT HEAT",
+"LANDING GEAR",
+"COWL FLAPS",
+"PANEL LIGHTS",
+"BEACON LIGHTS",
+"NAV LIGHTS",
+"STROBE LIGHTS",
+"TAXI LIGHTS",
+"LANDING LIGHTS",
 "end"
 
 };
@@ -904,7 +915,7 @@ PLUGIN_API void	XPluginStop(void)
 
   if (gMenuItem == 1)
   {
-          XPDestroyWidget(SwitchWidget, 1);
+          XPDestroyWidget(SwitchWidgetID, 1);
           gMenuItem = 0;
   }
 
@@ -1213,7 +1224,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          }
 
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
-             CreateSwitchWidget(150, 412, 300, 410);	//left, top, right, bottom.
+             CreateSwitchWidget(150, 412, 300, 430);	//left, top, right, bottom.
              gMenuItem = 1;
 
          }
@@ -1230,79 +1241,166 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
     return;
 }
 
-void SwitchMenuHandler(void * inMenuRef, void * inItemRef)
-{
-        switch ( (int) inItemRef)
-        {
-
-                case 1:	if (gMenuItem == 0)
-                                {
-                                        CreateSwitchWidget(150, 412, 300, 410);	//left, top, right, bottom.
-                                        gMenuItem = 1;
-                                }
-                                else
-                                {
-                                        if(!XPIsWidgetVisible(SwitchWidget))
-                                        XPShowWidget(SwitchWidget);
-                                }
-                                break;
-        }
-}
 
 // This will create our widget dialog.
 void CreateSwitchWidget(int x, int y, int w, int h)
 {
-int Index;
-
         int x2 = x + w;
         int y2 = y - h;
+        int Index;
+        int WindowCentre = x+w/2;
+        int yOffset;
+        char Buffer[255];
+
+        DataRefID.clear();
+        memset(SwitchEnableCheckWidget, 0, sizeof(SwitchEnableCheckWidget));
+        memset(SwitchDisableCheckWidget, 0, sizeof(SwitchDisableCheckWidget));
+        memset(SwitchRemapCheckWidget, 0, sizeof(SwitchRemapCheckWidget));
 
 // Create the Main Widget window.
-        SwitchWidget = XPCreateWidget(x, y, x2, y2,
+        SwitchWidgetID = XPCreateWidget(x, y, x2, y2,
                                         1,										// Visible
-                                        "Switch Panel Enable / Disable / Remapable",	// desc
+                                        "Switch   Panel   Mappings",	// desc
                                         1,										// root
                                         NULL,									// no container
                                         xpWidgetClass_MainWindow);
 
 
 // Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
-        XPSetWidgetProperty(SwitchWidget, xpProperty_MainWindowHasCloseBoxes, 1);
-        XPSetWidgetProperty(SwitchWidget, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
+        XPSetWidgetProperty(SwitchWidgetID, xpProperty_MainWindowHasCloseBoxes, 1);
+        XPSetWidgetProperty(SwitchWidgetID, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
 
-// Print each line of instructions.
-        for (Index=0; Index < 50; Index++)
-        {
-        if(strcmp(SwitchText[Index],"end") == 0) {break;}
 
-                // Create a text widget
+// Labels for Enable Disable and Remapable
 
-                SwitchTextWidget[Index] = XPCreateWidget(x+10, y-(30+(Index*20)) , x2-10, y-(42+(Index*20)),
-                1,	// Visible
-                SwitchText[Index],// desc
-                0,		// root
-                SwitchWidget,
-                xpWidgetClass_Caption);
-                XPSetWidgetProperty(SwitchTextWidget[Index], xpProperty_CaptionLit, 1);
+        yOffset = (01+01+(1*15));
+        SwitchTextWidget1[Index] = XPCreateWidget(x+05, y-yOffset, x+05+170, y-yOffset-20,
+              1,	// Visible
+              "Enable        Disable       Remapable",// desc
+              0,		// root
+              SwitchWidgetID,
+              xpWidgetClass_Caption);
+        XPSetWidgetProperty(SwitchTextWidget1[Index], xpProperty_CaptionLit, 1);
+
+
+// Create a check box for a enable item widget
+
+       for (Index=0; Index < 50; Index++)
+       {
+            if(strcmp(SwitchText[Index],"end") == 0) {break;}
+
+            yOffset = (15+28+(Index*20));
+            SwitchEnableCheckWidget[Index] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                   1,	// Visible
+                   "",    // desc
+                   0,	// root
+                   SwitchWidgetID,
+                   xpWidgetClass_Button);
+
+           XPSetWidgetProperty(SwitchEnableCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
+           XPSetWidgetProperty(SwitchEnableCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
+           XPSetWidgetProperty(SwitchEnableCheckWidget[Index], xpProperty_ButtonState, 1);
+
+       }
+
+// Create a check box for a disable item widget
+
+       for (Index=0; Index < 50; Index++)
+       {
+            if(strcmp(SwitchText[Index],"end") == 0) {break;}
+
+            yOffset = (15+28+(Index*20));
+            SwitchDisableCheckWidget[Index] = XPCreateWidget(x+65, y-yOffset, x+65+22, y-yOffset-20,
+                   1,	// Visible
+                   "",    // desc
+                   0,	// root
+                   SwitchWidgetID,
+                   xpWidgetClass_Button);
+
+            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
+            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
+            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonState, 1);
+
+       }
+
+// Create a check box for a remap item widget
+
+       for (Index=0; Index < 50; Index++)
+       {
+            if(strcmp(SwitchText[Index],"end") == 0) {break;}
+
+            yOffset = (15+28+(Index*20));
+            SwitchRemapCheckWidget[Index] = XPCreateWidget(x+125, y-yOffset, x+125+22, y-yOffset-20,
+                   1,	// Visible
+                   "",    // desc
+                   0,	// root
+                   SwitchWidgetID,
+                   xpWidgetClass_Button);
+
+            XPSetWidgetProperty(SwitchRemapCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
+            XPSetWidgetProperty(SwitchRemapCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
+            XPSetWidgetProperty(SwitchRemapCheckWidget[Index], xpProperty_ButtonState, 1);
+
+       }
+
+
+// Create a text widget
+
+       for (Index=0; Index < 50; Index++)
+       {
+            if(strcmp(SwitchText[Index],"end") == 0) {break;}
+
+            yOffset = (15+28+(Index*20));
+            SwitchTextWidget[Index] = XPCreateWidget(x+170, y-yOffset, x+170+170, y-yOffset-20,
+                  1,	// Visible
+                  SwitchText[Index],// desc
+                  0,		// root
+                  SwitchWidgetID,
+                  xpWidgetClass_Caption);
+            XPSetWidgetProperty(SwitchTextWidget[Index], xpProperty_CaptionLit, 1);
+
+
         }
 
 
 
 // Register our widget handler
-        XPAddWidgetCallback(SwitchWidget, SwitchHandler);
+        XPAddWidgetCallback(SwitchWidgetID, SwitchHandler);
 }
 
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
-int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2)
+int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, intptr_t  inParam1, intptr_t  inParam2)
 {
         if (SwitchinMessage == xpMessage_CloseButtonPushed)
         {
                 if (gMenuItem == 1)
                 {
-                        XPHideWidget(SwitchWidget);
+                        XPHideWidget(SwitchWidgetID);
                 }
                 return 1;
         }
+
+
+        if(SwitchinMessage == xpMsg_ButtonStateChanged)
+        {
+
+    /*        //  for(int i = 0; i < max_items; ++i){
+                  int i = 0;
+                  if(inParam1 == (intptr_t)SwitchEnableCheckWidget[i]){
+
+                      XPSetWidgetProperty(SwitchEnableCheckWidget[i],
+                                          xpProperty_ButtonState, 1);
+
+                  } else {
+                      XPSetWidgetProperty(SwitchEnableCheckWidget[i],
+                                          xpProperty_ButtonState, 0);
+                  }
+
+                  // }
+  */
+        }
+
+
 
         return 0;
 }
@@ -1325,9 +1423,6 @@ int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,
 
 return 0;
 }
-
-
-
 
 // ************************* Panels Callback  *************************
 float	MyPanelsFlightLoopCallback(

@@ -87,89 +87,91 @@ void process_switch_menu()
        XPLMCheckMenuItem(SwitchMenuId, 2, xplm_Menu_Unchecked);
     }
 
+
     if (fuelpumpswitchenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 1);
     }
     if (fuelpumpswitchenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 5, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 0);
     }
     if (fuelpumpswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 1);
     }
     if (fuelpumpswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 6, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 0);
     }
+
 
     if (deiceswitchenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[9], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[9], xpProperty_ButtonState, 1);
     }
     if (deiceswitchenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 9, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[9], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[9], xpProperty_ButtonState, 0);
     }
     if (deiceswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[9], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[9], xpProperty_ButtonState, 1);
     }
     if (deiceswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 10, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[9], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[9], xpProperty_ButtonState, 0);
     }
 
     if (cowlflapsenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 1);
     }
     if (cowlflapsenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 13, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
     }
     if (cowlflapsenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 1);
     }
     if (cowlflapsenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 14, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
     }
 
-    if (panellightsenable == 1) {
+    if (panellightswitchenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 1);
     }
-    if (panellightsenable != 1) {
+    if (panellightswitchenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 17, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 0);
     }
-    if (panellightsenable == 0) {
+    if (panellightswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Checked);
        XPSetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 1);
     }
-    if (panellightsenable != 0) {
+    if (panellightswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 0);
     }
 
-    if (landinggearknobenable == 1) {
+    if (landinggearknobupenable == 1) {
        XPLMCheckMenuItem(SwitchMenuId, 21, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 1);
     }
-    if (landinggearknobenable != 1) {
+    if (landinggearknobupenable != 1) {
        XPLMCheckMenuItem(SwitchMenuId, 21, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 0);
     }
-    if (landinggearknobenable == 0) {
+    if (landinggearknobupenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 22, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 1);
     }
-    if (landinggearknobenable != 0) {
+    if (landinggearknobupenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 22, xplm_Menu_Unchecked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 0);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 0);
     }
 
 
@@ -774,11 +776,11 @@ void process_panel_lights_switch()
         return;
     }
 
-    if(panellightsenable == 0) {
+    if(panellightswitchenable == 0) {
         return;
     }
 
-    if(panellightsenable == 2) {
+    if(panellightswitchenable == 2) {
 
          if(testbit(switchbuf,PANEL_LIGHTS)) {
            XPLMCommandOnce(PanelLightsOnCmd);
@@ -868,11 +870,11 @@ void process_landing_lights_switch()
 
 void process_gear_switch_switch()
 {
-    if(landinggearknobenable == 0) {
+    if(landinggearknobupenable == 0) {
         return;
     }
 
-    if(landinggearknobenable == 2) {
+    if(landinggearknobupenable == 2) {
 
         if(testbit(switchbuf,GEAR_SWITCH_UP)) {
           XPLMCommandOnce(GearUpCmd);

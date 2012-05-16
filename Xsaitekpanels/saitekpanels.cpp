@@ -142,11 +142,31 @@ XPLMCommandRef LnLtOn = NULL, LnLtOff = NULL, TxLtOn = NULL, TxLtOff = NULL;
 XPLMCommandRef StLtOn = NULL, StLtOff = NULL, NvLtOn = NULL, NvLtOff = NULL;
 XPLMCommandRef BcLtOn = NULL, BcLtOff = NULL, GearUp = NULL, GearDn = NULL;
 
+
+XPLMCommandRef MagOffSwitchOnCmd = NULL, MagOffSwitchOffCmd = NULL;
+XPLMCommandRef MagRightSwitchOnCmd = NULL, MagRightSwitchOffCmd = NULL;
+XPLMCommandRef MagLeftSwitchOnCmd = NULL, MagLeftSwitchOffCmd = NULL;
+XPLMCommandRef MagBothSwitchOnCmd = NULL, MagBothSwitchOffCmd = NULL;
+XPLMCommandRef MagStartSwitchOnCmd = NULL, MagStartSwitchOffCmd = NULL;
+
+XPLMCommandRef BatMasterSwitchOnCmd = NULL, BatMasterSwitchOffCmd = NULL;
+XPLMCommandRef AltMasterSwitchOnCmd = NULL, AltMasterSwitchOffCmd = NULL;
+XPLMCommandRef AvMasterSwitchOnCmd = NULL, AvMasterSwitchOffCmd = NULL;
+
+
+
 XPLMCommandRef FuelPumpOnCmd = NULL, FuelPumpOffCmd = NULL;
 XPLMCommandRef DeiceOnCmd = NULL, DeiceOffCmd = NULL;
+XPLMCommandRef PitotHeatOnCmd = NULL, PitotHeatOffCmd = NULL;
+XPLMCommandRef GearUpCmd = NULL, GearDnCmd = NULL;
+
 XPLMCommandRef CowlFlapsOpenCmd = NULL, CowlFlapsCloseCmd = NULL;
 XPLMCommandRef PanelLightsOnCmd = NULL, PanelLightsOffCmd = NULL;
-XPLMCommandRef GearUpCmd = NULL, GearDnCmd = NULL;
+XPLMCommandRef BeaconLightsOnCmd = NULL, BeaconLightsOffCmd = NULL;
+XPLMCommandRef NavLightsOnCmd = NULL, NavLightsOffCmd = NULL;
+XPLMCommandRef StrobeLightsOnCmd = NULL, StrobeLightsOffCmd = NULL;
+XPLMCommandRef TaxiLightsOnCmd = NULL, TaxiLightsOffCmd = NULL;
+XPLMCommandRef LandingLightsOnCmd = NULL, LandingLightsOffCmd = NULL;
 
 
 XPLMCommandRef MagOff1 = NULL, MagOff2 = NULL, MagOff3 = NULL, MagOff4 = NULL;
@@ -256,14 +276,41 @@ hid_device *multihandle;
 // ****************** Switch Panel variables *******************************
 int switchcnt = 0, switchres, stopswitchcnt;
 
-int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
-int deiceswitchenable, panellightsenable, landinggearknobenable;
+int magoffswitchenable, magrightswitchenable, magleftswitchenable;
+int magbothswitchenable, magstartswitchenable;
+int batmasterswitchenable, altmasterswitchenable;
+int avionicsmasterswitchenable, fuelpumpswitchenable;
+int deiceswitchenable, pitotheatswitchenable;
+int landinggearknobupenable, landinggearknobdnenable;
+int cowlflapsenable, panellightswitchenable;
+int beaconlightswitchenable, navlightswitchenable;
+int strobelightswitchenable, taxilightswitchenable;
+int landinglightswitchenable, bataltinverse;
+int panellightsenable;
+
+string mag_off_switch_on, mag_off_switch_off;
+string mag_right_switch_on, mag_right_switch_off;
+string mag_left_switch_on, mag_left_switch_off;
+string mag_both_switch_on, mag_both_switch_off;
+string mag_start_switch_on, mag_start_switch_off;
+
+string bat_master_switch_on, bat_master_switch_off;
+string alt_master_switch_on, alt_master_switch_off;
+string av_master_switch_on, av_master_switch_off;
+
 
 string fuel_pump_switch_on, fuel_pump_switch_off;
 string deice_switch_on, deice_switch_off;
+string pitot_heat_switch_on, pitot_heat_switch_off;
+string gear_switch_up, gear_switch_down;
 string cowl_flaps_open, cowl_flaps_close;
 string panel_lights_switch_on, panel_lights_switch_off;
-string gear_switch_up, gear_switch_down;
+string beacon_lights_switch_on, beacon_lights_switch_off;
+string nav_lights_switch_on, nav_lights_switch_off;
+string strobe_lights_switch_on, strobe_lights_switch_off;
+string taxi_lights_switch_on, taxi_lights_switch_off;
+string landing_lights_switch_on, landing_lights_switch_off;
+
 
 const char *GearTestStrUp;
 
@@ -276,7 +323,7 @@ void CreateSwitchWidget(int x1, int y1, int w, int h);
 int SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, intptr_t  inParam1, intptr_t  inParam2);
 
 int gMenuItem;
-int max_items = 19;
+int max_items = 20;
 int checkable = -1;
 
 char SwitchText[50][200] = {
@@ -291,7 +338,8 @@ char SwitchText[50][200] = {
 "FUEL PUMP",
 "DEICE SWITCH",
 "PITOT HEAT",
-"LANDING GEAR",
+"LANDING GEAR UP",
+"LANDING GEAR DN",
 "COWL FLAPS",
 "PANEL LIGHTS",
 "BEACON LIGHTS",
@@ -1217,14 +1265,14 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          }
 
          if (strcmp((char *) inItemRef, "ENABLE_GEAR") == 0) {
-             landinggearknobenable = 1;
+             //landinggearknobenable = 1;
          }
          if (strcmp((char *) inItemRef, "DISABLE_GEAR") == 0) {
-             landinggearknobenable = 0;
+             //landinggearknobenable = 0;
          }
 
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
-             CreateSwitchWidget(150, 412, 300, 430);	//left, top, right, bottom.
+             CreateSwitchWidget(150, 412, 300, 450);	//left, top, right, bottom.
              gMenuItem = 1;
 
          }
@@ -1276,12 +1324,32 @@ void CreateSwitchWidget(int x, int y, int w, int h)
         yOffset = (01+01+(1*15));
         SwitchTextWidget1[Index] = XPCreateWidget(x+05, y-yOffset, x+05+170, y-yOffset-20,
               1,	// Visible
-              "Enable        Disable       Remapable",// desc
+              "Disable        Enable       Remapable",// desc
               0,		// root
               SwitchWidgetID,
               xpWidgetClass_Caption);
         XPSetWidgetProperty(SwitchTextWidget1[Index], xpProperty_CaptionLit, 1);
 
+
+// Create a check box for a disable item widget
+
+       for (Index=0; Index < 50; Index++)
+       {
+            if(strcmp(SwitchText[Index],"end") == 0) {break;}
+
+            yOffset = (15+28+(Index*20));
+            SwitchDisableCheckWidget[Index] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                   1,	// Visible
+                   "",    // desc
+                   0,	// root
+                   SwitchWidgetID,
+                   xpWidgetClass_Button);
+
+             XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
+             XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
+             XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonState, 0);
+
+       }
 
 // Create a check box for a enable item widget
 
@@ -1290,7 +1358,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
             if(strcmp(SwitchText[Index],"end") == 0) {break;}
 
             yOffset = (15+28+(Index*20));
-            SwitchEnableCheckWidget[Index] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+            SwitchEnableCheckWidget[Index] = XPCreateWidget(x+65, y-yOffset, x+65+22, y-yOffset-20,
                    1,	// Visible
                    "",    // desc
                    0,	// root
@@ -1303,25 +1371,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 
        }
 
-// Create a check box for a disable item widget
 
-       for (Index=0; Index < 50; Index++)
-       {
-            if(strcmp(SwitchText[Index],"end") == 0) {break;}
-
-            yOffset = (15+28+(Index*20));
-            SwitchDisableCheckWidget[Index] = XPCreateWidget(x+65, y-yOffset, x+65+22, y-yOffset-20,
-                   1,	// Visible
-                   "",    // desc
-                   0,	// root
-                   SwitchWidgetID,
-                   xpWidgetClass_Button);
-
-            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonType, xpRadioButton);
-            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonBehavior, xpButtonBehaviorCheckBox);
-            XPSetWidgetProperty(SwitchDisableCheckWidget[Index], xpProperty_ButtonState, 0);
-
-       }
 
 // Create a check box for a remap item widget
 
@@ -1366,11 +1416,14 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 
 // Register our widget handler
         XPAddWidgetCallback(SwitchWidgetID, SwitchHandler);
+
+        process_read_ini_file();
 }
 
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
 int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, intptr_t  inParam1, intptr_t  inParam2)
 {
+        int State;
         if (SwitchinMessage == xpMessage_CloseButtonPushed)
         {
                 if (gMenuItem == 1)
@@ -1384,8 +1437,23 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
         if(SwitchinMessage == xpMsg_ButtonStateChanged)
         {
             //XPGetWidgetProperty(SwitchEnableCheckWidget[i], xpProperty_ButtonState, 1);
+            State = XPGetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 0);
+            if (State == 1){
+                fuelpumpswitchenable = 1;
 
+            }
+            State = XPGetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 0);
+            if (State == 1){
+                fuelpumpswitchenable = 0;
 
+            }
+            return 1;
+            State = XPGetWidgetProperty(SwitchRemapCheckWidget[8], xpProperty_ButtonState, 0);
+            if (State == 1){
+                fuelpumpswitchenable = 2;
+            }
+
+            return 1;
 
         }
 

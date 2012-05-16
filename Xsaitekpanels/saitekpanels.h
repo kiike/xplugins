@@ -149,11 +149,29 @@ extern XPLMCommandRef LnLtOn, LnLtOff, TxLtOn, TxLtOff;
 extern XPLMCommandRef StLtOn, StLtOff, NvLtOn, NvLtOff;
 extern XPLMCommandRef BcLtOn, BcLtOff, GearUp, GearDn;
 
+extern XPLMCommandRef MagOffSwitchOnCmd, MagOffSwitchOffCmd;
+extern XPLMCommandRef MagRightSwitchOnCmd, MagRightSwitchOffCmd;
+extern XPLMCommandRef MagLeftSwitchOnCmd, MagLeftSwitchOffCmd;
+extern XPLMCommandRef MagBothSwitchOnCmd, MagBothSwitchOffCmd;
+extern XPLMCommandRef MagStartSwitchOnCmd, MagStartSwitchOffCmd;
+
+extern XPLMCommandRef BatMasterSwitchOnCmd, BatMasterSwitchOffCmd;
+extern XPLMCommandRef AltMasterSwitchOnCmd, AltMasterSwitchOffCmd;
+extern XPLMCommandRef AvMasterSwitchOnCmd, AvMasterSwitchOffCmd;
+
+
 extern XPLMCommandRef FuelPumpOnCmd, FuelPumpOffCmd;
 extern XPLMCommandRef DeiceOnCmd, DeiceOffCmd;
+extern XPLMCommandRef PitotHeatOnCmd, PitotHeatOffCmd;
+extern XPLMCommandRef GearUpCmd, GearDnCmd;
+
 extern XPLMCommandRef CowlFlapsOpenCmd, CowlFlapsCloseCmd;
 extern XPLMCommandRef PanelLightsOnCmd, PanelLightsOffCmd;
-extern XPLMCommandRef GearUpCmd, GearDnCmd;
+extern XPLMCommandRef BeaconLightsOnCmd, BeaconLightsOffCmd;
+extern XPLMCommandRef NavLightsOnCmd, NavLightsOffCmd;
+extern XPLMCommandRef StrobeLightsOnCmd, StrobeLightsOffCmd;
+extern XPLMCommandRef TaxiLightsOnCmd, TaxiLightsOffCmd;
+extern XPLMCommandRef LandingLightsOnCmd, LandingLightsOffCmd;
 
 extern XPLMCommandRef MagOff1, MagOff2, MagOff3, MagOff4;
 extern XPLMCommandRef MagOff5, MagOff6, MagOff7, MagOff8;
@@ -211,14 +229,46 @@ extern XPWidgetID      SwitchRemapCheckWidget[50];
 
 // ***************** Switch Panel variables ********************
 extern int switchfd;
-extern int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
-extern int deiceswitchenable, panellightsenable, landinggearknobenable;
+
+extern int magoffswitchenable, magrightswitchenable, magleftswitchenable;
+extern int magbothswitchenable, magstartswitchenable;
+extern int batmasterswitchenable, altmasterswitchenable;
+extern int avionicsmasterswitchenable, fuelpumpswitchenable;
+extern int deiceswitchenable, pitotheatswitchenable;
+extern int landinggearknobupenable, landinggearknobdnenable;
+extern int cowlflapsenable, panellightswitchenable;
+extern int beaconlightswitchenable, navlightswitchenable;
+extern int strobelightswitchenable, taxilightswitchenable;
+extern int landinglightswitchenable, bataltinverse;
+
+
+
+//extern int bataltinverse, cowlflapsenable, fuelpumpswitchenable;
+//extern int deiceswitchenable, panellightsenable, landinggearknobenable;
+
+extern string mag_off_switch_on, mag_off_switch_off;
+extern string mag_right_switch_on, mag_right_switch_off;
+extern string mag_left_switch_on, mag_left_switch_off;
+extern string mag_both_switch_on, mag_both_switch_off;
+extern string mag_start_switch_on, mag_start_switch_off;
+
+extern string bat_master_switch_on, bat_master_switch_off;
+extern string alt_master_switch_on, alt_master_switch_off;
+extern string av_master_switch_on, av_master_switch_off;
 
 extern string fuel_pump_switch_on, fuel_pump_switch_off;
 extern string deice_switch_on, deice_switch_off;
+extern string pitot_heat_switch_on, pitot_heat_switch_off;
+extern string gear_switch_up, gear_switch_down;
+
 extern string cowl_flaps_open, cowl_flaps_close;
 extern string panel_lights_switch_on, panel_lights_switch_off;
-extern string gear_switch_up, gear_switch_down;
+extern string beacon_lights_switch_on, beacon_lights_switch_off;
+extern string nav_lights_switch_on, nav_lights_switch_off;
+extern string strobe_lights_switch_on, strobe_lights_switch_off;
+extern string taxi_lights_switch_on, taxi_lights_switch_off;
+extern string landing_lights_switch_on, landing_lights_switch_off;
+
 
 
 extern float LandingGearDeployRatio[10];

@@ -25,13 +25,17 @@
 
 string convert_Mac_Path(string in_path) {
 
-    string out_path;
+    char seperator_number_buffer[255] = {0};
 
     std::size_t len = in_path.length();
     std::size_t pos = in_path.find(":");
     in_path.erase (in_path.begin()+0, in_path.end()-(len - pos));
 
-    // Todo Find how many path seperators in the path
+    int count = 0;
+    for (int i = 0; i < in_path.size(); i++)
+       if (in_path[i] == ':') count++;
+            sprintf(seperator_number_buffer, "How many path seperators are in the path = %d\n", count);
+    XPLMDebugString(seperator_number_buffer);
 
     size_t found;
     int n = 8;
@@ -42,8 +46,8 @@ string convert_Mac_Path(string in_path) {
        --n;
     }
 
-    out_path = in_path;
-    return out_path;
+
+    return in_path;
 
 }
 
@@ -450,6 +454,30 @@ void process_read_ini_file()
          GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
          GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
      }
+
+     // landing gear dn knob disable - enable - remap
+     landinggearknobdnenable = getOptionToInt("Landing Gear Knob Up enable");
+     if (landinggearknobdnenable == 0) {
+          XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 1);
+          XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
+          XPSetWidgetProperty(SwitchRemapCheckWidget[12], xpProperty_ButtonState, 0);
+      }
+
+      if (landinggearknobdnenable == 1) {
+          XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
+          XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 1);
+          XPSetWidgetProperty(SwitchRemapCheckWidget[12], xpProperty_ButtonState, 0);
+      }
+
+      if (landinggearknobdnenable == 2) {
+          XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
+          XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
+          XPSetWidgetProperty(SwitchRemapCheckWidget[12], xpProperty_ButtonState, 1);
+          gear_switch_up = getOptionToString("gear_switch_up_cmd");
+          gear_switch_down = getOptionToString("gear_switch_down_cmd");
+          GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
+          GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
+      }
 
    // cowl flaps switch disable - enable - remap
     cowlflapsenable = getOptionToInt("Cowl Flaps enable");

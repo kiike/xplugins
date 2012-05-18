@@ -157,13 +157,17 @@ void WriteCSVTableToDisk(void)
 
 string convert_Mac_Bip_Path(string bip_in_path) {
 
-    string bip_out_path;
+    char bip_seperator_number_buffer[255] = {0};
 
     std::size_t bip_len = bip_in_path.length();
     std::size_t bip_pos = bip_in_path.find(":");
     bip_in_path.erase (bip_in_path.begin()+0, bip_in_path.end()-(bip_len - bip_pos));
 
-    // Todo Find how many path seperators in the path
+    int bip_count = 0;
+    for (int i = 0; i < bip_in_path.size(); i++)
+        if (bip_in_path[i] == ':') bip_count++;
+             sprintf(bip_seperator_number_buffer, "How many path seperators are in the path = %d\n", bip_count);
+    XPLMDebugString(bip_seperator_number_buffer);
 
     size_t bip_found;
     int n = 8;
@@ -174,8 +178,7 @@ string convert_Mac_Bip_Path(string bip_in_path) {
        --n;
     }
 
-    bip_out_path = bip_in_path;
-    return bip_out_path;
+    return bip_in_path;
 
 }
 

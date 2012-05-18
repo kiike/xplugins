@@ -71,6 +71,8 @@ void process_switch_menu()
     XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_GEAR", 4);
     XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_GEAR", 4);
     XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuSeparator(SwitchMenuId);
+    XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuItem(SwitchMenuId, "Switch Panel Widget", (void *) "SWITCH_WIDGET", 4);
 
     if (bataltinverse == 0) {
@@ -150,7 +152,7 @@ void process_switch_menu()
     }
     if (panellightswitchenable == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Checked);
-       XPSetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 1);
+       //XPSetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 1);
     }
     if (panellightswitchenable != 0) {
        XPLMCheckMenuItem(SwitchMenuId, 18, xplm_Menu_Unchecked);
@@ -191,7 +193,22 @@ void process_switch_menu()
 void process_engines_mag_off_switch()
 {
 
+    if(magoffswitchenable == 0) {
+        return;
+    }
 
+   if(magoffswitchenable == 2) {
+
+        if(testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagOffSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagOffSwitchOffCmd);
+        }
+
+        return;
+    }
 	if(testbit(switchbuf,MAG_OFF)) {
 	  if(engnum == 1){
 	    XPLMCommandOnce(MagOff1);
@@ -220,7 +237,22 @@ void process_engines_mag_off_switch()
 void process_engines_right_mag_switch()
 {
 
+    if(magrightswitchenable == 0) {
+        return;
+    }
 
+   if(magrightswitchenable == 2) {
+
+        if(testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagRightSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagRightSwitchOffCmd);
+        }
+
+        return;
+    }
 	if(testbit(switchbuf,MAG_RIGHT)) {
 	  if(engnum == 1){
 	    XPLMCommandOnce(MagRight1);
@@ -248,6 +280,22 @@ void process_engines_right_mag_switch()
 void process_engines_left_mag_switch()
 {
 
+    if(magleftswitchenable == 0) {
+        return;
+    }
+
+   if(magleftswitchenable == 2) {
+
+        if(testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagLeftSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagLeftSwitchOffCmd);
+        }
+
+        return;
+    }
 
 	if(testbit(switchbuf,MAG_LEFT)) {
 	  if(engnum == 1){
@@ -276,7 +324,25 @@ void process_engines_left_mag_switch()
 void process_engines_both_mag_switch()
 {
 
-	if(testbit(switchbuf,MAG_BOTH)) {
+    if(magbothswitchenable == 0) {
+        return;
+    }
+
+   if(magbothswitchenable == 2) {
+
+        if(testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagBothSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,MAG_BOTH)) {
+          XPLMCommandOnce(MagBothSwitchOffCmd);
+        }
+
+        return;
+    }
+
+
+   if(testbit(switchbuf,MAG_BOTH)) {
 	  if(engnum == 1){
 	    XPLMCommandOnce(MagBoth1);
 	  }
@@ -302,7 +368,22 @@ void process_engines_both_mag_switch()
 
 void process_engines_start_switch()
 {
+    if(magstartswitchenable == 0) {
+        return;
+    }
 
+   if(magstartswitchenable == 2) {
+
+        if(testbit(switchbuf,ENG_START)) {
+          XPLMCommandOnce(MagStartSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,ENG_START)) {
+          XPLMCommandOnce(MagStartSwitchOffCmd);
+        }
+
+        return;
+    }
 
 	if(testbit(switchbuf,ENG_START)) {
 	  if(engnum == 1){
@@ -331,7 +412,22 @@ void process_engines_start_switch()
 void process_master_battery_switch()
 {
 
+    if(batmasterswitchenable == 0) {
+        return;
+    }
 
+   if(batmasterswitchenable == 2) {
+
+        if(testbit(switchbuf,MASTER_BATTERY)) {
+          XPLMCommandOnce(BatMasterSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,MASTER_BATTERY)) {
+          XPLMCommandOnce(BatMasterSwitchOffCmd);
+        }
+
+        return;
+    }
 
     if(testbit(switchbuf,MASTER_BATTERY)) {
         if (loaded737) {
@@ -461,7 +557,22 @@ void process_master_battery_switch()
 void process_master_altenator_switch()
 {
 
+    if(altmasterswitchenable == 0) {
+        return;
+    }
 
+   if(altmasterswitchenable == 2) {
+
+        if(testbit(switchbuf,MASTER_ALTENATOR)) {
+          XPLMCommandOnce(AltMasterSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,MASTER_ALTENATOR)) {
+          XPLMCommandOnce(AltMasterSwitchOffCmd);
+        }
+
+        return;
+    }
 
     if(testbit(switchbuf,MASTER_ALTENATOR)) {
         if (loaded737) {
@@ -521,6 +632,24 @@ void process_avionics_power_switch()
     if (loaded737) {
         return;
     }
+
+    if(avionicsmasterswitchenable == 0) {
+        return;
+    }
+
+   if(avionicsmasterswitchenable == 2) {
+
+        if(testbit(switchbuf,AVIONICS_POWER)) {
+          XPLMCommandOnce(AvMasterSwitchOnCmd);
+         }
+
+        if(!testbit(switchbuf,AVIONICS_POWER)) {
+          XPLMCommandOnce(AvMasterSwitchOffCmd);
+        }
+
+        return;
+    }
+
 
 	if(testbit(switchbuf,AVIONICS_POWER)) {
           XPLMCommandOnce(AvLtOn);
@@ -649,6 +778,22 @@ void process_de_ice_switch()
 void process_pitot_heat_switch()
 {
 
+    if(pitotheatswitchenable == 0) {
+        return;
+    }
+
+   if(pitotheatswitchenable == 2) {
+
+        if(testbit(switchbuf,PITOT_HEAT)) {
+          XPLMCommandOnce(PitotHeatOnCmd);
+         }
+
+        if(!testbit(switchbuf,PITOT_HEAT)) {
+          XPLMCommandOnce(PitotHeatOffCmd);
+        }
+
+        return;
+    }
 
 
 	if(testbit(switchbuf,PITOT_HEAT)) {
@@ -803,10 +948,27 @@ void process_panel_lights_switch()
 	}
 }
 
+// ***************** Beacon Lights *******************
+
 void process_beacon_lights_switch()
 {
 
-// ***************** Beacon Lights *******************
+    if(beaconlightswitchenable == 0) {
+        return;
+    }
+
+    if(beaconlightswitchenable == 2) {
+
+         if(testbit(switchbuf,BEACON_LIGHTS)) {
+           XPLMCommandOnce(BeaconLightsOnCmd);
+          }
+
+         if(!testbit(switchbuf,BEACON_LIGHTS)) {
+           XPLMCommandOnce(BeaconLightsOffCmd);
+         }
+
+         return;
+     }
 
 	if(testbit(switchbuf,BEACON_LIGHTS)) {
           XPLMCommandOnce(BcLtOn);
@@ -816,10 +978,27 @@ void process_beacon_lights_switch()
  	}
 }
 
+// ***************** Nav Lights *******************
+
 void process_nav_lights_switch()
 {
 
-// ***************** Nav Lights *******************
+    if(navlightswitchenable == 0) {
+        return;
+    }
+
+    if(navlightswitchenable == 2) {
+
+         if(testbit(switchbuf,NAV_LIGHTS)) {
+           XPLMCommandOnce(NavLightsOnCmd);
+          }
+
+         if(!testbit(switchbuf,NAV_LIGHTS)) {
+           XPLMCommandOnce(NavLightsOffCmd);
+         }
+
+         return;
+     }
 
 	if(testbit(switchbuf,NAV_LIGHTS)) {
           XPLMCommandOnce(NvLtOn);
@@ -829,10 +1008,27 @@ void process_nav_lights_switch()
  	}
 }
 
+// ***************** Strobe Lights *******************
+
 void process_strobe_lights_switch()
 {
 
-// ***************** Strobe Lights *******************
+    if(strobelightswitchenable == 0) {
+        return;
+    }
+
+    if(strobelightswitchenable == 2) {
+
+         if(testbit(switchbuf,STROBE_LIGHTS)) {
+           XPLMCommandOnce(StrobeLightsOnCmd);
+          }
+
+         if(!testbit(switchbuf,STROBE_LIGHTS)) {
+           XPLMCommandOnce(StrobeLightsOffCmd);
+         }
+
+         return;
+     }
 
 	if(testbit(switchbuf,STROBE_LIGHTS)) {
           XPLMCommandOnce(StLtOn);
@@ -842,10 +1038,27 @@ void process_strobe_lights_switch()
  	}
 }
 
+// ***************** Taxi Lights *******************
+
 void process_taxi_lights_switch()
 {
 
-// ***************** Taxi Lights *******************
+    if(taxilightswitchenable == 0) {
+        return;
+    }
+
+    if(taxilightswitchenable == 2) {
+
+         if(testbit(switchbuf,TAXI_LIGHTS)) {
+           XPLMCommandOnce(TaxiLightsOnCmd);
+          }
+
+         if(!testbit(switchbuf,TAXI_LIGHTS)) {
+           XPLMCommandOnce(TaxiLightsOffCmd);
+         }
+
+         return;
+     }
 
 	if(testbit(switchbuf,TAXI_LIGHTS)) {
           XPLMCommandOnce(TxLtOn);
@@ -855,10 +1068,27 @@ void process_taxi_lights_switch()
  	}
 }
 
+// ***************** Landing Lights *******************
+
 void process_landing_lights_switch()
 {
 
-// ***************** Landing Lights *******************
+    if(landinglightswitchenable == 0) {
+        return;
+    }
+
+    if(landinglightswitchenable == 2) {
+
+         if(testbit(switchbuf,LANDING_LIGHTS)) {
+           XPLMCommandOnce(LandingLightsOnCmd);
+          }
+
+         if(!testbit(switchbuf,LANDING_LIGHTS)) {
+           XPLMCommandOnce(LandingLightsOffCmd);
+         }
+
+         return;
+     }
 
 	if(testbit(switchbuf,LANDING_LIGHTS)) {
           XPLMCommandOnce(LnLtOn);
@@ -867,6 +1097,9 @@ void process_landing_lights_switch()
           XPLMCommandOnce(LnLtOff);
  	}
 }
+
+// ***************** Gear Switch *******************
+
 
 void process_gear_switch_switch()
 {
@@ -887,7 +1120,7 @@ void process_gear_switch_switch()
         return;
     }
 
-// ***************** Gear Switch *******************
+
 	
 	if(XPLMGetDatai(GearRetract) > 0){
           XPLMGetDatavf(LandingGearStatus, LandingGearDeployRatio, 0, 10);
@@ -1087,7 +1320,7 @@ void process_gear_switch_switch()
 }
 
 
-/** Switch Panel Process  **/
+//  ***** Switch Panel Process  *****
 void process_switch_panel()
 
 {

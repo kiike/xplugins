@@ -170,7 +170,7 @@ string convert_Mac_Bip_Path(string bip_in_path) {
     XPLMDebugString(bip_seperator_number_buffer);
 
     size_t bip_found;
-    int n = 8;
+    int n = bip_count;
 
     while (n>0) {
        bip_found = bip_in_path.find(":");

@@ -38,7 +38,7 @@ string convert_Mac_Path(string in_path) {
     XPLMDebugString(seperator_number_buffer);
 
     size_t found;
-    int n = 8;
+    int n = count;
 
     while (n>0) {
        found = in_path.find(":");

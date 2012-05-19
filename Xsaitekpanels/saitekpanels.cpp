@@ -222,8 +222,14 @@ XPWidgetID	SwitchWindow = NULL;
 XPWidgetID	SwitchEnableCheckWidget[50] = {NULL};
 XPWidgetID	SwitchDisableCheckWidget[50] = {NULL};
 XPWidgetID	SwitchRemapCheckWidget[50] = {NULL};
+XPWidgetID	SwitchBatAltCheckWidget[50] = {NULL};
+XPWidgetID	SwitchAltBatCheckWidget[50] = {NULL};
+
+XPWidgetID	SwitchBatAltTextWidget[50] = {NULL};
+XPWidgetID	SwitchAltBatTextWidget[50] = {NULL};
+XPWidgetID	SwitchLabelTextWidget[50] = {NULL};
 XPWidgetID	SwitchTextWidget[50] = {NULL};
-XPWidgetID	SwitchTextWidget1[50] = {NULL};
+
 
 typedef	std::vector<XPLMDataRef> aXPLMDataRefID;
 
@@ -1228,6 +1234,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
     }
 
     if((long)inMenuRef == 4){
+        /*
          if (strcmp((char *) inItemRef, "NORMAL") == 0) {
              bataltinverse = 0;
          }
@@ -1270,9 +1277,10 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "DISABLE_GEAR") == 0) {
              //landinggearknobenable = 0;
          }
+         */
 
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
-             CreateSwitchWidget(150, 412, 300, 450);	//left, top, right, bottom.
+             CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom.
              gMenuItem = 1;
 
          }
@@ -1304,13 +1312,15 @@ void CreateSwitchWidget(int x, int y, int w, int h)
         memset(SwitchEnableCheckWidget, 0, sizeof(SwitchEnableCheckWidget));
         memset(SwitchDisableCheckWidget, 0, sizeof(SwitchDisableCheckWidget));
         memset(SwitchRemapCheckWidget, 0, sizeof(SwitchRemapCheckWidget));
+        memset(SwitchBatAltCheckWidget, 0, sizeof(SwitchBatAltCheckWidget));
+
 
 // Create the Main Widget window.
         SwitchWidgetID = XPCreateWidget(x, y, x2, y2,
-                                        1,										// Visible
+                                        1,		        	// Visible
                                         "Switch   Panel   Mappings",	// desc
-                                        1,										// root
-                                        NULL,									// no container
+                                        1,				// root
+                                        NULL,				// no container
                                         xpWidgetClass_MainWindow);
 
 
@@ -1319,16 +1329,73 @@ void CreateSwitchWidget(int x, int y, int w, int h)
         XPSetWidgetProperty(SwitchWidgetID, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
 
 
+// Checkbox for Bat Alt Normal
+
+        yOffset = (01+05+(1*15));
+        SwitchBatAltCheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                      1,	// Visible
+                      "",       // desc
+                      0,	// root
+                      SwitchWidgetID,
+                      xpWidgetClass_Button);
+
+        XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 0);
+
+
+// Labels for Bat Alt Normal
+
+        yOffset = (01+05+(1*15));
+        SwitchBatAltTextWidget[0] = XPCreateWidget(x+35, y-yOffset, x+35+100, y-yOffset-20,
+                      1,	// Visible
+                      "Bat Alt Normal",// desc
+                      0,		// root
+                      SwitchWidgetID,
+                      xpWidgetClass_Caption);
+
+        XPSetWidgetProperty(SwitchBatAltTextWidget[0], xpProperty_CaptionLit, 1);
+
+
+// Checkbox for Alt Bat Cessna
+
+        yOffset = (01+05+(1*15));
+        SwitchAltBatCheckWidget[0] = XPCreateWidget(x+125, y-yOffset, x+125+22, y-yOffset-20,
+                              1,	// Visible
+                              "",       // desc
+                              0,	// root
+                              SwitchWidgetID,
+                              xpWidgetClass_Button);
+
+        XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 0);
+
+
+ // Labels for Alt Bat Cessna
+
+        yOffset = (01+05+(1*15));
+        SwitchAltBatTextWidget[0] = XPCreateWidget(x+155, y-yOffset, x+155+100, y-yOffset-20,
+                              1,	// Visible
+                              "Alt Bat Cessna",// desc
+                              0,		// root
+                              SwitchWidgetID,
+                              xpWidgetClass_Caption);
+
+        XPSetWidgetProperty(SwitchAltBatTextWidget[0], xpProperty_CaptionLit, 1);
+
+
+
 // Labels for Enable Disable and Remapable
 
-        yOffset = (01+01+(1*15));
-        SwitchTextWidget1[Index] = XPCreateWidget(x+05, y-yOffset, x+05+170, y-yOffset-20,
+        yOffset = (05+28+(1*15));
+        SwitchLabelTextWidget[Index] = XPCreateWidget(x+05, y-yOffset, x+05+170, y-yOffset-20,
               1,	// Visible
               "Disable        Enable       Remapable",// desc
               0,		// root
               SwitchWidgetID,
               xpWidgetClass_Caption);
-        XPSetWidgetProperty(SwitchTextWidget1[Index], xpProperty_CaptionLit, 1);
+        XPSetWidgetProperty(SwitchLabelTextWidget[Index], xpProperty_CaptionLit, 1);
 
 
 // Create a check box for a disable item widget
@@ -1337,7 +1404,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
        {
             if(strcmp(SwitchText[Index],"end") == 0) {break;}
 
-            yOffset = (15+28+(Index*20));
+            yOffset = (45+28+(Index*20));
             SwitchDisableCheckWidget[Index] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
                    1,	// Visible
                    "",    // desc
@@ -1357,7 +1424,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
        {
             if(strcmp(SwitchText[Index],"end") == 0) {break;}
 
-            yOffset = (15+28+(Index*20));
+            yOffset = (45+28+(Index*20));
             SwitchEnableCheckWidget[Index] = XPCreateWidget(x+65, y-yOffset, x+65+22, y-yOffset-20,
                    1,	// Visible
                    "",    // desc
@@ -1379,7 +1446,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
        {
             if(strcmp(SwitchText[Index],"end") == 0) {break;}
 
-            yOffset = (15+28+(Index*20));
+            yOffset = (45+28+(Index*20));
             SwitchRemapCheckWidget[Index] = XPCreateWidget(x+125, y-yOffset, x+125+22, y-yOffset-20,
                    1,	// Visible
                    "",    // desc
@@ -1400,7 +1467,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
        {
             if(strcmp(SwitchText[Index],"end") == 0) {break;}
 
-            yOffset = (15+28+(Index*20));
+            yOffset = (45+28+(Index*20));
             SwitchTextWidget[Index] = XPCreateWidget(x+170, y-yOffset, x+170+170, y-yOffset-20,
                   1,	// Visible
                   SwitchText[Index],// desc
@@ -1438,6 +1505,16 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
         if(SwitchinMessage == xpMsg_ButtonStateChanged)
         {
 
+            if(inParam1 == (long)SwitchBatAltCheckWidget[0] ||
+               inParam1 == (long)SwitchAltBatCheckWidget[0]) {
+
+                     XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 0);
+
+                     XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+            }
+
+
             for (Index1=0; Index1 < 50; Index1++)
             {
                  if(strcmp(SwitchText[Index1],"end") == 0) {break;}
@@ -1459,117 +1536,87 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
            }
 
 
-
+            State = XPGetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                bataltinverse = 0;
+            }
+            State = XPGetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                bataltinverse = 1;
+           }
 
             State = XPGetWidgetProperty(SwitchDisableCheckWidget[0], xpProperty_ButtonState, 0);
             if (State){
                 magoffswitchenable = 0;
-                printf("State == 1 magoffswitchenable = %d\n" , magoffswitchenable);
-
             }
             State = XPGetWidgetProperty(SwitchEnableCheckWidget[0], xpProperty_ButtonState, 0);
             if (State){
                 magoffswitchenable = 1;
-                printf("State == 1 magoffswitchenable = %d\n" , magoffswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[0], xpProperty_ButtonState, 0);
            if (State){
                magoffswitchenable = 2;
-               printf("State == 1 magoffswitchenable = %d\n" , magoffswitchenable);
-
            }
 
 
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[1], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[1], xpProperty_ButtonState, 0);
+           if (State){
                 magrightswitchenable = 0;
-                printf("State == 1 magrightswitchenable = %d\n" , magrightswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[1], xpProperty_ButtonState, 0);
-            if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[1], xpProperty_ButtonState, 0);
+           if (State){
                 magrightswitchenable = 1;
-                printf("State == 1 magrightswitchenable = %d\n" , magrightswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[1], xpProperty_ButtonState, 0);
            if (State){
                magrightswitchenable = 2;
-               printf("State == 1 magrightswitchenable = %d\n" , magrightswitchenable);
-
            }
 
-
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[2], xpProperty_ButtonState, 0);
-            if (State){
-                magleftswitchenable = 0;
-                printf("State == 1 magleftswitchenable = %d\n" , magleftswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[2], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[2], xpProperty_ButtonState, 0);
+           if (State){
+               magleftswitchenable = 0;
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[2], xpProperty_ButtonState, 0);
+           if (State){
                 magleftswitchenable = 1;
-                printf("State == 1 magleftswitchenable = %d\n" , magleftswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[2], xpProperty_ButtonState, 0);
            if (State){
                magleftswitchenable = 2;
-               printf("State == 1 magleftswitchenable = %d\n" , magleftswitchenable);
-
            }
-
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[3], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[3], xpProperty_ButtonState, 0);
+           if (State){
                 magbothswitchenable = 0;
-                printf("State == 1 magbothswitchenable = %d\n" , magbothswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[3], xpProperty_ButtonState, 0);
-            if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[3], xpProperty_ButtonState, 0);
+           if (State){
                 magbothswitchenable = 1;
-                printf("State == 1 magbothswitchenable = %d\n" , magbothswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[3], xpProperty_ButtonState, 0);
            if (State){
                magbothswitchenable = 2;
-               printf("State == 1 magbothswitchenable = %d\n" , magbothswitchenable);
-
            }
 
-
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[4], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[4], xpProperty_ButtonState, 0);
+           if (State){
                 magstartswitchenable = 0;
-                printf("State == 1 magstartswitchenable = %d\n" , magstartswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[4], xpProperty_ButtonState, 0);
-            if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[4], xpProperty_ButtonState, 0);
+           if (State){
                 magstartswitchenable = 1;
-                printf("State == 1 magstartswitchenable = %d\n" , magstartswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[4], xpProperty_ButtonState, 0);
            if (State){
                magstartswitchenable = 2;
-               printf("State == 1 magstartswitchenable = %d\n" , magstartswitchenable);
-
            }
 
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[5], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[5], xpProperty_ButtonState, 0);
+           if (State){
                 batmasterswitchenable = 0;
-                printf("State == 1 batmasterswitchenable = %d\n" , batmasterswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[5], xpProperty_ButtonState, 0);
-            if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[5], xpProperty_ButtonState, 0);
+           if (State){
                 batmasterswitchenable = 1;
-                printf("State == 1 batmasterswitchenable = %d\n" , batmasterswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[5], xpProperty_ButtonState, 0);
            if (State){
@@ -1579,277 +1626,191 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
            }
 
 
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[6], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[6], xpProperty_ButtonState, 0);
+           if (State){
                 altmasterswitchenable = 0;
-                printf("State == 1 altmasterswitchenable = %d\n" , altmasterswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[6], xpProperty_ButtonState, 0);
-            if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[6], xpProperty_ButtonState, 0);
+           if (State){
                 altmasterswitchenable = 1;
-                printf("State == 1 altmasterswitchenable = %d\n" , altmasterswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[6], xpProperty_ButtonState, 0);
            if (State){
                altmasterswitchenable = 2;
-               printf("State == 1 altmasterswitchenable = %d\n" , altmasterswitchenable);
-
            }
 
-
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[7], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[7], xpProperty_ButtonState, 0);
+           if (State){
                 avionicsmasterswitchenable = 0;
-                printf("State == 1 avionicsmasterswitchenable = %d\n" , avionicsmasterswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[7], xpProperty_ButtonState, 0);
-            if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[7], xpProperty_ButtonState, 0);
+           if (State){
                 avionicsmasterswitchenable = 1;
-                printf("State == 1 avionicsmasterswitchenable = %d\n" , avionicsmasterswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[7], xpProperty_ButtonState, 0);
            if (State){
                avionicsmasterswitchenable = 2;
-               printf("State == 1 avionicsmasterswitchenable = %d\n" , avionicsmasterswitchenable);
-
            }
 
 
-            State = XPGetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 0);
-            if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[8], xpProperty_ButtonState, 0);
+           if (State){
                 fuelpumpswitchenable = 0;
-                printf("State == 1 fuelpumpswitchenable = %d\n" , fuelpumpswitchenable);
-
-            }
-            State = XPGetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 0);
-            if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[8], xpProperty_ButtonState, 0);
+           if (State){
                 fuelpumpswitchenable = 1;
-                printf("State == 1 fuelpumpswitchenable = %d\n" , fuelpumpswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[8], xpProperty_ButtonState, 0);
            if (State){
                fuelpumpswitchenable = 2;
-               printf("State == 1 fuelpumpswitchenable = %d\n" , fuelpumpswitchenable);
-
            }
-
 
 
            State = XPGetWidgetProperty(SwitchDisableCheckWidget[9], xpProperty_ButtonState, 0);
            if (State){
                deiceswitchenable = 0;
-               printf("State == 1 deiceswitchenable = %d\n" , deiceswitchenable);
-
            }
            State = XPGetWidgetProperty(SwitchEnableCheckWidget[9], xpProperty_ButtonState, 0);
            if (State){
                deiceswitchenable = 1;
-               printf("State == 1 deiceswitchenable = %d\n" , deiceswitchenable);
-
-          }
-          State = XPGetWidgetProperty(SwitchRemapCheckWidget[9], xpProperty_ButtonState, 0);
-          if (State){
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[9], xpProperty_ButtonState, 0);
+           if (State){
               deiceswitchenable = 2;
-              printf("State == 1 deiceswitchenable = %d\n" , deiceswitchenable);
+           }
 
-          }
-
-          State = XPGetWidgetProperty(SwitchDisableCheckWidget[10], xpProperty_ButtonState, 0);
-          if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[10], xpProperty_ButtonState, 0);
+           if (State){
               pitotheatswitchenable = 0;
-              printf("State == 1 pitotheatswitchenable = %d\n" , pitotheatswitchenable);
-
-          }
-          State = XPGetWidgetProperty(SwitchEnableCheckWidget[10], xpProperty_ButtonState, 0);
-          if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[10], xpProperty_ButtonState, 0);
+           if (State){
               pitotheatswitchenable = 1;
-              printf("State == 1 pitotheatswitchenable = %d\n" , pitotheatswitchenable);
-
-         }
-         State = XPGetWidgetProperty(SwitchRemapCheckWidget[10], xpProperty_ButtonState, 0);
-         if (State){
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[10], xpProperty_ButtonState, 0);
+           if (State){
              pitotheatswitchenable = 2;
-             printf("State == 1 pitotheatswitchenable = %d\n" , pitotheatswitchenable);
+           }
 
-         }
-
-         State = XPGetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 0);
-         if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 0);
+           if (State){
              landinggearknobupenable = 0;
-             printf("State == 1 landinggearknobupenable = %d\n" , landinggearknobupenable);
-
-         }
-         State = XPGetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 0);
-         if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 0);
+           if (State){
              landinggearknobupenable = 1;
-             printf("State == 1 landinggearknobupenable = %d\n" , landinggearknobupenable);
-
-        }
-        State = XPGetWidgetProperty(SwitchRemapCheckWidget[11], xpProperty_ButtonState, 0);
-        if (State){
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[11], xpProperty_ButtonState, 0);
+           if (State){
             landinggearknobupenable = 2;
-            printf("State == 1 landinggearknobupenable = %d\n" , landinggearknobupenable);
+           }
 
-        }
-
-        State = XPGetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
-        if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
+           if (State){
             landinggearknobdnenable = 0;
-            printf("State == 1 landinggearknobdnenable = %d\n" , landinggearknobdnenable);
-
-        }
-        State = XPGetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
-        if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
+           if (State){
             landinggearknobdnenable = 1;
-            printf("State == 1 landinggearknobdnenable = %d\n" , landinggearknobdnenable);
-
-       }
-       State = XPGetWidgetProperty(SwitchRemapCheckWidget[12], xpProperty_ButtonState, 0);
-       if (State){
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[12], xpProperty_ButtonState, 0);
+           if (State){
            landinggearknobdnenable = 2;
-           printf("State == 1 landinggearknobdnenable = %d\n" , landinggearknobdnenable);
-
-       }
+           }
 
 
-         State = XPGetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 0);
-         if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[13], xpProperty_ButtonState, 0);
+           if (State){
              cowlflapsenable = 0;
-             printf("State == 1 cowlflapsenable = %d\n" , cowlflapsenable);
-
-         }
-         State = XPGetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 0);
-         if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[13], xpProperty_ButtonState, 0);
+           if (State){
              cowlflapsenable = 1;
-             printf("State == 1 cowlflapsenable = %d\n" , cowlflapsenable);
-
-        }
-        State = XPGetWidgetProperty(SwitchRemapCheckWidget[13], xpProperty_ButtonState, 0);
-        if (State){
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[13], xpProperty_ButtonState, 0);
+           if (State){
             cowlflapsenable = 2;
-            printf("State == 1 cowlflapsenable = %d\n" , cowlflapsenable);
+           }
 
-        }
-
-        State = XPGetWidgetProperty(SwitchDisableCheckWidget[14], xpProperty_ButtonState, 0);
-        if (State){
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[14], xpProperty_ButtonState, 0);
+           if (State){
             panellightswitchenable = 0;
-            printf("State == 1 panellightswitchenable = %d\n" , panellightswitchenable);
-
-        }
-        State = XPGetWidgetProperty(SwitchEnableCheckWidget[14], xpProperty_ButtonState, 0);
-        if (State){
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[14], xpProperty_ButtonState, 0);
+           if (State){
             panellightswitchenable = 1;
-            printf("State == 1 panellightswitchenable = %d\n" , panellightswitchenable);
-
-       }
-       State = XPGetWidgetProperty(SwitchRemapCheckWidget[14], xpProperty_ButtonState, 0);
-       if (State){
-           panellightswitchenable = 2;
-           printf("State == 1 panellightswitchenable = %d\n" , panellightswitchenable);
-
-       }
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[14], xpProperty_ButtonState, 0);
+           if (State){
+             panellightswitchenable = 2;
+           }
 
 
-       State = XPGetWidgetProperty(SwitchDisableCheckWidget[15], xpProperty_ButtonState, 0);
-       if (State){
-           beaconlightswitchenable = 0;
-           printf("State == 1 beaconlightswitchenable = %d\n" , beaconlightswitchenable);
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[15], xpProperty_ButtonState, 0);
+           if (State){
+             beaconlightswitchenable = 0;
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[15], xpProperty_ButtonState, 0);
+           if (State){
+              beaconlightswitchenable = 1;
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[15], xpProperty_ButtonState, 0);
+           if (State){
+             beaconlightswitchenable = 2;
+           }
 
-       }
-       State = XPGetWidgetProperty(SwitchEnableCheckWidget[15], xpProperty_ButtonState, 0);
-       if (State){
-           beaconlightswitchenable = 1;
-           printf("State == 1 beaconlightswitchenable = %d\n" , beaconlightswitchenable);
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[16], xpProperty_ButtonState, 0);
+           if (State){
+               navlightswitchenable = 0;
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[16], xpProperty_ButtonState, 0);
+           if (State){
+              navlightswitchenable = 1;
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[16], xpProperty_ButtonState, 0);
+           if (State){
+               navlightswitchenable = 2;
+           }
 
-      }
-      State = XPGetWidgetProperty(SwitchRemapCheckWidget[15], xpProperty_ButtonState, 0);
-      if (State){
-          beaconlightswitchenable = 2;
-          printf("State == 1 beaconlightswitchenable = %d\n" , beaconlightswitchenable);
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[17], xpProperty_ButtonState, 0);
+           if (State){
+               strobelightswitchenable = 0;
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[17], xpProperty_ButtonState, 0);
+           if (State){
+              strobelightswitchenable = 1;
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[17], xpProperty_ButtonState, 0);
+           if (State){
+               strobelightswitchenable = 2;
+           }
 
-      }
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[18], xpProperty_ButtonState, 0);
+           if (State){
+               taxilightswitchenable = 0;
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[18], xpProperty_ButtonState, 0);
+           if (State){
+                taxilightswitchenable = 1;
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[18], xpProperty_ButtonState, 0);
+           if (State){
+               taxilightswitchenable = 2;
+           }
 
-      State = XPGetWidgetProperty(SwitchDisableCheckWidget[16], xpProperty_ButtonState, 0);
-      if (State){
-          navlightswitchenable = 0;
-          printf("State == 1 navlightswitchenable = %d\n" , navlightswitchenable);
-
-      }
-      State = XPGetWidgetProperty(SwitchEnableCheckWidget[16], xpProperty_ButtonState, 0);
-      if (State){
-          navlightswitchenable = 1;
-          printf("State == 1 navlightswitchenable= %d\n" , navlightswitchenable);
-
-     }
-     State = XPGetWidgetProperty(SwitchRemapCheckWidget[16], xpProperty_ButtonState, 0);
-     if (State){
-         navlightswitchenable = 2;
-         printf("State == 1 navlightswitchenable = %d\n" , navlightswitchenable);
-
-     }
-
-     State = XPGetWidgetProperty(SwitchDisableCheckWidget[17], xpProperty_ButtonState, 0);
-     if (State){
-         strobelightswitchenable = 0;
-         printf("State == 1 strobelightswitchenable = %d\n" , strobelightswitchenable);
-
-     }
-     State = XPGetWidgetProperty(SwitchEnableCheckWidget[17], xpProperty_ButtonState, 0);
-     if (State){
-         strobelightswitchenable = 1;
-         printf("State == 1 strobelightswitchenable = %d\n" , strobelightswitchenable);
-
-    }
-    State = XPGetWidgetProperty(SwitchRemapCheckWidget[17], xpProperty_ButtonState, 0);
-    if (State){
-        strobelightswitchenable = 2;
-        printf("State == 1 strobelightswitchenable = %d\n" , strobelightswitchenable);
-
-    }
-
-    State = XPGetWidgetProperty(SwitchDisableCheckWidget[18], xpProperty_ButtonState, 0);
-    if (State){
-        taxilightswitchenable = 0;
-        printf("State == 1 taxilightswitchenable = %d\n" , taxilightswitchenable);
-
-    }
-    State = XPGetWidgetProperty(SwitchEnableCheckWidget[18], xpProperty_ButtonState, 0);
-    if (State){
-        taxilightswitchenable = 1;
-        printf("State == 1 taxilightswitchenable = %d\n" , taxilightswitchenable);
-
-   }
-   State = XPGetWidgetProperty(SwitchRemapCheckWidget[18], xpProperty_ButtonState, 0);
-   if (State){
-       taxilightswitchenable = 2;
-       printf("State == 1 taxilightswitchenable = %d\n" , taxilightswitchenable);
-
-   }
-
-   State = XPGetWidgetProperty(SwitchDisableCheckWidget[19], xpProperty_ButtonState, 0);
-   if (State){
-       landinglightswitchenable = 0;
-       printf("State == 1 landinglightswitchenable = %d\n" , landinglightswitchenable);
-
-   }
-   State = XPGetWidgetProperty(SwitchEnableCheckWidget[19], xpProperty_ButtonState, 0);
-   if (State){
-       landinglightswitchenable = 1;
-       printf("State == 1 landinglightswitchenable = %d\n" , landinglightswitchenable);
-
-  }
-  State = XPGetWidgetProperty(SwitchRemapCheckWidget[19], xpProperty_ButtonState, 0);
-  if (State){
-      landinglightswitchenable = 2;
-      printf("State == 1 landinglightswitchenable = %d\n" , landinglightswitchenable);
-
-  }
+           State = XPGetWidgetProperty(SwitchDisableCheckWidget[19], xpProperty_ButtonState, 0);
+           if (State){
+               landinglightswitchenable = 0;
+           }
+           State = XPGetWidgetProperty(SwitchEnableCheckWidget[19], xpProperty_ButtonState, 0);
+           if (State){
+               landinglightswitchenable = 1;
+           }
+           State = XPGetWidgetProperty(SwitchRemapCheckWidget[19], xpProperty_ButtonState, 0);
+           if (State){
+               landinglightswitchenable = 2;
+           }
 
 
 

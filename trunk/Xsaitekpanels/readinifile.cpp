@@ -463,8 +463,8 @@ void process_read_ini_file()
          XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 0);
          XPSetWidgetProperty(SwitchEnableCheckWidget[11], xpProperty_ButtonState, 0);
          XPSetWidgetProperty(SwitchRemapCheckWidget[11], xpProperty_ButtonState, 1);
-         gear_switch_up = getOptionToString("gear_switch_up_cmd");
-         gear_switch_down = getOptionToString("gear_switch_down_cmd");
+         gear_switch_up = getOptionToString("gear_up_switch_up_cmd");
+         gear_switch_down = getOptionToString("gear_up_switch_down_cmd");
          GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
          GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
      }
@@ -487,8 +487,8 @@ void process_read_ini_file()
           XPSetWidgetProperty(SwitchDisableCheckWidget[12], xpProperty_ButtonState, 0);
           XPSetWidgetProperty(SwitchEnableCheckWidget[12], xpProperty_ButtonState, 0);
           XPSetWidgetProperty(SwitchRemapCheckWidget[12], xpProperty_ButtonState, 1);
-          gear_switch_up = getOptionToString("gear_switch_up_cmd");
-          gear_switch_down = getOptionToString("gear_switch_down_cmd");
+          gear_switch_up = getOptionToString("gear_dn_switch_up_cmd");
+          gear_switch_down = getOptionToString("gear_dn_switch_down_cmd");
           GearUpCmd   = XPLMFindCommand(gear_switch_up.c_str());
           GearDnCmd   = XPLMFindCommand(gear_switch_down.c_str());
       }
@@ -614,7 +614,7 @@ void process_read_ini_file()
         }
 
         // taxi lights switch disable - enable - remap
-        taxilightswitchenable = getOptionToInt("Strobe Lights Switch enable");
+        taxilightswitchenable = getOptionToInt("Taxi Lights Switch enable");
         if (taxilightswitchenable == 0) {
              XPSetWidgetProperty(SwitchDisableCheckWidget[18], xpProperty_ButtonState, 1);
              XPSetWidgetProperty(SwitchEnableCheckWidget[18], xpProperty_ButtonState, 0);
@@ -638,7 +638,7 @@ void process_read_ini_file()
          }
 
          // landing lights switch disable - enable - remap
-         landinglightswitchenable = getOptionToInt("Strobe Lights Switch enable");
+         landinglightswitchenable = getOptionToInt("Landing Lights Switch enable");
          if (landinglightswitchenable == 0) {
               XPSetWidgetProperty(SwitchDisableCheckWidget[19], xpProperty_ButtonState, 1);
               XPSetWidgetProperty(SwitchEnableCheckWidget[19], xpProperty_ButtonState, 0);
@@ -662,8 +662,6 @@ void process_read_ini_file()
           }
 
     bataltinverse = getOptionToInt("Bat Alt inverse");
-
-
 
 
     radspeed = getOptionToInt("Radio Freq Knob Pulse per Command");

@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.41   ***************
-// ****** May 17 2012   **************
+// ******** ver 1.41rc1   ***************
+// ****** May 18 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -416,10 +416,10 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
-  XPLMDebugString("Xsaitekpanels v1.41\n");
+  XPLMDebugString("Xsaitekpanels v1.41rc1\n");
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.41");
+  strcpy(outName, "Xsaitekpanels v1.41rc1");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -1234,53 +1234,10 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
     }
 
     if((long)inMenuRef == 4){
-        /*
-         if (strcmp((char *) inItemRef, "NORMAL") == 0) {
-             bataltinverse = 0;
-         }
-         if (strcmp((char *) inItemRef, "CESSNA") == 0) {
-             bataltinverse = 1;
-         }
-
-         if (strcmp((char *) inItemRef, "ENABLE_FUEL_PUMP") == 0) {
-             fuelpumpswitchenable = 1;
-         }
-         if (strcmp((char *) inItemRef, "DISABLE_FUEL_PUMP") == 0) {
-             fuelpumpswitchenable = 0;
-         }
-
-
-         if (strcmp((char *) inItemRef, "ENABLE_DEICE") == 0) {
-             deiceswitchenable = 1;
-         }
-         if (strcmp((char *) inItemRef, "DISABLE_DEICE") == 0) {
-             deiceswitchenable = 0;
-         }
-
-         if (strcmp((char *) inItemRef, "ENABLE_COWL") == 0) {
-             cowlflapsenable = 1;
-         }
-         if (strcmp((char *) inItemRef, "DISABLE_COWL") == 0) {
-             cowlflapsenable = 0;
-         }
-
-         if (strcmp((char *) inItemRef, "ENABLE_PANEL_LIGHTS") == 0) {
-             panellightsenable = 1;
-         }
-         if (strcmp((char *) inItemRef, "DISABLE_PANEL_LIGHTS") == 0) {
-             panellightsenable = 0;
-         }
-
-         if (strcmp((char *) inItemRef, "ENABLE_GEAR") == 0) {
-             //landinggearknobenable = 1;
-         }
-         if (strcmp((char *) inItemRef, "DISABLE_GEAR") == 0) {
-             //landinggearknobenable = 0;
-         }
-         */
 
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
-             CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom.
+             //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
+             CreateSwitchWidget(05, 700, 300, 480);	//left, top, right, bottom.
              gMenuItem = 1;
 
          }
@@ -1391,7 +1348,7 @@ void CreateSwitchWidget(int x, int y, int w, int h)
         yOffset = (05+28+(1*15));
         SwitchLabelTextWidget[Index] = XPCreateWidget(x+05, y-yOffset, x+05+170, y-yOffset-20,
               1,	// Visible
-              "Disable        Enable       Remapable",// desc
+              "Disable        Enable        Remapable",// desc
               0,		// root
               SwitchWidgetID,
               xpWidgetClass_Caption);
@@ -1621,8 +1578,6 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
            State = XPGetWidgetProperty(SwitchRemapCheckWidget[5], xpProperty_ButtonState, 0);
            if (State){
                batmasterswitchenable = 2;
-               printf("State == 1 batmasterswitchenable = %d\n" , batmasterswitchenable);
-
            }
 
 
@@ -1812,16 +1767,13 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
                landinglightswitchenable = 2;
            }
 
-
-
-            return 1;
-
+        return 1;
 
         }
 
 
 
-        return 0;
+return 0;
 }
 
 int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,

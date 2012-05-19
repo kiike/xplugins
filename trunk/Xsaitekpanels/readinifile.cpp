@@ -161,6 +161,20 @@ void process_read_ini_file()
        }
     }
 
+    // bat alt normal alt bat cessna
+    bataltinverse = getOptionToInt("Bat Alt inverse");
+    if (bataltinverse == 0) {
+        XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 1);
+        XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 0);
+
+    }
+
+    if (bataltinverse == 1) {
+        XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 0);
+        XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 1);
+
+    }
+
 
     // mag off switch disable - enable - remap
     magoffswitchenable = getOptionToInt("Mag Off Switch enable");

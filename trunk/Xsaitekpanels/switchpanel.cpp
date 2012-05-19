@@ -47,10 +47,12 @@ void process_switch_menu()
 {
 
     XPLMClearAllMenuItems(SwitchMenuId);
+    /*
     XPLMAppendMenuItem(SwitchMenuId, "Bat Alt Normal or Alt Bat Cessna", (void *) "VOID", 4);
     XPLMAppendMenuItem(SwitchMenuId, "NORMAL", (void *) "NORMAL", 4);
     XPLMAppendMenuItem(SwitchMenuId, "CESSNA", (void *) "CESSNA", 4);
     XPLMAppendMenuSeparator(SwitchMenuId);
+
     XPLMAppendMenuItem(SwitchMenuId, "Fuel Pump Switch enable / disable", (void *) "VOID", 4);
     XPLMAppendMenuItem(SwitchMenuId, "ENABLE", (void *) "ENABLE_FUEL_PUMP", 4);
     XPLMAppendMenuItem(SwitchMenuId, "DISABLE", (void *) "DISABLE_FUEL_PUMP", 4);
@@ -73,8 +75,9 @@ void process_switch_menu()
     XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuSeparator(SwitchMenuId);
     XPLMAppendMenuSeparator(SwitchMenuId);
+    */
     XPLMAppendMenuItem(SwitchMenuId, "Switch Panel Widget", (void *) "SWITCH_WIDGET", 4);
-
+/*
     if (bataltinverse == 0) {
        XPLMCheckMenuItem(SwitchMenuId, 1, xplm_Menu_Checked);
 
@@ -175,6 +178,7 @@ void process_switch_menu()
        XPLMCheckMenuItem(SwitchMenuId, 22, xplm_Menu_Unchecked);
        //XPSetWidgetProperty(SwitchDisableCheckWidget[11], xpProperty_ButtonState, 0);
     }
+    */
 
 
   switchwbuf[0] = 0;

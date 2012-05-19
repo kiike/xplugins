@@ -225,6 +225,8 @@ extern XPLMMenuID      SwitchMenuId;
 extern XPWidgetID      SwitchEnableCheckWidget[50];
 extern XPWidgetID      SwitchDisableCheckWidget[50];
 extern XPWidgetID      SwitchRemapCheckWidget[50];
+extern XPWidgetID      SwitchBatAltCheckWidget[50];
+extern XPWidgetID      SwitchAltBatCheckWidget[50];
 
 
 // ***************** Switch Panel variables ********************

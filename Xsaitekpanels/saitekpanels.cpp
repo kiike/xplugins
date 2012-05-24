@@ -86,6 +86,18 @@ XPWidgetID	RadioSpeed4CheckWidget[50] = {NULL};
 XPWidgetID	RadioSpeed5CheckWidget[50] = {NULL};
 XPWidgetID	RadioSpeedTextWidget[50] = {NULL};
 
+XPWidgetID	RadioAdf1CheckWidget[50] = {NULL};
+XPWidgetID	RadioAdf2CheckWidget[50] = {NULL};
+XPWidgetID	RadioAdf1TextWidget[50] = {NULL};
+XPWidgetID	RadioAdf2TextWidget[50] = {NULL};
+
+XPWidgetID	RadioQnh0CheckWidget[50] = {NULL};
+XPWidgetID	RadioQnh1CheckWidget[50] = {NULL};
+XPWidgetID	RadioQnh0TextWidget[50] = {NULL};
+XPWidgetID	RadioQnh1TextWidget[50] = {NULL};
+
+
+
 // ****************** Multi Panel Command Ref **********************
 XPLMCommandRef ApAltDn = NULL, ApAltUp = NULL, ApVsDn = NULL, ApVsUp = NULL;
 XPLMCommandRef ApAsDn = NULL, ApAsUp = NULL, ApHdgDn = NULL, ApHdgUp = NULL;
@@ -1272,8 +1284,8 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
              metricpressenable = 1;
          }
          if (strcmp((char *) inItemRef, "RADIO_WIDGET") == 0) {
-             //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
-             CreateRadioWidget(15, 700, 300, 480);	//left, top, right, bottom.
+             //CreateRadioWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
+             CreateRadioWidget(15, 700, 300, 300);	//left, top, right, bottom.
              radioMenuItem = 1;
          }
 
@@ -1936,11 +1948,115 @@ void CreateRadioWidget(int x, int y, int w, int h)
          }
 
 
+        // Checkbox for adf tuner
+
+
+
+                 yOffset = (05+28+(6*20));
+                 RadioAdf1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                              1,	// Visible
+                                              "",       // desc
+                                              0,	// root
+                                              RadioWidgetID,
+                                              xpWidgetClass_Button);
+
+                  XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+                  XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+                  XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 0);
+
+                  yOffset = (05+28+(7*20));
+                  RadioAdf2CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                               1,	// Visible
+                                               "",       // desc
+                                               0,	// root
+                                               RadioWidgetID,
+                                               xpWidgetClass_Button);
+
+                   XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+                   XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+                   XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+                   yOffset = (05+28+(6*20));
+                   RadioAdf1TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                                                1,	// Visible
+                                                "ONE ADF TUNER",       // desc
+                                                0,	// root
+                                                RadioWidgetID,
+                                                xpWidgetClass_Caption);
+
+                    XPSetWidgetProperty(RadioAdf1TextWidget[0], xpProperty_CaptionLit, 1);
+
+                    yOffset = (05+28+(7*20));
+                    RadioAdf2TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                                                 1,	// Visible
+                                                 "TWO ADF TUNERS",       // desc
+                                                 0,	// root
+                                                 RadioWidgetID,
+                                                 xpWidgetClass_Caption);
+
+                     XPSetWidgetProperty(RadioAdf2TextWidget[0], xpProperty_CaptionLit, 1);
+
+
+
+
+                     // Checkbox for QNH
+
+
+
+                              yOffset = (05+28+(9*20));
+                              RadioQnh0CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                                           1,	// Visible
+                                                           "",       // desc
+                                                           0,	// root
+                                                           RadioWidgetID,
+                                                           xpWidgetClass_Button);
+
+                               XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+                               XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+                               XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 0);
+
+                               yOffset = (05+28+(10*20));
+                               RadioQnh1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                                            1,	// Visible
+                                                            "",       // desc
+                                                            0,	// root
+                                                            RadioWidgetID,
+                                                            xpWidgetClass_Button);
+
+                                XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+                                XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+                                XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+                                yOffset = (05+28+(9*20));
+                                RadioQnh0TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                                                             1,	// Visible
+                                                             "QNH display inHg",       // desc
+                                                             0,	// root
+                                                             RadioWidgetID,
+                                                             xpWidgetClass_Caption);
+
+                                 XPSetWidgetProperty(RadioQnh0TextWidget[0], xpProperty_CaptionLit, 1);
+
+                                 yOffset = (05+28+(10*20));
+                                 RadioQnh1TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                                                              1,	// Visible
+                                                              "QNH display hPa",       // desc
+                                                              0,	// root
+                                                              RadioWidgetID,
+                                                              xpWidgetClass_Caption);
+
+                                  XPSetWidgetProperty(RadioQnh1TextWidget[0], xpProperty_CaptionLit, 1);
+
+
+
 
 
 
 // Register our widget handler
         XPAddWidgetCallback(RadioWidgetID, RadioHandler);
+        process_read_ini_file();
 
 
 }
@@ -1972,16 +2088,85 @@ int	RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, int
 
 
 
-                     XPSetWidgetProperty(RadioSpeed1CheckWidget[Index1], xpProperty_ButtonState, 0);
-                     XPSetWidgetProperty(RadioSpeed2CheckWidget[Index1], xpProperty_ButtonState, 0);
-                     XPSetWidgetProperty(RadioSpeed3CheckWidget[Index1], xpProperty_ButtonState, 0);
-                     XPSetWidgetProperty(RadioSpeed4CheckWidget[Index1], xpProperty_ButtonState, 0);
-                     XPSetWidgetProperty(RadioSpeed5CheckWidget[Index1], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
 
 
                      XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
 
             }
+
+            State = XPGetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                radspeed = 1;
+            }
+            State = XPGetWidgetProperty(RadioSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                radspeed = 2;
+            }
+            State = XPGetWidgetProperty(RadioSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                radspeed = 3;
+            }
+            State = XPGetWidgetProperty(RadioSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                radspeed = 4;
+            }
+            State = XPGetWidgetProperty(RadioSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                radspeed = 5;
+            }
+
+
+            if(inParam1 == (long)RadioAdf1CheckWidget[0] ||
+               inParam1 == (long)RadioAdf2CheckWidget[0] ) {
+
+                     XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 0);
+
+                     XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+
+            State = XPGetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                numadf = 1;
+            }
+
+            State = XPGetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                numadf = 2;
+            }
+         }
+
+
+
+            if(inParam1 == (long)RadioQnh0CheckWidget[0] ||
+               inParam1 == (long)RadioQnh1CheckWidget[0] ) {
+
+                     XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 0);
+
+                     XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+
+            State = XPGetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                metricpressenable = 0;
+            }
+
+            State = XPGetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                metricpressenable = 1;
+            }
+         }
+
+
+
+
+
+
+
 return 1;
     }
 

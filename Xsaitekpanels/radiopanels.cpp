@@ -133,54 +133,8 @@ void process_radio_menu()
 {
 
     XPLMClearAllMenuItems(RadioMenuId);
-    XPLMAppendMenuItem(RadioMenuId, "# OF SWITCH PULSES PER COMMAND", (void *) "VOID", 1);
-    XPLMAppendMenuSeparator(RadioMenuId);
-    XPLMAppendMenuItem(RadioMenuId, "FREQ KNOB  1 PULSE PER COMMAND", (void *) "1", 1);
-    XPLMAppendMenuItem(RadioMenuId, "FREQ KNOB  2 PULSES PER COMMAND", (void *) "2", 1);
-    XPLMAppendMenuItem(RadioMenuId, "FREQ KNOB  3 PULSES PER COMMAND", (void *) "3", 1);
-    XPLMAppendMenuItem(RadioMenuId, "FREQ KNOB  4 PULSES PER COMMAND", (void *) "4", 1);
-    XPLMAppendMenuItem(RadioMenuId, "FREQ KNOB  5 PULSES PER COMMAND", (void *) "5", 1);
-    XPLMAppendMenuSeparator(RadioMenuId);
-    XPLMAppendMenuItem(RadioMenuId, "ONE ADF TUNER", (void *) "ADF1", 1);
-    XPLMAppendMenuItem(RadioMenuId, "TWO ADF TUNERS", (void *) "ADF2", 1);
-    XPLMAppendMenuSeparator(RadioMenuId);
-    XPLMAppendMenuItem(RadioMenuId, "QNH display inHg", (void *) "inHg", 1);
-    XPLMAppendMenuItem(RadioMenuId, "QNH display hPa", (void *) "hPa", 1);
-    XPLMAppendMenuSeparator(RadioMenuId);
     XPLMAppendMenuItem(RadioMenuId, "Radio Panel Widget", (void *) "RADIO_WIDGET", 1);
 
-    int i;
-
-    const int RMENU_BASE = 1;
-    const int AMENU_BASE = 7;
-    const int QMENU_BASE = 11;
-
-    for(i = 1; i <= 5; ++i){
-      if(i != radspeed){
-        XPLMCheckMenuItem(RadioMenuId, i + RMENU_BASE, xplm_Menu_Unchecked);
-      }
-      if(i == radspeed){
-        XPLMCheckMenuItem(RadioMenuId, i + RMENU_BASE, xplm_Menu_Checked);
-      }
-    }
-
-    for(i = 1; i <= 2; ++i){
-      if(i != numadf){
-        XPLMCheckMenuItem(RadioMenuId, i + AMENU_BASE, xplm_Menu_Unchecked);
-      }
-      if(i == numadf){
-        XPLMCheckMenuItem(RadioMenuId, i + AMENU_BASE, xplm_Menu_Checked);
-      }
-    }
-
-    for(i = 0; i <= 1; ++i){
-      if(i != metricpressenable){
-        XPLMCheckMenuItem(RadioMenuId, i + QMENU_BASE, xplm_Menu_Unchecked);
-      }
-      if(i == metricpressenable){
-        XPLMCheckMenuItem(RadioMenuId, i + QMENU_BASE, xplm_Menu_Checked);
-      }
-    }
 
 
 }

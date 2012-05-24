@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.41   ***************
-// ****** May 19 2012   **************
+// ******** ver 1.42   ***************
+// ****** May 21 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -77,6 +77,15 @@ XPLMDataRef Afd1PwrOn = NULL, DmePwrOn = NULL;
 XPLMMenuID      RadioMenu;
 XPLMMenuID      RadioMenuId;
 
+XPWidgetID	RadioWidgetID = NULL;
+XPWidgetID	RadioWindow = NULL;
+XPWidgetID	RadioSpeed1CheckWidget[50] = {NULL};
+XPWidgetID	RadioSpeed2CheckWidget[50] = {NULL};
+XPWidgetID	RadioSpeed3CheckWidget[50] = {NULL};
+XPWidgetID	RadioSpeed4CheckWidget[50] = {NULL};
+XPWidgetID	RadioSpeed5CheckWidget[50] = {NULL};
+XPWidgetID	RadioSpeedTextWidget[50] = {NULL};
+
 // ****************** Multi Panel Command Ref **********************
 XPLMCommandRef ApAltDn = NULL, ApAltUp = NULL, ApVsDn = NULL, ApVsUp = NULL;
 XPLMCommandRef ApAsDn = NULL, ApAsUp = NULL, ApHdgDn = NULL, ApHdgUp = NULL;
@@ -131,6 +140,17 @@ XPLMDataRef HsiSelector = NULL;
 
 XPLMMenuID      MultiMenu;
 XPLMMenuID      MultiMenuId;
+
+XPWidgetID	MultiWidgetID = NULL;
+XPWidgetID	MultiWindow = NULL;
+XPWidgetID	MultiSpeed1CheckWidget[50] = {NULL};
+XPWidgetID	MultiSpeed2CheckWidget[50] = {NULL};
+XPWidgetID	MultiSpeed3CheckWidget[50] = {NULL};
+XPWidgetID	MultiSpeed4CheckWidget[50] = {NULL};
+XPWidgetID	MultiSpeed5CheckWidget[50] = {NULL};
+
+//XPWidgetID	SwitchDisableCheckWidget[50] = {NULL};
+//XPWidgetID	SwitchRemapCheckWidget[50] = {NULL};
 
 // *************** Switch Panel Command Ref *******************
 XPLMCommandRef ClFlOpn = NULL, ClFlCls = NULL;
@@ -264,6 +284,22 @@ unsigned char radbuf[4], radwbuf[21];
 
 int radspeed, numadf, metricpressenable;
 
+void CreateRadioWidget(int x1, int y1, int w, int h);
+int RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, intptr_t  inParam1, intptr_t  inParam2);
+
+int radioMenuItem;
+
+char RadioSpeedText[50][200] = {
+"FREQ KNOB  1 PULSE PER COMMAND",
+"FREQ KNOB  2 PULSES PER COMMAND",
+"FREQ KNOB  3 PULSES PER COMMAND",
+"FREQ KNOB  4 PULSES PER COMMAND",
+"FREQ KNOB  5 PULSES PER COMMAND",
+"end"
+
+};
+
+
 hid_device *radiohandle[4];
 
 // ********************** Multi Panel variables ***********************
@@ -276,6 +312,11 @@ int loaded737 = 0;
 int trimspeed, multispeed, autothrottleswitchenable;
 
 int xpanelsfnbutton = 0, xpanelscrstoggle = 0;
+
+void CreateMultiWidget(int x1, int y1, int w, int h);
+int MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, intptr_t  inParam1, intptr_t  inParam2);
+
+
 
 hid_device *multihandle;
 
@@ -328,7 +369,7 @@ void SwitchMenuHandler(void *, void *);
 void CreateSwitchWidget(int x1, int y1, int w, int h);
 int SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, intptr_t  inParam1, intptr_t  inParam2);
 
-int gMenuItem;
+int switchMenuItem;
 int max_items = 20;
 int checkable = -1;
 
@@ -416,10 +457,10 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
-  XPLMDebugString("Xsaitekpanels v1.41\n");
+  XPLMDebugString("Xsaitekpanels v1.42\n");
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.41");
+  strcpy(outName, "Xsaitekpanels v1.42");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 
@@ -967,10 +1008,10 @@ PLUGIN_API void	XPluginStop(void)
   XPLMDestroyMenu(RadioMenuId);
   XPLMDestroyMenu(SwitchMenuId);
 
-  if (gMenuItem == 1)
+  if (switchMenuItem == 1)
   {
           XPDestroyWidget(SwitchWidgetID, 1);
-          gMenuItem = 0;
+          switchMenuItem = 0;
   }
 
   stopradcnt = radcnt - 1;
@@ -1230,6 +1271,11 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "hPa") == 0) {
              metricpressenable = 1;
          }
+         if (strcmp((char *) inItemRef, "RADIO_WIDGET") == 0) {
+             //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
+             CreateRadioWidget(15, 700, 300, 480);	//left, top, right, bottom.
+             radioMenuItem = 1;
+         }
 
     }
 
@@ -1238,7 +1284,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
              //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateSwitchWidget(05, 700, 300, 480);	//left, top, right, bottom.
-             gMenuItem = 1;
+             switchMenuItem = 1;
 
          }
 
@@ -1255,7 +1301,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 }
 
 
-// This will create our widget dialog.
+// This will create our switch widget dialog.
 void CreateSwitchWidget(int x, int y, int w, int h)
 {
         int x2 = x + w;
@@ -1284,7 +1330,6 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 // Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
         XPSetWidgetProperty(SwitchWidgetID, xpProperty_MainWindowHasCloseBoxes, 1);
         XPSetWidgetProperty(SwitchWidgetID, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
-
 
 // Checkbox for Bat Alt Normal
 
@@ -1451,7 +1496,7 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
         int Index1;
         if (SwitchinMessage == xpMessage_CloseButtonPushed)
         {
-                if (gMenuItem == 1)
+                if (switchMenuItem == 1)
                 {
                         XPHideWidget(SwitchWidgetID);
                 }
@@ -1775,6 +1820,193 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
 
 return 0;
 }
+
+// This will create our switch widget dialog.
+void CreateRadioWidget(int x, int y, int w, int h)
+{
+        int x2 = x + w;
+        int y2 = y - h;
+        int Index;
+        int WindowCentre = x+w/2;
+        int yOffset;
+        char Buffer[255];
+
+        DataRefID.clear();
+        memset(RadioSpeed1CheckWidget, 0, sizeof(RadioSpeed1CheckWidget));
+        memset(RadioSpeed2CheckWidget, 0, sizeof(RadioSpeed2CheckWidget));
+        memset(RadioSpeed3CheckWidget, 0, sizeof(RadioSpeed3CheckWidget));
+        memset(RadioSpeed4CheckWidget, 0, sizeof(RadioSpeed4CheckWidget));
+        memset(RadioSpeed5CheckWidget, 0, sizeof(RadioSpeed5CheckWidget));
+
+// Create the Main Widget window.
+        RadioWidgetID = XPCreateWidget(x, y, x2, y2,
+                                        1,		        	// Visible
+                                        "Radio   Panel   Mappings",	// desc
+                                        1,				// root
+                                        NULL,				// no container
+                                        xpWidgetClass_MainWindow);
+
+// Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
+        XPSetWidgetProperty(RadioWidgetID, xpProperty_MainWindowHasCloseBoxes, 1);
+        XPSetWidgetProperty(RadioWidgetID, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
+
+
+// Checkbox for silver knob speed
+
+
+
+         yOffset = (05+28+(0*20));
+         RadioSpeed1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                      1,	// Visible
+                                      "",       // desc
+                                      0,	// root
+                                      RadioWidgetID,
+                                      xpWidgetClass_Button);
+
+          XPSetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+          XPSetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+          XPSetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+
+          yOffset = (05+28+(1*20));
+          RadioSpeed2CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                       1,	// Visible
+                                       "",       // desc
+                                       0,	// root
+                                       RadioWidgetID,
+                                       xpWidgetClass_Button);
+
+           XPSetWidgetProperty(RadioSpeed2CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+           XPSetWidgetProperty(RadioSpeed2CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+           XPSetWidgetProperty(RadioSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+           yOffset = (05+28+(2*20));
+           RadioSpeed3CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                        1,	// Visible
+                                        "",       // desc
+                                        0,	// root
+                                        RadioWidgetID,
+                                        xpWidgetClass_Button);
+
+            XPSetWidgetProperty(RadioSpeed3CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+            XPSetWidgetProperty(RadioSpeed3CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+            XPSetWidgetProperty(RadioSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+
+            yOffset = (05+28+(3*20));
+            RadioSpeed4CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                         1,	// Visible
+                                         "",       // desc
+                                         0,	// root
+                                         RadioWidgetID,
+                                         xpWidgetClass_Button);
+
+             XPSetWidgetProperty(RadioSpeed4CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+             XPSetWidgetProperty(RadioSpeed4CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+             XPSetWidgetProperty(RadioSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+
+             yOffset = (05+28+(4*20));
+             RadioSpeed5CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                                          1,	// Visible
+                                          "",       // desc
+                                          0,	// root
+                                          RadioWidgetID,
+                                          xpWidgetClass_Button);
+
+              XPSetWidgetProperty(RadioSpeed5CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+              XPSetWidgetProperty(RadioSpeed5CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+              XPSetWidgetProperty(RadioSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+// Create a text widget
+
+        for (Index=0; Index < 50; Index++)
+        {
+             if(strcmp(RadioSpeedText[Index],"end") == 0) {break;}
+
+         yOffset = (05+28+(Index*20));
+         RadioSpeedTextWidget[Index] = XPCreateWidget(x+50, y-yOffset, x+50+170, y-yOffset-20,
+                          1,	// Visible
+                          RadioSpeedText[Index],// desc
+                          0,		// root
+                          RadioWidgetID,
+                          xpWidgetClass_Caption);
+         XPSetWidgetProperty(RadioSpeedTextWidget[Index], xpProperty_CaptionLit, 1);
+
+
+         }
+
+
+
+
+
+// Register our widget handler
+        XPAddWidgetCallback(RadioWidgetID, RadioHandler);
+
+
+}
+
+// This is our widget handler.  In this example we are only interested when the close box is pressed.
+int	RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, intptr_t  inParam1, intptr_t  inParam2)
+{
+        int State, State1, State2;
+        int Index1;
+        if (RadioinMessage == xpMessage_CloseButtonPushed)
+        {
+                if (radioMenuItem == 1)
+                {
+                        XPHideWidget(RadioWidgetID);
+                }
+                return 1;
+        }
+
+        if(RadioinMessage == xpMsg_ButtonStateChanged)
+        {
+
+
+
+            if(inParam1 == (long)RadioSpeed1CheckWidget[0] ||
+               inParam1 == (long)RadioSpeed2CheckWidget[0] ||
+               inParam1 == (long)RadioSpeed3CheckWidget[0] ||
+               inParam1 == (long)RadioSpeed4CheckWidget[0] ||
+               inParam1 == (long)RadioSpeed5CheckWidget[0]) {
+
+
+
+                     XPSetWidgetProperty(RadioSpeed1CheckWidget[Index1], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed2CheckWidget[Index1], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed3CheckWidget[Index1], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed4CheckWidget[Index1], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(RadioSpeed5CheckWidget[Index1], xpProperty_ButtonState, 0);
+
+
+                     XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+
+            }
+return 1;
+    }
+
+       //printf("Made it to RadioHandler\n");
+       return 0 ;
+}
+
+ /*
+            if(inParam1 == (long)SwitchBatAltCheckWidget[0] ||
+               inParam1 == (long)SwitchAltBatCheckWidget[0]) {
+
+                     XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 0);
+
+                     XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+            }
+
+
+  */
+
+
+
+
+
+
 
 int    XpanelsFnButtonCommandHandler(XPLMCommandRef       inCommand,
                         XPLMCommandPhase     inPhase,

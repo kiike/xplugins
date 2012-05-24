@@ -146,6 +146,8 @@ void process_radio_menu()
     XPLMAppendMenuSeparator(RadioMenuId);
     XPLMAppendMenuItem(RadioMenuId, "QNH display inHg", (void *) "inHg", 1);
     XPLMAppendMenuItem(RadioMenuId, "QNH display hPa", (void *) "hPa", 1);
+    XPLMAppendMenuSeparator(RadioMenuId);
+    XPLMAppendMenuItem(RadioMenuId, "Radio Panel Widget", (void *) "RADIO_WIDGET", 1);
 
     int i;
 

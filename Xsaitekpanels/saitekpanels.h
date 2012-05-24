@@ -55,6 +55,14 @@ extern XPLMDataRef Afd1PwrOn, DmePwrOn;
 extern XPLMMenuID      RadioMenu;
 extern XPLMMenuID      RadioMenuId;
 
+extern XPWidgetID	RadioWidgetID;
+extern XPWidgetID	RadioWindow;
+extern XPWidgetID	RadioSpeedCheckWidget[50];
+//extern XPWidgetID	RadioSpeed2CheckWidget[50];
+//extern XPWidgetID	RadioSpeed3CheckWidget[50];
+//extern XPWidgetID	RadioSpeed4CheckWidget[50];
+//extern XPWidgetID	RadioSpeed5CheckWidget[50];
+
 
 // ************************ Radio Panel variables **************************
 extern int radio0fd, radio1fd, radio2fd, radio3fd, radio4fd, radio5fd, radio6fd, radio7fd;

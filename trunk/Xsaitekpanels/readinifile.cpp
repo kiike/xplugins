@@ -96,7 +96,9 @@ void process_read_ini_file()
     radspeed                 = 3;
     numadf                   = 1;
     metricpressenable        = 0;
-
+    if (numadf == 1) {
+         XPSetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonState, 1);
+    }
     // multi panel
     trimspeed                = 1;
     multispeed               = 3;
@@ -553,14 +555,62 @@ void process_read_ini_file()
 
     bataltinverse = getOptionToInt("Bat Alt inverse");
 
+    // landing lights switch disable - enable - remap
+    landinglightswitchenable = getOptionToInt("Landing Lights Switch enable");
+    if (landinglightswitchenable == 0) {
+         XPSetWidgetProperty(SwitchDisableCheckWidget[19], xpProperty_ButtonState, 1);
+     }
+
+
 
     radspeed = getOptionToInt("Radio Freq Knob Pulse per Command");
+    XPSetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(RadioSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(RadioSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(RadioSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(RadioSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
+    if (radspeed == 1) {
+         XPSetWidgetProperty(RadioSpeed1CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (radspeed == 2) {
+         XPSetWidgetProperty(RadioSpeed2CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (radspeed == 3) {
+         XPSetWidgetProperty(RadioSpeed3CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (radspeed == 4) {
+         XPSetWidgetProperty(RadioSpeed4CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (radspeed == 5) {
+         XPSetWidgetProperty(RadioSpeed5CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+
+
     numadf = getOptionToInt("Radio Number of ADF's");
+    XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 0);
+    if (numadf == 1) {
+         XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (numadf == 2) {
+         XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+
+    metricpressenable= getOptionToInt("Metric Press enable");
+    XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 0);
+    if (metricpressenable == 0) {
+         XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (metricpressenable == 1) {
+         XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+
 
     trimspeed = getOptionToInt("Multi Trim Speed");
     multispeed = getOptionToInt("Multi Freq Knob Pulse per Command");
     autothrottleswitchenable = getOptionToInt("Auto Throttle Switch enable");
-    metricpressenable= getOptionToInt("Metric Press enable");
+
 
 
 

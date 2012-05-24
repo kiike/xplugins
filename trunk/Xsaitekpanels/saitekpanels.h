@@ -57,11 +57,17 @@ extern XPLMMenuID      RadioMenuId;
 
 extern XPWidgetID	RadioWidgetID;
 extern XPWidgetID	RadioWindow;
-extern XPWidgetID	RadioSpeedCheckWidget[50];
-//extern XPWidgetID	RadioSpeed2CheckWidget[50];
-//extern XPWidgetID	RadioSpeed3CheckWidget[50];
-//extern XPWidgetID	RadioSpeed4CheckWidget[50];
-//extern XPWidgetID	RadioSpeed5CheckWidget[50];
+extern XPWidgetID	RadioSpeed1CheckWidget[50];
+extern XPWidgetID	RadioSpeed2CheckWidget[50];
+extern XPWidgetID	RadioSpeed3CheckWidget[50];
+extern XPWidgetID	RadioSpeed4CheckWidget[50];
+extern XPWidgetID	RadioSpeed5CheckWidget[50];
+
+extern XPWidgetID	RadioAdf1CheckWidget[50];
+extern XPWidgetID	RadioAdf2CheckWidget[50];
+
+extern XPWidgetID	RadioQnh0CheckWidget[50];
+extern XPWidgetID	RadioQnh1CheckWidget[50];
 
 
 // ************************ Radio Panel variables **************************

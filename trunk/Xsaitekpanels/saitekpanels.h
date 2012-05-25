@@ -137,6 +137,17 @@ extern XPLMMenuID      MultiMenuId;
 extern XPLMMenuID      Frp;
 extern XPLMMenuID      MHdg;
 
+extern XPWidgetID	MultiSpeed1CheckWidget[50];
+extern XPWidgetID	MultiSpeed2CheckWidget[50];
+extern XPWidgetID	MultiSpeed3CheckWidget[50];
+extern XPWidgetID	MultiSpeed4CheckWidget[50];
+extern XPWidgetID	MultiSpeed5CheckWidget[50];
+extern XPWidgetID	MultiTrimSpeed1CheckWidget[50];
+extern XPWidgetID	MultiTrimSpeed2CheckWidget[50];
+extern XPWidgetID	MultiTrimSpeed3CheckWidget[50];
+extern XPWidgetID	MultiAt0CheckWidget[50];
+extern XPWidgetID	MultiAt1CheckWidget[50];
+
 // **************** Multi Panel variables *******************
 extern int multifd;
 extern int numadf;

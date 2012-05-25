@@ -62,6 +62,7 @@ void process_multi_menu()
 {
    //!!! I'm pretty sure this would be much better placed in initialization function of the plugin
     XPLMClearAllMenuItems(MultiMenuId);
+    /*
     XPLMAppendMenuItem(MultiMenuId, "# OF SWITCH PULSES PER COMMAND", (void *) "VOID", 2);
     XPLMAppendMenuSeparator(MultiMenuId);
     XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  1 PULSE PER COMMAND", (void *) "1", 2);
@@ -78,6 +79,9 @@ void process_multi_menu()
     XPLMAppendMenuSeparator(MultiMenuId);
     XPLMAppendMenuItem(MultiMenuId, "ENABLE", (void *) "ENABLE_AUTO_THROTTLE", 2);
     XPLMAppendMenuItem(MultiMenuId, "DISABLE", (void *) "DISABLE_AUTO_THROTTLE", 2);
+    XPLMAppendMenuSeparator(MultiMenuId);
+    */
+    XPLMAppendMenuItem(MultiMenuId, "Multi Panel Widget", (void *) "MULTI_WIDGET", 1);
 
   //!!! I'm adding memory of old setup, so the change is easily detected...
   //!!! Although I'm pretty sure it would be much better to handle this in the menu callback
@@ -105,6 +109,7 @@ void process_multi_menu()
   //if(trimspeed != last_trimspeed){
     //last_trimspeed = trimspeed;
     //XPLMCheckMenuItem(MultiMenuId, trimspeed + TMENU_BASE, xplm_Menu_Checked);
+    /*
     for(i = 1; i <= 3; ++i){
       if(i != trimspeed){
         XPLMCheckMenuItem(MultiMenuId, i + TMENU_BASE, xplm_Menu_Unchecked);
@@ -123,7 +128,7 @@ void process_multi_menu()
       }
     }
 
-
+*/
 
   //}
 }

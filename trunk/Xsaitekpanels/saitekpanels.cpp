@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.42   ***************
-// ****** May 21 2012   **************
+// ****** May 25 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -172,11 +172,6 @@ XPWidgetID	MultiAt1CheckWidget[50] = {NULL};
 XPWidgetID	MultiAt0TextWidget[50] = {NULL};
 XPWidgetID	MultiAt1TextWidget[50] = {NULL};
 
-//MultiAt0CheckWidget
-
-
-//XPWidgetID	SwitchDisableCheckWidget[50] = {NULL};
-//XPWidgetID	SwitchRemapCheckWidget[50] = {NULL};
 
 // *************** Switch Panel Command Ref *******************
 XPLMCommandRef ClFlOpn = NULL, ClFlCls = NULL;
@@ -897,9 +892,6 @@ PLUGIN_API int XPluginStart(char *		outName,
                              1,                          // Receive input before plugin windows.
                              (void *) 0);                // inRefcon.
 
-
-
-
   // Create our menu
 
    XsaitekpanelsMenuItem = XPLMAppendMenuItem(
@@ -975,11 +967,7 @@ PLUGIN_API int XPluginStart(char *		outName,
            Bip2SubMenuItem,
            XsaitekpanelsMenuHandler,
            (void *)1);
-
-
-
      }
-
 
    }
 
@@ -1040,8 +1028,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 PLUGIN_API void	XPluginStop(void)
 {
 
-    //printf("XPluginStop has been called \n");
-    XPLMDebugString("XPluginStop has been called \n");
+  XPLMDebugString("XPluginStop has been called \n");
   // ********** Unregitser the callback on quit. *************
   XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
   XPLMUnregisterCommandHandler(XpanelsFnButtonCommand, XpanelsFnButtonCommandHandler, 1, NULL);
@@ -1253,78 +1240,16 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
     if((long)inMenuRef == 2){
-        /*
-         if (strcmp((char *) inItemRef, "1") == 0) {
-             multispeed = 1;
-         }
-         if (strcmp((char *) inItemRef, "2") == 0) {
-             multispeed = 2;
-         }
-         if (strcmp((char *) inItemRef, "3") == 0) {
-             multispeed = 3;
-         }
-         if (strcmp((char *) inItemRef, "4") == 0) {
-             multispeed = 4;
-         }
-         if (strcmp((char *) inItemRef, "5") == 0) {
-             multispeed = 5;
-         }
-
-         if (strcmp((char *) inItemRef, "TRIM X1") == 0) {
-             trimspeed = 1;
-         }
-         if (strcmp((char *) inItemRef, "TRIM X2") == 0) {
-             trimspeed = 2;
-         }
-         if (strcmp((char *) inItemRef, "TRIM X3") == 0) {
-             trimspeed = 3;
-         }
-
-         if (strcmp((char *) inItemRef, "ENABLE_AUTO_THROTTLE") == 0) {
-             autothrottleswitchenable = 1;
-         }
-         if (strcmp((char *) inItemRef, "DISABLE_AUTO_THROTTLE") == 0) {
-             autothrottleswitchenable = 0;
-         }
-          */
-         if (strcmp((char *) inItemRef, "MULTI_WIDGET") == 0) {
+       if (strcmp((char *) inItemRef, "MULTI_WIDGET") == 0) {
              //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateMultiWidget(05, 700, 300, 330);	//left, top, right, bottom.
              multiMenuItem = 1;
-         }
+       }
 
     }
 
     if((long)inMenuRef == 3){
-        /*
-         if (strcmp((char *) inItemRef, "1") == 0) {
-             radspeed = 1;
-         }
-         if (strcmp((char *) inItemRef, "2") == 0) {
-             radspeed = 2;
-         }
-         if (strcmp((char *) inItemRef, "3") == 0) {
-             radspeed = 3;
-         }
-         if (strcmp((char *) inItemRef, "4") == 0) {
-             radspeed = 4;
-         }
-         if (strcmp((char *) inItemRef, "5") == 0) {
-             radspeed = 5;
-         }
-         if (strcmp((char *) inItemRef, "ADF1") == 0) {
-             numadf = 1;
-         }
-         if (strcmp((char *) inItemRef, "ADF2") == 0) {
-             numadf = 2;
-         }
-         if (strcmp((char *) inItemRef, "inHg") == 0) {
-            metricpressenable = 0;
-         }
-         if (strcmp((char *) inItemRef, "hPa") == 0) {
-             metricpressenable = 1;
-         }
-         */
+
          if (strcmp((char *) inItemRef, "RADIO_WIDGET") == 0) {
              //CreateRadioWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateRadioWidget(15, 700, 300, 300);	//left, top, right, bottom.
@@ -1334,7 +1259,6 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
     }
 
     if((long)inMenuRef == 4){
-
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
              //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateSwitchWidget(05, 700, 300, 480);	//left, top, right, bottom.
@@ -1342,7 +1266,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
          }
 
-     }
+    }
 
     if((long)inMenuRef == 5){
          if (strcmp((char *) inItemRef, "TRUE") == 0) {

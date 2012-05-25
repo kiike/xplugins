@@ -15,13 +15,10 @@
 #include "inireader.h"
 #include <vector>
 
-
 #include <iostream>
 #include <fstream>
 //#include <string>
 #include <string.h>
-
-
 
 string convert_Mac_Path(string in_path) {
 
@@ -46,11 +43,8 @@ string convert_Mac_Path(string in_path) {
        --n;
     }
 
-
     return in_path;
-
 }
-
 
 // ***** Configuration File Process ******
 void process_read_ini_file()

@@ -607,11 +607,55 @@ void process_read_ini_file()
     }
 
 
-    trimspeed = getOptionToInt("Multi Trim Speed");
+
+
+
     multispeed = getOptionToInt("Multi Freq Knob Pulse per Command");
+    XPSetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(MultiSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(MultiSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(MultiSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
+    if (multispeed == 1) {
+         XPSetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (multispeed == 2) {
+         XPSetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (multispeed == 3) {
+         XPSetWidgetProperty(MultiSpeed3CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (multispeed == 4) {
+         XPSetWidgetProperty(MultiSpeed4CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (multispeed == 5) {
+         XPSetWidgetProperty(MultiSpeed5CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+
+    trimspeed = getOptionToInt("Multi Trim Speed");
+    XPSetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(MultiTrimSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+    if (trimspeed == 1) {
+         XPSetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (trimspeed == 2) {
+         XPSetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (trimspeed == 3) {
+         XPSetWidgetProperty(MultiTrimSpeed3CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+
+
     autothrottleswitchenable = getOptionToInt("Auto Throttle Switch enable");
-
-
+    XPSetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonState, 0);
+    XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonState, 0);
+    if (autothrottleswitchenable == 0) {
+         XPSetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonState, 1);
+    }
+    if (autothrottleswitchenable == 1) {
+         XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonState, 1);
+    }
 
 
   return;

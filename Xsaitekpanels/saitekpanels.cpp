@@ -160,6 +160,20 @@ XPWidgetID	MultiSpeed2CheckWidget[50] = {NULL};
 XPWidgetID	MultiSpeed3CheckWidget[50] = {NULL};
 XPWidgetID	MultiSpeed4CheckWidget[50] = {NULL};
 XPWidgetID	MultiSpeed5CheckWidget[50] = {NULL};
+XPWidgetID	MultiSpeedTextWidget[50] = {NULL};
+
+XPWidgetID	MultiTrimSpeed1CheckWidget[50] = {NULL};
+XPWidgetID	MultiTrimSpeed2CheckWidget[50] = {NULL};
+XPWidgetID	MultiTrimSpeed3CheckWidget[50] = {NULL};
+XPWidgetID	MultiTrimSpeedTextWidget[50] = {NULL};
+
+XPWidgetID	MultiAt0CheckWidget[50] = {NULL};
+XPWidgetID	MultiAt1CheckWidget[50] = {NULL};
+XPWidgetID	MultiAt0TextWidget[50] = {NULL};
+XPWidgetID	MultiAt1TextWidget[50] = {NULL};
+
+//MultiAt0CheckWidget
+
 
 //XPWidgetID	SwitchDisableCheckWidget[50] = {NULL};
 //XPWidgetID	SwitchRemapCheckWidget[50] = {NULL};
@@ -328,6 +342,25 @@ int xpanelsfnbutton = 0, xpanelscrstoggle = 0;
 void CreateMultiWidget(int x1, int y1, int w, int h);
 int MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, intptr_t  inParam1, intptr_t  inParam2);
 
+int multiMenuItem;
+
+char MultiSpeedText[50][200] = {
+"FREQ KNOB  1 PULSE PER COMMAND",
+"FREQ KNOB  2 PULSES PER COMMAND",
+"FREQ KNOB  3 PULSES PER COMMAND",
+"FREQ KNOB  4 PULSES PER COMMAND",
+"FREQ KNOB  5 PULSES PER COMMAND",
+"end"
+
+};
+
+char MultiTrimSpeedText[50][200] = {
+"TRIM X1",
+"TRIM X2",
+"TRIM X3",
+"end"
+
+};
 
 
 hid_device *multihandle;
@@ -1220,6 +1253,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
     if((long)inMenuRef == 2){
+        /*
          if (strcmp((char *) inItemRef, "1") == 0) {
              multispeed = 1;
          }
@@ -1252,10 +1286,17 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "DISABLE_AUTO_THROTTLE") == 0) {
              autothrottleswitchenable = 0;
          }
+          */
+         if (strcmp((char *) inItemRef, "MULTI_WIDGET") == 0) {
+             //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
+             CreateMultiWidget(05, 700, 300, 330);	//left, top, right, bottom.
+             multiMenuItem = 1;
+         }
 
     }
 
     if((long)inMenuRef == 3){
+        /*
          if (strcmp((char *) inItemRef, "1") == 0) {
              radspeed = 1;
          }
@@ -1283,6 +1324,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          if (strcmp((char *) inItemRef, "hPa") == 0) {
              metricpressenable = 1;
          }
+         */
          if (strcmp((char *) inItemRef, "RADIO_WIDGET") == 0) {
              //CreateRadioWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateRadioWidget(15, 700, 300, 300);	//left, top, right, bottom.
@@ -1833,7 +1875,7 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
 return 0;
 }
 
-// This will create our switch widget dialog.
+// This will create our radio widget dialog.
 void CreateRadioWidget(int x, int y, int w, int h)
 {
         int x2 = x + w;
@@ -1948,110 +1990,106 @@ void CreateRadioWidget(int x, int y, int w, int h)
          }
 
 
-        // Checkbox for adf tuner
+// Checkbox for adf tuner
 
 
 
-                 yOffset = (05+28+(6*20));
-                 RadioAdf1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
-                                              1,	// Visible
-                                              "",       // desc
-                                              0,	// root
-                                              RadioWidgetID,
-                                              xpWidgetClass_Button);
+          yOffset = (05+28+(6*20));
+          RadioAdf1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                          1,	// Visible
+                          "",       // desc
+                          0,	// root
+                          RadioWidgetID,
+                          xpWidgetClass_Button);
 
-                  XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
-                  XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
-                  XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 0);
+          XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+          XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+          XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 0);
 
-                  yOffset = (05+28+(7*20));
-                  RadioAdf2CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
-                                               1,	// Visible
-                                               "",       // desc
-                                               0,	// root
-                                               RadioWidgetID,
-                                               xpWidgetClass_Button);
+          yOffset = (05+28+(7*20));
+          RadioAdf2CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                            1,	// Visible
+                            "",       // desc
+                            0,	// root
+                            RadioWidgetID,
+                            xpWidgetClass_Button);
 
-                   XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
-                   XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
-                   XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 0);
-
-
-                   yOffset = (05+28+(6*20));
-                   RadioAdf1TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
-                                                1,	// Visible
-                                                "ONE ADF TUNER",       // desc
-                                                0,	// root
-                                                RadioWidgetID,
-                                                xpWidgetClass_Caption);
-
-                    XPSetWidgetProperty(RadioAdf1TextWidget[0], xpProperty_CaptionLit, 1);
-
-                    yOffset = (05+28+(7*20));
-                    RadioAdf2TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
-                                                 1,	// Visible
-                                                 "TWO ADF TUNERS",       // desc
-                                                 0,	// root
-                                                 RadioWidgetID,
-                                                 xpWidgetClass_Caption);
-
-                     XPSetWidgetProperty(RadioAdf2TextWidget[0], xpProperty_CaptionLit, 1);
+          XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+          XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+          XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 0);
 
 
+          yOffset = (05+28+(6*20));
+          RadioAdf1TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                          1,	// Visible
+                          "ONE ADF TUNER",       // desc
+                           0,	// root
+                           RadioWidgetID,
+                           xpWidgetClass_Caption);
 
+          XPSetWidgetProperty(RadioAdf1TextWidget[0], xpProperty_CaptionLit, 1);
 
-                     // Checkbox for QNH
+          yOffset = (05+28+(7*20));
+          RadioAdf2TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                          1,	// Visible
+                          "TWO ADF TUNERS",       // desc
+                          0,	// root
+                          RadioWidgetID,
+                          xpWidgetClass_Caption);
 
-
-
-                              yOffset = (05+28+(9*20));
-                              RadioQnh0CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
-                                                           1,	// Visible
-                                                           "",       // desc
-                                                           0,	// root
-                                                           RadioWidgetID,
-                                                           xpWidgetClass_Button);
-
-                               XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
-                               XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
-                               XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 0);
-
-                               yOffset = (05+28+(10*20));
-                               RadioQnh1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
-                                                            1,	// Visible
-                                                            "",       // desc
-                                                            0,	// root
-                                                            RadioWidgetID,
-                                                            xpWidgetClass_Button);
-
-                                XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
-                                XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
-                                XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 0);
-
-
-                                yOffset = (05+28+(9*20));
-                                RadioQnh0TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
-                                                             1,	// Visible
-                                                             "QNH display inHg",       // desc
-                                                             0,	// root
-                                                             RadioWidgetID,
-                                                             xpWidgetClass_Caption);
-
-                                 XPSetWidgetProperty(RadioQnh0TextWidget[0], xpProperty_CaptionLit, 1);
-
-                                 yOffset = (05+28+(10*20));
-                                 RadioQnh1TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
-                                                              1,	// Visible
-                                                              "QNH display hPa",       // desc
-                                                              0,	// root
-                                                              RadioWidgetID,
-                                                              xpWidgetClass_Caption);
-
-                                  XPSetWidgetProperty(RadioQnh1TextWidget[0], xpProperty_CaptionLit, 1);
+          XPSetWidgetProperty(RadioAdf2TextWidget[0], xpProperty_CaptionLit, 1);
 
 
 
 
+// Checkbox for QNH
+
+
+
+          yOffset = (05+28+(9*20));
+          RadioQnh0CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           RadioWidgetID,
+                           xpWidgetClass_Button);
+
+          XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+          XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+          XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 0);
+
+          yOffset = (05+28+(10*20));
+          RadioQnh1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           RadioWidgetID,
+                           xpWidgetClass_Button);
+
+          XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+          XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+          XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+          yOffset = (05+28+(9*20));
+          RadioQnh0TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                          1,	// Visible
+                          "QNH display inHg",       // desc
+                          0,	// root
+                          RadioWidgetID,
+                          xpWidgetClass_Caption);
+
+          XPSetWidgetProperty(RadioQnh0TextWidget[0], xpProperty_CaptionLit, 1);
+
+          yOffset = (05+28+(10*20));
+          RadioQnh1TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                          1,	// Visible
+                          "QNH display hPa",       // desc
+                          0,	// root
+                          RadioWidgetID,
+                          xpWidgetClass_Caption);
+
+         XPSetWidgetProperty(RadioQnh1TextWidget[0], xpProperty_CaptionLit, 1);
 
 
 // Register our widget handler
@@ -2162,34 +2200,356 @@ int	RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, int
          }
 
 
-
-
-
-
-
-return 1;
+         return 1;
     }
 
-       //printf("Made it to RadioHandler\n");
-       return 0 ;
+
+  return 0 ;
 }
 
- /*
-            if(inParam1 == (long)SwitchBatAltCheckWidget[0] ||
-               inParam1 == (long)SwitchAltBatCheckWidget[0]) {
 
-                     XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 0);
-                     XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 0);
+// This will create our multi widget dialog.
+void CreateMultiWidget(int x, int y, int w, int h)
+{
+        int x2 = x + w;
+        int y2 = y - h;
+        int Index;
+        int WindowCentre = x+w/2;
+        int yOffset;
+        char Buffer[255];
+
+        DataRefID.clear();
+        memset(MultiSpeed1CheckWidget, 0, sizeof(MultiSpeed1CheckWidget));
+        memset(MultiSpeed2CheckWidget, 0, sizeof(MultiSpeed2CheckWidget));
+        memset(MultiSpeed3CheckWidget, 0, sizeof(MultiSpeed3CheckWidget));
+        memset(MultiSpeed4CheckWidget, 0, sizeof(MultiSpeed4CheckWidget));
+        memset(MultiSpeed5CheckWidget, 0, sizeof(MultiSpeed5CheckWidget));
+
+// Create the Main Widget window.
+        MultiWidgetID = XPCreateWidget(x, y, x2, y2,
+                                        1,		        	// Visible
+                                        "Multi   Panel   Mappings",	// desc
+                                        1,				// root
+                                        NULL,				// no container
+                                        xpWidgetClass_MainWindow);
+
+// Add Close Box to the Main Widget.  Other options are available.  See the SDK Documentation.
+        XPSetWidgetProperty(MultiWidgetID, xpProperty_MainWindowHasCloseBoxes, 1);
+        XPSetWidgetProperty(MultiWidgetID, xpProperty_MainWindowType, xpMainWindowStyle_Translucent);
+
+
+ // Checkbox for silver knob speed
+
+
+
+        yOffset = (05+28+(0*20));
+        MultiSpeed1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+
+        yOffset = (05+28+(1*20));
+        MultiSpeed2CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+        yOffset = (05+28+(2*20));
+        MultiSpeed3CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiSpeed3CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiSpeed3CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+
+        yOffset = (05+28+(3*20));
+        MultiSpeed4CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiSpeed4CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiSpeed4CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+
+        yOffset = (05+28+(4*20));
+        MultiSpeed5CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiSpeed5CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiSpeed5CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+// Create a text widget
+
+        for (Index=0; Index < 50; Index++)
+        {
+             if(strcmp(MultiSpeedText[Index],"end") == 0) {break;}
+
+                 yOffset = (05+28+(Index*20));
+                 MultiSpeedTextWidget[Index] = XPCreateWidget(x+50, y-yOffset, x+50+170, y-yOffset-20,
+                                  1,	// Visible
+                                  MultiSpeedText[Index],// desc
+                                  0,		// root
+                                  MultiWidgetID,
+                                  xpWidgetClass_Caption);
+                 XPSetWidgetProperty(MultiSpeedTextWidget[Index], xpProperty_CaptionLit, 1);
+        }
+
+//  // Checkbox for trim speed
+
+        yOffset = (05+28+(6*20));
+        MultiTrimSpeed1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+        yOffset = (05+28+(7*20));
+        MultiTrimSpeed2CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+
+        yOffset = (05+28+(8*20));
+        MultiTrimSpeed3CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                           1,	// Visible
+                           "",       // desc
+                           0,	// root
+                           MultiWidgetID,
+                           xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiTrimSpeed3CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiTrimSpeed3CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiTrimSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+ // Create a text widget
+
+        for (Index=0; Index < 50; Index++)
+        {
+             if(strcmp(MultiTrimSpeedText[Index],"end") == 0) {break;}
+
+                 yOffset = (05+28+((Index+6)*20));
+                 MultiTrimSpeedTextWidget[Index] = XPCreateWidget(x+50, y-yOffset, x+50+170, y-yOffset-20,
+                                  1,	// Visible
+                                  MultiTrimSpeedText[Index],// desc
+                                  0,		// root
+                                  MultiWidgetID,
+                                  xpWidgetClass_Caption);
+                 XPSetWidgetProperty(MultiTrimSpeedTextWidget[Index], xpProperty_CaptionLit, 1);
+        }
+
+// Auto Throttle Widget
+
+        yOffset = (05+28+(10*20));
+        MultiAt0CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                         1,	// Visible
+                         "",       // desc
+                         0,	// root
+                         MultiWidgetID,
+                         xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonState, 0);
+
+
+        yOffset = (05+28+(11*20));
+        MultiAt1CheckWidget[0] = XPCreateWidget(x+05, y-yOffset, x+05+22, y-yOffset-20,
+                         1,	// Visible
+                         "",       // desc
+                         0,	// root
+                         MultiWidgetID,
+                         xpWidgetClass_Button);
+
+        XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonType, xpRadioButton);
+        XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonBehavior, xpButtonBehaviorRadioButton);
+        XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonState, 0);
+
+        yOffset = (05+28+(10*20));
+        MultiAt0TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                        1,	// Visible
+                        "DISABLE_AUTO_THROTTLE SWITCH",       // desc
+                         0,	// root
+                         MultiWidgetID,
+                         xpWidgetClass_Caption);
+
+        XPSetWidgetProperty(MultiAt0TextWidget[0], xpProperty_CaptionLit, 1);
+
+        yOffset = (05+28+(11*20));
+        MultiAt1TextWidget[0] = XPCreateWidget(x+50, y-yOffset, x+50+22, y-yOffset-20,
+                        1,	// Visible
+                        "ENABLE_AUTO_THROTTLE SWITCH",       // desc
+                         0,	// root
+                         MultiWidgetID,
+                         xpWidgetClass_Caption);
+
+        XPSetWidgetProperty(MultiAt1TextWidget[0], xpProperty_CaptionLit, 1);
+
+
+// Register our widget handler
+             XPAddWidgetCallback(MultiWidgetID, MultiHandler);
+             process_read_ini_file();
+
+
+
+
+}
+
+
+// This is our widget handler.  In this example we are only interested when the close box is pressed.
+int	MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, intptr_t  inParam1, intptr_t  inParam2)
+{
+        int State, State1, State2;
+        int Index1;
+        if (MultiinMessage == xpMessage_CloseButtonPushed)
+        {
+                if (multiMenuItem == 1)
+                {
+                        XPHideWidget(MultiWidgetID);
+                }
+                return 1;
+        }
+
+        if(MultiinMessage == xpMsg_ButtonStateChanged)
+        {
+
+
+
+            if(inParam1 == (long)MultiSpeed1CheckWidget[0] ||
+               inParam1 == (long)MultiSpeed2CheckWidget[0] ||
+               inParam1 == (long)MultiSpeed3CheckWidget[0] ||
+               inParam1 == (long)MultiSpeed4CheckWidget[0] ||
+               inParam1 == (long)MultiSpeed5CheckWidget[0]) {
+
+
+
+                     XPSetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(MultiSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(MultiSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(MultiSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
+
 
                      XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+
+            }
+
+            State = XPGetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                multispeed = 1;
+            }
+            State = XPGetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                multispeed = 2;
+            }
+            State = XPGetWidgetProperty(MultiSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                multispeed = 3;
+            }
+            State = XPGetWidgetProperty(MultiSpeed4CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                multispeed = 4;
+            }
+            State = XPGetWidgetProperty(MultiSpeed5CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                multispeed = 5;
             }
 
 
-  */
+            if(inParam1 == (long)MultiTrimSpeed1CheckWidget[0] ||
+               inParam1 == (long)MultiTrimSpeed2CheckWidget[0] ||
+               inParam1 == (long)MultiTrimSpeed3CheckWidget[0] ) {
+
+                     XPSetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(MultiTrimSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+
+                     XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+
+            State = XPGetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                trimspeed = 1;
+            }
+
+            State = XPGetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                trimspeed = 2;
+            }
+            State = XPGetWidgetProperty(MultiTrimSpeed3CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                trimspeed = 3;
+            }
+
+         }
 
 
 
 
+
+            if(inParam1 == (long)MultiAt0CheckWidget[0] ||
+               inParam1 == (long)MultiAt1CheckWidget[0] ) {
+
+                     XPSetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonState, 0);
+                     XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonState, 0);
+
+                     XPSetWidgetProperty((XPWidgetID)inParam1, xpProperty_ButtonState, 1);
+
+            State = XPGetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                autothrottleswitchenable = 0;
+            }
+
+            State = XPGetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonState, 0);
+            if (State){
+                autothrottleswitchenable = 1;
+            }
+         }
+
+
+         return 1;
+    }
+
+
+  return 0 ;
+}
 
 
 

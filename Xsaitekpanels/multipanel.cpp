@@ -62,25 +62,6 @@ void process_multi_menu()
 {
    //!!! I'm pretty sure this would be much better placed in initialization function of the plugin
     XPLMClearAllMenuItems(MultiMenuId);
-    /*
-    XPLMAppendMenuItem(MultiMenuId, "# OF SWITCH PULSES PER COMMAND", (void *) "VOID", 2);
-    XPLMAppendMenuSeparator(MultiMenuId);
-    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  1 PULSE PER COMMAND", (void *) "1", 2);
-    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  2 PULSES PER COMMAND", (void *) "2", 2);
-    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  3 PULSES PER COMMAND", (void *) "3", 2);
-    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  4 PULSES PER COMMAND", (void *) "4", 2);
-    XPLMAppendMenuItem(MultiMenuId, "MULTI KNOB  5 PULSES PER COMMAND", (void *) "5", 2);
-    XPLMAppendMenuSeparator(MultiMenuId);
-    XPLMAppendMenuItem(MultiMenuId, "TRIM X1", (void *) "TRIM X1", 2);
-    XPLMAppendMenuItem(MultiMenuId, "TRIM X2", (void *) "TRIM X2", 2);
-    XPLMAppendMenuItem(MultiMenuId, "TRIM X3", (void *) "TRIM X3", 2);
-    XPLMAppendMenuSeparator(MultiMenuId);
-    XPLMAppendMenuItem(MultiMenuId, "Auto Throttle Switch enable / disable", (void *) "VOID", 2);
-    XPLMAppendMenuSeparator(MultiMenuId);
-    XPLMAppendMenuItem(MultiMenuId, "ENABLE", (void *) "ENABLE_AUTO_THROTTLE", 2);
-    XPLMAppendMenuItem(MultiMenuId, "DISABLE", (void *) "DISABLE_AUTO_THROTTLE", 2);
-    XPLMAppendMenuSeparator(MultiMenuId);
-    */
     XPLMAppendMenuItem(MultiMenuId, "Multi Panel Widget", (void *) "MULTI_WIDGET", 1);
 
   //!!! I'm adding memory of old setup, so the change is easily detected...
@@ -104,33 +85,7 @@ void process_multi_menu()
         XPLMCheckMenuItem(MultiMenuId, i + MMENU_BASE, xplm_Menu_Checked);
       }
     }
-  //}
-  
-  //if(trimspeed != last_trimspeed){
-    //last_trimspeed = trimspeed;
-    //XPLMCheckMenuItem(MultiMenuId, trimspeed + TMENU_BASE, xplm_Menu_Checked);
-    /*
-    for(i = 1; i <= 3; ++i){
-      if(i != trimspeed){
-        XPLMCheckMenuItem(MultiMenuId, i + TMENU_BASE, xplm_Menu_Unchecked);
-      }
-      if(i == trimspeed){
-        XPLMCheckMenuItem(MultiMenuId, i + TMENU_BASE, xplm_Menu_Checked);
-      }
-    }
 
-    for(i = 1; i <= 2; ++i){
-      if(i != autothrottleswitchenable){
-        XPLMCheckMenuItem(MultiMenuId, i + AMENU_BASE, xplm_Menu_Unchecked);
-      }
-      if(i == autothrottleswitchenable){
-        XPLMCheckMenuItem(MultiMenuId, i + AMENU_BASE, xplm_Menu_Checked);
-      }
-    }
-
-*/
-
-  //}
 }
 
 

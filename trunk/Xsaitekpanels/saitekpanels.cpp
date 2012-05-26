@@ -1029,16 +1029,7 @@ PLUGIN_API void	XPluginStop(void)
 {
 
   XPLMDebugString("XPluginStop has been called \n");
-  // ********** Unregitser the callback on quit. *************
-  XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
-  XPLMUnregisterCommandHandler(XpanelsFnButtonCommand, XpanelsFnButtonCommandHandler, 1, NULL);
-  XPDestroyWidget(BipWidgetID, 1);
-  XPLMDestroyMenu(BipMenuId);
-  XPLMDestroyMenu(Bip2MenuId);
-  XPLMDestroyMenu(Bip3MenuId);
-  XPLMDestroyMenu(MultiMenuId);
-  XPLMDestroyMenu(RadioMenuId);
-  XPLMDestroyMenu(SwitchMenuId);
+
 
   if (switchMenuItem == 1)
   {
@@ -1182,6 +1173,20 @@ PLUGIN_API void	XPluginStop(void)
        stopbipcnt--;
   }
 
+  // ********** Unregitser the callback on quit. *************
+  XPLMUnregisterFlightLoopCallback(MyPanelsFlightLoopCallback, NULL);
+  XPLMUnregisterCommandHandler(XpanelsFnButtonCommand, XpanelsFnButtonCommandHandler, 1, NULL);
+  XPDestroyWidget(BipWidgetID, 1);
+  XPLMDestroyMenu(BipMenuId);
+  XPLMDestroyMenu(Bip2MenuId);
+  XPLMDestroyMenu(Bip3MenuId);
+  XPLMDestroyMenu(MultiMenuId);
+  XPLMDestroyMenu(RadioMenuId);
+  XPLMDestroyMenu(SwitchMenuId);
+
+  XPLMDestroyMenu(SwitchWidgetID);
+  XPLMDestroyMenu(RadioWidgetID);
+  XPLMDestroyMenu(MultiWidgetID);
 
 }
 

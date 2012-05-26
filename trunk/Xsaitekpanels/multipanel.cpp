@@ -60,32 +60,8 @@ static unsigned char multiwbuf[13];
 
 void process_multi_menu()
 {
-   //!!! I'm pretty sure this would be much better placed in initialization function of the plugin
     XPLMClearAllMenuItems(MultiMenuId);
     XPLMAppendMenuItem(MultiMenuId, "Multi Panel Widget", (void *) "MULTI_WIDGET", 1);
-
-  //!!! I'm adding memory of old setup, so the change is easily detected...
-  //!!! Although I'm pretty sure it would be much better to handle this in the menu callback
-  //static int last_multispeed = -1;
-  //static int last_trimspeed = -1;
-  int i;
-  
-  const int MMENU_BASE = 1;
-  const int TMENU_BASE = 7;
-  const int AMENU_BASE = 13;
-  
-  //if(multispeed != last_multispeed){
-    //last_multispeed = multispeed;
-   // XPLMCheckMenuItem(MultiMenuId, multispeed + MMENU_BASE, xplm_Menu_Checked);
-    for(i = 1; i <= 5; ++i){
-      if(i != multispeed){
-        XPLMCheckMenuItem(MultiMenuId, i + MMENU_BASE, xplm_Menu_Unchecked);
-      }
-      if(i == multispeed){
-        XPLMCheckMenuItem(MultiMenuId, i + MMENU_BASE, xplm_Menu_Checked);
-      }
-    }
-
 }
 
 

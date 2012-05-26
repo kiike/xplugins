@@ -548,10 +548,10 @@ void process_radio_lower_display()
         radiocdig1 = 15, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
         radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
         if (metricpressenable == 0) {
-            radioadig3 = radioadig3+208;
+            radiocdig3 = radiocdig3+208;
         }
         if (metricpressenable == 1) {
-            radioadig3 = radioadig3;
+            radiocdig3 = radiocdig3;
         }
         radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
         radiocdig5 = radiocrem4;
@@ -569,10 +569,10 @@ void process_radio_lower_display()
         radiocdig1 = 15, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
         radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
         if (metricpressenable == 0) {
-            radioadig3 = radioadig3+208;
+            radiocdig3 = radiocdig3+208;
         }
         if (metricpressenable == 1) {
-            radioadig3 = radioadig3;
+            radiocdig3 = radiocdig3;
         }
         radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
         radiocdig5 = radiocrem4;
@@ -590,10 +590,10 @@ void process_radio_lower_display()
         radiocdig1 = 15, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
         radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
         if (metricpressenable == 0) {
-            radioadig3 = radioadig3+208;
+            radiocdig3 = radiocdig3+208;
         }
         if (metricpressenable == 1) {
-            radioadig3 = radioadig3;
+            radiocdig3 = radiocdig3;
         }
         radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
         radiocdig5 = radiocrem4;
@@ -613,10 +613,10 @@ void process_radio_lower_display()
           radiocdig1 = 15+208, radiocdig2 = radiocactv/1000, radiocrem2 = radiocactv%1000;
           radiocdig3 = radiocrem2/100, radiocrem3 = radiocrem2%100;
           if (metricpressenable == 0) {
-              radioadig3 = radioadig3+208;
+              radiocdig3 = radiocdig3+208;
           }
           if (metricpressenable == 1) {
-              radioadig3 = radioadig3;
+              radiocdig3 = radiocdig3;
           }
           radiocdig4 = radiocrem3/10, radiocrem4 = radiocrem3%10;
           radiocdig5 = radiocrem4;

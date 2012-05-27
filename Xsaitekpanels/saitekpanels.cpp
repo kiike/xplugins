@@ -447,7 +447,7 @@ unsigned char bipwbuf[4][10];
 hid_device *biphandle[4];
 
 // ****************** Saitek Panels variables *******************************
-void            XsaitekpanelsMenuHandler(void *, void *);
+void XsaitekpanelsMenuHandler(void *, void *);
 void WriteCSVTableToDisk(void);
 
 bool ReadConfigFile(std::string PlaneICAO);
@@ -1200,7 +1200,7 @@ PLUGIN_API int XPluginEnable(void)
 }
 
 PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
-				      long		inMessage,
+                                      int		inMessage,
                                       void *		inParam)
 {
     (void) inFromWho; // To get rid of warnings on unused variables
@@ -1211,13 +1211,13 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 
     PlaneICAO.insert(1,ICAOString);
 
-    if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((long) inParam == 0)) {
+    if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((int) inParam == 0)) {
       process_read_ini_file();
     }
 
     if(bipcnt > 0){
 
-        if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((long) inParam == 0)) {
+        if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((int) inParam == 0)) {
           ReadConfigFile(PlaneICAO);
         }
         if (inMessage == XPLM_MSG_AIRPORT_LOADED) {
@@ -1231,7 +1231,7 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 {
     (void) inMenuRef; // To get rid of warnings on unused variables
-    if((long)inMenuRef == 1){
+    if((int)inMenuRef == 1){
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
          }
@@ -1244,7 +1244,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          }
 
     }
-    if((long)inMenuRef == 2){
+    if((int)inMenuRef == 2){
        if (strcmp((char *) inItemRef, "MULTI_WIDGET") == 0) {
              //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateMultiWidget(05, 700, 300, 330);	//left, top, right, bottom.
@@ -1253,7 +1253,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
-    if((long)inMenuRef == 3){
+    if((int)inMenuRef == 3){
 
          if (strcmp((char *) inItemRef, "RADIO_WIDGET") == 0) {
              //CreateRadioWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
@@ -1263,7 +1263,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
-    if((long)inMenuRef == 4){
+    if((int)inMenuRef == 4){
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
              //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateSwitchWidget(05, 700, 300, 480);	//left, top, right, bottom.
@@ -1273,7 +1273,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
-    if((long)inMenuRef == 5){
+    if((int)inMenuRef == 5){
          if (strcmp((char *) inItemRef, "TRUE") == 0) {
              process_read_ini_file();
          }
@@ -1490,8 +1490,8 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
         if(SwitchinMessage == xpMsg_ButtonStateChanged)
         {
 
-            if(inParam1 == (long)SwitchBatAltCheckWidget[0] ||
-               inParam1 == (long)SwitchAltBatCheckWidget[0]) {
+            if(inParam1 == (intptr_t)SwitchBatAltCheckWidget[0] ||
+               inParam1 == (intptr_t)SwitchAltBatCheckWidget[0]) {
 
                      XPSetWidgetProperty(SwitchBatAltCheckWidget[0], xpProperty_ButtonState, 0);
                      XPSetWidgetProperty(SwitchAltBatCheckWidget[0], xpProperty_ButtonState, 0);
@@ -1506,9 +1506,9 @@ int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, 
 
 
 
-            if(inParam1 == (long)SwitchDisableCheckWidget[Index1] ||
-               inParam1 == (long)SwitchEnableCheckWidget[Index1] ||
-               inParam1 == (long)SwitchRemapCheckWidget[Index1]) {
+            if(inParam1 == (intptr_t)SwitchDisableCheckWidget[Index1] ||
+               inParam1 == (intptr_t)SwitchEnableCheckWidget[Index1] ||
+               inParam1 == (intptr_t)SwitchRemapCheckWidget[Index1]) {
 
                      XPSetWidgetProperty(SwitchDisableCheckWidget[Index1], xpProperty_ButtonState, 0);
                      XPSetWidgetProperty(SwitchEnableCheckWidget[Index1], xpProperty_ButtonState, 0);
@@ -2047,11 +2047,11 @@ int	RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, int
 
 
 
-            if(inParam1 == (long)RadioSpeed1CheckWidget[0] ||
-               inParam1 == (long)RadioSpeed2CheckWidget[0] ||
-               inParam1 == (long)RadioSpeed3CheckWidget[0] ||
-               inParam1 == (long)RadioSpeed4CheckWidget[0] ||
-               inParam1 == (long)RadioSpeed5CheckWidget[0]) {
+            if(inParam1 == (intptr_t)RadioSpeed1CheckWidget[0] ||
+               inParam1 == (intptr_t)RadioSpeed2CheckWidget[0] ||
+               inParam1 == (intptr_t)RadioSpeed3CheckWidget[0] ||
+               inParam1 == (intptr_t)RadioSpeed4CheckWidget[0] ||
+               inParam1 == (intptr_t)RadioSpeed5CheckWidget[0]) {
 
 
 
@@ -2088,8 +2088,8 @@ int	RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, int
             }
 
 
-            if(inParam1 == (long)RadioAdf1CheckWidget[0] ||
-               inParam1 == (long)RadioAdf2CheckWidget[0] ) {
+            if(inParam1 == (intptr_t)RadioAdf1CheckWidget[0] ||
+               inParam1 == (intptr_t)RadioAdf2CheckWidget[0] ) {
 
                      XPSetWidgetProperty(RadioAdf1CheckWidget[0], xpProperty_ButtonState, 0);
                      XPSetWidgetProperty(RadioAdf2CheckWidget[0], xpProperty_ButtonState, 0);
@@ -2109,8 +2109,8 @@ int	RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, int
 
 
 
-            if(inParam1 == (long)RadioQnh0CheckWidget[0] ||
-               inParam1 == (long)RadioQnh1CheckWidget[0] ) {
+            if(inParam1 == (intptr_t)RadioQnh0CheckWidget[0] ||
+               inParam1 == (intptr_t)RadioQnh1CheckWidget[0] ) {
 
                      XPSetWidgetProperty(RadioQnh0CheckWidget[0], xpProperty_ButtonState, 0);
                      XPSetWidgetProperty(RadioQnh1CheckWidget[0], xpProperty_ButtonState, 0);
@@ -2382,11 +2382,11 @@ int	MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, int
 
 
 
-            if(inParam1 == (long)MultiSpeed1CheckWidget[0] ||
-               inParam1 == (long)MultiSpeed2CheckWidget[0] ||
-               inParam1 == (long)MultiSpeed3CheckWidget[0] ||
-               inParam1 == (long)MultiSpeed4CheckWidget[0] ||
-               inParam1 == (long)MultiSpeed5CheckWidget[0]) {
+            if(inParam1 == (intptr_t)MultiSpeed1CheckWidget[0] ||
+               inParam1 == (intptr_t)MultiSpeed2CheckWidget[0] ||
+               inParam1 == (intptr_t)MultiSpeed3CheckWidget[0] ||
+               inParam1 == (intptr_t)MultiSpeed4CheckWidget[0] ||
+               inParam1 == (intptr_t)MultiSpeed5CheckWidget[0]) {
 
 
 
@@ -2423,9 +2423,9 @@ int	MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, int
             }
 
 
-            if(inParam1 == (long)MultiTrimSpeed1CheckWidget[0] ||
-               inParam1 == (long)MultiTrimSpeed2CheckWidget[0] ||
-               inParam1 == (long)MultiTrimSpeed3CheckWidget[0] ) {
+            if(inParam1 == (intptr_t)MultiTrimSpeed1CheckWidget[0] ||
+               inParam1 == (intptr_t)MultiTrimSpeed2CheckWidget[0] ||
+               inParam1 == (intptr_t)MultiTrimSpeed3CheckWidget[0] ) {
 
                      XPSetWidgetProperty(MultiTrimSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
                      XPSetWidgetProperty(MultiTrimSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
@@ -2453,8 +2453,8 @@ int	MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, int
 
 
 
-            if(inParam1 == (long)MultiAt0CheckWidget[0] ||
-               inParam1 == (long)MultiAt1CheckWidget[0] ) {
+            if(inParam1 == (intptr_t)MultiAt0CheckWidget[0] ||
+               inParam1 == (intptr_t)MultiAt1CheckWidget[0] ) {
 
                      XPSetWidgetProperty(MultiAt0CheckWidget[0], xpProperty_ButtonState, 0);
                      XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonState, 0);

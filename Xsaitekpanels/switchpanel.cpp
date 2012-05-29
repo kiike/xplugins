@@ -527,10 +527,19 @@ void process_avionics_power_switch()
 
 	if(testbit(switchbuf,AVIONICS_POWER)) {
           XPLMCommandOnce(AvLtOn);
+          if (XPLMGetDatai(BatPwrOn) == 1) {
+              XPLMSetDatai(AvPwrOn, 1);
+          }
+          if (XPLMGetDatai(BatPwrOn) == 0) {
+              XPLMSetDatai(AvPwrOn, 0);
+          }
+
  	}
-	if(!testbit(switchbuf,AVIONICS_POWER)) {
+        if(!testbit(switchbuf,AVIONICS_POWER)) {
           XPLMCommandOnce(AvLtOff);
  	}
+
+
 }
 
 // ***************** Fuel Pump *******************

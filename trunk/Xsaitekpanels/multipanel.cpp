@@ -137,9 +137,9 @@ void process_multi_display()
 
 }
 
+// ***************** ALT Switch Position *******************
 void process_alt_switch()
 {
-// ***************** ALT Switch Position *******************
 
 	if(testbit(multibuf,ALT_SWITCH)) {
           multiseldis = 1;
@@ -213,9 +213,9 @@ void process_alt_switch()
 	}
 }
 
+// ***************** VS Switch Position *******************
 void process_vs_switch()
 {
-// ***************** VS Switch Position *******************
 
 	if(testbit(multibuf,VS_SWITCH)) {
           multiseldis = 1;
@@ -284,9 +284,9 @@ void process_vs_switch()
 	}
 }
 
+// ***************** IAS Switch Position *******************
 void process_ias_switch()
 {
-// ***************** IAS Switch Position *******************
 
         if(testbit(multibuf,IAS_SWITCH)) {
           multiseldis = 2;
@@ -366,9 +366,10 @@ void process_ias_switch()
         }
 }
 
+// ***************** HDG Switch Position *******************
 void process_hdg_switch()
 {
-// ***************** HDG Switch Position *******************
+
 
 	if(testbit(multibuf,HDG_SWITCH)) {
           multiseldis = 3;
@@ -431,9 +432,11 @@ void process_hdg_switch()
 	}
     }
 }
+
+// ***************** CRS Switch Position *******************
 void process_crs_switch()
 {
-// ***************** CRS Switch Position *******************
+
 
     float cur_apcrsf = 0;
     int   cur_apcrs  = 0;
@@ -506,12 +509,13 @@ void process_crs_switch()
 	}
 }
 
+// ***************** Auto Throttle Switch Position *******************
 void process_autothrottle_switch()
 {
     if(autothrottleswitchenable == 0) {
         return;
     }
-// ***************** Auto Throttle Switch Position *******************
+
 
         if(testbit(multibuf,AUTO_THROTTLE_SWITCH)) {
           if (loaded737 == 1){
@@ -529,9 +533,10 @@ void process_autothrottle_switch()
          }
 }
 
+// ***************** AP Master Button and light *******************
 void process_ap_master_switch()
 {
-// ***************** AP Master Button and light *******************
+
     if (loaded737 == 1) {
         if (appushed == 0) {
             if (testbit(multibuf, AP_MASTER_BUTTON)) {
@@ -617,9 +622,10 @@ void process_ap_master_switch()
     }
 }
 
+// ***************** HDG Button and light *******************
 void process_hdg_button()
 {
-// ***************** HDG Button and light *******************
+
     if (loaded737 == 1) {
         if (multires > 0) {
             if (testbit(multibuf, HDG_BUTTON)) {
@@ -673,9 +679,10 @@ void process_hdg_button()
     }
 }
 
+// ***************** NAV Button and light *******************
 void process_nav_button()
 {
-// ***************** NAV Button and light *******************
+
     if (loaded737 == 1) {
         if (multires > 0) {
             if (testbit(multibuf, NAV_BUTTON)) {
@@ -765,9 +772,10 @@ void process_nav_button()
    }
 }
 
+// ***************** IAS Button and light ******************
 void process_ias_button()
 {
-// ***************** IAS Button and light *******************
+
     if (loaded737 == 1) {
          if (multires > 0) {
              if (testbit(multibuf, IAS_BUTTON)) {
@@ -826,9 +834,10 @@ void process_ias_button()
     }
 }
 
+// ***************** ALT Button and light *******************
 void process_alt_button()
 {
-// ***************** ALT Button and light *******************
+
     if (loaded737 == 1) {
         if (multires > 0) {
             if (testbit(multibuf, ALT_BUTTON)) {
@@ -875,9 +884,10 @@ void process_alt_button()
     }
 }
 
+// ***************** VS Button and light *******************
 void process_vs_button()
 {
-// ***************** VS Button and light *******************
+
     if (loaded737 == 1) {
         if (multires > 0) {
             if (testbit(multibuf, VS_BUTTON)) {
@@ -926,9 +936,10 @@ void process_vs_button()
     }
 }
 
+// ***************** APR Button and light *******************
 void process_apr_button()
 {
-// ***************** APR Button and light *******************
+
     if (loaded737 == 1) {
         if (multires > 0) {
             if (testbit(multibuf, APR_BUTTON)) {
@@ -977,10 +988,9 @@ void process_apr_button()
     }
 }
 
+// ***************** REV Button and light *******************
 void process_rev_button()
 {
-// ***************** REV Button and light *******************
-
         if (multires > 0) {
           if(testbit(multibuf,REV_BUTTON)) {
             XPLMCommandOnce(ApRevBtn);
@@ -1004,9 +1014,10 @@ void process_rev_button()
 	} 
 }
 
+// ***************** Flaps Switch *******************
 void process_flaps_switch()
 {
-// ***************** Flaps Switch *******************
+    if (XPLMGetDatai(BatPwrOn) == 1) {
 
         if (multires > 0) {
 	  if(testbit(multibuf,FLAPS_UP_SWITCH)) {
@@ -1016,11 +1027,13 @@ void process_flaps_switch()
 	    XPLMCommandOnce(FlapsDn);	 
 	  }
         }
+   }
 }
 
+// *************** Trim Wheel *********************
 void process_trim_wheel()
 {
-// *************** Trim Wheel *********************
+
   int i;
         if (multires > 0) {
 	  if(testbit(multibuf,TRIM_WHEEL_UP)) {
@@ -1036,9 +1049,10 @@ void process_trim_wheel()
 	}
 }
 
+// ***************** Flasher for Button LEDS *******************
 void process_multi_flash()
 {
-// ***************** Flasher for Button LEDS *******************
+
 
 flashcnt++;
 if (flashcnt < 50) {
@@ -1052,9 +1066,9 @@ if (flashcnt == 100) {
 }
 }
 
+// ***************** Blank Display *******************
 void process_multi_blank_display()
 {
-// ***************** Blank Display *******************
 
 if (XPLMGetDatai(AvPwrOn) == 0) {
   multiseldis = 5;

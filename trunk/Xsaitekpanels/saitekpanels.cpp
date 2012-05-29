@@ -71,6 +71,7 @@ XPLMDataRef DmeFreq = NULL, DmeTime = NULL, DmeSpeed = NULL;
 
 XPLMDataRef AvPwrOn = NULL, BatPwrOn = NULL;
 
+
 XPLMDataRef Nav1PwrOn = NULL, Nav2PwrOn = NULL, Com1PwrOn = NULL, Com2PwrOn = NULL;
 XPLMDataRef Afd1PwrOn = NULL, DmePwrOn = NULL;
 

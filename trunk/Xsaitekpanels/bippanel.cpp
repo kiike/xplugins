@@ -62,12 +62,11 @@ using namespace std;
 float   LookAtThisValue;
 int     LookAtThisIntValue;
 
-static int bipnum = 0, bipnowrite[4] = {0, 0, 0, 0};
+static int bipnum = 0;
 static unsigned char bipwbuf[4][10];
 static unsigned char lastbipwbuf[4][10];
 
 static int bipchange, biploop[4], res, i[4];
-static int bip0loop, bip1loop;
 
 struct  BipTableStructure
 {
@@ -84,8 +83,7 @@ struct  BipTableStructure
 };
 
 static BipTableStructure    BipTable[4][MAXTABLEELEMENTS];
-static int                  LastValues[4][MAXINDICATORS];
-static int                  ActualValues[4][MAXINDICATORS];
+
 static int                  LastTableElement[4] = {-1, -1, -1, -1};
 static int                  ErrorInLine = 0;
 static bool                 InSilentMode = false;

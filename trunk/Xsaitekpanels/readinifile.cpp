@@ -52,10 +52,10 @@ void process_read_ini_file()
 {
 
     char *iniDefaultPluginPath;
-    const char *defaultConfigFileName;
+    //const char *defaultConfigFileName;
 
     iniDefaultPluginPath = "./Resources/plugins/Xsaitekpanels/xsaitekpanels.ini";
-    defaultConfigFileName = "xsaitekpanels.ini";
+    //defaultConfigFileName = "xsaitekpanels.ini";
     int Index2;
 
     /* set defaults */
@@ -99,7 +99,7 @@ void process_read_ini_file()
     autothrottleswitchenable = 1;
 
 
-    char *configPath;
+    //char *configPath;
 
     cleanupIniReader();
 

@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.42   ***************
-// ****** Jun 02 2012   **************
+// ****** Jun 03 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -1212,13 +1212,13 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 
     PlaneICAO.insert(1,ICAOString);
 
-    if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((int) inParam == 0)) {
+    if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((intptr_t) inParam == 0)) {
       process_read_ini_file();
     }
 
     if(bipcnt > 0){
 
-        if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((int) inParam == 0)) {
+        if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((intptr_t) inParam == 0)) {
           ReadConfigFile(PlaneICAO);
         }
         if (inMessage == XPLM_MSG_AIRPORT_LOADED) {
@@ -1231,7 +1231,6 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 
 void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 {
-    (void) inMenuRef; // To get rid of warnings on unused variables
     if((int)inMenuRef == 1){
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
@@ -1290,10 +1289,8 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 {
         int x2 = x + w;
         int y2 = y - h;
-        int Index;
-        int WindowCentre = x+w/2;
+        int Index = 0;
         int yOffset;
-        char Buffer[255];
 
         DataRefID.clear();
         memset(SwitchEnableCheckWidget, 0, sizeof(SwitchEnableCheckWidget));
@@ -1476,7 +1473,8 @@ void CreateSwitchWidget(int x, int y, int w, int h)
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
 int	SwitchHandler(XPWidgetMessage  SwitchinMessage, XPWidgetID  SwitchWidgetID, intptr_t  inParam1, intptr_t  inParam2)
 {
-        int State, State1, State2;
+        (void) inParam2;
+        int State;
         int Index1;
         if (SwitchinMessage == xpMessage_CloseButtonPushed)
         {
@@ -1811,9 +1809,7 @@ void CreateRadioWidget(int x, int y, int w, int h)
         int x2 = x + w;
         int y2 = y - h;
         int Index;
-        int WindowCentre = x+w/2;
         int yOffset;
-        char Buffer[255];
 
         DataRefID.clear();
         memset(RadioSpeed1CheckWidget, 0, sizeof(RadioSpeed1CheckWidget));
@@ -2032,8 +2028,9 @@ void CreateRadioWidget(int x, int y, int w, int h)
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
 int	RadioHandler(XPWidgetMessage  RadioinMessage, XPWidgetID  RadioWidgetID, intptr_t  inParam1, intptr_t  inParam2)
 {
-        int State, State1, State2;
-        int Index1;
+        (void) inParam2;
+        int State; //, State1, State2;
+        //int Index1;
         if (RadioinMessage == xpMessage_CloseButtonPushed)
         {
                 if (radioMenuItem == 1)
@@ -2144,9 +2141,9 @@ void CreateMultiWidget(int x, int y, int w, int h)
         int x2 = x + w;
         int y2 = y - h;
         int Index;
-        int WindowCentre = x+w/2;
+        //int WindowCentre = x+w/2;
         int yOffset;
-        char Buffer[255];
+        //char Buffer[255];
 
         DataRefID.clear();
         memset(MultiSpeed1CheckWidget, 0, sizeof(MultiSpeed1CheckWidget));
@@ -2367,8 +2364,8 @@ void CreateMultiWidget(int x, int y, int w, int h)
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
 int	MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, intptr_t  inParam1, intptr_t  inParam2)
 {
-        int State, State1, State2;
-        int Index1;
+        (void) inParam2;
+        int State;
         if (MultiinMessage == xpMessage_CloseButtonPushed)
         {
                 if (multiMenuItem == 1)

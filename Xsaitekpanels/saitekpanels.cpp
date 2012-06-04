@@ -1231,7 +1231,7 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 
 void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 {
-    if((int)inMenuRef == 1){
+    if((intptr_t)inMenuRef == 1){
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
          }
@@ -1244,7 +1244,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
          }
 
     }
-    if((int)inMenuRef == 2){
+    if((intptr_t)inMenuRef == 2){
        if (strcmp((char *) inItemRef, "MULTI_WIDGET") == 0) {
              //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateMultiWidget(05, 700, 300, 330);	//left, top, right, bottom.
@@ -1253,7 +1253,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
-    if((int)inMenuRef == 3){
+    if((intptr_t)inMenuRef == 3){
 
          if (strcmp((char *) inItemRef, "RADIO_WIDGET") == 0) {
              //CreateRadioWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
@@ -1263,7 +1263,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
-    if((int)inMenuRef == 4){
+    if((intptr_t)inMenuRef == 4){
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
              //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateSwitchWidget(05, 700, 300, 480);	//left, top, right, bottom.
@@ -1273,7 +1273,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
-    if((int)inMenuRef == 5){
+    if((intptr_t)inMenuRef == 5){
          if (strcmp((char *) inItemRef, "TRUE") == 0) {
              process_read_ini_file();
          }

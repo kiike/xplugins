@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
-// ******** ver 1.42   ***************
-// ****** Jun 03 2012   **************
+// ******** ver 1.43   ***************
+// ****** Jun 06 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -129,6 +129,10 @@ XPLMCommandRef x737mcp_hdg_toggle = NULL, x737mcp_vorloc_toggle = NULL;
 XPLMCommandRef x737mcp_lvlchange_toggle = NULL, x737mcp_alt_toggle = NULL;
 XPLMCommandRef x737mcp_vs_toggle = NULL, x737mcp_app_toggle = NULL;
 XPLMCommandRef x737mcp_spd_changeover = NULL, x737mcp_lnav_toggle = NULL;
+
+XPLMCommandRef NavButtonRemapableCmd = NULL, AprButtonRemapableCmd = NULL;
+XPLMCommandRef RevButtonRemapableCmd = NULL;
+XPLMCommandRef ApVsUpRemapableCmd = NULL, ApVsDnRemapableCmd = NULL;
 
 // ***************** Multi Panel Data Ref *********************
 XPLMDataRef ApAlt = NULL, ApVs = NULL, ApAs = NULL, ApHdg = NULL, ApCrs = NULL, ApCrs2 = NULL;
@@ -333,12 +337,18 @@ int loaded737 = 0;
 
 int trimspeed, multispeed, autothrottleswitchenable;
 
+int navbuttonremap, aprbuttonremap, revbuttonremap;
+int apvsupremap, apvsdnremap;
+
 int xpanelsfnbutton = 0, xpanelscrstoggle = 0;
 
 void CreateMultiWidget(int x1, int y1, int w, int h);
 int MultiHandler(XPWidgetMessage  MultiinMessage, XPWidgetID  MultiWidgetID, intptr_t  inParam1, intptr_t  inParam2);
 
 int multiMenuItem;
+
+string nav_button_remapable, apr_button_remapable, rev_button_remapable;
+string ap_vs_up_remapable, ap_vs_dn_remapable;
 
 char MultiSpeedText[50][200] = {
 "FREQ KNOB  1 PULSE PER COMMAND",
@@ -498,10 +508,10 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   printf("gXPlaneVersion = %d gXPLMVersion = %d gHostID = %d\n", wrgXPlaneVersion, wrgXPLMVersion, wrgHostID);
 
-  XPLMDebugString("Xsaitekpanels v1.42\n");
+  XPLMDebugString("Xsaitekpanels v1.43\n");
 
 	/* First set up our plugin info. */
-  strcpy(outName, "Xsaitekpanels v1.42");
+  strcpy(outName, "Xsaitekpanels v1.43");
   strcpy(outSig, "saitekpanels.hardware uses hidapi interface");
   strcpy(outDesc, "A plugin allows use of Saitek Pro Flight Panels on all platforms");
 

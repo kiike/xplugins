@@ -98,6 +98,12 @@ void process_read_ini_file()
     multispeed               = 3;
     autothrottleswitchenable = 1;
 
+    navbuttonremap          = 0;
+    aprbuttonremap          = 0;
+    revbuttonremap          = 0;
+    apvsupremap             = 0;
+    apvsdnremap             = 0;
+
 
     //char *configPath;
 
@@ -601,9 +607,6 @@ void process_read_ini_file()
     }
 
 
-
-
-
     multispeed = getOptionToInt("Multi Freq Knob Pulse per Command");
     XPSetWidgetProperty(MultiSpeed1CheckWidget[0], xpProperty_ButtonState, 0);
     XPSetWidgetProperty(MultiSpeed2CheckWidget[0], xpProperty_ButtonState, 0);
@@ -651,6 +654,47 @@ void process_read_ini_file()
          XPSetWidgetProperty(MultiAt1CheckWidget[0], xpProperty_ButtonState, 1);
     }
 
+    // nav button - remapable
+    navbuttonremap = getOptionToInt("Nav Button remapable");
+    if (navbuttonremap == 1) {
+         //XPSetWidgetProperty(SwitchRemapCheckWidget[16], xpProperty_ButtonState, 1);
+         nav_button_remapable = getOptionToString("nav_button_remapable_cmd");
+         NavButtonRemapableCmd   = XPLMFindCommand(nav_button_remapable.c_str());
+    }
+
+    // apr button - remapable
+    aprbuttonremap = getOptionToInt("Apr Button remapable");
+    if (aprbuttonremap == 1) {
+         //XPSetWidgetProperty(SwitchRemapCheckWidget[16], xpProperty_ButtonState, 1);
+         apr_button_remapable = getOptionToString("apr_button_remapable_cmd");
+         AprButtonRemapableCmd   = XPLMFindCommand(apr_button_remapable.c_str());
+    }
+
+    // rev button - remapable
+    revbuttonremap = getOptionToInt("Rev Button remapable");
+    if (revbuttonremap == 1) {
+         //XPSetWidgetProperty(SwitchRemapCheckWidget[16], xpProperty_ButtonState, 1);
+         rev_button_remapable = getOptionToString("rev_button_remapable_cmd");
+         RevButtonRemapableCmd   = XPLMFindCommand(rev_button_remapable.c_str());
+    }
+
+    // ap vs up - remapable
+    apvsupremap = getOptionToInt("Ap Vs Up remapable");
+    if (apvsupremap == 1) {
+         //XPSetWidgetProperty(SwitchRemapCheckWidget[16], xpProperty_ButtonState, 1);
+        // ApVsUp
+         ap_vs_up_remapable = getOptionToString("ap_vs_up_remapable_cmd");
+         ApVsUpRemapableCmd   = XPLMFindCommand(ap_vs_up_remapable.c_str());
+    }
+
+    // ap vs dn - remapable
+    apvsdnremap = getOptionToInt("Ap Vs Dn remapable");
+    if (apvsdnremap == 1) {
+         //XPSetWidgetProperty(SwitchRemapCheckWidget[16], xpProperty_ButtonState, 1);
+        // ApVsUp
+         ap_vs_dn_remapable = getOptionToString("ap_vs_dn_remapable_cmd");
+         ApVsDnRemapableCmd   = XPLMFindCommand(ap_vs_dn_remapable.c_str());
+    }
 
   return;
 }

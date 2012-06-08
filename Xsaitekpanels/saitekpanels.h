@@ -114,6 +114,10 @@ extern XPLMCommandRef x737mcp_lvlchange_toggle, x737mcp_alt_toggle;
 extern XPLMCommandRef x737mcp_vs_toggle, x737mcp_app_toggle;
 extern XPLMCommandRef x737mcp_spd_changeover, x737mcp_lnav_toggle;
 
+extern XPLMCommandRef NavButtonRemapableCmd, AprButtonRemapableCmd;
+extern XPLMCommandRef RevButtonRemapableCmd;
+extern XPLMCommandRef ApVsUpRemapableCmd, ApVsDnRemapableCmd;
+
 // ************ Multi Panel Data Ref *****************
 extern XPLMDataRef ApAlt, ApVs, ApAs, ApHdg, ApCrs, ApCrs2;
 
@@ -154,9 +158,16 @@ extern int numadf;
 extern int loaded737;
 extern int trimspeed, multispeed, autothrottleswitchenable;
 
+extern int navbuttonremap, aprbuttonremap, revbuttonremap;
+extern int apvsupremap, apvsdnremap;
+
 extern int xpanelsfnbutton;
 extern int xpanelscrstoggle;
 extern int multi_auto_mul;
+
+extern string nav_button_remapable, apr_button_remapable, rev_button_remapable;
+extern string ap_vs_up_remapable, ap_vs_dn_remapable;
+
 extern hid_device *multihandle;
 
 // ****************  End Multi Panel Section  ***************************

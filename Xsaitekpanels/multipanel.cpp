@@ -238,6 +238,8 @@ void process_vs_switch()
                 if(xpanelsfnbutton == 0) {
                     if (loaded737 == 1) {
                         XPLMCommandOnce(x737mcp_vvi_up);
+                    } else if (apvsupremap == 1) {
+                        XPLMCommandOnce(ApVsUpRemapableCmd);
                     } else {
                         XPLMCommandOnce(ApVsUp);
                     }
@@ -263,6 +265,8 @@ void process_vs_switch()
                 if(xpanelsfnbutton == 0) {
                     if (loaded737 == 1){
                         XPLMCommandOnce(x737mcp_vvi_down);
+                    } else if (apvsdnremap == 1) {
+                        XPLMCommandOnce(ApVsDnRemapableCmd);
                     } else {
                         XPLMCommandOnce(ApVsDn);
                     }
@@ -740,6 +744,32 @@ void process_nav_button()
                 }
                 break;
         }
+
+    } else if (navbuttonremap == 1){
+        if (multires > 0) {
+          if(testbit(multibuf,NAV_BUTTON)) {
+             XPLMCommandOnce(NavButtonRemapableCmd);
+             lastappos = 1;
+          }
+        }
+
+        switch(XPLMGetDatai(ApNavStat)){
+          case 2:
+            btnleds |= (1<<2);   // * set bit 2 in btnleds to 1 *
+            break;
+          case 1:
+            if (flashon == 1) {
+              btnleds |= (1<<2);   // * set bit 1 in btnleds to 1 *
+            }else{
+              btnleds &= ~(1<<2);   // * clear bit 2 in btnleds to 0 *
+            }
+            break;
+          case 0:
+            btnleds &= ~(1<<2);   // * clear bit 2 in btnleds to 0 *
+            break;
+        }
+
+
     } else {
         if (multires > 0) {
           if(testbit(multibuf,NAV_BUTTON)) {
@@ -770,6 +800,10 @@ void process_nav_button()
 	    break;
 	}
    }
+
+
+
+
 }
 
 // ***************** IAS Button and light ******************
@@ -957,6 +991,30 @@ void process_apr_button()
                 btnleds &= ~(1<<6);
                 break;
         }
+
+    } else if (aprbuttonremap == 1){
+        if (multires > 0) {
+          if(testbit(multibuf,APR_BUTTON)) {
+             XPLMCommandOnce(AprButtonRemapableCmd);
+             lastappos = 1;
+          }
+        }
+        switch(XPLMGetDatai(ApAprStat)){
+          case 2:
+            btnleds |= (1<<6);   // * set bit 6 in btnleds to 1 *
+            break;
+          case 1:
+            if (flashon == 1) {
+              btnleds |= (1<<6);   // * set bit 6 in btnleds to 1 *
+            }else{
+              btnleds &= ~(1<<6);   // * clear bit 6 in btnleds to 0 *
+            }
+            break;
+          case 0:
+            btnleds &= ~(1<<6);   // * clear bit 6 in btnleds to 0 *
+            break;
+        }
+
     } else {
         if (multires > 0) {
           if(testbit(multibuf,APR_BUTTON)) {
@@ -991,9 +1049,10 @@ void process_apr_button()
 // ***************** REV Button and light *******************
 void process_rev_button()
 {
+    if (revbuttonremap == 1) {
         if (multires > 0) {
           if(testbit(multibuf,REV_BUTTON)) {
-            XPLMCommandOnce(ApRevBtn);
+            XPLMCommandOnce(RevButtonRemapableCmd);
             lastappos = 1;
           }
         }
@@ -1012,6 +1071,32 @@ void process_rev_button()
             btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
             break;
 	} 
+    } else {
+
+        if (multires > 0) {
+          if(testbit(multibuf,REV_BUTTON)) {
+            XPLMCommandOnce(ApRevBtn);
+            lastappos = 1;
+          }
+        }
+        switch(XPLMGetDatai(ApRevStat)){
+          case 2:
+            btnleds |= (1<<7);   // * set bit 7 in btnleds to 1 *
+            break;
+          case 1:
+            if (flashon == 1) {
+              btnleds |= (1<<7);   // * set bit 7 in btnleds to 1 *
+            }else{
+              btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
+            }
+            break;
+          case 0:
+            btnleds &= ~(1<<7);   // * clear bit 7 in btnleds to 0 *
+            break;
+        }
+
+    }
+
 }
 
 // ***************** Flaps Switch *******************

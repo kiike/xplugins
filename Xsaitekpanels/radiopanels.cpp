@@ -120,7 +120,9 @@ static int LOWER_COARSE_UP = 17, LOWER_COARSE_DN = 16;
 static int LOWER_COM1 = 0, LOWER_COM2 = 15;
 static int LOWER_NAV1 = 14, LOWER_NAV2 = 13; 
 static int LOWER_ADF = 12, LOWER_DME = 11;
-static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8; 
+static int LOWER_XPDR = 10, LOWER_ACT_STBY = 8;
+
+static int upmodeturnoff, lomodeturnoff;
 
 static unsigned char radiobuf[4][4];
 static unsigned char radiowbuf[4][23];
@@ -353,6 +355,25 @@ void process_radio_upper_display()
             radiobdig5 = radiobrem4;
           }
 
+          if(testbit(radiobuf[radnum],UPPER_ACT_STBY)) {
+              upmodeturnoff = 100;
+          }
+          if (upmodeturnoff > 0) {
+
+             if (XPLMGetDatai(XpdrMode) == 0) {
+                 radiobdig1 = 15+208;
+             }
+             if (XPLMGetDatai(XpdrMode) == 1) {
+                 radiobdig2 = radiobdig2+208;
+             }
+             if (XPLMGetDatai(XpdrMode) == 2) {
+                 radiobdig3 = radiobdig3+208;
+             }
+             if (XPLMGetDatai(XpdrMode) == 3) {
+                 radiobdig4 = radiobdig4+208;
+             }
+             upmodeturnoff--;
+          }
 
       }
 
@@ -605,6 +626,35 @@ void process_radio_lower_display()
         radioddig4 = radiodrem3/10, radiodrem4 = radiodrem3%10;
         radioddig5 = radiodrem4;
       }
+
+      if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
+          lomodeturnoff = 0;
+      }
+      if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
+          lomodeturnoff = 0;
+      }
+      if (lomodeturnoff == 200) {
+         loxpdrsel[radnum] = 1;
+         if (XPLMGetDatai(XpdrMode) == 0) {
+             radioddig1 = 15+208;
+         }
+         if (XPLMGetDatai(XpdrMode) == 1) {
+             radioddig2 = radioddig2+208;
+         }
+         if (XPLMGetDatai(XpdrMode) == 2) {
+             radioddig3 = radioddig3+208;
+         }
+         if (XPLMGetDatai(XpdrMode) == 3) {
+             radioddig4 = radioddig4+208;
+         }
+
+      }
+      else {
+        lomodeturnoff++;
+
+      }
+
+
 
    }
 

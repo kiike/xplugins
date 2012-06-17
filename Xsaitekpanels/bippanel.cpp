@@ -79,7 +79,7 @@ struct  BipTableStructure
     char            WhatToDo;
     float           FloatValueToSet;
     float           FloatLimit;
-    string          CSVDebugString;
+    char            CSVDebugString[512];
 };
 
 static BipTableStructure    BipTable[4][MAXTABLEELEMENTS];
@@ -281,7 +281,7 @@ bool ReadConfigFile(string PlaneICAO)
       BipTable[0][i].WhatToDo = '0';
       BipTable[0][i].FloatValueToSet = 0;
       BipTable[0][i].FloatLimit = 0;
-      BipTable[0][i].CSVDebugString = "";
+      BipTable[0][i].CSVDebugString[512] = '0';
     }
 
     while (getline(ReadBipFile, LineToEncrypt[0]))
@@ -380,7 +380,8 @@ bool ReadConfigFile(string PlaneICAO)
             BipTable[0][LastTableElement[0]].FloatValueToSet = Argument;
             BipTable[0][LastTableElement[0]].FloatLimit = Limit;
             BipTable[0][LastTableElement[0]].WhatToDo = 'v';
-            BipTable[0][LastTableElement[0]].CSVDebugString = DataRefString;
+            //BipTable[0][LastTableElement[0]].CSVDebugString = DataRefString;
+            strcpy(BipTable[0][LastTableElement[0]].CSVDebugString, DataRefString);
             continue;
         }
         if (sscanf(LineToEncrypt[0].c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
@@ -421,7 +422,7 @@ bool ReadConfigFile(string PlaneICAO)
             BipTable[0][LastTableElement[0]].FloatValueToSet = Argument;
             BipTable[0][LastTableElement[0]].FloatLimit = Limit;
             BipTable[0][LastTableElement[0]].WhatToDo = 'v';
-            BipTable[0][LastTableElement[0]].CSVDebugString = DataRefString;
+            strcpy(BipTable[0][LastTableElement[0]].CSVDebugString, DataRefString);
             continue;
         }
 
@@ -496,7 +497,7 @@ bool ReadConfigFile(string PlaneICAO)
         BipTable[1][i1].WhatToDo = '0';
         BipTable[1][i1].FloatValueToSet = 0;
         BipTable[1][i1].FloatLimit = 0;
-        BipTable[1][i1].CSVDebugString = "";
+        BipTable[1][i1].CSVDebugString[512] = '0';
     }
 
     while (getline(ReadBip2File, LineToEncrypt[1]))
@@ -595,7 +596,7 @@ bool ReadConfigFile(string PlaneICAO)
             BipTable[1][LastTableElement[1]].FloatValueToSet = Argument;
             BipTable[1][LastTableElement[1]].FloatLimit = Limit;
             BipTable[1][LastTableElement[1]].WhatToDo = 'v';
-            BipTable[1][LastTableElement[1]].CSVDebugString = DataRefString;
+            strcpy(BipTable[1][LastTableElement[1]].CSVDebugString, DataRefString);
             continue;
         }
         if (sscanf(LineToEncrypt[1].c_str(), "#SET BIP %c %i %c FROM DATAREF %s RANGE %f TO %f", RowString, &BipPosition, ColorString, DataRefString, &Argument, &Limit) == 6)
@@ -636,7 +637,7 @@ bool ReadConfigFile(string PlaneICAO)
             BipTable[1][LastTableElement[1]].FloatValueToSet = Argument;
             BipTable[1][LastTableElement[1]].FloatLimit = Limit;
             BipTable[1][LastTableElement[1]].WhatToDo = 'v';
-            BipTable[1][LastTableElement[1]].CSVDebugString = DataRefString;
+            strcpy(BipTable[1][LastTableElement[1]].CSVDebugString, DataRefString);
             continue;
         }
 

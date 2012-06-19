@@ -737,12 +737,10 @@ void process_radio_make_message()
 
 }
 
-
+// ***************** Upper COM1 Switch Position *******************
 
 void process_upper_com1_switch()
 {
-
-// ***************** Upper COM1 Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_COM1)) {
       upseldis[radnum] = 1;
@@ -785,10 +783,11 @@ void process_upper_com1_switch()
     }
 }
 
+// ***************** Upper COM2 Switch Position *******************
+
 void process_upper_com2_switch()
 {
 
-// ***************** Upper COM2 Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_COM2)) {
       upseldis[radnum] = 2;
@@ -831,9 +830,11 @@ void process_upper_com2_switch()
     }
 }
 
+// ***************** Upper NAV1 Switch Position *******************
+
 void process_upper_nav1_switch()
 {
-// ***************** Upper NAV1 Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],UPPER_NAV1)) {
       upseldis[radnum] = 3;
@@ -878,10 +879,11 @@ void process_upper_nav1_switch()
 
 }
 
+// ***************** Upper NAV2 Switch Position *******************
+
 void process_upper_nav2_switch()
 {
 
-// ***************** Upper NAV2 Switch Position *******************
 
     if(testbit(radiobuf[radnum],UPPER_NAV2)) {
       upseldis[radnum] = 4;
@@ -926,10 +928,12 @@ void process_upper_nav2_switch()
     }
 }
 
+// ***************** Upper AFD Switch Position *******************
+
 void proecss_upper_adf_switch()
 {
 
-// ***************** Upper AFD Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],UPPER_ADF)) {
       upseldis[radnum] = 5;
@@ -986,7 +990,7 @@ void proecss_upper_adf_switch()
   // Use the Coarse knob to select digit in the up direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
             upadfdbnccorinc[radnum] ++;
-            if(upadfdbnccorinc[radnum] == 3) {
+            if(upadfdbnccorinc[radnum] > radspeed) {
               upadfsel[radnum] ++;
               upadfdbnccorinc[radnum] = 0;
             }
@@ -998,7 +1002,7 @@ void proecss_upper_adf_switch()
   // Use the Coarse knob to select digit in the down direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
             upadfdbnccordec[radnum] ++;
-            if(upadfdbnccordec[radnum] == 3) {
+            if(upadfdbnccordec[radnum] > radspeed) {
               upadfsel[radnum] --;
               upadfdbnccordec[radnum] = 0;
             }
@@ -1018,10 +1022,12 @@ void proecss_upper_adf_switch()
 
 }
 
+// ***************** Upper DME Switch Position *******************
+
 void process_upper_dme_switch()
 {
 
-// ***************** Upper DME Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],UPPER_DME)) {
 
@@ -1200,10 +1206,12 @@ void process_upper_dme_switch()
 
 }
 
+// ***************** Upper Transponder Switch Position *******************
+
 void process_upper_xpdr_switch()
 {
 
-// ***************** Upper Transponder Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],UPPER_XPDR)) {
       upseldis[radnum] = 9;
@@ -1285,7 +1293,7 @@ void process_upper_xpdr_switch()
   // Use the Coarse knob to select digit in the up direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_DN)) {
             upxpdrdbnccorinc[radnum]++;
-            if(upxpdrdbnccorinc[radnum] == 3) {
+            if(upxpdrdbnccorinc[radnum] > radspeed) {
                upxpdrsel[radnum] ++;
                upxpdrdbnccorinc[radnum] = 0;
             }
@@ -1296,7 +1304,7 @@ void process_upper_xpdr_switch()
   // Use the Coarse knob to select digit in the down direction
           if(testbit(radiobuf[radnum],UPPER_COARSE_UP)) {
             upxpdrdbnccordec[radnum]++;
-            if(upxpdrdbnccordec[radnum] == 3) {
+            if(upxpdrdbnccordec[radnum] > radspeed) {
                upxpdrsel[radnum] --;
                upxpdrdbnccordec[radnum] = 0;
             }
@@ -1433,10 +1441,12 @@ void process_upper_xpdr_switch()
 
 }
 
+// ***************** Lower COM1 Switch Position *******************
+
 void process_lower_com1_switch()
 {
 
-// ***************** Lower COM1 Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],LOWER_COM1)) {
       loseldis[radnum] = 1;
@@ -1480,10 +1490,12 @@ void process_lower_com1_switch()
 
 }
 
+// ***************** Lower COM2 Switch Position *******************
+
 void process_lower_com2_switch()
 {
 
-// ***************** Lower COM2 Switch Position *******************
+
 
    if(testbit(radiobuf[radnum],LOWER_COM2)) {
      loseldis[radnum] = 2;
@@ -1526,10 +1538,12 @@ void process_lower_com2_switch()
     }
 }
 
+// ***************** Lower NAV1 Switch Position *******************
+
 void process_lower_nav1_switch()
 {
 
-// ***************** Lower NAV1 Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],LOWER_NAV1)) {
       loseldis[radnum] = 3;
@@ -1574,10 +1588,12 @@ void process_lower_nav1_switch()
 
 }
 
+// ***************** Lower NAV2 Switch Position *******************
+
 void process_lower_nav2_switch()
 {
 
-// ***************** Lower NAV2 Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],LOWER_NAV2)) {
       loseldis[radnum] = 4;
@@ -1621,11 +1637,13 @@ void process_lower_nav2_switch()
 
 }
 
+// ***************** Lower ADF Switch Position *******************
+
 void process_lower_adf_switch()
 {
 
 
-// ***************** Lower ADF Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],LOWER_ADF)) {
       loseldis[radnum] = 5;
@@ -1773,7 +1791,7 @@ void process_lower_adf_switch()
   // Use the Coarse knob to select digit in the up direction
             if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
               loadfdbnccorinc[radnum] ++;
-              if(loadfdbnccorinc[radnum] == 3) {
+              if(loadfdbnccorinc[radnum] > radspeed) {
                 loadfsel[radnum] ++;
                 loadfdbnccorinc[radnum] = 0;
               }
@@ -1785,7 +1803,7 @@ void process_lower_adf_switch()
    // Use the Coarse knob to select digit in the down direction
             if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
               loadfdbnccordec[radnum] ++;
-              if(loadfdbnccordec[radnum] == 3) {
+              if(loadfdbnccordec[radnum] > radspeed) {
                 loadfsel[radnum] --;
                 loadfdbnccordec[radnum] = 0;
               }
@@ -1807,10 +1825,12 @@ void process_lower_adf_switch()
 
 }
 
+// ***************** Lower DME Switch Position *******************
+
 void process_lower_dme_switch()
 {
 
-// ***************** Lower DME Switch Position *******************
+
 
     if(testbit(radiobuf[radnum],LOWER_DME)) {
 
@@ -1986,10 +2006,12 @@ void process_lower_dme_switch()
     }
 }
 
+// ***************** Lower Transponder Switch Position *******************
+
 void process_lower_xpdr_switch()
 {
 
-// ***************** Lower Transponder Switch Position *******************
+
  
    if(testbit(radiobuf[radnum],LOWER_XPDR)) {
      loseldis[radnum] = 9;
@@ -2069,7 +2091,7 @@ void process_lower_xpdr_switch()
 // Use the Coarse knob to select digit in the up direction
          if(testbit(radiobuf[radnum],LOWER_COARSE_DN)) {
            loxpdrdbnccorinc[radnum]++;
-           if(loxpdrdbnccorinc[radnum] == 3) {
+           if(loxpdrdbnccorinc[radnum] > radspeed) {
               loxpdrsel[radnum] ++;
               loxpdrdbnccorinc[radnum] = 0;
            }
@@ -2081,7 +2103,7 @@ void process_lower_xpdr_switch()
 // Use the Coarse knob to select digit in the up direction
          if(testbit(radiobuf[radnum],LOWER_COARSE_UP)) {
            loxpdrdbnccordec[radnum]++;
-           if(loxpdrdbnccordec[radnum] == 3) {
+           if(loxpdrdbnccordec[radnum] > radspeed) {
               loxpdrsel[radnum] --;
               loxpdrdbnccordec[radnum] = 0;
            }
@@ -2219,9 +2241,12 @@ void process_lower_xpdr_switch()
    }
 
 }
+
+// ***************** Blank Display *******************
+
 void process_radio_blank_display()
 {
-// ***************** Blank Display *******************
+
 
 	if (XPLMGetDatai(AvPwrOn) == 0) {
           upseldis[radnum] = 10;

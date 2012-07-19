@@ -1179,10 +1179,10 @@ void process_upper_dme_switch()
         if (updmepushed == 0) {
           if (XPLMGetDatai(DmeSlvSource) == 1) {
              if(testbit(radiobuf[radnum], UPPER_ACT_STBY)) {
-                 if (uplastdmepos == 0){
+                 //if (uplastdmepos == 0){
                    XPLMSetDatai(DmeSlvSource, 0);
                    updmepushed = 1;
-                 }
+                 //}
 
               }
           }
@@ -1850,10 +1850,10 @@ void process_lower_dme_switch()
         if (lodmepushed == 0) {
           if (XPLMGetDatai(DmeMode) == 1) {
              if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
-                 if (lolastdmepos == 1){
+                 //if (lolastdmepos == 1){
                    XPLMSetDatai(DmeMode, 2);
                    lodmepushed = 1;
-                 }
+                 //}
                  if (lolastdmepos == 2){
                      XPLMSetDatai(DmeMode, 0);
                      lodmepushed = 1;
@@ -1981,10 +1981,10 @@ void process_lower_dme_switch()
           if (lodmepushed == 0) {
             if (XPLMGetDatai(DmeSlvSource) == 1) {
                if(testbit(radiobuf[radnum], LOWER_ACT_STBY)) {
-                   if (lolastdmepos == 0){
+                   //if (lolastdmepos == 0){
                      XPLMSetDatai(DmeSlvSource, 0);
                      lodmepushed = 1;
-                   }
+                   //}
 
                 }
             }

@@ -455,6 +455,9 @@ hid_device *switchhandle;
 int bipcnt = 0, bipres, biploop[4], stopbipcnt;
 unsigned char bipwbuf[4][10];
 
+#define MAX_STR 255
+wchar_t wstr[4][MAX_STR];
+
 hid_device *biphandle[4];
 
 // ****************** Saitek Panels variables *******************************
@@ -870,6 +873,7 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   bip_devs = hid_enumerate(0x6a3, 0xb4e);
   bip_cur_dev = bip_devs;
+  char	buf[256];
   while (bip_cur_dev) {
       biphandle[bipcnt] = hid_open_path(bip_cur_dev->path);
         //  If Found Set brightness to full (0 - 100)
@@ -879,10 +883,16 @@ PLUGIN_API int XPluginStart(char *		outName,
            bipwbuf[bipcnt][0] = 0xb2; // 0xb2 Report ID for brightness
            bipwbuf[bipcnt][1] = 100;  // Set brightness to 100%
            bipres = hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
+           hid_get_serial_number_string(biphandle[bipcnt], wstr[bipcnt], MAX_STR);
+           sprintf(buf, "bipcnt = %d  Serial Number String: %ls\n", bipcnt, wstr[bipcnt]);
+           XPLMDebugString(buf);
+           //printf("bipcnt = %d  Serial Number String: %ls", bipcnt, wstr[bipcnt]);
+           //printf("\n");
            biploop[bipcnt] = 1;
         }
 
       hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
+
         bipcnt++;
         bip_cur_dev = bip_cur_dev->next;
     }

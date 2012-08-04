@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.44   ***************
-// ****** Jul 30 2012   **************
+// ****** Aug 03 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -464,7 +464,7 @@ hid_device *biphandle[4];
 void XsaitekpanelsMenuHandler(void *, void *);
 void WriteCSVTableToDisk(void);
 
-bool ReadConfigFile(std::string PlaneICAO);
+//bool ReadConfigFile(std::string PlaneICAO);
 
 int             XsaitekpanelsMenuItem;
 int             BipMenuItem;
@@ -1240,9 +1240,18 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 
         if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((intptr_t) inParam == 0)) {
           ReadConfigFile(PlaneICAO);
+          if(bipcnt > 1){
+             process_bip_panel();
+             ReadConfigFile(PlaneICAO);
+          }
         }
         if (inMessage == XPLM_MSG_AIRPORT_LOADED) {
           ReadConfigFile(PlaneICAO);
+          if(bipcnt > 1){
+             process_bip_panel();
+             ReadConfigFile(PlaneICAO);
+          }
+
         }
 
     }

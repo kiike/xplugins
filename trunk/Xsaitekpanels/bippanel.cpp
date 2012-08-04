@@ -228,7 +228,7 @@ bool ReadConfigFile(string PlaneICAO)
 
   xpsbipd2b_path_name2 = xpsbipd2b_path_name;
 
-  if(bipcnt > 0) {
+  if(bipnum == 0) {
 
       bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
 
@@ -441,7 +441,7 @@ bool ReadConfigFile(string PlaneICAO)
 
    }
 
-    if(bipcnt > 1) {
+    if(bipnum == 1) {
 
         bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
 
@@ -527,7 +527,8 @@ bool ReadConfigFile(string PlaneICAO)
         }
         if (LineToEncrypt[1].find("[") == 0)
         {
-            if ((LineToEncrypt[1].find("[DEFAULT2]") == 0) || (LineToEncrypt[1].find(PlaneICAO) == 0))
+            //if ((LineToEncrypt[1].find("[DEFAULT2]") == 0) || (LineToEncrypt[1].find(PlaneICAO) == 0))
+            if ((LineToEncrypt[1].find("[DEFAULT]") == 0) || (LineToEncrypt[1].find(PlaneICAO) == 0))
             {
                 CorrectICAO = true;
             }
@@ -535,7 +536,8 @@ bool ReadConfigFile(string PlaneICAO)
             {
                 CorrectICAO = false;
             }
-            if ((LineToEncrypt[1].find("[DEFAULT2]") != 0) && (++LastMenuEntry[1] < 50))
+            //if ((LineToEncrypt[1].find("[DEFAULT2]") != 0) && (++LastMenuEntry[1] < 50))
+            if ((LineToEncrypt[1].find("[DEFAULT]") != 0) && (++LastMenuEntry[1] < 50))
             {
                 strcpy(MenuEntries[1][LastMenuEntry[1]], LineToEncrypt[1].c_str());
 
@@ -666,7 +668,7 @@ void process_bip_menu()
 
 {
 
-    if(bipcnt > 0) {
+    if(bipnum == 0) {
 
       XPLMClearAllMenuItems(BipMenuId);
       XPLMAppendMenuItem(BipMenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
@@ -676,13 +678,12 @@ void process_bip_menu()
 
     }
 
-    if(bipcnt > 1) {
+    if(bipnum == 1) {
 
         XPLMClearAllMenuItems(Bip2MenuId);
-        XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT2]", (void *) "[DEFAULT2]", 1);
+        XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
         XPLMAppendMenuItem(Bip2MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
         XPLMAppendMenuSeparator(Bip2MenuId);
-        XPLMAppendMenuItem(Bip2MenuId, MenuEntries[1][LastMenuEntry[0]], (void *) MenuEntries[1][LastMenuEntry[0]], 1);
         XPLMAppendMenuItem(Bip2MenuId, MenuEntries[1][LastMenuEntry[1]], (void *) MenuEntries[1][LastMenuEntry[1]], 1);
 
     }

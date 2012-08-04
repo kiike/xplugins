@@ -324,7 +324,7 @@ extern hid_device *biphandle[4];
 extern int bipcnt;
 
 void WriteCSVTableToDisk(void);
-bool ReadConfigFile(string PlaneICAO);
+bool ReadConfigFile(std::string PlaneICAO);
 
 // ***************** Saitek Panel variables ********************
 

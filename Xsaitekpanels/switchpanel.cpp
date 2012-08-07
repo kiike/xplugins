@@ -73,11 +73,11 @@ void process_engines_mag_off_switch()
 
    if(magoffswitchenable == 2) {
 
-        if(testbit(switchbuf,MAG_BOTH)) {
+        if(testbit(switchbuf,MAG_OFF)) {
           XPLMCommandOnce(MagOffSwitchOnCmd);
          }
 
-        if(!testbit(switchbuf,MAG_BOTH)) {
+        if(!testbit(switchbuf,MAG_OFF)) {
           XPLMCommandOnce(MagOffSwitchOffCmd);
         }
 
@@ -117,11 +117,11 @@ void process_engines_right_mag_switch()
 
    if(magrightswitchenable == 2) {
 
-        if(testbit(switchbuf,MAG_BOTH)) {
+        if(testbit(switchbuf,MAG_RIGHT)) {
           XPLMCommandOnce(MagRightSwitchOnCmd);
          }
 
-        if(!testbit(switchbuf,MAG_BOTH)) {
+        if(!testbit(switchbuf,MAG_RIGHT)) {
           XPLMCommandOnce(MagRightSwitchOffCmd);
         }
 
@@ -160,11 +160,11 @@ void process_engines_left_mag_switch()
 
    if(magleftswitchenable == 2) {
 
-        if(testbit(switchbuf,MAG_BOTH)) {
+        if(testbit(switchbuf,MAG_LEFT)) {
           XPLMCommandOnce(MagLeftSwitchOnCmd);
          }
 
-        if(!testbit(switchbuf,MAG_BOTH)) {
+        if(!testbit(switchbuf,MAG_LEFT)) {
           XPLMCommandOnce(MagLeftSwitchOffCmd);
         }
 

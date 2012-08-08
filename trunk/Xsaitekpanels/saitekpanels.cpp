@@ -452,7 +452,7 @@ char SwitchText[50][200] = {
 hid_device *switchhandle;
 
 // ****************** BIP Panel variables *******************************
-int bipcnt = 0, bipres, biploop[4], stopbipcnt;
+int bipcnt = 0, biptmpcnt = 0, bipres, biploop[4], stopbipcnt;
 unsigned char bipwbuf[4][10];
 
 #define MAX_STR 255
@@ -874,30 +874,59 @@ PLUGIN_API int XPluginStart(char *		outName,
   bip_devs = hid_enumerate(0x6a3, 0xb4e);
   bip_cur_dev = bip_devs;
   char	buf[256];
+  int result;
+  // find serial numbers of all BIP's connected
   while (bip_cur_dev) {
-      biphandle[bipcnt] = hid_open_path(bip_cur_dev->path);
-        //  If Found Set brightness to full (0 - 100)
-        // 0xb2 Report ID for brightness
-        // Next byte 0 - 100 brightness value
-      if (biphandle[bipcnt] > 0) {
-           bipwbuf[bipcnt][0] = 0xb2; // 0xb2 Report ID for brightness
-           bipwbuf[bipcnt][1] = 100;  // Set brightness to 100%
-           bipres = hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
-           hid_get_serial_number_string(biphandle[bipcnt], wstr[bipcnt], MAX_STR);
-           sprintf(buf, "bipcnt = %d  Serial Number String: %ls\n", bipcnt, wstr[bipcnt]);
-           XPLMDebugString(buf);
-           //printf("bipcnt = %d  Serial Number String: %ls", bipcnt, wstr[bipcnt]);
-           //printf("\n");
-           biploop[bipcnt] = 1;
-        }
+      biphandle[biptmpcnt] = hid_open_path(bip_cur_dev->path);
+      hid_get_serial_number_string(biphandle[biptmpcnt], wstr[biptmpcnt], MAX_STR);
+      sprintf(buf, "biptmpcnt = %d  Serial Number String: %ls\n", biptmpcnt, wstr[biptmpcnt]);
+      XPLMDebugString(buf);
+      hid_close(biphandle[biptmpcnt]);
+      biptmpcnt++;
+      bip_cur_dev = bip_cur_dev->next;
+  }
 
-      hid_send_feature_report(biphandle[bipcnt], bipwbuf[bipcnt], 10);
-
-        bipcnt++;
-        bip_cur_dev = bip_cur_dev->next;
-    }
   hid_free_enumeration(bip_devs);
 
+  if (biptmpcnt > 1) {
+
+     result = wcscmp( wstr[0], wstr[1]);
+     if(result > 0){
+       sprintf(buf, "(result > 0)\n");
+       XPLMDebugString(buf);
+       biphandle[0] = hid_open(0x6a3, 0xb4e, wstr[0]);
+       bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
+       bipwbuf[0][1] = 100;  // Set brightness to 100%
+       bipres = hid_send_feature_report(biphandle[0], bipwbuf[0], 10);
+
+       biphandle[1] = hid_open(0x6a3, 0xb4e, wstr[1]);
+       bipwbuf[1][0] = 0xb2; // 0xb2 Report ID for brightness
+       bipwbuf[1][1] = 100;  // Set brightness to 100%
+       bipres = hid_send_feature_report(biphandle[1], bipwbuf[1], 10);
+
+     }else if (result < 0){
+       sprintf(buf, "(result < 0)\n");
+       XPLMDebugString(buf);
+       biphandle[1] = hid_open(0x6a3, 0xb4e, wstr[0]);
+       bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
+       bipwbuf[0][1] = 100;  // Set brightness to 100%
+       bipres = hid_send_feature_report(biphandle[1], bipwbuf[0], 10);
+
+       biphandle[0] = hid_open(0x6a3, 0xb4e, wstr[1]);
+       bipwbuf[1][0] = 0xb2; // 0xb2 Report ID for brightness
+       bipwbuf[1][1] = 100;  // Set brightness to 100%
+       bipres = hid_send_feature_report(biphandle[0], bipwbuf[1], 10);
+
+     }
+
+ }else if (biptmpcnt == 1){
+      biphandle[0] = hid_open(0x6a3, 0xb4e, wstr[0]);
+      bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
+      bipwbuf[0][1] = 100;  // Set brightness to 100%
+      bipres = hid_send_feature_report(biphandle[0], bipwbuf[0], 10);
+  }
+
+  bipcnt = biptmpcnt;
 
   // * Register our callback for every loop. Positive intervals
   // * are in seconds, negative are the negative of sim frames.  Zero

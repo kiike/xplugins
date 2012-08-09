@@ -453,6 +453,7 @@ hid_device *switchhandle;
 
 // ****************** BIP Panel variables *******************************
 int bipcnt = 0, biptmpcnt = 0, bipres, biploop[4], stopbipcnt;
+int bipwcscmp0 = 0, bipwcscmp1 = 1;
 unsigned char bipwbuf[4][10];
 
 #define MAX_STR 255
@@ -890,32 +891,36 @@ PLUGIN_API int XPluginStart(char *		outName,
 
   if (biptmpcnt > 1) {
 
-     result = wcscmp( wstr[0], wstr[1]);
+     result = wcscmp(wstr[0], wstr[1]);
      if(result > 0){
-       sprintf(buf, "(result > 0)\n");
+       sprintf(buf, "(result > 0) %ls > %ls\n", wstr[0], wstr[1]);
        XPLMDebugString(buf);
        biphandle[0] = hid_open(0x6a3, 0xb4e, wstr[0]);
        bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[0][1] = 100;  // Set brightness to 100%
        bipres = hid_send_feature_report(biphandle[0], bipwbuf[0], 10);
+       bipwcscmp0 = 0;
 
        biphandle[1] = hid_open(0x6a3, 0xb4e, wstr[1]);
        bipwbuf[1][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[1][1] = 100;  // Set brightness to 100%
        bipres = hid_send_feature_report(biphandle[1], bipwbuf[1], 10);
+       bipwcscmp1 = 1;
 
      }else if (result < 0){
-       sprintf(buf, "(result < 0)\n");
+       sprintf(buf, "(result < 0) %ls < %ls\n", wstr[0], wstr[1]);
        XPLMDebugString(buf);
        biphandle[1] = hid_open(0x6a3, 0xb4e, wstr[0]);
        bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[0][1] = 100;  // Set brightness to 100%
        bipres = hid_send_feature_report(biphandle[1], bipwbuf[0], 10);
+       bipwcscmp0 = 1;
 
        biphandle[0] = hid_open(0x6a3, 0xb4e, wstr[1]);
        bipwbuf[1][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[1][1] = 100;  // Set brightness to 100%
        bipres = hid_send_feature_report(biphandle[0], bipwbuf[1], 10);
+       bipwcscmp1 = 0;
 
      }
 
@@ -924,6 +929,7 @@ PLUGIN_API int XPluginStart(char *		outName,
       bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
       bipwbuf[0][1] = 100;  // Set brightness to 100%
       bipres = hid_send_feature_report(biphandle[0], bipwbuf[0], 10);
+      bipwcscmp0 = 0;
   }
 
   bipcnt = biptmpcnt;

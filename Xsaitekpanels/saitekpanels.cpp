@@ -914,13 +914,13 @@ PLUGIN_API int XPluginStart(char *		outName,
        bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[0][1] = 100;  // Set brightness to 100%
        bipres = hid_send_feature_report(biphandle[1], bipwbuf[0], 10);
-       bipwcscmp0 = 1;
+       bipwcscmp0 = 0;
 
        biphandle[0] = hid_open(0x6a3, 0xb4e, wstr[1]);
        bipwbuf[1][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[1][1] = 100;  // Set brightness to 100%
        bipres = hid_send_feature_report(biphandle[0], bipwbuf[1], 10);
-       bipwcscmp1 = 0;
+       bipwcscmp1 = 1;
 
      }
 

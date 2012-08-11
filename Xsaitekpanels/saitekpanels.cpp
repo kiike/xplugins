@@ -1,7 +1,7 @@
 // ****** saitekpanels.cpp ***********
 // ****  William R. Good   ***********
 // ******** ver 1.45   ***************
-// ****** Aug 06 2012   **************
+// ****** Aug 10 2012   **************
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -880,8 +880,8 @@ PLUGIN_API int XPluginStart(char *		outName,
   while (bip_cur_dev) {
       biphandle[biptmpcnt] = hid_open_path(bip_cur_dev->path);
       hid_get_serial_number_string(biphandle[biptmpcnt], wstr[biptmpcnt], MAX_STR);
-      sprintf(buf, "biptmpcnt = %d  Serial Number String: %ls\n", biptmpcnt, wstr[biptmpcnt]);
-      XPLMDebugString(buf);
+      //sprintf(buf, "biptmpcnt = %d  Serial Number String: %ls\n", biptmpcnt, wstr[biptmpcnt]);
+      //XPLMDebugString(buf);
       hid_close(biphandle[biptmpcnt]);
       biptmpcnt++;
       bip_cur_dev = bip_cur_dev->next;
@@ -893,8 +893,8 @@ PLUGIN_API int XPluginStart(char *		outName,
 
      result = wcscmp(wstr[0], wstr[1]);
      if(result > 0){
-       sprintf(buf, "(result > 0) %ls > %ls\n", wstr[0], wstr[1]);
-       XPLMDebugString(buf);
+       //sprintf(buf, "(result > 0) %ls > %ls\n", wstr[0], wstr[1]);
+       //XPLMDebugString(buf);
        biphandle[0] = hid_open(0x6a3, 0xb4e, wstr[0]);
        bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[0][1] = 100;  // Set brightness to 100%
@@ -908,8 +908,8 @@ PLUGIN_API int XPluginStart(char *		outName,
        bipwcscmp1 = 1;
 
      }else if (result < 0){
-       sprintf(buf, "(result < 0) %ls < %ls\n", wstr[0], wstr[1]);
-       XPLMDebugString(buf);
+       //sprintf(buf, "(result < 0) %ls < %ls\n", wstr[0], wstr[1]);
+       //XPLMDebugString(buf);
        biphandle[1] = hid_open(0x6a3, 0xb4e, wstr[0]);
        bipwbuf[0][0] = 0xb2; // 0xb2 Report ID for brightness
        bipwbuf[0][1] = 100;  // Set brightness to 100%
@@ -1274,6 +1274,7 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
     if(bipcnt > 0){
 
         if ((inMessage == XPLM_MSG_PLANE_LOADED) & ((intptr_t) inParam == 0)) {
+          process_bip_panel();
           ReadConfigFile(PlaneICAO);
           if(bipcnt > 1){
              process_bip_panel();
@@ -1303,7 +1304,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
                ReadConfigFile((char *) inItemRef);
          }
          else {
-            ReadConfigFile((char *) inItemRef);
+               ReadConfigFile((char *) inItemRef);
 
          }
 
@@ -2205,9 +2206,7 @@ void CreateMultiWidget(int x, int y, int w, int h)
         int x2 = x + w;
         int y2 = y - h;
         int Index;
-        //int WindowCentre = x+w/2;
         int yOffset;
-        //char Buffer[255];
 
         DataRefID.clear();
         memset(MultiSpeed1CheckWidget, 0, sizeof(MultiSpeed1CheckWidget));

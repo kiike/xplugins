@@ -232,16 +232,16 @@ bool ReadConfigFile(string PlaneICAO)
 
   if(bipnum == bipwcscmp0) {
 
-      sprintf(buff, "if(bipnum == bipwcscmp0) bipnum %d == bipwcscmp0 %d\n", bipnum, bipwcscmp0);
-      XPLMDebugString(buff);
+      //sprintf(buff, "if(bipnum == bipwcscmp0) bipnum %d == bipwcscmp0 %d\n", bipnum, bipwcscmp0);
+      //XPLMDebugString(buff);
 
       bip1ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config.txt";
 
       xpsbipd2b_path_name.append("D2B_config.txt");
 
-      XPLMDebugString("\nThe full path for D2B_config.txt in the current aircraft folder is\n");
-      XPLMDebugString(xpsbipd2b_path_name.c_str());
-      XPLMDebugString("\n");
+      //XPLMDebugString("\nThe full path for D2B_config.txt in the current aircraft folder is\n");
+      //XPLMDebugString(xpsbipd2b_path_name.c_str());
+      //XPLMDebugString("\n");
 
       std::vector<char> parse_d2b_path_name(xpsbipd2b_path_name.size() + 1);
       std::copy(xpsbipd2b_path_name.begin(), xpsbipd2b_path_name.end(), parse_d2b_path_name.begin());
@@ -256,9 +256,9 @@ bool ReadConfigFile(string PlaneICAO)
       } else {
           std::ifstream ifile(bip1ConfigurationPath);
          if (ifile) {
-             XPLMDebugString("\nFound D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
-             XPLMDebugString(bip1ConfigurationPath);
-             XPLMDebugString("\n");
+             //XPLMDebugString("\nFound D2B_config.txt in the Xsaitekpanels plugin path and it is\n");
+             //XPLMDebugString(bip1ConfigurationPath);
+             //XPLMDebugString("\n");
              foundd2bpath = bip1ConfigurationPath;
          } else {
              return false;
@@ -448,33 +448,33 @@ bool ReadConfigFile(string PlaneICAO)
 
     if(bipnum == bipwcscmp1) {
 
-        sprintf(buff, "if(bipnum == bipwcscmp1) bipnum %d == bipwcscmp1 %d\n", bipnum, bipwcscmp1);
-        XPLMDebugString(buff);
+        //sprintf(buff, "if(bipnum == bipwcscmp1) bipnum %d == bipwcscmp1 %d\n", bipnum, bipwcscmp1);
+        //XPLMDebugString(buff);
 
         bip2ConfigurationPath = "./Resources/plugins/Xsaitekpanels/D2B_config2.txt";
 
         xpsbipd2b_path_name2.append("D2B_config2.txt");
 
-        XPLMDebugString("\nThe full path for D2B_config2.txt in the current aircraft folder is\n");
-        XPLMDebugString(xpsbipd2b_path_name2.c_str());
-        XPLMDebugString("\n");
+        //XPLMDebugString("\nThe full path for D2B_config2.txt in the current aircraft folder is\n");
+        //XPLMDebugString(xpsbipd2b_path_name2.c_str());
+        //XPLMDebugString("\n");
 
         std::vector<char> parse_d2b_path_name2(xpsbipd2b_path_name2.size() + 1);
         std::copy(xpsbipd2b_path_name2.begin(), xpsbipd2b_path_name2.end(), parse_d2b_path_name2.begin());
 
         std::ifstream ifile(&parse_d2b_path_name2[0]);
         if (ifile) {
-            XPLMDebugString("\nFound D2B_config2.txt in the current aircraft path and it is\n");
-            XPLMDebugString(&parse_d2b_path_name2[0]);
-            XPLMDebugString("\n");
+            //XPLMDebugString("\nFound D2B_config2.txt in the current aircraft path and it is\n");
+            //XPLMDebugString(&parse_d2b_path_name2[0]);
+            //XPLMDebugString("\n");
             foundd2bpath2 = (&parse_d2b_path_name2[0]);
 
         } else {
             std::ifstream ifile(bip2ConfigurationPath);
            if (ifile) {
-               XPLMDebugString("\nFound D2B_config2.txt in the Xsaitekpanels plugin path and it is\n");
-               XPLMDebugString(bip2ConfigurationPath);
-               XPLMDebugString("\n");
+               //XPLMDebugString("\nFound D2B_config2.txt in the Xsaitekpanels plugin path and it is\n");
+               //XPLMDebugString(bip2ConfigurationPath);
+               //XPLMDebugString("\n");
                foundd2bpath2 = bip2ConfigurationPath;
 
 
@@ -536,7 +536,7 @@ bool ReadConfigFile(string PlaneICAO)
         if (LineToEncrypt[bipwcscmp1].find("[") == 0)
         {
             //if ((LineToEncrypt[1].find("[DEFAULT2]") == 0) || (LineToEncrypt[1].find(PlaneICAO) == 0))
-            if ((LineToEncrypt[bipwcscmp1].find("[DEFAULT2]") == 0) || (LineToEncrypt[bipwcscmp1].find(PlaneICAO) == 0))
+            if ((LineToEncrypt[bipwcscmp1].find("[DEFAULT]") == 0) || (LineToEncrypt[bipwcscmp1].find(PlaneICAO) == 0))
             {
                 CorrectICAO = true;
             }
@@ -545,7 +545,7 @@ bool ReadConfigFile(string PlaneICAO)
                 CorrectICAO = false;
             }
             //if ((LineToEncrypt[1].find("[DEFAULT2]") != 0) && (++LastMenuEntry[1] < 50))
-            if ((LineToEncrypt[bipwcscmp1].find("[DEFAULT2]") != 0) && (++LastMenuEntry[bipwcscmp1] < 50))
+            if ((LineToEncrypt[bipwcscmp1].find("[DEFAULT]") != 0) && (++LastMenuEntry[bipwcscmp1] < 50))
             {
                 strcpy(MenuEntries[bipwcscmp1][LastMenuEntry[bipwcscmp1]], LineToEncrypt[bipwcscmp1].c_str());
 
@@ -689,7 +689,7 @@ void process_bip_menu()
     if(bipnum == 1) {
 
         XPLMClearAllMenuItems(Bip2MenuId);
-        XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT2]", (void *) "[DEFAULT2]", 1);
+        XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
         XPLMAppendMenuItem(Bip2MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
         XPLMAppendMenuSeparator(Bip2MenuId);
         XPLMAppendMenuItem(Bip2MenuId, MenuEntries[1][LastMenuEntry[1]], (void *) MenuEntries[1][LastMenuEntry[1]], 1);

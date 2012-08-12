@@ -676,23 +676,25 @@ void process_bip_menu()
 
 {
 
-    if(bipnum == 0) {
+    if(bipnum == bipwcscmp0) {
 
       XPLMClearAllMenuItems(BipMenuId);
       XPLMAppendMenuItem(BipMenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
       XPLMAppendMenuItem(BipMenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
       XPLMAppendMenuSeparator(BipMenuId);
-      XPLMAppendMenuItem(BipMenuId, MenuEntries[0][LastMenuEntry[0]], (void *) MenuEntries[0][LastMenuEntry[0]], 1);
+      //XPLMAppendMenuItem(BipMenuId, MenuEntries[0][LastMenuEntry[0]], (void *) MenuEntries[0][LastMenuEntry[0]], 1);
+      XPLMAppendMenuItem(BipMenuId, "[BIP_TEST]", (void *) "[BIP_TEST]", 1);
 
     }
 
-    if(bipnum == 1) {
+    if(bipnum == bipwcscmp1) {
 
         XPLMClearAllMenuItems(Bip2MenuId);
         XPLMAppendMenuItem(Bip2MenuId, "[DEFAULT]", (void *) "[DEFAULT]", 1);
         XPLMAppendMenuItem(Bip2MenuId, "Write a CSV Table for debugging", (void *) "<<CSV>>", 1);
         XPLMAppendMenuSeparator(Bip2MenuId);
-        XPLMAppendMenuItem(Bip2MenuId, MenuEntries[1][LastMenuEntry[1]], (void *) MenuEntries[1][LastMenuEntry[1]], 1);
+        //XPLMAppendMenuItem(Bip2MenuId, MenuEntries[1][LastMenuEntry[1]], (void *) MenuEntries[1][LastMenuEntry[1]], 1);
+        XPLMAppendMenuItem(Bip2MenuId, "[BIP_TEST]", (void *) "[BIP_TEST]", 1);
 
     }
 

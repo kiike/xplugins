@@ -453,6 +453,7 @@ hid_device *switchhandle;
 
 // ****************** BIP Panel variables *******************************
 int bipcnt = 0, biptmpcnt = 0, bipres, biploop[4], stopbipcnt;
+int bipnum = 0;
 int bipwcscmp0 = 0, bipwcscmp1 = 1;
 unsigned char bipwbuf[4][10];
 
@@ -967,14 +968,14 @@ PLUGIN_API int XPluginStart(char *		outName,
            XsaitekpanelsMenu,
            "xsaitekpanels.ini",
            NULL,
-           5);
+           1);
 
    ConfigMenuId = XPLMCreateMenu(
            "xsaitekpanels.ini",
            XsaitekpanelsMenu,
            ConfigSubMenuItem,
            XsaitekpanelsMenuHandler,
-           (void *)5);
+           (void *)1);
 
     XPLMClearAllMenuItems(ConfigMenuId);
     XPLMAppendMenuItem(ConfigMenuId, "Reload xsaitekpanels.ini", (void *) "TRUE", 1);
@@ -987,7 +988,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                "Bip",
                NULL,
-               1);
+               2);
 
 
        BipMenuId = XPLMCreateMenu(
@@ -995,7 +996,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                BipSubMenuItem,
                XsaitekpanelsMenuHandler,
-               (void *)1);
+               (void *)2);
 
 
 
@@ -1015,14 +1016,14 @@ PLUGIN_API int XPluginStart(char *		outName,
            XsaitekpanelsMenu,
            "Bip2",
            NULL,
-           1);
+           3);
 
        Bip2MenuId = XPLMCreateMenu(
            "Bip2",
            XsaitekpanelsMenu,
            Bip2SubMenuItem,
            XsaitekpanelsMenuHandler,
-           (void *)1);
+           (void *)3);
      }
 
    }
@@ -1033,7 +1034,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                "Multi",
                NULL,
-               2);
+               4);
 
 
        MultiMenuId = XPLMCreateMenu(
@@ -1041,7 +1042,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                MultiSubMenuItem,
                XsaitekpanelsMenuHandler,
-               (void *)2);
+               (void *)4);
   }
 
    if (radcnt > 0) {
@@ -1050,7 +1051,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                "Radio",
                NULL,
-               3);
+               5);
 
 
        RadioMenuId = XPLMCreateMenu(
@@ -1058,7 +1059,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                RadioSubMenuItem,
                XsaitekpanelsMenuHandler,
-               (void *)3);
+               (void *)5);
   }
 
    if (switchcnt > 0) {
@@ -1067,7 +1068,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                "Switch",
                NULL,
-               4);
+               6);
 
 
        SwitchMenuId = XPLMCreateMenu(
@@ -1075,7 +1076,7 @@ PLUGIN_API int XPluginStart(char *		outName,
                XsaitekpanelsMenu,
                SwitchSubMenuItem,
                XsaitekpanelsMenuHandler,
-               (void *)4);
+               (void *)6);
   }
 
   return 1;
@@ -1296,41 +1297,75 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID	inFromWho,
 
 void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 {
+
     if((intptr_t)inMenuRef == 1){
+         if (strcmp((char *) inItemRef, "TRUE") == 0) {
+             process_read_ini_file();
+         }
+
+    }
+
+    if((intptr_t)inMenuRef == 2){
+        bipnum = 0;
+        if (strcmp((char *) inItemRef, "[DEFAULT]") == 0) {
+              ReadConfigFile((char *) inItemRef);
+        }
          if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
              WriteCSVTableToDisk();
          }
-         if (strcmp((char *) inItemRef, "<<BIP2>>") == 0) {
+         if (strcmp((char *) inItemRef, "[BIP_TEST]") == 0) {
                ReadConfigFile((char *) inItemRef);
          }
+
          else {
                ReadConfigFile((char *) inItemRef);
 
          }
 
     }
-    if((intptr_t)inMenuRef == 2){
+
+    if((intptr_t)inMenuRef == 3){
+        bipnum = 1;
+        if (strcmp((char *) inItemRef, "[DEFAULT]") == 0) {
+
+             ReadConfigFile((char *) inItemRef);
+        }
+
+        if (strcmp((char *) inItemRef, "<<CSV>>") == 0) {
+             WriteCSVTableToDisk();
+        }
+
+        if (strcmp((char *) inItemRef, "[BIP_TEST]") == 0) {
+               ReadConfigFile((char *) inItemRef);
+        }
+
+        else {
+               ReadConfigFile((char *) inItemRef);
+
+         }
+
+    }
+
+
+    if((intptr_t)inMenuRef == 4){
        if (strcmp((char *) inItemRef, "MULTI_WIDGET") == 0) {
-             //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateMultiWidget(05, 700, 300, 330);	//left, top, right, bottom.
              multiMenuItem = 1;
        }
 
     }
 
-    if((intptr_t)inMenuRef == 3){
+    if((intptr_t)inMenuRef == 5){
 
          if (strcmp((char *) inItemRef, "RADIO_WIDGET") == 0) {
-             //CreateRadioWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateRadioWidget(15, 700, 300, 300);	//left, top, right, bottom.
              radioMenuItem = 1;
          }
 
     }
 
-    if((intptr_t)inMenuRef == 4){
+    if((intptr_t)inMenuRef == 6){
          if (strcmp((char *) inItemRef, "SWITCH_WIDGET") == 0) {
-             //CreateSwitchWidget(150, 412, 300, 480);	//left, top, right, bottom. original setting
              CreateSwitchWidget(05, 700, 300, 480);	//left, top, right, bottom.
              switchMenuItem = 1;
 
@@ -1338,12 +1373,7 @@ void XsaitekpanelsMenuHandler(void * inMenuRef, void * inItemRef)
 
     }
 
-    if((intptr_t)inMenuRef == 5){
-         if (strcmp((char *) inItemRef, "TRUE") == 0) {
-             process_read_ini_file();
-         }
 
-    }
 
     return;
 }

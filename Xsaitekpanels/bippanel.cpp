@@ -62,7 +62,7 @@ using namespace std;
 float   LookAtThisValue;
 int     LookAtThisIntValue;
 
-static int bipnum = 0;
+//static int bipnum = 0;
 static unsigned char bipwbuf[4][10];
 static unsigned char lastbipwbuf[4][10];
 

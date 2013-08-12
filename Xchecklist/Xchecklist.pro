@@ -52,5 +52,5 @@ SOURCES += Xchecklist.cpp \
 
 LEXSOURCES += chkl.l                                                                                                                                                                                           
 YACCSOURCES += chkl.y  
-LIBS += -L. -lespeak -lopenal
+LIBS += -L. -lespeak64 -lopenal
                                                                                                                                                                                         

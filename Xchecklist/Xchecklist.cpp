@@ -243,7 +243,7 @@ bool create_checklists_menu(void)
   XPLMClearAllMenuItems(checklistsMenu);
   if(get_checklist_names(&size, &names)){
     checklists_count = size;
-    for(int i = 0; i < size; ++i){
+    for(intptr_t i = 0; i < size; ++i){
       XPLMAppendMenuItem(checklistsMenu, names[i], (void *) i, 1);
     }
     free_checklist_names(size, &names);
@@ -362,7 +362,7 @@ float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void 
   (void) inElapsed2;
   (void) cntr;
   (void) ref;
-  static int hide_cntr;
+  static int hide_cntr;        
 
   if(state[COPILOT_ON])
     do_processing(XPIsWidgetVisible(xCheckListWidget));
@@ -390,7 +390,7 @@ unsigned int pageSize = 0;
 const char *pageTitle = "Default Title";
 checklist_item_desc_t pageItems[50];
 
-  if((int)inMenuRef == 0){
+  if((intptr_t)inMenuRef == 0){
     if (!strcmp((char *) inItemRef, "checklist")){
       if (xCheckListWidget == NULL){
         create_checklist(pageSize, pageTitle, pageItems, 120, 0, 0);
@@ -407,8 +407,8 @@ checklist_item_desc_t pageItems[50];
           XPShowWidget(setupWidget);
       }
     }
-  }else if((int)inMenuRef == 1){
-    open_checklist((int)inItemRef);
+  }else if((intptr_t)inMenuRef == 1){
+    open_checklist((intptr_t)inItemRef);
   }
 }
 
@@ -942,7 +942,7 @@ int MyCommandCallback(XPLMCommandRef       inCommand,
     //(void) inRefcon;
 
     if (inPhase == xplm_CommandBegin) {
-        switch((int)inRefcon){
+        switch((intptr_t)inRefcon){
         case CHECK_ITEM_COMMAND:
             printf ("trying to make check_item to work \n");
             if (XPIsWidgetVisible(xCheckListWidget))

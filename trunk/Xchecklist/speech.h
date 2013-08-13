@@ -10,7 +10,6 @@ extern "C" {
 
 bool init_speech();
 void say(const char *text);
-bool speaking();
 void close_speech();
 void cleanup_speech();
 bool speech_active();

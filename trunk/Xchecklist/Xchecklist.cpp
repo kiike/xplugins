@@ -686,7 +686,7 @@ bool create_checklist(unsigned int size, const char *title,
     //int Index;  //unused
     int WindowCentre = x+w/2;
     int yOffset;
-    bool flip, cop;
+    //bool flip, cop;
 
     max_items = size;
     
@@ -714,10 +714,10 @@ bool create_checklist(unsigned int size, const char *title,
      for(i = 0; i < size; ++i){
 
      yOffset = (5+18+(i*20));
-     flip = items[i].info_only;
+     //flip = items[i].info_only;
 
             // Create a copilot text widget
-            cop = !(flip);
+            // cop = !(flip);
             xCheckListCopilotWidget[i] = XPCreateWidget(x+5, y-yOffset, x+60+200, y-yOffset-20,
                                          items[i].copilot_controlled,	// Visible
                                          "+",// desc

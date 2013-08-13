@@ -43,14 +43,14 @@ macx {
 HEADERS += interface.h \
            parser.h \
            speech.h
-    
+
 
 SOURCES += Xchecklist.cpp \
            interface.cpp \
            parser.cpp \
-           speech_al.cpp
+           speech_sd.c
 
-LEXSOURCES += chkl.l                                                                                                                                                                                           
-YACCSOURCES += chkl.y  
-LIBS += -L. -lespeak64 -lopenal
-                                                                                                                                                                                        
+LEXSOURCES += chkl.l
+YACCSOURCES += chkl.y
+LIBS += -ldl
+

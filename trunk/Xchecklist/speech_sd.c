@@ -1,5 +1,5 @@
 #include "XPLMUtilities.h"
-#ifdef LIN
+#if LIN
 
 #include <stdio.h>
 #include <libspeechd.h>
@@ -123,7 +123,7 @@ static void finish_callback(size_t msg_id, size_t client_id, SPDNotificationType
 
 bool init_speech()
 {
-#ifdef LIN
+#if LIN
   if(load_functions()){
     fprintf(stderr, "Failed to load speech-dispatch library!\n");
     return false;
@@ -145,7 +145,7 @@ bool init_speech()
 void say(const char *text)
 {
   XPLMSpeakString(text);
-#ifdef LIN
+#if LIN
   int res = wspd_say(connection, SPD_MESSAGE, text);
   if(res != 0){
     ++speaking;
@@ -155,7 +155,7 @@ void say(const char *text)
 
 void close_speech()
 {
-#ifdef LIN
+#if LIN
   wspd_set_notification_off(connection, SPD_END);
   wspd_set_notification_off(connection, SPD_CANCEL);
   wspd_close(connection);
@@ -168,7 +168,7 @@ void cleanup_speech()
 
 bool speech_active()
 {
-#ifdef LIN
+#if LIN
   if(connection != NULL){
     return true;
   }else{
@@ -181,7 +181,7 @@ bool speech_active()
 
 bool spoken()
 {
-#ifdef LIN
+#if LIN
   if(speaking == 0){
     return true;
   }else{

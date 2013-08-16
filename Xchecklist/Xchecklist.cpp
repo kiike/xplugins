@@ -5,7 +5,7 @@
 //     Michal Navratil
 //     William Good
 //
-//     Ver 0.5 First version in down load section of
+//     Ver 0.6 Working to 32/64bit multiplatform
 //     X-Plane.org
 //
 //     A plugin to display a clist.txt in widget window
@@ -35,6 +35,16 @@
 #endif
 #include <vector>
 #include <string>
+
+#if WIN
+#define strcasecmp( s1, s2 ) strcmpi( s1, s2 )
+#define strncasecmp( s1, s2, n ) strnicmp( s1, s2, n )
+#endif
+
+#if WIN
+#define snprintf sprintf_s
+#endif
+
 
 checklist_binder *binder = NULL;
 
@@ -101,8 +111,8 @@ int checklists_count = -1;
 void xCheckListMenuHandler(void *, void *);
 
 static void CreateSetupWidget(int xx1, int yy1, int ww, int hh);
-static int xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2);
-static int xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2);
+static int xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2);
+static int xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2);
 static float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void *ref);
 static bool init_checklists();
 static bool init_setup();
@@ -126,7 +136,11 @@ PLUGIN_API int XPluginStart(
 {
         int		PluginSubMenuItem;
 	int             ChecklistsSubMenuItem;
-        strcpy(outName, "Xchecklist ver 0.5");
+
+         XPLMDebugString("Xchecklist ver 0.6\n");
+
+        /* First set up our plugin info. */
+        strcpy(outName, "Xchecklist ver 0.6");
         strcpy(outSig, "Michal_Bill.Example.Xchecklist");
         strcpy(outDesc, "A plugin to display checklists in a widget window.");
 
@@ -346,7 +360,7 @@ bool init_setup()
 
 }
 
-PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, long inMsg, void * inParam)
+PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, int inMsg, void * inParam)
 {
   (void) inFrom; // To get rid of warnings on unused variables
   if((inMsg == XPLM_MSG_PLANE_LOADED) && (inParam == 0)){
@@ -496,7 +510,7 @@ bool set_sound(bool enable)
 
 
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
-int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2)
+int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2)
 {
   (void) inParam1;
   (void) inParam2;
@@ -518,7 +532,7 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inPara
                 printf("Got button state chenge message!\n");
                 for (size_t Item=0; Item<SETUP_TEXT_ITEMS; Item++)
                 {
-		  long tmp;
+          intptr_t tmp;
                         // If the setupCheckWidget check box is checked then set state[Item] true
                         if ((tmp = XPGetWidgetProperty(setupCheckWidget[Item], xpProperty_ButtonState, 0))){
                           state[Item] = true;
@@ -559,7 +573,7 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inPara
 
         if (inMessage == xpMsg_PushButtonPressed)
         {
-                if (inParam1 == (long)setupSaveSettingsButton)
+                if (inParam1 == (intptr_t)setupSaveSettingsButton)
                 {
                         // ToDo Need to add saving settings to a file
                         XPHideWidget(setupWidget);
@@ -597,7 +611,7 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inPara
 }
 
 // This is our widget handler.  In this example we are only interested when the close box is pressed.
-int	xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  inParam1, long  inParam2)
+int	xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  inParam1, intptr_t  inParam2)
 {
   (void) inParam2;
         if (inMessage == xpMessage_CloseButtonPushed)
@@ -614,13 +628,13 @@ int	xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  in
         if (inMessage == xpMsg_PushButtonPressed)
         {
 	  printf("Button pushed...\n");
-                if (inParam1 == (long)xChecklistPreviousButton)
+                if (inParam1 == (intptr_t)xChecklistPreviousButton)
                 {
                         prev_checklist();
                         return 1;
                 }
 
-                if (inParam1 == (long)xChecklistNextButton)
+                if (inParam1 == (intptr_t)xChecklistNextButton)
                 {
                         next_checklist();
                         return 1;
@@ -629,14 +643,14 @@ int	xCheckListHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, long  in
         if(inMessage == xpMsg_ButtonStateChanged)
 	{
                 for(int i = 0; i < max_items; ++i){
-                  if(inParam1 == (long)xCheckListCheckWidget[i]){
+                  if(inParam1 == (intptr_t)xCheckListCheckWidget[i]){
 		    if(i == checkable){
 		      item_checked(i);
 		      return 1;
 		    }else{
                       XPSetWidgetProperty(xCheckListCheckWidget[i],
 					  xpProperty_ButtonState, (i < checkable) ? 1 : 0);
-		    }
+            }
 		  }
 		}
 	}

@@ -16,12 +16,12 @@ typedef struct{
 }checklist_item_desc_t;
 
 typedef enum{
-  UNKNOWN     = 0,
-  INTEGER     = 1,
-  FLOAT       = 2,
-  DOUBLE      = 4,
-  FLOAT_ARRAY = 8,
-  INT_ARRAY   = 16
+  XC_UNKNOWN     = 0,
+  XC_INTEGER     = 1,
+  XC_FLOAT       = 2,
+  XC_DOUBLE      = 4,
+  XC_FLOAT_ARRAY = 8,
+  XC_INT_ARRAY   = 16
 } dataref_type_t;
 
 #ifndef __cplusplus

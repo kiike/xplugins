@@ -165,9 +165,9 @@ dataref_name:   TOKEN_STRING {
                   }
 ;
 
-operation:      TOKEN_NE {$$ = (int *)new operation_t(NOT);}
-		| TOKEN_LE {$$ = (int *)new operation_t(LE);}
-		| TOKEN_GE {$$ = (int *)new operation_t(GE);}
+operation:      TOKEN_NE {$$ = (int *)new operation_t(XC_NOT);}
+                | TOKEN_LE {$$ = (int *)new operation_t(XC_LE);}
+                | TOKEN_GE {$$ = (int *)new operation_t(XC_GE);}
 ;
 
 number:         TOKEN_NUMBER 

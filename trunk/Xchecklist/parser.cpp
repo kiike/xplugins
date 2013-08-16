@@ -133,22 +133,22 @@ std::ostream& operator<<(std::ostream &output, const dataref_dsc& d)
 {
   output<<*(d.data_ref);
   switch(d.op){
-    case NOT:
+    case XC_NOT:
       output<<" != "<<*(d.val1);
       break;
-    case EQ:
+    case XC_EQ:
       output<<" == "<<*(d.val1);
       break;
-    case LE:
+    case XC_LE:
       output<<" < "<<*(d.val1);
       break;
-    case GE:
+    case XC_GE:
       output<<" > "<<*(d.val1);
       break;
-    case IN:
+    case XC_IN:
       output<<" BELONGS TO ("<< *(d.val1) <<" : "<<*(d.val2)<<")";
       break;
-    case HYST:
+    case XC_HYST:
       output<<" HYST ("<< *(d.val1) <<" : "<<*(d.val2)<<")";
       break;
   }
@@ -213,7 +213,7 @@ dataref_dsc::dataref_dsc(dataref_name *dr, number *val)
   data_ref = dr;
   val1 = val;
   val2 = NULL;
-  op = EQ;
+  op = XC_EQ;
 }
 
 dataref_dsc::dataref_dsc(dataref_name *dr, operation_t *o, number *val)
@@ -232,9 +232,9 @@ dataref_dsc::dataref_dsc(dataref_name *dr, number *v1, number *v2, bool plain_in
   val1 = v1;
   val2 = v2;
   if(plain_in){
-    op = IN;
+    op = XC_IN;
   }else{
-    op = HYST;
+    op = XC_HYST;
   }
 }
 
@@ -271,7 +271,7 @@ bool dataref_dsc::registerDsc()
   dataref_struct = data_ref->getDataref();
 //  get_dataref_type(dataref_struct);
   dataref_val(dataref_struct, val1->get_value());
-  if(op == IN){
+  if(op == XC_IN){
     dataref_val(dataref_struct, val2->get_value());
   }
   return true;
@@ -369,22 +369,22 @@ bool dataref_dsc::trigered()
   }
   float val = get_float_dataref(dataref_struct);
   switch(op){
-    case NOT:
+    case XC_NOT:
       res = (val == *val1) ? false : true;
       break;
-    case EQ:
+    case XC_EQ:
       res = (val == *val1) ? true : false;
       break;
-    case LE:
+    case XC_LE:
       res = (val <= *val1) ? true : false;
       break;
-    case GE:
+    case XC_GE:
       res = (val >= *val1)? true : false;
       break;
-    case IN:
+    case XC_IN:
       res = ((val >= *val1) && (val <= *val2 )) ? true : false;
       break;
-    case HYST:
+    case XC_HYST:
       res = checkTrig(val);
       break;
   }

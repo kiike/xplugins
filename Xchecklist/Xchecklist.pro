@@ -26,6 +26,7 @@ unix:!macx {
     TARGET = lin.xpl
     # WARNING! This requires the latest version of the X-SDK !!!!
     QMAKE_CXXFLAGS += -fvisibility=hidden
+    QMAKE_CFLAGS += -fvisibility=hidden
 }
 
 macx {
@@ -52,5 +53,5 @@ SOURCES += Xchecklist.cpp \
 
 LEXSOURCES += chkl.l
 YACCSOURCES += chkl.y
-LIBS += -ldl
+LIBS += -ldl -Wl,--version-script -Wl,Xchecklist.sym
 

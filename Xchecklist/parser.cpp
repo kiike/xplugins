@@ -6,11 +6,27 @@
 #include "parser.h"
 #include "speech.h"
 
+#if _WIN32
+float roundf(float x)
+{
+  return ceilf(x + 0.5f);
+}
+#endif
+
 int chklparse(void);
+
+#if _WIN32
+FILE* chklin;
+int chkldebug;
+char* chkltext;
+int chkllineno;
+#else
 extern FILE* chklin;
 extern int chkldebug;
 extern char* chkltext;
 extern int chkllineno;
+#endif
+
 extern checklist *current_checklist;
 char *parsed_file;
 

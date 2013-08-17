@@ -36,15 +36,12 @@
 #include <vector>
 #include <string>
 
-#if WIN
+// need to use _WIN32 to get VS2012 to be happy
+#if _WIN32
 #define strcasecmp( s1, s2 ) strcmpi( s1, s2 )
 #define strncasecmp( s1, s2, n ) strnicmp( s1, s2, n )
-#endif
-
-#if WIN
 #define snprintf sprintf_s
 #endif
-
 
 checklist_binder *binder = NULL;
 

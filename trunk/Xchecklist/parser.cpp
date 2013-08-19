@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <cmath>
-#include "parser.h"
+#include "chkl_parser.h"
 #include "speech.h"
 
 #if _WIN32
@@ -16,10 +16,10 @@ float roundf(float x)
 int chklparse(void);
 
 #if _WIN32
-FILE* chklin;
-int chkldebug;
-char* chkltext;
-int chkllineno;
+//FILE* chklin;
+//int chkldebug;
+//char* chkltext;
+//int chkllineno;
 #else
 extern FILE* chklin;
 extern int chkldebug;

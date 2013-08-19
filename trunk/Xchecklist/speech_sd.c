@@ -122,8 +122,8 @@ static void finish_callback(size_t msg_id, size_t client_id, SPDNotificationType
 #endif
 
 // Made my own stdbool.h for windows
-#if _WIN32
-#include <stdbool.h>
+#if IBM
+  #include "stdbool.h"
 #endif
 
 bool init_speech()

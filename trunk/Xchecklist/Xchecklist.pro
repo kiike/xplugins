@@ -19,6 +19,8 @@ win32 {
     LIBS += -L../SDK/Libraries/Win
     LIBS += -lXPLM -lXPWidgets
     TARGET = win.xpl
+    INCLUDEPATH += D:/gnu/include
+    INCLUDEPATH += .
 }
 
 unix:!macx {
@@ -27,6 +29,7 @@ unix:!macx {
     # WARNING! This requires the latest version of the X-SDK !!!!
     QMAKE_CXXFLAGS += -fvisibility=hidden
     QMAKE_CFLAGS += -fvisibility=hidden
+    LIBS += -ldl -Wl,--version-script -Wl,Xchecklist.sym
 }
 
 macx {
@@ -39,11 +42,13 @@ macx {
     # QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     # The following line defines for which architectures we build.
     CONFIG += x86 ppc
+    LIBS += -ldl -Wl,--version-script -Wl,Xchecklist.sym
 }
 
 HEADERS += interface.h \
-           parser.h \
-           speech.h
+           chkl_parser.h \
+           speech.h \
+    stdbool.h
 
 
 SOURCES += Xchecklist.cpp \
@@ -53,5 +58,4 @@ SOURCES += Xchecklist.cpp \
 
 LEXSOURCES += chkl.l
 YACCSOURCES += chkl.y
-LIBS += -ldl -Wl,--version-script -Wl,Xchecklist.sym
 

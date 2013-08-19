@@ -23,7 +23,7 @@
 #include "XPStandardWidgets.h"
 #include "XPLMDataAccess.h"
 
-#include "parser.h"
+#include "chkl_parser.h"
 #include "interface.h"
 #include "speech.h"
 

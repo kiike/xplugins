@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "chkl_parser.h"
 #include "speech.h"
 
 bool start_checklists(char *fname)

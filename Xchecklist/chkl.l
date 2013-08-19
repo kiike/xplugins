@@ -2,7 +2,7 @@
 
   #include <stdlib.h>
   #include <string.h>
-  #include <stdbool.h>
+  //#include <stdbool.h>
   #include "chkl_yacc.h"
   
 %}

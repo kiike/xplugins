@@ -320,9 +320,9 @@ bool init_setup()
     //To make sure I don't corrupt XPlane stuff
     char *myPrefsPath = strdup(prefsPath);
 #if IBM
-    char *last_slash = strrchr(myACFPath, '\\');
+    char *last_slash = strrchr(myPrefsPath, '\\');
 #else
-    char *last_slash = strrchr(myACFPath, '/');
+    char *last_slash = strrchr(myPrefsPath, '/');
 #endif
     *(++last_slash) = '\0';
 
@@ -589,9 +589,9 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  in
                         //To make sure I don't corrupt XPlane stuff
                         char *myPrefsPath = strdup(prefsPath);
 #if IBM
-                        char *last_slash = strrchr(myACFPath, '\\');
+                        char *last_slash = strrchr(myPrefsPath, '\\');
 #else
-                        char *last_slash = strrchr(myACFPath, '/');
+                        char *last_slash = strrchr(myPrefsPath, '/');
 #endif
                         *(++last_slash) = '\0';
                         //Add xchecklist.prf to preferences path

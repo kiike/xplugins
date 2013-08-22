@@ -291,7 +291,11 @@ bool init_checklists()
         //Aircraft path contains path to the *.acf file
         //  but we need only the directory name
 	char *myACFPath = strdup(AircraftPath);
-	char *last_slash = strrchr(myACFPath, '/');
+#if IBM
+    char *last_slash = strrchr(myACFPath, '\\');
+#else
+    char *last_slash = strrchr(myACFPath, '/');
+#endif
 	*(++last_slash) = '\0';
 
         bool res = false;
@@ -315,7 +319,11 @@ bool init_setup()
     XPLMGetPrefsPath(prefsPath);
     //To make sure I don't corrupt XPlane stuff
     char *myPrefsPath = strdup(prefsPath);
-    char * last_slash = strrchr(myPrefsPath, '/');
+#if IBM
+    char *last_slash = strrchr(myACFPath, '\\');
+#else
+    char *last_slash = strrchr(myACFPath, '/');
+#endif
     *(++last_slash) = '\0';
 
     //Add xchecklist.prf to preferences path
@@ -580,7 +588,11 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  in
                         XPLMGetPrefsPath(prefsPath);
                         //To make sure I don't corrupt XPlane stuff
                         char *myPrefsPath = strdup(prefsPath);
-                        char * last_slash = strrchr(myPrefsPath, '/');
+#if IBM
+                        char *last_slash = strrchr(myACFPath, '\\');
+#else
+                        char *last_slash = strrchr(myACFPath, '/');
+#endif
                         *(++last_slash) = '\0';
                         //Add xchecklist.prf to preferences path
                         size_t size = strlen(myPrefsPath) + strlen("Xchecklist.prf") + 1; //strlen doesn't count terminating null byte!

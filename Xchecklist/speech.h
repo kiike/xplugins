@@ -13,7 +13,7 @@ void say(const char *text);
 void close_speech();
 void cleanup_speech();
 bool speech_active();
-bool spoken();
+bool spoken(float elapsed);
 
 #ifdef __cplusplus
 }

@@ -3,10 +3,12 @@
 #include <cstdlib>
 #include <sstream>
 #include <cmath>
+#include <iostream>
+#include <ostream>
 #include "chkl_parser.h"
 #include "speech.h"
 
-#if _WIN32
+#if IBM
 float roundf(float x)
 {
   return ceilf(x + 0.5f);
@@ -15,7 +17,7 @@ float roundf(float x)
 
 int chklparse(void);
 
-#if _WIN32
+#if IBM
 //FILE* chklin;
 //int chkldebug;
 //char* chkltext;
@@ -561,9 +563,11 @@ bool chk_item::activate()
 
 bool chk_item::do_processing()
 {
-
+    static float elapsed = 0;
+    printf(">>> State: %d ", state);
     switch(state){
     case INACTIVE:
+        elapsed = 0;
         if(speech_active()){
             label->say_label();
             state = SAY_LABEL;
@@ -572,16 +576,19 @@ bool chk_item::do_processing()
         }
         break;
     case SAY_LABEL:
-        if(spoken()){
+        elapsed += 0.1; // interval the flight loop is set to
+        if(spoken(elapsed)){
             state = CHECKABLE;
         }
         break;
     case CHECKABLE:
+        elapsed = 0;
         activate_item(index);
         checked = false;
         state = PROCESSING;
         break;
     case PROCESSING:
+        elapsed = 0;
         if(checked){
             state = NEXT;
             break;
@@ -592,17 +599,22 @@ bool chk_item::do_processing()
         }
         break;
     case SAY_SUFFIX:
-        if(spoken()){
+        elapsed += 0.1; // interval the flight loop is set to
+        if(spoken(elapsed)){
             state = NEXT;
         }
         break;
     case NEXT:
+        elapsed = 0;
+        printf(" -> %d (elapsed 0.0)\n", state);
         return check_item(index);
         break;
     default:
+        elapsed = 0;
         state = INACTIVE; //defensive
         break;
     }
+  printf(" -> %d (elapsed %f)\n", state, elapsed);
   return true;
 }
 

@@ -1,10 +1,14 @@
 #include "XPLMUtilities.h"
+#include <speech.h>
+#include <stdlib.h>
+#include <string.h>
+const float speech_speed = 4.0f; //characters per second
+
 #if LIN
 
 #include <stdio.h>
 #include <libspeechd.h>
 #include <dlfcn.h>
-#include <stdbool.h>
 
 
 typedef SPDConnection* (*spd_open_t)(const char* client_name, const char* connection_name, 
@@ -121,11 +125,6 @@ static void finish_callback(size_t msg_id, size_t client_id, SPDNotificationType
 }
 #endif
 
-// Made my own stdbool.h for windows
-#if IBM
-  #include "stdbool.h"
-#endif
-
 bool init_speech()
 {
 #if LIN
@@ -147,8 +146,11 @@ bool init_speech()
   return true;
 }
 
+static size_t speech_length = 0;
+
 void say(const char *text)
 {
+  speech_length = strlen(text);
   XPLMSpeakString(text);
 #if LIN
   int res = wspd_say(connection, SPD_MESSAGE, text);
@@ -184,7 +186,7 @@ bool speech_active()
 #endif
 }
 
-bool spoken()
+bool spoken(float elapsed)
 {
 #if LIN
   if(speaking == 0){
@@ -193,7 +195,11 @@ bool spoken()
     return false;
   }
 #else
-  return true;
+  if(elapsed > speech_length / speech_speed){
+    return true;
+  }else{
+    return false;
+  }
 #endif
 }
 

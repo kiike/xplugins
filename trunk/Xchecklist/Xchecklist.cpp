@@ -35,6 +35,7 @@
 #endif
 #include <vector>
 #include <string>
+#include <algorithm>
 
 // need to use _WIN32 to get VS2012 to be happy
 #if _WIN32
@@ -62,8 +63,8 @@ int item;
 
 int Item;
 
-char FileName[256], AircraftPath[256];
-char prefsPath[256];
+char FileName[256], AircraftPath[512];
+char prefsPath[512];
 
 enum {NEXT_CHECKLIST_COMMAND, CHECK_ITEM_COMMAND, HIDE_CHECKLIST_COMMAND};
 
@@ -125,6 +126,28 @@ enum {TRANSLUCENT, SHOW_CHECKLIST, COPILOT_ON, VOICE, AUTO_HIDE};
 bool state[SETUP_TEXT_ITEMS];
 
 char *test;
+
+#if IBM
+  const std::string dirSep = "\\";
+#else
+  const std::string dirSep = "/";
+#endif
+
+static std::string processPath(char *path)
+{
+    std::string mypath(path);
+#if APL
+    std::replace(mypath.begin(), mypath.end(), ':', '/');
+    mypath.insert(0, "/Volumes/");
+#endif
+
+    mypath.erase(mypath.rfind(dirSep));
+
+    printf("PATH: '%s'\n", mypath.c_str());
+    return mypath;
+}
+
+
 
 PLUGIN_API int XPluginStart(
 						char *		outName,
@@ -263,10 +286,10 @@ bool create_checklists_menu(void)
   return false;
 }
 
-char *find_checklist(char *path)
+char *find_checklist(const std::string path)
 {
-    std::string name1 = std::string(path) + "/clist.txt";
-    std::string name2 = std::string(path) + "/plane.txt";
+    std::string name1 = path + dirSep + "clist.txt";
+    std::string name2 = path + dirSep + "plane.txt";
     FILE *f;
     if((f = fopen(name1.c_str(), "r")) != NULL){
         fclose(f);
@@ -290,21 +313,14 @@ bool init_checklists()
 	}
         //Aircraft path contains path to the *.acf file
         //  but we need only the directory name
-	char *myACFPath = strdup(AircraftPath);
-#if IBM
-    char *last_slash = strrchr(myACFPath, '\\');
-#else
-    char *last_slash = strrchr(myACFPath, '/');
-#endif
-	*(++last_slash) = '\0';
-
+	    std::string myACFPath = processPath(AircraftPath);
+	    
         bool res = false;
         char *clist = find_checklist(myACFPath);
         if(clist != NULL){
           res = start_checklists(clist);
         }
         free(clist);
-        free(myACFPath);
         checklists_count = -1; // to make it rebuild menus...
         return res;
 }
@@ -318,20 +334,11 @@ bool init_setup()
 {
     XPLMGetPrefsPath(prefsPath);
     //To make sure I don't corrupt XPlane stuff
-    char *myPrefsPath = strdup(prefsPath);
-#if IBM
-    char *last_slash = strrchr(myPrefsPath, '\\');
-#else
-    char *last_slash = strrchr(myPrefsPath, '/');
-#endif
-    *(++last_slash) = '\0';
-
+    std::string myPrefsPath = processPath(prefsPath);
     //Add xchecklist.prf to preferences path
-    size_t size = strlen(myPrefsPath) + strlen("Xchecklist.prf") + 1; //strlen doesn't count terminating null byte!
-    char *cat = (char *)malloc(size); //allocate memory
-    snprintf(cat, size, "%s%s", myPrefsPath, "Xchecklist.prf");
-    printf("\nPrefs Path to initilize setup  %s \n\n", cat);
-    my_stream = fopen (cat, "r+");
+    myPrefsPath += dirSep + "Xchecklist.prf";
+    printf("\nPrefs Path to initilize setup  %s \n\n", myPrefsPath.c_str());
+    my_stream = fopen (myPrefsPath.c_str(), "r+");
     if (my_stream!=NULL)
       {
         //ToDo read the preference file and set check boxes to match
@@ -359,8 +366,6 @@ bool init_setup()
         state[AUTO_HIDE] = true;
     }
 
-    free(cat); //to avoid the memory leak
-    cat = NULL; //if you try to use it now, you know it immediately
     return 1;
 
 }
@@ -587,19 +592,10 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  in
                         //Prefs Path  /home/bill/X-Plane_9.61/Output/preferences/Set X-Plane.prf
                         XPLMGetPrefsPath(prefsPath);
                         //To make sure I don't corrupt XPlane stuff
-                        char *myPrefsPath = strdup(prefsPath);
-#if IBM
-                        char *last_slash = strrchr(myPrefsPath, '\\');
-#else
-                        char *last_slash = strrchr(myPrefsPath, '/');
-#endif
-                        *(++last_slash) = '\0';
-                        //Add xchecklist.prf to preferences path
-                        size_t size = strlen(myPrefsPath) + strlen("Xchecklist.prf") + 1; //strlen doesn't count terminating null byte!
-                        char *cat = (char *)malloc(size); //allocate memory
-                        snprintf(cat, size, "%s%s", myPrefsPath, "Xchecklist.prf");
-                        printf("\nPrefs Path  %s \n\n", cat);
-                        my_stream = fopen (cat, "w");
+                        std::string myPrefsPath = processPath(prefsPath);
+                        myPrefsPath += dirSep + "Xchecklist.prf";
+                        printf("\nPrefs Path  %s \n\n", myPrefsPath.c_str());
+                        my_stream = fopen (myPrefsPath.c_str(), "w");
 
                         for(size_t i = 0; i < SETUP_TEXT_ITEMS; ++i){
                             fprintf(my_stream, "%s ", ((state[i])?"true":"false"));
@@ -607,8 +603,6 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  in
 
                         fclose (my_stream);
 
-                        free(cat); //to avoid the memory leak
-                        cat = NULL; //if you try to use it now, you know it immediately
                         return 1;
                 }
 

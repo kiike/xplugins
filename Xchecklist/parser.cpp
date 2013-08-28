@@ -7,11 +7,13 @@
 #include <ostream>
 #include "chkl_parser.h"
 #include "speech.h"
+#include "XPLMUtilities.h"
+
 
 #if IBM
 float roundf(float x)
 {
-  return ceilf(x + 0.5f);
+  return floorf(x + 0.5f);
 }
 #endif
 
@@ -563,11 +565,10 @@ bool chk_item::activate()
 
 bool chk_item::do_processing()
 {
-    static float elapsed = 0;
-    printf(">>> State: %d ", state);
+    static float elapsed = 0.0f;
     switch(state){
     case INACTIVE:
-        elapsed = 0;
+        elapsed = 0.0f;
         if(speech_active()){
             label->say_label();
             state = SAY_LABEL;
@@ -576,7 +577,7 @@ bool chk_item::do_processing()
         }
         break;
     case SAY_LABEL:
-        elapsed += 0.1; // interval the flight loop is set to
+        elapsed += 0.1f; // interval the flight loop is set to
         if(spoken(elapsed)){
             state = CHECKABLE;
         }
@@ -599,14 +600,13 @@ bool chk_item::do_processing()
         }
         break;
     case SAY_SUFFIX:
-        elapsed += 0.1; // interval the flight loop is set to
+        elapsed += 0.1f; // interval the flight loop is set to
         if(spoken(elapsed)){
             state = NEXT;
         }
         break;
     case NEXT:
         elapsed = 0;
-        printf(" -> %d (elapsed 0.0)\n", state);
         return check_item(index);
         break;
     default:
@@ -614,7 +614,6 @@ bool chk_item::do_processing()
         state = INACTIVE; //defensive
         break;
     }
-  printf(" -> %d (elapsed %f)\n", state, elapsed);
   return true;
 }
 

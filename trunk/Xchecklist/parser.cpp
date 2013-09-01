@@ -427,12 +427,16 @@ item_label::item_label(std::string label_left)
 
 void item_label::say_label()
 {
-  say(label.c_str());
+    if(voice_state) {
+        say(label.c_str());
+    }
 }
 
 void item_label::say_suffix()
 {
-  say(suffix.c_str());
+   if(voice_state) {
+      say(suffix.c_str());
+   }
 }
 
 void_item::void_item(std::string s)

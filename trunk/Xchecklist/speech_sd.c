@@ -2,7 +2,7 @@
 #include <speech.h>
 #include <stdlib.h>
 #include <string.h>
-const float speech_speed = 4.0f; //characters per second
+const float speech_speed = 12.0f; //characters per second
 
 #if LIN
 

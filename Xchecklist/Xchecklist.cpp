@@ -116,6 +116,7 @@ static bool init_checklists();
 static bool init_setup();
 static bool do_cleanup();
 static bool set_sound(bool enable);
+bool voice_state;
 
 const char* setupText[] = {"Translucent Window", "Show Checklist if Checklist exist", \
                                  "Turn Copilot On", "Voice Prompt", "Auto Hide"};
@@ -202,6 +203,7 @@ PLUGIN_API int XPluginStart(
 
         init_setup();
         set_sound(state[VOICE]);
+        voice_state = (state[VOICE]);
         do_cleanup();
 	init_checklists();
 
@@ -363,6 +365,7 @@ bool init_setup()
         state[SHOW_CHECKLIST] = true;
         state[COPILOT_ON] = true;
         state[VOICE] = true;
+        voice_state = true;
         state[AUTO_HIDE] = true;
     }
 
@@ -449,7 +452,7 @@ void CreateSetupWidget(int xx, int yy, int ww, int hh)
 // Create the Main Widget window.
         setupWidget = XPCreateWidget(xx, yy, xx2, yy2,
                       1,		  // Visible
-                      "Checklist Setup",  // desc
+                      "Xchecklist Setup",  // desc
                       1,			  // root
                       NULL,			  // no container
                       xpWidgetClass_MainWindow);
@@ -553,6 +556,7 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  in
 
                 }
                 set_sound(state[VOICE]);
+                voice_state = (state[VOICE]);
 
                 if(state[TRANSLUCENT]){
 

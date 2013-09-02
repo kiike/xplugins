@@ -35,6 +35,7 @@
 #endif
 #include <vector>
 #include <string>
+#include <fstream>
 #include <algorithm>
 
 // need to use _WIN32 to get VS2012 to be happy
@@ -46,9 +47,7 @@
 
 checklist_binder *binder = NULL;
 
-int gMenuItem;
-
-int x = 10;
+static int x = 10;
 int y = 550;
 int w = 300;
 int h = 400;
@@ -59,7 +58,6 @@ int outLeft, outTop, outRight, outBottom;
 int max_items = -1;
 int checkable = -1;
 int loopnum = 0;
-int item;
 
 int Item;
 
@@ -126,8 +124,6 @@ const char* setupText[] = {"Translucent Window", "Show Checklist if Checklist ex
 enum {TRANSLUCENT, SHOW_CHECKLIST, COPILOT_ON, VOICE, AUTO_HIDE};
 bool state[SETUP_TEXT_ITEMS];
 
-char *test;
-
 #if IBM
   const std::string dirSep = "\\";
 #else
@@ -138,13 +134,15 @@ static std::string processPath(char *path)
 {
     std::string mypath(path);
 #if APL
+    //On apple a core foundation "link" is used; this is a crude but
+    //  effective way to get a path of it...
     std::replace(mypath.begin(), mypath.end(), ':', '/');
     mypath.insert(0, "/Volumes/");
 #endif
-
+    //equivalent of dirname(mypath)
     mypath.erase(mypath.rfind(dirSep));
-
-    printf("PATH: '%s'\n", mypath.c_str());
+    
+    //printf("PATH: '%s'\n", mypath.c_str());
     return mypath;
 }
 
@@ -234,21 +232,10 @@ PLUGIN_API int XPluginStart(
 
 PLUGIN_API void	XPluginStop(void)
 {
-	if (gMenuItem == 1)
-	{
-                XPDestroyWidget(xCheckListWidget, 1);
-		gMenuItem = 0;
-	}
-
-        if (gMenuItem == 2)
-        {
-                XPDestroyWidget(setupWidget, 1);
-                gMenuItem = 0;
-        }
+        do_cleanup();
         XPLMUnregisterFlightLoopCallback(dataProcessingCallback, NULL);
 	XPLMDestroyMenu(checklistsMenu);
 	XPLMDestroyMenu(PluginMenu);
-	stop_checklists();
 }
 
 PLUGIN_API int XPluginEnable(void)
@@ -262,12 +249,22 @@ PLUGIN_API void XPluginDisable(void)
 
 bool do_cleanup()
 {
+  stop_checklists();
   XPLMClearAllMenuItems(checklistsMenu);
   checklists_count = -1;
   if(xCheckListWidget != NULL){
-    XPHideWidget(xCheckListWidget);
+    if(XPIsWidgetVisible(xCheckListWidget)){
+      XPHideWidget(xCheckListWidget);
+    }
     XPDestroyWidget(xCheckListWidget, 1);
     xCheckListWidget = NULL;
+  }
+  if(setupWidget != NULL){
+    if(XPIsWidgetVisible(setupWidget)){
+      XPHideWidget(setupWidget);
+    }
+    XPDestroyWidget(setupWidget, 1);
+    setupWidget = NULL;
   }
   return true;
 }
@@ -288,21 +285,21 @@ bool create_checklists_menu(void)
   return false;
 }
 
-char *find_checklist(const std::string path)
+std::string find_checklist(const std::string path)
 {
     std::string name1 = path + dirSep + "clist.txt";
     std::string name2 = path + dirSep + "plane.txt";
     FILE *f;
     if((f = fopen(name1.c_str(), "r")) != NULL){
         fclose(f);
-        return strdup(name1.c_str());
+        return name1;
     }
 
     if((f = fopen(name2.c_str(), "r")) != NULL){
         fclose(f);
-        return strdup(name2.c_str());
+        return name2;
     }
-    return NULL;
+    return std::string("");
 }
 
 
@@ -318,19 +315,30 @@ bool init_checklists()
 	    std::string myACFPath = processPath(AircraftPath);
 	    
         bool res = false;
-        char *clist = find_checklist(myACFPath);
-        if(clist != NULL){
+        std::string clist = find_checklist(myACFPath);
+        if(!clist.empty()){
           res = start_checklists(clist);
         }
-        free(clist);
         checklists_count = -1; // to make it rebuild menus...
         return res;
 }
 
-bool get_truth_val(const char* str)
+
+static void readBoolean(std::fstream &str, bool &res)
 {
-  return strcasecmp(str, "true") == 0;
+  if(!str.good()){
+    return;
+  }
+  std::string tmp;
+  str>>tmp; 
+  std::transform(tmp.begin(), tmp.end(), tmp.begin(), ::tolower);
+  if(tmp.find("true", 0) != std::string::npos){
+    res = true;
+  }else{
+    res = false;
+  }
 }
+
 
 bool init_setup()
 {
@@ -340,37 +348,23 @@ bool init_setup()
     //Add xchecklist.prf to preferences path
     myPrefsPath += dirSep + "Xchecklist.prf";
     printf("\nPrefs Path to initilize setup  %s \n\n", myPrefsPath.c_str());
-    my_stream = fopen (myPrefsPath.c_str(), "r+");
-    if (my_stream!=NULL)
-      {
-        //ToDo read the preference file and set check boxes to match
-        printf ("preference file is open for updating read and write \n\n");
-        rewind (my_stream);
-        char buf[1024];
-        int numb;
 
-        for(size_t i = 0; i < SETUP_TEXT_ITEMS; ++i){
-            numb = fscanf (my_stream, "%1023s", buf);
-            if(numb > 0){
-               state[i] = get_truth_val(buf);
-            }else{
-               state[i] = true;
-            }
-        }
-
-        fclose (my_stream);
-    }else{
-        //no setup to load, load defaults.
-        state[TRANSLUCENT] = true;
-        state[SHOW_CHECKLIST] = true;
-        state[COPILOT_ON] = true;
-        state[VOICE] = true;
-        voice_state = true;
-        state[AUTO_HIDE] = true;
+    state[TRANSLUCENT] = true;
+    state[SHOW_CHECKLIST] = true;
+    state[COPILOT_ON] = true;
+    state[VOICE] = true;
+    voice_state = true;
+    state[AUTO_HIDE] = true;
+    
+    std::fstream fin;
+    fin.open(myPrefsPath.c_str(), std::ios::in);
+    if(fin.is_open()){
+      for(size_t i = 0; i < SETUP_TEXT_ITEMS; ++i){
+        readBoolean(fin, state[i]);
+      }
+      fin.close();
     }
-
     return 1;
-
 }
 
 PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, int inMsg, void * inParam)
@@ -413,9 +407,9 @@ float dataProcessingCallback(float inElapsed1, float inElapsed2, int cntr, void 
 void xCheckListMenuHandler(void * inMenuRef, void * inItemRef)
 {
   (void) inMenuRef;
-unsigned int pageSize = 0;
-const char *pageTitle = "Default Title";
-checklist_item_desc_t pageItems[50];
+  unsigned int pageSize = 0;
+  const char *pageTitle = "Default Title";
+  checklist_item_desc_t pageItems[50];
 
   if((intptr_t)inMenuRef == 0){
     if (!strcmp((char *) inItemRef, "checklist")){
@@ -543,15 +537,15 @@ int	xSetupHandler(XPWidgetMessage  inMessage, XPWidgetID  inWidget, intptr_t  in
         if (inMessage == xpMsg_ButtonStateChanged)
         {
                 printf("Got button state chenge message!\n");
-                for (size_t Item=0; Item<SETUP_TEXT_ITEMS; Item++)
+                for (size_t ItemNo=0; ItemNo<SETUP_TEXT_ITEMS; ItemNo++)
                 {
-          intptr_t tmp;
-                        // If the setupCheckWidget check box is checked then set state[Item] true
-                        if ((tmp = XPGetWidgetProperty(setupCheckWidget[Item], xpProperty_ButtonState, 0))){
-                          state[Item] = true;
+                        intptr_t tmp;
+                        // If the setupCheckWidget check box is checked then set state[ItemNo] true
+                        if ((tmp = XPGetWidgetProperty(setupCheckWidget[ItemNo], xpProperty_ButtonState, 0))){
+                          state[ItemNo] = true;
                         }
                         else {
-                          state[Item] = false;
+                          state[ItemNo] = false;
                         }
 
                 }
@@ -702,8 +696,8 @@ bool create_checklist(unsigned int size, const char *title,
     }
   }
   w = maxw_1 + maxw_2 + 75;
-    int x2 = x + w;
-    int y2 = y - h;
+    int new_x2 = x + w;
+    int new_y2 = y - h;
     //int Index;  //unused
     int WindowCentre = x+w/2;
     int yOffset;
@@ -714,7 +708,7 @@ bool create_checklist(unsigned int size, const char *title,
     
     // Create the Main Widget window.
 
-    xCheckListWidget = XPCreateWidget(x, y, x2, y2,
+    xCheckListWidget = XPCreateWidget(x, y, new_x2, new_y2,
                        state[SHOW_CHECKLIST],	// Visible
                        title,	// desc
                        1,		// root
@@ -841,21 +835,21 @@ printf("Checklist index %d (of %d)\n", index, checklists_count);
   return true;
 }
 
-bool check_item(int item)
+bool check_item(int itemNo)
 {
-  printf("Checking item %d\n", item);
-  if(item >= 0){
-    XPSetWidgetProperty(xCheckListCheckWidget[item], xpProperty_ButtonState, 1);
-    item_checked(item);
+  printf("Checking item %d\n", itemNo);
+  if(itemNo >= 0){
+    XPSetWidgetProperty(xCheckListCheckWidget[itemNo], xpProperty_ButtonState, 1);
+    item_checked(itemNo);
     return true;
   }
   return false;
 }
 
-bool activate_item(int item)
+bool activate_item(int itemNo)
 {
-  checkable = item;
-  printf("Activating item %d\n", item);
+  checkable = itemNo;
+  printf("Activating item %d\n", itemNo);
   return true;
 }
 
@@ -986,3 +980,4 @@ int MyCommandCallback(XPLMCommandRef       inCommand,
 
     return 1;
 }
+

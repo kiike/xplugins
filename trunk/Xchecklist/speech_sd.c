@@ -2,10 +2,6 @@
 #include <speech.h>
 #include <stdlib.h>
 #include <string.h>
-const float speech_speed = 12.0f; //characters per second
-
-#if LIN
-
 #include <stdio.h>
 #include <libspeechd.h>
 #include <dlfcn.h>
@@ -78,36 +74,36 @@ static SPDConnection* wspd_open(const char* client_name, const char* connection_
   return spd_open_fun(client_name, connection_name, user_name, mode);
 }
 
-static void wspd_close(SPDConnection* connection)
+static void wspd_close(SPDConnection* conn)
 {
-  if((spd_close_fun == NULL) || (connection == NULL)){
+  if((spd_close_fun == NULL) || (conn == NULL)){
     return;
   }
-  spd_close_fun(connection);
+  spd_close_fun(conn);
 }
 
-static int wspd_say(SPDConnection* connection, SPDPriority priority, const char* text)
+static int wspd_say(SPDConnection* conn, SPDPriority priority, const char* text)
 {
-  if((spd_say_fun == NULL) || (connection == NULL) || (text == NULL)){
+  if((spd_say_fun == NULL) || (conn == NULL) || (text == NULL)){
     return -1;
   }
-  return spd_say_fun(connection, priority, text);
+  return spd_say_fun(conn, priority, text);
 }
 
-static int wspd_set_notification_on(SPDConnection* connection, SPDNotification notification)
+static int wspd_set_notification_on(SPDConnection* conn, SPDNotification notification)
 {
-  if((spd_set_notification_on_fun == NULL) || (connection == NULL)){
+  if((spd_set_notification_on_fun == NULL) || (conn == NULL)){
     return 0;
   }
-  return spd_set_notification_on_fun(connection, notification);
+  return spd_set_notification_on_fun(conn, notification);
 }
 
-static int wspd_set_notification_off(SPDConnection* connection, SPDNotification notification)
+static int wspd_set_notification_off(SPDConnection* conn, SPDNotification notification)
 {
-  if((spd_set_notification_off_fun == NULL) || (connection == NULL)){
+  if((spd_set_notification_off_fun == NULL) || (conn == NULL)){
     return 0;
   }
-  return spd_set_notification_off_fun(connection, notification);
+  return spd_set_notification_off_fun(conn, notification);
 }
 
 static void finish_callback(size_t msg_id, size_t client_id, SPDNotificationType state)
@@ -123,11 +119,9 @@ static void finish_callback(size_t msg_id, size_t client_id, SPDNotificationType
       break;
   }
 }
-#endif
 
 bool init_speech()
 {
-#if LIN
   if(load_functions()){
     fprintf(stderr, "Failed to load speech-dispatch library!\n");
     return false;
@@ -142,32 +136,24 @@ bool init_speech()
   connection->callback_end = connection->callback_cancel = finish_callback;
   wspd_set_notification_on(connection, SPD_END);
   wspd_set_notification_on(connection, SPD_CANCEL);
-#endif  
   return true;
 }
 
-static size_t speech_length = 0;
-
 void say(const char *text)
 {
-  speech_length = strlen(text);
   XPLMSpeakString(text);
-#if LIN
   int res = wspd_say(connection, SPD_MESSAGE, text);
   if(res != 0){
     ++speaking;
   }
-#endif
 }
 
 void close_speech()
 {
-#if LIN
   wspd_set_notification_off(connection, SPD_END);
   wspd_set_notification_off(connection, SPD_CANCEL);
   wspd_close(connection);
   connection = NULL;
-#endif
 }
 
 void cleanup_speech()
@@ -176,32 +162,21 @@ void cleanup_speech()
 
 bool speech_active()
 {
-#if LIN
   if(connection != NULL){
     return true;
   }else{
     return false;
   }
-#else
-  return true;
-#endif
 }
 
 bool spoken(float elapsed)
 {
-#if LIN
+  (void)elapsed;
   if(speaking == 0){
     return true;
   }else{
     return false;
   }
-#else
-  if(elapsed > speech_length / speech_speed){
-    return true;
-  }else{
-    return false;
-  }
-#endif
 }
 
 

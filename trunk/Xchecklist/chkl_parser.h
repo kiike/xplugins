@@ -194,6 +194,6 @@ class chk_item:public checklist_item{
 
 
 
-bool parse_clist(char *fname, int debug);
+bool parse_clist(const std::string &fname, int debug);
 
 #endif

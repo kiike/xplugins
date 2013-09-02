@@ -80,7 +80,7 @@ static SPDConnection* wspd_open(const char* client_name, const char* connection_
 
 static void wspd_close(SPDConnection* connection)
 {
-  if(spd_close_fun == NULL){
+  if((spd_close_fun == NULL) || (connection == NULL)){
     return;
   }
   spd_close_fun(connection);
@@ -88,7 +88,7 @@ static void wspd_close(SPDConnection* connection)
 
 static int wspd_say(SPDConnection* connection, SPDPriority priority, const char* text)
 {
-  if(spd_say_fun == NULL){
+  if((spd_say_fun == NULL) || (connection == NULL) || (text == NULL)){
     return -1;
   }
   return spd_say_fun(connection, priority, text);
@@ -96,7 +96,7 @@ static int wspd_say(SPDConnection* connection, SPDPriority priority, const char*
 
 static int wspd_set_notification_on(SPDConnection* connection, SPDNotification notification)
 {
-  if(spd_set_notification_on_fun == NULL){
+  if((spd_set_notification_on_fun == NULL) || (connection == NULL)){
     return 0;
   }
   return spd_set_notification_on_fun(connection, notification);
@@ -104,7 +104,7 @@ static int wspd_set_notification_on(SPDConnection* connection, SPDNotification n
 
 static int wspd_set_notification_off(SPDConnection* connection, SPDNotification notification)
 {
-  if(spd_set_notification_off_fun == NULL){
+  if((spd_set_notification_off_fun == NULL) || (connection == NULL)){
     return 0;
   }
   return spd_set_notification_off_fun(connection, notification);
@@ -166,6 +166,7 @@ void close_speech()
   wspd_set_notification_off(connection, SPD_END);
   wspd_set_notification_off(connection, SPD_CANCEL);
   wspd_close(connection);
+  connection = NULL;
 #endif
 }
 

@@ -1,7 +1,8 @@
 #include "chkl_parser.h"
 #include "speech.h"
+#include <string>
 
-bool start_checklists(char *fname)
+bool start_checklists(const std::string &fname)
 {
   if(binder != NULL){
     delete binder;

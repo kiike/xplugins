@@ -36,7 +36,7 @@ extern "C" {
 //  fname is the checklist file name
 //
 //  Returns true if no problems were encountered
-bool start_checklists(char *fname);
+bool start_checklists(const std::string &fname);
 bool stop_checklists();
 
 //Call by the plugin, go back to the previous checklist

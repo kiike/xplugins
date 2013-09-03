@@ -232,6 +232,7 @@ PLUGIN_API int XPluginStart(
 
 PLUGIN_API void	XPluginStop(void)
 {
+        stop_checklists();
         do_cleanup();
         XPLMUnregisterFlightLoopCallback(dataProcessingCallback, NULL);
 	XPLMDestroyMenu(checklistsMenu);
@@ -249,7 +250,6 @@ PLUGIN_API void XPluginDisable(void)
 
 bool do_cleanup()
 {
-  stop_checklists();
   XPLMClearAllMenuItems(checklistsMenu);
   checklists_count = -1;
   if(xCheckListWidget != NULL){

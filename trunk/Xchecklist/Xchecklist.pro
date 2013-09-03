@@ -51,7 +51,7 @@ macx {
     # QMAKE_MAC_SDK=/Developer/SDKs/MacOSX10.4u.sdk
     # The following line defines for which architectures we build.
     CONFIG += x86_64 x86
-    LIBS += -ldl #-exported_symbols_list Xchecklist.sym_mac
+    LIBS += -ldl -exported_symbols_list Xchecklist.sym_mac
 }
 
 HEADERS += interface.h \

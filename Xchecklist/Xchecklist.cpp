@@ -51,7 +51,7 @@ static int x = 10;
 int y = 550;
 int w = 300;
 int h = 400;
-int x2, y2;
+//int x2, y2;
 
 int outLeft, outTop, outRight, outBottom;
 
@@ -364,6 +364,12 @@ bool init_setup()
       }
       fin.close();
     }
+    voice_state = (state[VOICE]);
+    printf("\nTRANSLUCENT: %d \n", state[TRANSLUCENT]);
+    printf("SHOW_CHECKLIST: %d\n", state[SHOW_CHECKLIST]);
+    printf("COPILOT_ON: %d\n", state[COPILOT_ON]);
+    printf("VOICE: %d\n", state[VOICE]);
+    printf("AUTO_HIDE: %d\n", state[AUTO_HIDE]);
     return 1;
 }
 
@@ -666,6 +672,8 @@ bool create_checklist(unsigned int size, const char *title,
 {
   (void) width;
   unsigned int i;
+  int x2;
+  int y2;
   if(checklists_count == -1){
     create_checklists_menu();
   }
@@ -696,8 +704,8 @@ bool create_checklist(unsigned int size, const char *title,
     }
   }
   w = maxw_1 + maxw_2 + 75;
-    int new_x2 = x + w;
-    int new_y2 = y - h;
+    x2 = x + w;
+    y2 = y - h;
     //int Index;  //unused
     int WindowCentre = x+w/2;
     int yOffset;
@@ -708,7 +716,7 @@ bool create_checklist(unsigned int size, const char *title,
     
     // Create the Main Widget window.
 
-    xCheckListWidget = XPCreateWidget(x, y, new_x2, new_y2,
+    xCheckListWidget = XPCreateWidget(x, y, x2, y2,
                        state[SHOW_CHECKLIST],	// Visible
                        title,	// desc
                        1,		// root

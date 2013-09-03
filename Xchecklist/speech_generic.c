@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
+
 static const float speech_speed = 12.0f; //characters per second
 
 static bool active = false;
@@ -17,15 +19,18 @@ static size_t speech_length = 0;
 
 void say(const char *text)
 {
+  printf("Simon says \"%s\"...\n", text);
   if(!active){
     return;
   }
+  printf("Simon really says \"%s\"...\n", text);
   speech_length = strlen(text);
   XPLMSpeakString(text);
 }
 
 void close_speech()
 {
+  printf("Someone closed the speech!!!\n");
   active = false;
 }
 
